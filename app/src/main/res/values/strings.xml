@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">debtbook</string>
+    <string name="name">Name</string>
+    <string name="sum">Sum</string>
+    <string name="set">Set</string>
 </resources>
