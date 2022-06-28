@@ -9,9 +9,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.deptbook.domain.model.HumanDomain
 
-class HumanAdapter(val context: Context, private val humanDomainList: List<HumanDomain>): RecyclerView.Adapter<HumanAdapter.HumanViewHolder>() {
+class HumanAdapter(val context: Context, private val humanDomainList: List<HumanDomain>, val humanClickListener: OnHumanClickListener): RecyclerView.Adapter<HumanAdapter.HumanViewHolder>() {
 
     lateinit var inflater: LayoutInflater
+
+    interface OnHumanClickListener{
+        fun onHumanClick(humanDomain: HumanDomain, position: Int)
+    }
+
 
     class HumanViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val name: TextView = itemView.findViewById(R.id.name)

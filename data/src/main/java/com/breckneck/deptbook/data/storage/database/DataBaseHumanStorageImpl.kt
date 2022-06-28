@@ -14,7 +14,7 @@ class DataBaseHumanStorageImpl(context: Context) : HumanStorage {
 
 
     val sharedPreferences = context.getSharedPreferences(SHARED_PREFS_NAME, Context.MODE_PRIVATE)
-    val db = Room.databaseBuilder(context, AppDataBase::class.java, "HumanDataBase").allowMainThreadQueries().build()
+    val db = Room.databaseBuilder(context, AppDataBase::class.java, "HumanDataBase").build()
 
     override fun getAllHumans(): List<Human> {
         val humanList = db.appDao().getAllHuman()
