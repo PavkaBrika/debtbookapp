@@ -1,34 +1,32 @@
 package com.breckneck.debtbook.presentation.fragment
 
 import android.content.Context
-import android.graphics.Typeface
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import android.widget.Button
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.adapter.HumanAdapter
+import com.breckneck.debtbook.presentation.MainViewModel
 import com.breckneck.deptbook.data.storage.database.DataBaseHumanStorageImpl
 import com.breckneck.deptbook.data.storage.repository.HumanRepositoryImpl
 import com.breckneck.deptbook.domain.model.HumanDomain
-import com.breckneck.deptbook.domain.usecase.Human.GetAllDebtsSumUseCase
-import com.breckneck.deptbook.domain.usecase.Human.GetAllHumansUseCase
-import com.google.android.material.appbar.CollapsingToolbarLayout
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.breckneck.deptbook.domain.usecase.GetAllHumansUseCase
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 
 class MainFragment : Fragment() {
 
+    private lateinit var vm: MainViewModel
+
     interface OnButtonClickListener{
-        fun OnHumanClick(idHuman: Int, currency: String, name: String)
-        fun OnAddButtonClick()
+        fun changeMainFragment(id: Int)
     }
 
     var buttonClickListener: OnButtonClickListener? = null
@@ -40,80 +38,55 @@ class MainFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_main, container, false)
 
-        val collaps: CollapsingToolbarLayout = view.findViewById(R.id.collaps)
-        collaps.apply {
-            setCollapsedTitleTypeface(Typeface.DEFAULT_BOLD)
-            setExpandedTitleTypeface(Typeface.DEFAULT_BOLD)
-        }
+        vm = ViewModelProvider(this).get(MainViewModel::class.java)
+
+        Log.e("TAG", "Main Fragment created")
 
         val dataBaseHumanStorage by lazy { DataBaseHumanStorageImpl(context = view.context) }
         val humanRepository by lazy { HumanRepositoryImpl(humanStorage = dataBaseHumanStorage) }
         val getAllHumansUseCase by lazy { GetAllHumansUseCase(humanRepository = humanRepository) }
-        val getAllDebtsSumUseCase by lazy { GetAllDebtsSumUseCase(humanRepository = humanRepository) }
 
         val recyclerView: RecyclerView = view.findViewById(R.id.namesRecyclerView)
-        recyclerView.addItemDecoration(DividerItemDecoration(view.context, DividerItemDecoration.VERTICAL))
 
-        val noDebtsTextView: TextView = view.findViewById(R.id.noDebtTextView)
-
-        val addButton: FloatingActionButton = view.findViewById(R.id.addHumanButton)
+        val addButton: Button = view.findViewById(R.id.addHumanButton)
         addButton.setOnClickListener{
-            buttonClickListener?.OnAddButtonClick()
+            buttonClickListener?.changeMainFragment(id = 1)
         }
 
         val humanClickListener = object: HumanAdapter.OnHumanClickListener {
             override fun onHumanClick(humanDomain: HumanDomain, position: Int) {
-                buttonClickListener?.OnHumanClick(idHuman = humanDomain.id, currency = humanDomain.currency, name = humanDomain.name)
-                Log.e("TAG", "Click on human with id = ${humanDomain.id}")
+
             }
+
         }
 
+//        val zoneClickListener: ZoneAdapter.OnZoneClickListener
+//        zoneClickListener = object : OnZoneClickListener() {
+//            fun onZoneClick(zoneApp: ZoneApp, position: Int) {
+//                val intent = Intent(this@MainActivity, ZoneDetailsActivity::class.java)
+//                intent.putExtra("zonename", zoneApp.getZoneName())
+//                intent.putExtra("zoneid", zoneApp.getId())
+//                Toast.makeText(
+//                    getApplicationContext(),
+//                    "эл-т " + zoneApp.getId().toString() + "  " + zoneApp.getZoneName(),
+//                    Toast.LENGTH_SHORT
+//                ).show()
+//                startActivity(intent)
+//            }
+
         Single.just("1")
-            .map { val humanList = getAllHumansUseCase.execute()
-                if (humanList.isNotEmpty())
-                    noDebtsTextView.visibility = View.INVISIBLE
-                return@map humanList
+            .map {
+//                return@map vm.loadAllHumans()
             }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                val adapter = HumanAdapter(it, humanClickListener)
-                recyclerView.adapter = adapter
-                Log.e("TAG", "Humans load success")
+//                val adapter = HumanAdapter(view.context, it, humanClickListener)
+//                recyclerView.adapter = adapter
+//                Log.e("TAG", "Humans load success")
             }, {
 
             })
-
-        val overallPositiveSumTextView: TextView = view.findViewById(R.id.overallPositiveSumTextView)
-        val overallNegativeSumTextView: TextView = view.findViewById(R.id.overallNegativeSumTextView)
-        Single.just(overallPositiveSumTextView)
-            .map {
-                return@map getAllDebtsSumUseCase.execute("positive")
-            }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                if (it == "") {
-                    overallPositiveSumTextView.visibility = View.GONE
-                } else {
-                    overallPositiveSumTextView.visibility = View.VISIBLE
-                    overallPositiveSumTextView.text = it
-                }
-            },{})
-        Single.just(overallNegativeSumTextView)
-            .map {
-                return@map getAllDebtsSumUseCase.execute("negative")
-            }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                if (it == "") {
-                    overallNegativeSumTextView.textSize = 0F
-                } else {
-                    overallNegativeSumTextView.visibility = View.VISIBLE
-                    overallNegativeSumTextView.text = it
-                }
-            },{})
 
         return view
     }
