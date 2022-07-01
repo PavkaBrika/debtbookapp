@@ -1,18 +1,13 @@
 package com.breckneck.debtbook.presentation.activity
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
-import android.widget.Button
-import android.widget.FrameLayout
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.breckneck.debtbook.R
-import com.breckneck.debtbook.databinding.ActivityMainBinding
 import com.breckneck.debtbook.presentation.fragment.DebtDetailsFragment
 import com.breckneck.debtbook.presentation.fragment.MainFragment
 import com.breckneck.debtbook.presentation.fragment.NewDebtFragment
-import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, NewDebtFragment.OnButtonClickListener {
 
@@ -25,13 +20,18 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         fragmentTransaction.replace(R.id.frameLayout, MainFragment()).commit()
     }
 
-    override fun changeMainFragment(id: Int) {
+    override fun changeMainFragment(idFragment: Int, idHuman: Int) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
-        if (id == 1)
+        if (idFragment == 1)
             fragmentTransaction.replace(R.id.frameLayout, NewDebtFragment()).addToBackStack(null).commit()
-        else
-            fragmentTransaction.replace(R.id.frameLayout, DebtDetailsFragment()).addToBackStack(null).commit()
+        else {
+            val mArg = Bundle()
+            mArg.putInt("idHuman", idHuman)
+            val fragment = DebtDetailsFragment()
+            fragment.arguments = mArg
+            fragmentTransaction.replace(R.id.frameLayout, fragment).addToBackStack(null).commit()
+        }
     }
 
     override fun changeNewDebtFragmentToDebtDetailsFragment() {

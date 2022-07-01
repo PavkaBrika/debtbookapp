@@ -7,4 +7,6 @@ interface HumanStorage  {
     fun getAllHumans() : List<Human>
 
     fun insertHuman(human: Human)
+
+    fun getLastHumanId() : Int
 }

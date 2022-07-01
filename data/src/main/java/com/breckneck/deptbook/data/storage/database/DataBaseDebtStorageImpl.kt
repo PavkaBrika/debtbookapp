@@ -17,4 +17,13 @@ class DataBaseDebtStorageImpl(context: Context): DebtStorage {
         return db.appDao().getAllDebtsById(id = id)
     }
 
+    override fun setDebt(debt: Debt) {
+        var debtId = sharedPreferences.getInt(DEBT_ID, 0)
+        debt.id = debtId
+        db.appDao().insertDebt(debt)
+        debtId++
+        sharedPreferences.edit().putInt(DEBT_ID ,debtId).apply()
+    }
+
+
 }

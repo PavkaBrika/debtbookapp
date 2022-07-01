@@ -32,6 +32,9 @@ class HumanAdapter(val context: Context, private val humanDomainList: List<Human
         val humanDomain = humanDomainList[position]
         holder.name.text = humanDomain.name
         holder.debt.text = humanDomain.sumDebt.toString()
+        holder.itemView.setOnClickListener{
+            humanClickListener.onHumanClick(humanDomain = humanDomain, position = position)
+        }
     }
 
     override fun getItemCount(): Int {

@@ -14,4 +14,9 @@ class DebtRepositoryImpl(val debtStorage: DebtStorage): DebtRepository {
         }
         return humanDomainList
     }
+
+    override fun setDebt(debtDomain: DebtDomain) {
+        val debt = Debt(id = debtDomain.id, sum = debtDomain.sum, currency = debtDomain.currency, idHuman = debtDomain.idHuman)
+        debtStorage.setDebt(debt)
+    }
 }
