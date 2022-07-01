@@ -9,7 +9,7 @@ import com.breckneck.debtbook.presentation.fragment.DebtDetailsFragment
 import com.breckneck.debtbook.presentation.fragment.MainFragment
 import com.breckneck.debtbook.presentation.fragment.NewDebtFragment
 
-class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, NewDebtFragment.OnButtonClickListener {
+class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, NewDebtFragment.OnButtonClickListener, DebtDetailsFragment.OnButtonClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,16 +20,16 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         fragmentTransaction.replace(R.id.frameLayout, MainFragment()).commit()
     }
 
-    override fun changeMainFragment(idFragment: Int, idHuman: Int) {
+    override fun changeMainFragment(Fragment: String, idHuman: Int) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
-        if (idFragment == 1)
+        if (Fragment == "NewDebtFragment")
             fragmentTransaction.replace(R.id.frameLayout, NewDebtFragment()).addToBackStack(null).commit()
-        else {
-            val mArg = Bundle()
-            mArg.putInt("idHuman", idHuman)
+        else if (Fragment == "DebtDetailsFragment") {
+            val args = Bundle()
+            args.putInt("idHuman", idHuman)
             val fragment = DebtDetailsFragment()
-            fragment.arguments = mArg
+            fragment.arguments = args
             fragmentTransaction.replace(R.id.frameLayout, fragment).addToBackStack(null).commit()
         }
     }
@@ -37,7 +37,16 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
     override fun changeNewDebtFragmentToDebtDetailsFragment() {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
-//        fragmentTransaction.replace(R.id.frameLayout, DebtDetailsFragment()).addToBackStack(null).commit()
         fragmentTransaction.replace(R.id.frameLayout, MainFragment()).addToBackStack(null).commit()
+    }
+
+    override fun addNewDebtFragment(idHuman: Int) {
+        val fragmentManager = supportFragmentManager
+        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
+        val args = Bundle()
+        args.putInt("idHuman", idHuman)
+        val fragment = NewDebtFragment()
+        fragment.arguments = args
+        fragmentTransaction.replace(R.id.frameLayout, fragment).addToBackStack(null).commit()
     }
 }
