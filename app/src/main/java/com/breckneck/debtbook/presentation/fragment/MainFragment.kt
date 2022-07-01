@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.adapter.HumanAdapter
@@ -39,6 +40,7 @@ class MainFragment : Fragment() {
         val getAllHumansUseCase by lazy { GetAllHumansUseCase(humanRepository = humanRepository) }
 
         val recyclerView: RecyclerView = view.findViewById(R.id.namesRecyclerView)
+        recyclerView.addItemDecoration(DividerItemDecoration(view.context, DividerItemDecoration.VERTICAL))
 
         val addButton: Button = view.findViewById(R.id.addHumanButton)
         addButton.setOnClickListener{
