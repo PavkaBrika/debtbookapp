@@ -1,200 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:background="#FFFFFF">
+    android:orientation="vertical">
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:background="#E0E0E0"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/app_bar"
+        <EditText
+            android:id="@+id/humanNameEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fitsSystemWindows="true">
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:hint="@string/name" />
 
-            <com.google.android.material.appbar.CollapsingToolbarLayout
-                android:id="@+id/collapsNewDebt"
-                android:layout_width="match_parent"
-                android:layout_height="180dp"
-                android:fitsSystemWindows="true"
-                style="@style/collapsContentScrim"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed"
-                app:title="@string/newdebt"
-                app:maxLines="3"
-                app:titleEnabled="true">
-
-                <androidx.appcompat.widget.Toolbar
-                    android:id="@+id/toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:fitsSystemWindows="true" />
-
-            </com.google.android.material.appbar.CollapsingToolbarLayout>
-
-        </com.google.android.material.appbar.AppBarLayout>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            style="@style/collapsLines"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-        <androidx.core.widget.NestedScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="1dp"
-            android:scrollbars="vertical"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <io.ghyeok.stickyswitch.widget.StickySwitch
-                    android:id="@+id/sticky_switch"
-                    android:layout_width="175dp"
-                    android:layout_height="90dp"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="16dp"
-                    app:ss_animationDuration="400"
-                    app:ss_iconPadding="10dp"
-                    app:ss_iconSize="40dp"
-                    app:ss_leftIcon="@drawable/ic_baseline_add_24"
-                    app:ss_leftText="@string/give"
-                    app:ss_rightIcon="@drawable/ic_baseline_remove_24"
-                    app:ss_rightText="@string/take"
-                    app:ss_selectedTextSize="17sp"
-                    app:ss_switchColor="@color/green"
-                    app:ss_textSize="14sp"
-                    app:ss_animationType="curved"
-                    style="@style/switchStyle"/>
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <EditText
-                        android:id="@+id/humanNameEditText"
-                        style="@style/addNewHumanEditText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginRight="8dp"
-                        android:hint="@string/name"
-                        android:maxLines="1"
-                        android:maxLength="11"/>
-
-                </RelativeLayout>
+    </RelativeLayout>
 
 
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    style="@style/addNewHumanLines" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/black"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+    <EditText
+        android:id="@+id/debtSumEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:hint="@string/sum"
+        android:inputType="numberDecimal" />
 
-                    <EditText
-                        android:id="@+id/debtSumEditText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-                        android:layout_weight="1"
-                        android:hint="@string/sum"
-                        style="@style/addNewHumanEditText"
-                        android:maxLines="1"
-                        android:maxLength="10"
-                        android:inputType="numberDecimal" />
+    <EditText
+        android:id="@+id/debtCurrencyEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:hint="@string/currency"
+        />
 
-                    <TextView
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        style="@style/addNewHumanLines"/>
-
-                    <Spinner
-                        android:id="@+id/debtCurrencySpinner"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        android:layout_marginTop="8dp"
-                        android:textAlignment="center" />
-
-                    <TextView
-                        android:id="@+id/debtCurrencyTextView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        android:text="CUR"
-                        android:textSize="28sp"
-                        android:layout_gravity="center_vertical"
-                        android:gravity="center"
-                        android:visibility="gone"/>
-
-                </LinearLayout>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    style="@style/addNewHumanLines" />
-
-                <!--    <EditText-->
-                <!--        android:id="@+id/debtCurrencyEditText"-->
-                <!--        android:layout_width="match_parent"-->
-                <!--        android:layout_height="wrap_content"-->
-                <!--        android:layout_margin="8dp"-->
-                <!--        android:hint="@string/currency"-->
-                <!--        />-->
-
-                <TextView
-                    android:id="@+id/debtDateTextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="4dp"
-                    android:text="date"
-                    android:textAlignment="center"
-                    android:textSize="26sp"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    style="@style/addNewHumanLines" />
-
-                <EditText
-                    android:id="@+id/debtInfoEditText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    android:hint="@string/comment"
-                    style="@style/addNewHumanEditText"
-                    />
-
-            </LinearLayout>
-
-        </androidx.core.widget.NestedScrollView>
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/setDebtButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/fabTheme"
-            android:layout_margin="24dp"
-            app:layout_anchor="@id/app_bar"
-            app:layout_anchorGravity="bottom|end"
-            android:src="@drawable/ic_baseline_check_24" />
+    <Button
+        android:id="@+id/setDebtButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/set"
+        android:layout_margin="8dp" />
 
 
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-
-
-
-</RelativeLayout>
+</LinearLayout>

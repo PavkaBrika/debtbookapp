@@ -1,24 +1,7 @@
 <resources>
-    <string name="app_name">Debt book</string>
+    <string name="app_name">debtbook</string>
     <string name="name">Name</string>
     <string name="sum">Sum</string>
-    <string name="comment">Comment</string>
-    <string name="year">y.</string>
-    <string name="usd" translatable="false">USD</string>
-    <string name="eur" translatable="false">EUR</string>
-    <string name="rub" translatable="false">RUB</string>
-    <string name="youmustentername">You didn\'t enter all the information</string>
-    <string name="deletedebt">Delete this debt</string>
-    <string name="editdebt">Edit this debt</string>
-    <string name="give">Give</string>
-    <string name="take">Take</string>
-    <string name="zerodebt">Debt cannot be zero</string>
-    <string name="payoffMessage">Pay off this debt in full?</string>
-    <string name="payoffTitle">Pay off</string>
-    <string name="yes">Yes</string>
-    <string name="No">No</string>
-    <string name="newdebt">Add new debt</string>
-    <string name="editdebtcollaps">Edit debt</string>
-    <string name="debts">Debts</string>
-    <string name="nodebts">There are no debts yet. Click the button below to add.</string>
+    <string name="set">Set</string>
+    <string name="currency">Currency</string>
 </resources>

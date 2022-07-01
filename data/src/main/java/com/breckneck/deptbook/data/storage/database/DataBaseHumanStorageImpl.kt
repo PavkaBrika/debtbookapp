@@ -1,6 +1,7 @@
 package com.breckneck.deptbook.data.storage.database
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.room.Room
 import com.breckneck.deptbook.data.storage.HumanStorage
 import com.breckneck.deptbook.data.storage.entity.Human
@@ -31,22 +32,5 @@ class DataBaseHumanStorageImpl(context: Context) : HumanStorage {
     override fun getLastHumanId(): Int {
         return db.appDao().getLastHumanId()
     }
-
-    override fun addSum(humanId: Int, sum: Double) {
-        db.appDao().addSum(humanId = humanId, sum = sum)
-    }
-
-    override fun getAllDebtsSum(currency: String): List<Double> {
-        return db.appDao().getAllDebtsSum(currency)
-    }
-
-    override fun getHumanSumDebtUseCase(humanId: Int): Double {
-        return db.appDao().getHumanSumDebt(humanId = humanId)
-    }
-
-    override fun deleteHumanById(id: Int) {
-        db.appDao().deleteHumanById(id = id)
-    }
-
 
 }

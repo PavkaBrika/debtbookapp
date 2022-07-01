@@ -7,10 +7,4 @@ interface DebtRepository {
     fun getAllDebtsById(id: Int): List<DebtDomain>
 
     fun setDebt(debtDomain: DebtDomain)
-
-    fun deleteDebt(debtDomain: DebtDomain)
-
-    fun editDebt(debtDomain: DebtDomain)
-
-    fun deleteDebtsByHumanId(id: Int)
 }

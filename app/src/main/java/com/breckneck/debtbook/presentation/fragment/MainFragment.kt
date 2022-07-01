@@ -16,7 +16,7 @@ import com.breckneck.debtbook.presentation.MainViewModel
 import com.breckneck.deptbook.data.storage.database.DataBaseHumanStorageImpl
 import com.breckneck.deptbook.data.storage.repository.HumanRepositoryImpl
 import com.breckneck.deptbook.domain.model.HumanDomain
-import com.breckneck.deptbook.domain.usecase.GetAllHumansUseCase
+import com.breckneck.deptbook.domain.usecase.Human.GetAllHumansUseCase
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -26,7 +26,7 @@ class MainFragment : Fragment() {
     private lateinit var vm: MainViewModel
 
     interface OnButtonClickListener{
-        fun changeMainFragment(id: Int)
+        fun changeMainFragment(idFragment: Int, idHuman: Int)
     }
 
     var buttonClickListener: OnButtonClickListener? = null
@@ -50,29 +50,15 @@ class MainFragment : Fragment() {
 
         val addButton: Button = view.findViewById(R.id.addHumanButton)
         addButton.setOnClickListener{
-            buttonClickListener?.changeMainFragment(id = 1)
+            buttonClickListener?.changeMainFragment(idFragment = 1, idHuman = 0)
         }
 
         val humanClickListener = object: HumanAdapter.OnHumanClickListener {
             override fun onHumanClick(humanDomain: HumanDomain, position: Int) {
-
+                buttonClickListener?.changeMainFragment(idFragment = 2, idHuman = humanDomain.id)
+                Log.e("TAG", "Click on human")
             }
-
         }
-
-//        val zoneClickListener: ZoneAdapter.OnZoneClickListener
-//        zoneClickListener = object : OnZoneClickListener() {
-//            fun onZoneClick(zoneApp: ZoneApp, position: Int) {
-//                val intent = Intent(this@MainActivity, ZoneDetailsActivity::class.java)
-//                intent.putExtra("zonename", zoneApp.getZoneName())
-//                intent.putExtra("zoneid", zoneApp.getId())
-//                Toast.makeText(
-//                    getApplicationContext(),
-//                    "эл-т " + zoneApp.getId().toString() + "  " + zoneApp.getZoneName(),
-//                    Toast.LENGTH_SHORT
-//                ).show()
-//                startActivity(intent)
-//            }
 
         Single.just("1")
             .map {
