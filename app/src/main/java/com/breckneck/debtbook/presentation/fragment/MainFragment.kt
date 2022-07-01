@@ -22,7 +22,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 class MainFragment : Fragment() {
 
     interface OnButtonClickListener{
-        fun changeMainFragment(idFragment: Int, idHuman: Int)
+        fun changeMainFragment(Fragment: String, idHuman: Int)
     }
 
     var buttonClickListener: OnButtonClickListener? = null
@@ -42,12 +42,12 @@ class MainFragment : Fragment() {
 
         val addButton: Button = view.findViewById(R.id.addHumanButton)
         addButton.setOnClickListener{
-            buttonClickListener?.changeMainFragment(idFragment = 1, idHuman = 0)
+            buttonClickListener?.changeMainFragment(Fragment = "NewDebtFragment", idHuman = 0)
         }
 
         val humanClickListener = object: HumanAdapter.OnHumanClickListener {
             override fun onHumanClick(humanDomain: HumanDomain, position: Int) {
-                buttonClickListener?.changeMainFragment(idFragment = 2, idHuman = humanDomain.id)
+                buttonClickListener?.changeMainFragment(Fragment = "DebtDetailsFragment", idHuman = humanDomain.id)
                 Log.e("TAG", "Click on human")
             }
         }
