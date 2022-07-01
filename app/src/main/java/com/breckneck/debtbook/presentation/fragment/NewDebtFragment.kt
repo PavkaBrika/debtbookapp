@@ -47,6 +47,8 @@ class NewDebtFragment: Fragment() {
         val debtRepository by lazy { DebtRepositoryImpl(debtStorage = dataBaseDebtStorage) }
         val setDebtUseCase by lazy { SetDebtUseCase(debtRepository = debtRepository)}
 
+        val idHuman = arguments?.getInt("idHuman", 0)
+
         val humanNameEditText: EditText = view.findViewById(R.id.humanNameEditText)
         val debtSumEditText : EditText = view.findViewById(R.id.debtSumEditText)
         val currencyEditText: EditText = view.findViewById(R.id.debtCurrencyEditText)
