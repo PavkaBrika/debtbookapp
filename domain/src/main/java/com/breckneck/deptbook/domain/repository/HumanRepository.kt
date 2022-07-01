@@ -7,4 +7,6 @@ interface HumanRepository {
     fun getAllHumans() : List<HumanDomain>
 
     fun insertHuman(humanDomain: HumanDomain)
+
+    fun getLastHumanId() : Int
 }

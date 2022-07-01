@@ -18,4 +18,8 @@ class HumanRepositoryImpl(private val humanStorage: HumanStorage) : HumanReposit
     override fun insertHuman(humanDomain: HumanDomain) {
         humanStorage.insertHuman(Human(id = humanDomain.id, name = humanDomain.name, sumDebt = humanDomain.sumDebt))
     }
+
+    override fun getLastHumanId() : Int {
+        return humanStorage.getLastHumanId()
+    }
 }

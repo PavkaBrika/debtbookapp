@@ -39,6 +39,14 @@
         android:hint="@string/sum"
         android:inputType="numberDecimal" />
 
+    <EditText
+        android:id="@+id/debtCurrencyEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:hint="@string/currency"
+        />
+
     <Button
         android:id="@+id/setDebtButton"
         android:layout_width="match_parent"

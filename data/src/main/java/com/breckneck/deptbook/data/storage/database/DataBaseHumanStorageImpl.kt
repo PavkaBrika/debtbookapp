@@ -29,4 +29,8 @@ class DataBaseHumanStorageImpl(context: Context) : HumanStorage {
         sharedPreferences.edit().putInt(ZONE_ID, humanid).apply()
     }
 
+    override fun getLastHumanId(): Int {
+        return db.appDao().getLastHumanId()
+    }
+
 }

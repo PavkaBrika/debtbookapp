@@ -12,6 +12,9 @@ interface AppDao {
     @Query("SELECT * FROM human")
     fun getAllHuman(): List<Human>
 
+    @Query("SELECT id FROM human ORDER BY id DESC LIMIT 1")
+    fun getLastHumanId() : Int
+
     @Insert
     fun insertHuman(human: Human)
 

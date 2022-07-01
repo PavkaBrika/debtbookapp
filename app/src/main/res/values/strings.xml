@@ -3,4 +3,5 @@
     <string name="name">Name</string>
     <string name="sum">Sum</string>
     <string name="set">Set</string>
+    <string name="currency">Currency</string>
 </resources>

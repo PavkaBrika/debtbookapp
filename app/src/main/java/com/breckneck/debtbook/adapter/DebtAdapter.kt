@@ -18,7 +18,7 @@ class DebtAdapter(val context: Context, private val debtDomainList: List<DebtDom
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DebtViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.human_list, parent, false)
+        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.debt_list, parent, false)
         return  DebtViewHolder(itemView)
     }
 
