@@ -67,13 +67,13 @@ class MainFragment : Fragment() {
 //            }
 
         Single.just("1")
-            .map { var humanList = getAllHumansUseCase.execute()
+            .map { val humanList = getAllHumansUseCase.execute()
                 return@map humanList
             }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                val adapter = HumanAdapter(view.context, it)
+                val adapter = HumanAdapter(view.context, it, humanClickListener)
                 recyclerView.adapter = adapter
                 Log.e("TAG", "Humans load success")
             }, {
