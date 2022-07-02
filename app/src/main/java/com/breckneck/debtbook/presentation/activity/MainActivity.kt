@@ -22,7 +22,9 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
 
     override fun changeMainFragment(Fragment: String, idHuman: Int) {
         val fragmentManager = supportFragmentManager
-        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction().setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
+        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
+//            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+            .setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
         if (Fragment == "NewDebtFragment")
             fragmentTransaction.replace(R.id.frameLayout, NewDebtFragment()).addToBackStack(null).commit()
         else if (Fragment == "DebtDetailsFragment") {
