@@ -13,20 +13,22 @@
             android:id="@+id/name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+
             android:layout_weight="1"
-            android:text="NAME"
-            android:textSize="30sp"
-            android:layout_margin="8dp" />
+            android:text="name"
+            android:textSize="30sp" />
 
         <TextView
             android:id="@+id/debt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="8dp"
             android:layout_weight="1"
             android:text="1000"
-            android:textSize="30sp"
-            android:layout_margin="8dp"
-            android:textAlignment="textEnd" />
+            android:fontFamily="@font/roboto_light"
+            android:textAlignment="textEnd"
+            android:textSize="30sp" />
 
     </LinearLayout>
 
