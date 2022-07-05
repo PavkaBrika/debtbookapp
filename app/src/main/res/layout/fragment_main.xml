@@ -4,24 +4,69 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#FFFFFF">
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/namesRecyclerView"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/addHumanButton"
-        android:layout_alignParentTop="true"
-        android:background="?android:selectableItemBackground"
-        android:clickable="true"
-        android:focusable="true"
-        android:scrollbars="vertical"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+        android:layout_height="match_parent">
 
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/app_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true">
+
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:layout_width="match_parent"
+                android:layout_height="125dp"
+                android:background="@color/white"
+                android:fitsSystemWindows="true"
+                app:titleEnabled="true"
+                app:title="@string/app_name"
+                app:titleCollapseMode="scale"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+                <androidx.appcompat.widget.Toolbar
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:fitsSystemWindows="true"/>
+
+
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+<!--        <RelativeLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_gravity=""-->
+<!--            app:layout_behavior="@string/appbar_scrolling_view_behavior">-->
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/namesRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="?attr/actionBarSize"
+            android:background="?android:selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:scrollbars="vertical"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+
+<!--    </RelativeLayout>-->
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
     <Button
         android:id="@+id/addHumanButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="add"
         android:layout_alignParentBottom="true" />
-
 </RelativeLayout>
