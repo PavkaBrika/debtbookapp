@@ -73,11 +73,14 @@ class NewDebtFragment: Fragment() {
         }
 
         val stickySwitch: StickySwitch = view.findViewById(R.id.sticky_switch)
-//        stickySwitch.onSelectedChangeListener = object : StickySwitch.OnSelectedChangeListener{
-//            override fun onSelectedChange(direction: StickySwitch.Direction, text: String) {
-//                TODO("Not yet implemented")
-//            }
-//        }
+        stickySwitch.onSelectedChangeListener = object : StickySwitch.OnSelectedChangeListener{
+            override fun onSelectedChange(direction: StickySwitch.Direction, text: String) {
+                if (direction == StickySwitch.Direction.LEFT)
+                    stickySwitch.switchColor = 0xFF00E676.toInt()
+                else
+                    stickySwitch.switchColor = 0xFFFF3D00.toInt()
+            }
+        }
 
         val humanNameEditText: EditText = view.findViewById(R.id.humanNameEditText)
         val debtSumEditText : EditText = view.findViewById(R.id.debtSumEditText)

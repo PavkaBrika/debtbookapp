@@ -1,5 +1,6 @@
 package com.breckneck.debtbook.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +20,8 @@ class HumanAdapter(private val humanDomainList: List<HumanDomain>, val humanClic
     class HumanViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val name: TextView = itemView.findViewById(R.id.name)
         val debt: TextView = itemView.findViewById(R.id.debt)
+        val greenColor = itemView.resources.getColor(R.color.green)
+        val redColor = itemView.resources.getColor(R.color.red)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HumanViewHolder {
@@ -26,9 +29,14 @@ class HumanAdapter(private val humanDomainList: List<HumanDomain>, val humanClic
         return  HumanViewHolder(itemView)
     }
 
+    @SuppressLint("ResourceAsColor")
     override fun onBindViewHolder(holder: HumanViewHolder, position: Int) {
         val humanDomain = humanDomainList[position]
         holder.name.text = humanDomain.name
+        if (humanDomain.sumDebt > 0)
+            holder.debt.setTextColor(holder.greenColor)
+        else
+            holder.debt.setTextColor(holder.redColor)
         holder.debt.text = humanDomain.sumDebt.toString()
         holder.itemView.setOnClickListener{
             humanClickListener.onHumanClick(humanDomain = humanDomain, position = position)

@@ -16,6 +16,8 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+
+
         val fragmentManager = supportFragmentManager
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.frameLayout, MainFragment()).commit()
