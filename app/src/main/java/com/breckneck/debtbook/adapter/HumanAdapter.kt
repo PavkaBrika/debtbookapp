@@ -33,11 +33,16 @@ class HumanAdapter(private val humanDomainList: List<HumanDomain>, val humanClic
     override fun onBindViewHolder(holder: HumanViewHolder, position: Int) {
         val humanDomain = humanDomainList[position]
         holder.name.text = humanDomain.name
-        if (humanDomain.sumDebt > 0)
+        val debtText = humanDomain.sumDebt.toString()
+        if (humanDomain.sumDebt > 0) {
             holder.debt.setTextColor(holder.greenColor)
-        else
+            holder.debt.text = "+$debtText"
+        } else {
             holder.debt.setTextColor(holder.redColor)
-        holder.debt.text = humanDomain.sumDebt.toString()
+            holder.debt.text = debtText
+        }
+
+
         holder.itemView.setOnClickListener{
             humanClickListener.onHumanClick(humanDomain = humanDomain, position = position)
         }
