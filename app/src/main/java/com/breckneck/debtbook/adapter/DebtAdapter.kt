@@ -22,6 +22,8 @@ class DebtAdapter(private val debtDomainList: List<DebtDomain>, val debtClickLis
         val info: TextView = itemView.findViewById(R.id.infoTextView)
         val currency: TextView = itemView.findViewById(R.id.currencyTextVew)
         val infoLayout: LinearLayout = itemView.findViewById(R.id.infoLayout)
+        val greenColor = itemView.resources.getColor(R.color.green)
+        val redColor = itemView.resources.getColor(R.color.red)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DebtViewHolder {
@@ -31,6 +33,13 @@ class DebtAdapter(private val debtDomainList: List<DebtDomain>, val debtClickLis
 
     override fun onBindViewHolder(holder: DebtViewHolder, position: Int) {
         val debtDomain = debtDomainList[position]
+        if (debtDomain.sum > 0) {
+            holder.debt.setTextColor(holder.greenColor)
+            holder.currency.setTextColor(holder.greenColor)
+        } else {
+            holder.debt.setTextColor(holder.redColor)
+            holder.currency.setTextColor(holder.redColor)
+        }
         holder.debt.text = debtDomain.sum.toString()
         holder.date.text = debtDomain.date
         holder.info.text = debtDomain.info
