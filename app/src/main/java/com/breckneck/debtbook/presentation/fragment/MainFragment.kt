@@ -1,6 +1,7 @@
 package com.breckneck.debtbook.presentation.fragment
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,6 +17,7 @@ import com.breckneck.deptbook.data.storage.database.DataBaseHumanStorageImpl
 import com.breckneck.deptbook.data.storage.repository.HumanRepositoryImpl
 import com.breckneck.deptbook.domain.model.HumanDomain
 import com.breckneck.deptbook.domain.usecase.Human.GetAllHumansUseCase
+import com.google.android.material.appbar.CollapsingToolbarLayout
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -35,6 +37,9 @@ class MainFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_main, container, false)
+
+//        val bigTitle: CollapsingToolbarLayout = view.findViewById(R.id.collapsing)
+//        bigTitle.setTitle("Your Title")
 
         val dataBaseHumanStorage by lazy { DataBaseHumanStorageImpl(context = view.context) }
         val humanRepository by lazy { HumanRepositoryImpl(humanStorage = dataBaseHumanStorage) }
