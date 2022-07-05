@@ -15,6 +15,9 @@ interface AppDao {
     @Query("SELECT id FROM human ORDER BY id DESC LIMIT 1")
     fun getLastHumanId() : Int
 
+    @Query("UPDATE human SET sumDebt = sumDebt + :sum WHERE id = :humanId")
+    fun addSum(humanId: Int, sum: Double)
+
     @Insert
     fun insertHuman(human: Human)
 

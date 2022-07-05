@@ -1,46 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:background="?android:attr/selectableItemBackground">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1" >
+        android:layout_weight="1"
+        android:orientation="vertical" >
 
-        <TextView
-            android:id="@+id/debtTextView"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:fontFamily="sans-serif"
-            android:text="debt"
-            android:textSize="30sp" />
+            android:layout_weight="1" >
 
-        <TextView
-            android:id="@+id/currencyTextVew"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="cur"
-            android:textSize="30sp"
-            android:layout_margin="8dp" />
+            <TextView
+                android:id="@+id/debtTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:fontFamily="sans-serif"
+                android:text="debt"
+                android:textSize="25sp" />
 
+            <TextView
+                android:id="@+id/currencyTextVew"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="cur"
+                android:textSize="25sp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="8dp"/>
+        </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/infoLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/infoTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="info"
+                    android:textSize="25sp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginBottom="8dp"/>
+
+        </LinearLayout>
     </LinearLayout>
 
 
 
-
-    <TextView
-        android:id="@+id/dateTextView"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        android:orientation="horizontal"
         android:layout_weight="1"
-        android:fontFamily="sans-serif"
-        android:text="date"
-        android:textSize="30sp"
-        android:textAlignment="textEnd" />
+        android:layout_gravity="center"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp">
+
+        <TextView
+            android:id="@+id/dateTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:text="date"
+            android:textSize="25sp"
+            android:textAlignment="viewEnd"/>
+
+    </LinearLayout>
+
 
 </LinearLayout>

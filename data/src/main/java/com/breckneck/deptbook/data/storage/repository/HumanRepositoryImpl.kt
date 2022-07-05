@@ -22,4 +22,8 @@ class HumanRepositoryImpl(private val humanStorage: HumanStorage) : HumanReposit
     override fun getLastHumanId() : Int {
         return humanStorage.getLastHumanId()
     }
+
+    override fun addSum(humanId: Int,sum: Double) {
+        humanStorage.addSum(humanId = humanId, sum = sum)
+    }
 }

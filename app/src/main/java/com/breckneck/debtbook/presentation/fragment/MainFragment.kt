@@ -23,7 +23,8 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 class MainFragment : Fragment() {
 
     interface OnButtonClickListener{
-        fun changeMainFragment(Fragment: String, idHuman: Int)
+        fun OnHumanClick(idHuman: Int)
+        fun OnAddButtonClick()
     }
 
     var buttonClickListener: OnButtonClickListener? = null
@@ -44,13 +45,13 @@ class MainFragment : Fragment() {
 
         val addButton: Button = view.findViewById(R.id.addHumanButton)
         addButton.setOnClickListener{
-            buttonClickListener?.changeMainFragment(Fragment = "NewDebtFragment", idHuman = 0)
+            buttonClickListener?.OnAddButtonClick()
         }
 
         val humanClickListener = object: HumanAdapter.OnHumanClickListener {
             override fun onHumanClick(humanDomain: HumanDomain, position: Int) {
-                buttonClickListener?.changeMainFragment(Fragment = "DebtDetailsFragment", idHuman = humanDomain.id)
-                Log.e("TAG", "Click on human")
+                buttonClickListener?.OnHumanClick(idHuman = humanDomain.id)
+                Log.e("TAG", "Click on human with id = ${humanDomain.id}")
             }
         }
 
@@ -61,7 +62,7 @@ class MainFragment : Fragment() {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                val adapter = HumanAdapter(view.context, it, humanClickListener)
+                val adapter = HumanAdapter(it, humanClickListener)
                 recyclerView.adapter = adapter
                 Log.e("TAG", "Humans load success")
             }, {
