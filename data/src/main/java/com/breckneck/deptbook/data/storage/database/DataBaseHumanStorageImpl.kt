@@ -33,4 +33,8 @@ class DataBaseHumanStorageImpl(context: Context) : HumanStorage {
         return db.appDao().getLastHumanId()
     }
 
+    override fun addSum(humanId: Int, sum: Double) {
+        db.appDao().addSum(humanId = humanId, sum = sum)
+    }
+
 }

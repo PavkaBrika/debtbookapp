@@ -9,4 +9,6 @@ interface HumanStorage  {
     fun insertHuman(human: Human)
 
     fun getLastHumanId() : Int
+
+    fun addSum(humanId: Int,sum: Double)
 }

@@ -6,7 +6,7 @@ import com.breckneck.deptbook.data.storage.entity.Debt
 import com.breckneck.deptbook.data.storage.entity.Human
 
 
-@Database (entities = [Human::class, Debt::class], version = 3)
+@Database (entities = [Human::class, Debt::class], version = 4)
 abstract class AppDataBase: RoomDatabase() {
     abstract fun appDao() : AppDao
 }
