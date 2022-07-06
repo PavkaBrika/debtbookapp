@@ -87,7 +87,7 @@ class MainFragment : Fragment() {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                if (it == "0.0") {
+                if (it == "") {
                     overallPositiveSumTextView.visibility = View.GONE
                 } else {
                     overallPositiveSumTextView.visibility = View.VISIBLE
@@ -101,8 +101,8 @@ class MainFragment : Fragment() {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                if (it == "0.0") {
-                    overallNegativeSumTextView.visibility = View.GONE
+                if (it == "") {
+                    overallNegativeSumTextView.textSize = 0F
                 } else {
                     overallNegativeSumTextView.visibility = View.VISIBLE
                     overallNegativeSumTextView.text = it

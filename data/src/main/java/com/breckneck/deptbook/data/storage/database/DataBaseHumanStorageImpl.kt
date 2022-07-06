@@ -37,8 +37,8 @@ class DataBaseHumanStorageImpl(context: Context) : HumanStorage {
         db.appDao().addSum(humanId = humanId, sum = sum)
     }
 
-    override fun getAllDebtsSum(): List<Double> {
-        return db.appDao().getAllDebtsSum()
+    override fun getAllDebtsSum(currency: String): List<Double> {
+        return db.appDao().getAllDebtsSum(currency)
     }
 
 
