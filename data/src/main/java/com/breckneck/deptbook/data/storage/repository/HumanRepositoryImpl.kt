@@ -10,13 +10,13 @@ class HumanRepositoryImpl(private val humanStorage: HumanStorage) : HumanReposit
     override fun getAllHumans(): List<HumanDomain> {
         val humanList: List<Human> = humanStorage.getAllHumans()
         val humanDomainList : List<HumanDomain> = humanList.map {
-            HumanDomain(id = it.id, name = it.name, sumDebt = it.sumDebt)
+            HumanDomain(id = it.id, name = it.name, sumDebt = it.sumDebt, currency = it.currency)
         }
         return humanDomainList
     }
 
     override fun insertHuman(humanDomain: HumanDomain) {
-        humanStorage.insertHuman(Human(id = humanDomain.id, name = humanDomain.name, sumDebt = humanDomain.sumDebt))
+        humanStorage.insertHuman(Human(id = humanDomain.id, name = humanDomain.name, sumDebt = humanDomain.sumDebt, currency = humanDomain.currency))
     }
 
     override fun getLastHumanId() : Int {
@@ -26,4 +26,9 @@ class HumanRepositoryImpl(private val humanStorage: HumanStorage) : HumanReposit
     override fun addSum(humanId: Int,sum: Double) {
         humanStorage.addSum(humanId = humanId, sum = sum)
     }
+
+    override fun getAllDebtsSum(): List<Double> {
+        return humanStorage.getAllDebtsSum()
+    }
+
 }

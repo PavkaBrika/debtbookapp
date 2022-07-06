@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/addDebtButton"
         android:layout_alignParentTop="true"
-        android:background="?android:selectableItemBackground"
+        android:background="@color/white"
         android:clickable="true"
         android:focusable="true"
         android:scrollbars="vertical"
