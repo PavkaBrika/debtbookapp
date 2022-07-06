@@ -18,8 +18,8 @@ interface AppDao {
     @Query("UPDATE human SET sumDebt = sumDebt + :sum WHERE id = :humanId")
     fun addSum(humanId: Int, sum: Double)
 
-    @Query("SELECT sumDebt from human")
-    fun getAllDebtsSum(): List<Double>
+    @Query("SELECT sumDebt from human WHERE currency = :currency")
+    fun getAllDebtsSum(currency: String): List<Double>
 
     @Insert
     fun insertHuman(human: Human)

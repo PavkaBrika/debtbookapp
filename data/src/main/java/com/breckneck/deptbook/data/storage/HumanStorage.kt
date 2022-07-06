@@ -12,5 +12,5 @@ interface HumanStorage  {
 
     fun addSum(humanId: Int,sum: Double)
 
-    fun getAllDebtsSum(): List<Double>
+    fun getAllDebtsSum(currency: String): List<Double>
 }

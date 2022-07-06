@@ -27,8 +27,8 @@ class HumanRepositoryImpl(private val humanStorage: HumanStorage) : HumanReposit
         humanStorage.addSum(humanId = humanId, sum = sum)
     }
 
-    override fun getAllDebtsSum(): List<Double> {
-        return humanStorage.getAllDebtsSum()
+    override fun getAllDebtsSum(currency: String): List<Double> {
+        return humanStorage.getAllDebtsSum(currency)
     }
 
 }
