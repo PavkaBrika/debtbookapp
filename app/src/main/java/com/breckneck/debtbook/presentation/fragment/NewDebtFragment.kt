@@ -27,8 +27,8 @@ import java.util.*
 class NewDebtFragment: Fragment() {
 
     interface OnButtonClickListener{
-        fun DebtDetailsNewHuman()
-        fun DebtDetailsExistHuman(idHuman: Int)
+        fun DebtDetailsNewHuman(currency: String)
+        fun DebtDetailsExistHuman(idHuman: Int, currency: String)
     }
 
     lateinit var buttonClickListener: OnButtonClickListener
@@ -56,11 +56,21 @@ class NewDebtFragment: Fragment() {
         val editDebtUseCase by lazy { EditDebtUseCase(debtRepository = debtRepository) }
         val updateCurrentSumUseCase by lazy { UpdateCurrentSumUseCase() }
 
-        var currency: String = ""
         val idHuman = arguments?.getInt("idHuman", -1)
         val idDebt = arguments?.getInt("idDebt", -1)
+        var currency = arguments?.getString("currency", "")
 
         val currencySpinner: Spinner = view.findViewById(R.id.debtCurrencySpinner)
+        val currencyTextView: TextView = view.findViewById(R.id.debtCurrencyTextView)
+        if (currency != null) {
+            currencyTextView.visibility = View.VISIBLE
+            currencySpinner.visibility = View.GONE
+            currencyTextView.text = currency
+        } else {
+            currencyTextView.visibility = View.GONE
+            currencySpinner.visibility = View.VISIBLE
+        }
+
         val currencyNames = arrayOf(getString(R.string.rub), getString(R.string.usd), getString(R.string.eur))
         val adapter = ArrayAdapter(view.context, android.R.layout.simple_spinner_dropdown_item, currencyNames)
         currencySpinner.adapter = adapter
@@ -117,18 +127,18 @@ class NewDebtFragment: Fragment() {
                 if ((!checkEditTextIsEmpty.execute(name)) && (!checkEditTextIsEmpty.execute(sum))) { //user check if user is not bad
                     Single.just(name)
                         .map {
-                            setHumanUseCase.execute(name = name, sumDebt = sum.toDouble())
+                            setHumanUseCase.execute(name = name, sumDebt = sum.toDouble(), currency = currency!!)
                             val lastId = getLastHumanIdUseCase.exectute()
                             if (checkEditTextIsEmpty.execute(info))
-                                setDebtUseCase.execute(sum = sum.toDouble(), currency = currency, idHuman = lastId, info = null, date = date)
+                                setDebtUseCase.execute(sum = sum.toDouble(), idHuman = lastId, info = null, date = date)
                             else
-                                setDebtUseCase.execute(sum = sum.toDouble(), currency = currency, idHuman = lastId, info = info, date = date)
+                                setDebtUseCase.execute(sum = sum.toDouble(), idHuman = lastId, info = info, date = date)
                             Log.e("TAG", "Human id = $lastId set success")
                         }
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({
-                            buttonClickListener.DebtDetailsNewHuman()
+                            buttonClickListener.DebtDetailsNewHuman(currency = currency!!)
                         }, {
 
                         })
@@ -140,16 +150,16 @@ class NewDebtFragment: Fragment() {
                     Single.just(sum)
                         .map {
                             if (checkEditTextIsEmpty.execute(info))
-                                setDebtUseCase.execute(sum = sum.toDouble(), currency = currency, idHuman = idHuman, info = null, date = date)
+                                setDebtUseCase.execute(sum = sum.toDouble(), idHuman = idHuman, info = null, date = date)
                             else
-                                setDebtUseCase.execute(sum = sum.toDouble(), currency = currency, idHuman = idHuman, info = info, date = date)
+                                setDebtUseCase.execute(sum = sum.toDouble(), idHuman = idHuman, info = info, date = date)
                             addSumUseCase.execute(humanId = idHuman, sum = sum.toDouble())
                             Log.e("TAG", "New Debt in humanid = $idHuman set success")
                         }
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({
-                            buttonClickListener.DebtDetailsExistHuman(idHuman = idHuman)
+                            buttonClickListener.DebtDetailsExistHuman(idHuman = idHuman, currency = currency!!)
                         }, {
 
                         })
@@ -163,16 +173,16 @@ class NewDebtFragment: Fragment() {
                             val pastSum = arguments?.getDouble("sum")
                             val currentSum = updateCurrentSumUseCase.execute(sum.toDouble(), pastSum!!)
                             if (checkEditTextIsEmpty.execute(info))
-                                editDebtUseCase.execute(id = idDebt,sum = sum.toDouble(), currency = currency, idHuman = idHuman, info = null, date = date)
+                                editDebtUseCase.execute(id = idDebt,sum = sum.toDouble(), idHuman = idHuman, info = null, date = date)
                             else
-                                editDebtUseCase.execute(id = idDebt ,sum = sum.toDouble(), currency = currency, idHuman = idHuman, info = info, date = date)
+                                editDebtUseCase.execute(id = idDebt ,sum = sum.toDouble(), idHuman = idHuman, info = info, date = date)
                             addSumUseCase.execute(humanId = idHuman, sum = currentSum)
                             Log.e("TAG", "New Debt in humanid = $idHuman set success")
                         }
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({
-                            buttonClickListener.DebtDetailsExistHuman(idHuman = idHuman)
+                            buttonClickListener.DebtDetailsExistHuman(idHuman = idHuman, currency = currency!!)
                         }, {
 
                         })

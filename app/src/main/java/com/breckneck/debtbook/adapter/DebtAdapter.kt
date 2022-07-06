@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.deptbook.domain.model.DebtDomain
 
-class DebtAdapter(private val debtDomainList: List<DebtDomain>, val debtClickListener: OnDebtClickListener): RecyclerView.Adapter<DebtAdapter.DebtViewHolder>() {
+class DebtAdapter(private val debtDomainList: List<DebtDomain>, private val debtClickListener: OnDebtClickListener, private val currencyText: String): RecyclerView.Adapter<DebtAdapter.DebtViewHolder>() {
 
     interface OnDebtClickListener {
         fun onDebtClick(debtDomain: DebtDomain, position: Int)
@@ -45,7 +45,7 @@ class DebtAdapter(private val debtDomainList: List<DebtDomain>, val debtClickLis
         }
         holder.date.text = debtDomain.date
         holder.info.text = debtDomain.info
-        holder.currency.text = debtDomain.currency
+        holder.currency.text = currencyText
         if (holder.info.text.equals("")) {
             holder.infoLayout.visibility = View.GONE
         }

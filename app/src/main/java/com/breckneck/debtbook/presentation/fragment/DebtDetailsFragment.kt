@@ -32,7 +32,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 class DebtDetailsFragment: Fragment() {
 
     interface OnButtonClickListener{
-        fun addNewDebtFragment(idHuman: Int)
+        fun addNewDebtFragment(idHuman: Int, currency: String)
 
         fun editDebt(debtDomain: DebtDomain)
     }
@@ -74,8 +74,8 @@ class DebtDetailsFragment: Fragment() {
         recyclerView.addItemDecoration(DividerItemDecoration(view.context, DividerItemDecoration.VERTICAL))
 
         var idHuman = arguments?.getInt("idHuman", 0)
-
         val newHuman = arguments?.getBoolean("newHuman", false)
+        val currency = arguments?.getString("currency")
 
         val actions = arrayOf(getString(R.string.deletedebt), getString(R.string.editdebt))
         debtClickListener = object : DebtAdapter.OnDebtClickListener{ //ALERT DIALOG
@@ -93,7 +93,7 @@ class DebtDetailsFragment: Fragment() {
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe({
-                                val adapter = DebtAdapter(it, debtClickListener)
+                                val adapter = DebtAdapter(it, debtClickListener, currency!!)
                                 recyclerView.adapter = adapter
                                 Log.e("TAG", "Debts load success")
                             },{})
@@ -117,7 +117,7 @@ class DebtDetailsFragment: Fragment() {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                val adapter = DebtAdapter(it, debtClickListener)
+                val adapter = DebtAdapter(it, debtClickListener, currency!!)
                 recyclerView.adapter = adapter
                 Log.e("TAG", "Debts load success")
             }, {
@@ -127,7 +127,7 @@ class DebtDetailsFragment: Fragment() {
         val addDebtButton: Button = view.findViewById(R.id.addDebtButton)
         addDebtButton.setOnClickListener{
             if (idHuman != null) {
-                buttonClickListener?.addNewDebtFragment(idHuman = idHuman!!)
+                buttonClickListener?.addNewDebtFragment(idHuman = idHuman!!, currency = currency!!)
             }
         }
 

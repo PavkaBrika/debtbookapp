@@ -9,5 +9,6 @@ data class Human(
     @PrimaryKey
     var id: Int,
     var name: String,
-    var sumDebt: Double) {
+    var sumDebt: Double,
+    var currency: String) {
 }

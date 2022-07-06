@@ -19,10 +19,48 @@
                 android:layout_height="125dp"
                 android:background="@color/white"
                 android:fitsSystemWindows="true"
+                app:contentScrim="@color/white"
                 app:titleEnabled="true"
                 app:title="@string/app_name"
                 app:titleCollapseMode="scale"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed">
+                app:expandedTitleGravity="bottom"
+                app:layout_scrollFlags="scroll">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="end"
+                    android:orientation="vertical"
+                    android:layout_margin="24dp">
+
+                    <TextView
+                        android:id="@+id/overallPositiveSumTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="HELLO"
+                        android:layout_weight="1"
+                        android:textColor="@color/green"
+                        android:textSize="30sp"
+                        android:gravity="bottom"
+                        android:layout_gravity="end" />
+
+                    <TextView
+                        android:id="@+id/overallNegativeSumTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:textColor="@color/red"
+                        android:text="HELLO"
+                        android:layout_weight="1"
+                        android:textSize="30sp"
+                        android:gravity="bottom"
+                        android:layout_gravity="end"
+                        />
+
+                </LinearLayout>
+
+
+
+
 
                 <androidx.appcompat.widget.Toolbar
                     android:layout_width="match_parent"
@@ -38,7 +76,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/gray"
+            android:background="@color/lightgray"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
 <!--        <RelativeLayout-->
@@ -52,7 +90,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="?attr/actionBarSize"
-            android:background="?android:selectableItemBackground"
+            android:background="@color/white"
             android:clickable="true"
             android:focusable="true"
             android:scrollbars="vertical"

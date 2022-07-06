@@ -5,7 +5,7 @@ import com.breckneck.deptbook.domain.repository.DebtRepository
 
 class EditDebtUseCase(val debtRepository: DebtRepository) {
 
-    fun execute(id: Int, sum: Double, currency: String, idHuman: Int, info: String?, date: String) {
-        debtRepository.editDebt(DebtDomain(id, sum, currency, idHuman, info, date))
+    fun execute(id: Int, sum: Double, idHuman: Int, info: String?, date: String) {
+        debtRepository.editDebt(DebtDomain(id, sum, idHuman, info, date))
     }
 }

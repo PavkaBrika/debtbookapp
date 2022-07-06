@@ -77,7 +77,18 @@
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:layout_marginTop="8dp"
-            android:textAlignment="center"/>
+            android:textAlignment="center" />
+
+        <TextView
+            android:id="@+id/debtCurrencyTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="CUR"
+            android:textSize="28sp"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:visibility="gone"/>
 
     </LinearLayout>
 

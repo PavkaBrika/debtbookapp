@@ -23,11 +23,12 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         fragmentTransaction.replace(R.id.frameLayout, MainFragment()).commit()
     }
 //MainFragment interfaces
-    override fun OnHumanClick(idHuman: Int) {
+    override fun OnHumanClick(idHuman: Int, currency: String) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction().setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
         val args = Bundle()
         args.putInt("idHuman", idHuman)
+        args.putString("currency", currency)
         val fragment = DebtDetailsFragment()
         fragment.arguments = args
         fragmentTransaction.replace(R.id.frameLayout, fragment).addToBackStack("main").commit()
@@ -41,33 +42,36 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         fragmentTransaction.replace(R.id.frameLayout, NewDebtFragment()).addToBackStack("main").commit()
     }
 //NewDebtFragment interfaces
-    override fun DebtDetailsNewHuman() {
+    override fun DebtDetailsNewHuman(currency: String) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction().setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
         supportFragmentManager.popBackStack("secondary",  POP_BACK_STACK_INCLUSIVE)
         val args = Bundle()
         args.putBoolean("newHuman", true)
+        args.putString("currency", currency)
         val fragment = DebtDetailsFragment()
         fragment.arguments = args
         fragmentTransaction.replace(R.id.frameLayout, fragment).commit()
     }
 
-    override fun DebtDetailsExistHuman(idHuman: Int) {
+    override fun DebtDetailsExistHuman(idHuman: Int, currency: String) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction().setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
         supportFragmentManager.popBackStack("secondary",  POP_BACK_STACK_INCLUSIVE)
         val args = Bundle()
         args.putInt("idHuman", idHuman)
+        args.putString("currency", currency)
         val fragment = DebtDetailsFragment()
         fragment.arguments = args
         fragmentTransaction.replace(R.id.frameLayout, fragment).commit()
     }
 //DebtDetailsFragment interfaces
-    override fun addNewDebtFragment(idHuman: Int) {
+    override fun addNewDebtFragment(idHuman: Int, currency: String) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction().setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
         val args = Bundle()
         args.putInt("idHuman", idHuman)
+        args.putString("currency", currency)
         val fragment = NewDebtFragment()
         fragment.arguments = args
         fragmentTransaction.replace(R.id.frameLayout, fragment).addToBackStack("secondary").commit()
