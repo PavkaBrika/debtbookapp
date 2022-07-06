@@ -4,11 +4,13 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
+import android.transition.TransitionInflater
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -33,7 +35,6 @@ class DebtDetailsFragment: Fragment() {
 
     interface OnButtonClickListener{
         fun addNewDebtFragment(idHuman: Int)
-
         fun editDebt(debtDomain: DebtDomain)
     }
 
@@ -59,6 +60,16 @@ class DebtDetailsFragment: Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_debt_details, container, false)
+
+        sharedElementEnterTransition = TransitionInflater.from(requireContext())
+            .inflateTransition(R.transition.shared_name)
+
+
+        //
+        val text: TextView = view.findViewById(R.id.text)
+        val name = arguments?.getString("trans")
+        text.text = name
+        //
 
         dataBaseHumanStorage = DataBaseHumanStorageImpl(context = view.context)
         humanRepository = HumanRepositoryImpl(humanStorage = dataBaseHumanStorage)

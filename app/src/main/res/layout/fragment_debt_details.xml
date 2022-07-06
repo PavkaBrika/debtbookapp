@@ -5,12 +5,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#FFFFFF">
 
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TEXT"
+        android:textSize="40sp"
+        android:layout_margin="8dp" />
+
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/debtsRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/addDebtButton"
-        android:layout_alignParentTop="true"
+        android:layout_below="@id/text"
         android:background="?android:selectableItemBackground"
         android:clickable="true"
         android:focusable="true"

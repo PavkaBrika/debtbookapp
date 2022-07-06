@@ -1,6 +1,7 @@
 package com.breckneck.debtbook.presentation.activity
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
 import androidx.fragment.app.FragmentTransaction
@@ -23,11 +24,13 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         fragmentTransaction.replace(R.id.frameLayout, MainFragment()).commit()
     }
 //MainFragment interfaces
-    override fun OnHumanClick(idHuman: Int) {
+    override fun OnHumanClick(idHuman: Int, sharedView: View, sharedName: String) {
         val fragmentManager = supportFragmentManager
-        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction().setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
+        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction().addSharedElement(sharedView, sharedName)
+//        setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
         val args = Bundle()
         args.putInt("idHuman", idHuman)
+        args.putString("trans", sharedName)
         val fragment = DebtDetailsFragment()
         fragment.arguments = args
         fragmentTransaction.replace(R.id.frameLayout, fragment).addToBackStack("main").commit()

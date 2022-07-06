@@ -62,4 +62,5 @@ dependencies {
     //Custom toggle button
     implementation 'com.github.GwonHyeok:StickySwitch:0.0.16'
 
+
 }

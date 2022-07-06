@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.deptbook.domain.model.HumanDomain
@@ -13,7 +14,7 @@ import com.breckneck.deptbook.domain.model.HumanDomain
 class HumanAdapter(private val humanDomainList: List<HumanDomain>, val humanClickListener: OnHumanClickListener): RecyclerView.Adapter<HumanAdapter.HumanViewHolder>() {
 
     interface OnHumanClickListener{
-        fun onHumanClick(humanDomain: HumanDomain, position: Int)
+        fun onHumanClick(humanDomain: HumanDomain, position: Int, name: TextView)
     }
 
 
@@ -41,10 +42,9 @@ class HumanAdapter(private val humanDomainList: List<HumanDomain>, val humanClic
             holder.debt.setTextColor(holder.redColor)
             holder.debt.text = debtText
         }
-
-
+        ViewCompat.setTransitionName(holder.name, "$position")
         holder.itemView.setOnClickListener{
-            humanClickListener.onHumanClick(humanDomain = humanDomain, position = position)
+            humanClickListener.onHumanClick(humanDomain = humanDomain, position = position, name = holder.name)
         }
     }
 
