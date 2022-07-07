@@ -9,11 +9,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.deptbook.domain.model.DebtDomain
 import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
 
 class DebtAdapter(private val debtDomainList: List<DebtDomain>, private val debtClickListener: OnDebtClickListener, private val currencyText: String): RecyclerView.Adapter<DebtAdapter.DebtViewHolder>() {
 
-//    var decimalFormat = DecimalFormat("### ### ###.##")
-    var decimalFormat = DecimalFormat("#.##")
+    val decimalFormat = DecimalFormat("###,###,###.##")
+    val customSymbol: DecimalFormatSymbols = DecimalFormatSymbols()
 
     interface OnDebtClickListener {
         fun onDebtClick(debtDomain: DebtDomain, position: Int)
@@ -35,6 +36,8 @@ class DebtAdapter(private val debtDomainList: List<DebtDomain>, private val debt
     }
 
     override fun onBindViewHolder(holder: DebtViewHolder, position: Int) {
+        customSymbol.groupingSeparator = ' '
+        decimalFormat.decimalFormatSymbols = customSymbol
         val debtDomain = debtDomainList[position]
         if (debtDomain.sum > 0) {
             holder.debt.setTextColor(holder.greenColor)

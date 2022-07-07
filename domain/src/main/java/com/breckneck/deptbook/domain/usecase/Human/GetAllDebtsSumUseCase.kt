@@ -2,13 +2,17 @@ package com.breckneck.deptbook.domain.usecase.Human
 
 import com.breckneck.deptbook.domain.repository.HumanRepository
 import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
 import kotlin.math.abs
 
 class GetAllDebtsSumUseCase(val humanRepository: HumanRepository) {
 
-    var decimalFormat = DecimalFormat("#.##")
+    val decimalFormat = DecimalFormat("###,###,###.##")
+    val customSymbol: DecimalFormatSymbols = DecimalFormatSymbols()
 
     fun execute(sign: String): String {
+        customSymbol.groupingSeparator = ' '
+        decimalFormat.decimalFormatSymbols = customSymbol
         val debtsRUB = humanRepository.getAllDebtsSum(currency = "RUB")
         val debtsEUR = humanRepository.getAllDebtsSum(currency = "EUR")
         val debtsUSD = humanRepository.getAllDebtsSum(currency = "USD")
