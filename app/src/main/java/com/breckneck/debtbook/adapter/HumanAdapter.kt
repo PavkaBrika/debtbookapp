@@ -9,8 +9,11 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.deptbook.domain.model.HumanDomain
+import java.text.DecimalFormat
 
 class HumanAdapter(private val humanDomainList: List<HumanDomain>, val humanClickListener: OnHumanClickListener): RecyclerView.Adapter<HumanAdapter.HumanViewHolder>() {
+
+    var decimalFormat = DecimalFormat("#.##")
 
     interface OnHumanClickListener{
         fun onHumanClick(humanDomain: HumanDomain, position: Int)
@@ -20,6 +23,7 @@ class HumanAdapter(private val humanDomainList: List<HumanDomain>, val humanClic
     class HumanViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val name: TextView = itemView.findViewById(R.id.name)
         val debt: TextView = itemView.findViewById(R.id.debt)
+        val currency: TextView = itemView.findViewById(R.id.currency)
         val greenColor = itemView.resources.getColor(R.color.green)
         val redColor = itemView.resources.getColor(R.color.red)
     }
@@ -33,13 +37,15 @@ class HumanAdapter(private val humanDomainList: List<HumanDomain>, val humanClic
     override fun onBindViewHolder(holder: HumanViewHolder, position: Int) {
         val humanDomain = humanDomainList[position]
         holder.name.text = humanDomain.name
-        val debtText = humanDomain.sumDebt.toString()
+        holder.currency.text = humanDomain.currency
         if (humanDomain.sumDebt > 0) {
             holder.debt.setTextColor(holder.greenColor)
-            holder.debt.text = "+$debtText"
+            holder.currency.setTextColor(holder.greenColor)
+            holder.debt.text = "+${decimalFormat.format(humanDomain.sumDebt)}"
         } else {
             holder.debt.setTextColor(holder.redColor)
-            holder.debt.text = debtText
+            holder.currency.setTextColor(holder.redColor)
+            holder.debt.text = decimalFormat.format(humanDomain.sumDebt)
         }
 
 

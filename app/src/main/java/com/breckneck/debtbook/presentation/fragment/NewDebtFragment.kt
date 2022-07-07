@@ -3,11 +3,14 @@ package com.breckneck.debtbook.presentation.fragment
 import android.app.DatePickerDialog
 import android.content.Context
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import com.breckneck.debtbook.R
 import com.breckneck.deptbook.data.storage.database.DataBaseDebtStorageImpl
@@ -86,14 +89,34 @@ class NewDebtFragment: Fragment() {
         stickySwitch.onSelectedChangeListener = object : StickySwitch.OnSelectedChangeListener{
             override fun onSelectedChange(direction: StickySwitch.Direction, text: String) {
                 if (direction == StickySwitch.Direction.LEFT)
-                    stickySwitch.switchColor = 0xFF00E676.toInt()
+                    stickySwitch.switchColor = 0xFF59CB72.toInt()
                 else
-                    stickySwitch.switchColor = 0xFFFF3D00.toInt()
+                    stickySwitch.switchColor = 0xFFE25D56.toInt()
             }
         }
 
-        val humanNameEditText: EditText = view.findViewById(R.id.humanNameEditText)
         val debtSumEditText : EditText = view.findViewById(R.id.debtSumEditText)
+        debtSumEditText.addTextChangedListener { object: TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun afterTextChanged(editable: Editable?) {
+                val str = editable.toString()
+                val position = str.indexOf(".")
+                if (position != -1) {
+                    val subStr = str.substring(position)
+                    val subStrStart = str.substring(0, position)
+                    if ((subStr.length > 3) || (subStrStart.length == 0)) {
+                        editable?.delete(editable.length - 1, editable.length)
+                    }
+                }
+            }
+        } }
+
+        val humanNameEditText: EditText = view.findViewById(R.id.humanNameEditText)
         val infoEditText: EditText = view.findViewById(R.id.debtInfoEditText)
         val debtDateTextView: TextView = view.findViewById(R.id.debtDateTextView)
 
@@ -125,67 +148,80 @@ class NewDebtFragment: Fragment() {
             val info = infoEditText.text.toString()
             if (idHuman == null) { //if add debt in new human
                 if ((!checkEditTextIsEmpty.execute(name)) && (!checkEditTextIsEmpty.execute(sum))) { //user check if user is not bad
-                    Single.just(name)
-                        .map {
-                            setHumanUseCase.execute(name = name, sumDebt = sum.toDouble(), currency = currency!!)
-                            val lastId = getLastHumanIdUseCase.exectute()
-                            if (checkEditTextIsEmpty.execute(info))
-                                setDebtUseCase.execute(sum = sum.toDouble(), idHuman = lastId, info = null, date = date)
-                            else
-                                setDebtUseCase.execute(sum = sum.toDouble(), idHuman = lastId, info = info, date = date)
-                            Log.e("TAG", "Human id = $lastId set success")
-                        }
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({
-                            buttonClickListener.DebtDetailsNewHuman(currency = currency!!)
-                        }, {
+                    if (sum.toDouble() != 0.0) {
+                        Single.just(name)
+                            .map {
+                                setHumanUseCase.execute(name = name, sumDebt = sum.toDouble(), currency = currency!!)
+                                val lastId = getLastHumanIdUseCase.exectute()
+                                if (checkEditTextIsEmpty.execute(info))
+                                    setDebtUseCase.execute(sum = sum.toDouble(), idHuman = lastId, info = null, date = date)
+                                else
+                                    setDebtUseCase.execute(sum = sum.toDouble(), idHuman = lastId, info = info, date = date)
+                                Log.e("TAG", "Human id = $lastId set success")
+                            }
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe({
+                                buttonClickListener.DebtDetailsNewHuman(currency = currency!!)
+                            }, {
 
-                        })
+                            })
+                    }
+                    else {
+                        Toast.makeText(view.context, R.string.zerodebt, Toast.LENGTH_SHORT).show()
+                    }
                 } else { //user check if user is bad
                     Toast.makeText(view.context, R.string.youmustentername, Toast.LENGTH_SHORT).show()
                 }
             } else if (idDebt == -1) { //if add debt in existing human
                 if (!checkEditTextIsEmpty.execute(sum)) { // user check if user not bad
-                    Single.just(sum)
-                        .map {
-                            if (checkEditTextIsEmpty.execute(info))
-                                setDebtUseCase.execute(sum = sum.toDouble(), idHuman = idHuman, info = null, date = date)
-                            else
-                                setDebtUseCase.execute(sum = sum.toDouble(), idHuman = idHuman, info = info, date = date)
-                            addSumUseCase.execute(humanId = idHuman, sum = sum.toDouble())
-                            Log.e("TAG", "New Debt in humanid = $idHuman set success")
-                        }
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({
-                            buttonClickListener.DebtDetailsExistHuman(idHuman = idHuman, currency = currency!!)
-                        }, {
+                    if (sum.toDouble() != 0.0) {
+                        Single.just(sum)
+                            .map {
+                                if (checkEditTextIsEmpty.execute(info))
+                                    setDebtUseCase.execute(sum = sum.toDouble(), idHuman = idHuman, info = null, date = date)
+                                else
+                                    setDebtUseCase.execute(sum = sum.toDouble(), idHuman = idHuman, info = info, date = date)
+                                addSumUseCase.execute(humanId = idHuman, sum = sum.toDouble())
+                                Log.e("TAG", "New Debt in humanid = $idHuman set success")
+                            }
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe({
+                                buttonClickListener.DebtDetailsExistHuman(idHuman = idHuman, currency = currency!!)
+                            }, {
 
-                        })
+                            })
+                    } else {
+                        Toast.makeText(view.context, R.string.zerodebt, Toast.LENGTH_SHORT).show()
+                    }
                 } else { //if user is bad
                     Toast.makeText(view.context, R.string.youmustentername, Toast.LENGTH_SHORT).show()
                 }
             } else if ((idDebt != null) && (idDebt != -1)) { //if edit debt in existing human
                 if (!checkEditTextIsEmpty.execute(sum)) { // user check if user not bad
-                    Single.just(sum)
-                        .map {
-                            val pastSum = arguments?.getDouble("sum")
-                            val currentSum = updateCurrentSumUseCase.execute(sum.toDouble(), pastSum!!)
-                            if (checkEditTextIsEmpty.execute(info))
-                                editDebtUseCase.execute(id = idDebt,sum = sum.toDouble(), idHuman = idHuman, info = null, date = date)
-                            else
-                                editDebtUseCase.execute(id = idDebt ,sum = sum.toDouble(), idHuman = idHuman, info = info, date = date)
-                            addSumUseCase.execute(humanId = idHuman, sum = currentSum)
-                            Log.e("TAG", "New Debt in humanid = $idHuman set success")
-                        }
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({
-                            buttonClickListener.DebtDetailsExistHuman(idHuman = idHuman, currency = currency!!)
-                        }, {
+                    if (sum.toDouble() != 0.0) {
+                        Single.just(sum)
+                            .map {
+                                val pastSum = arguments?.getDouble("sum")
+                                val currentSum = updateCurrentSumUseCase.execute(sum.toDouble(), pastSum!!)
+                                if (checkEditTextIsEmpty.execute(info))
+                                    editDebtUseCase.execute(id = idDebt,sum = sum.toDouble(), idHuman = idHuman, info = null, date = date)
+                                else
+                                    editDebtUseCase.execute(id = idDebt ,sum = sum.toDouble(), idHuman = idHuman, info = info, date = date)
+                                addSumUseCase.execute(humanId = idHuman, sum = currentSum)
+                                Log.e("TAG", "New Debt in humanid = $idHuman set success")
+                            }
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe({
+                                buttonClickListener.DebtDetailsExistHuman(idHuman = idHuman, currency = currency!!)
+                            }, {
 
-                        })
+                            })
+                        } else {
+                            Toast.makeText(view.context, R.string.zerodebt, Toast.LENGTH_SHORT).show()
+                        }
                     } else { //if user is bad
                     Toast.makeText(view.context, R.string.youmustentername, Toast.LENGTH_SHORT).show()
                 }

@@ -14,4 +14,5 @@
     <string name="editdebt">Edit this debt</string>
     <string name="give">Give</string>
     <string name="take">Take</string>
+    <string name="zerodebt">Debt cannot be zero</string>
 </resources>
