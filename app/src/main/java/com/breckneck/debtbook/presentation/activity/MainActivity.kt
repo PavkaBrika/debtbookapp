@@ -26,6 +26,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
     override fun OnHumanClick(idHuman: Int, currency: String) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
+//            .setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
         val args = Bundle()
         args.putInt("idHuman", idHuman)
         args.putString("currency", currency)
@@ -37,6 +38,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
     override fun OnAddButtonClick() {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
+//            .setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
 ////            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
 
         fragmentTransaction.replace(R.id.frameLayout, NewDebtFragment()).addToBackStack("main").commit()
@@ -45,6 +47,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
     override fun DebtDetailsNewHuman(currency: String) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
+//            .setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
         supportFragmentManager.popBackStack("secondary",  POP_BACK_STACK_INCLUSIVE)
         val args = Bundle()
         args.putBoolean("newHuman", true)
@@ -57,6 +60,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
     override fun DebtDetailsExistHuman(idHuman: Int, currency: String) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
+//            .setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
         supportFragmentManager.popBackStack("secondary",  POP_BACK_STACK_INCLUSIVE)
         val args = Bundle()
         args.putInt("idHuman", idHuman)
@@ -69,6 +73,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
     override fun addNewDebtFragment(idHuman: Int, currency: String) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
+//            .setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
         val args = Bundle()
         args.putInt("idHuman", idHuman)
         args.putString("currency", currency)
@@ -80,6 +85,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
     override fun editDebt(debtDomain: DebtDomain) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
+//            .setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
         val args = Bundle()
         args.putInt("idDebt", debtDomain.id)
         args.putInt("idHuman", debtDomain.idHuman)
