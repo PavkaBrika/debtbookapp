@@ -13,6 +13,10 @@ class CheckEditTextIsEmpty {
                 break
             }
         }
+        if (isEmpty || text == "") {
+            isEmpty = true
+        }
+
         return isEmpty
     }
 }

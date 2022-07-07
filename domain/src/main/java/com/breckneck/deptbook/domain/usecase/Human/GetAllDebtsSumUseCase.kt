@@ -1,9 +1,12 @@
 package com.breckneck.deptbook.domain.usecase.Human
 
 import com.breckneck.deptbook.domain.repository.HumanRepository
+import java.text.DecimalFormat
 import kotlin.math.abs
 
 class GetAllDebtsSumUseCase(val humanRepository: HumanRepository) {
+
+    var decimalFormat = DecimalFormat("#.##")
 
     fun execute(sign: String): String {
         val debtsRUB = humanRepository.getAllDebtsSum(currency = "RUB")
@@ -23,9 +26,9 @@ class GetAllDebtsSumUseCase(val humanRepository: HumanRepository) {
                 }
             }
             if (positiveNumbers != 0.0)
-                positiveText = "+$positiveNumbers RUB"
+                positiveText = "+${decimalFormat.format(positiveNumbers)} RUB"
             if (negativeNumbers != 0.0)
-                negativeText = "-$negativeNumbers RUB"
+                negativeText = "-${decimalFormat.format(negativeNumbers)} RUB"
         }
         positiveNumbers = 0.0
         negativeNumbers = 0.0
@@ -39,9 +42,9 @@ class GetAllDebtsSumUseCase(val humanRepository: HumanRepository) {
                 }
             }
             if (positiveNumbers != 0.0)
-                positiveText = "$positiveText\n+$positiveNumbers USD"
+                positiveText = "$positiveText\n+${decimalFormat.format(positiveNumbers)} USD"
             if (negativeNumbers != 0.0)
-                negativeText = "$negativeText\n-$negativeNumbers USD"
+                negativeText = "$negativeText\n-${decimalFormat.format(negativeNumbers)} USD"
         }
         positiveNumbers = 0.0
         negativeNumbers = 0.0
@@ -55,9 +58,9 @@ class GetAllDebtsSumUseCase(val humanRepository: HumanRepository) {
                 }
             }
             if (positiveNumbers != 0.0)
-                positiveText = "$positiveText\n+$positiveNumbers EUR"
+                positiveText = "$positiveText\n+${decimalFormat.format(positiveNumbers)} EUR"
             if (negativeNumbers != 0.0)
-                negativeText = "$negativeText\n-$negativeNumbers EUR"
+                negativeText = "$negativeText\n-${decimalFormat.format(negativeNumbers)} EUR"
         }
         if (sign == "positive")
             return positiveText
