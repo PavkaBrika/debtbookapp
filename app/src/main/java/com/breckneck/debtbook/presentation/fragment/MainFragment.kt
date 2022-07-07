@@ -3,6 +3,7 @@ package com.breckneck.debtbook.presentation.fragment
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
+import android.transition.TransitionInflater
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -36,6 +37,15 @@ class MainFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         buttonClickListener = context as OnButtonClickListener
+    }
+
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val inflater = TransitionInflater.from(requireContext())
+
+//        exitTransition = inflater.inflateTransition(R.transition.slide_right)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
