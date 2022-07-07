@@ -10,10 +10,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.deptbook.domain.model.HumanDomain
 import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
 
 class HumanAdapter(private val humanDomainList: List<HumanDomain>, val humanClickListener: OnHumanClickListener): RecyclerView.Adapter<HumanAdapter.HumanViewHolder>() {
 
-    var decimalFormat = DecimalFormat("#.##")
+    val decimalFormat = DecimalFormat("###,###,###.##")
+    val customSymbol: DecimalFormatSymbols = DecimalFormatSymbols()
 
     interface OnHumanClickListener{
         fun onHumanClick(humanDomain: HumanDomain, position: Int)
@@ -35,6 +37,8 @@ class HumanAdapter(private val humanDomainList: List<HumanDomain>, val humanClic
 
     @SuppressLint("ResourceAsColor")
     override fun onBindViewHolder(holder: HumanViewHolder, position: Int) {
+        customSymbol.groupingSeparator = ' '
+        decimalFormat.decimalFormatSymbols = customSymbol
         val humanDomain = humanDomainList[position]
         holder.name.text = humanDomain.name
         holder.currency.text = humanDomain.currency
