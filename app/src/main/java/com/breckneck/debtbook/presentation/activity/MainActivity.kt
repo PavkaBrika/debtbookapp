@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         fragmentTransaction.replace(R.id.frameLayout, MainFragment()).commit()
     }
 //MainFragment interfaces
-    override fun OnHumanClick(idHuman: Int, currency: String) {
+    override fun OnHumanClick(idHuman: Int, currency: String, name: String) {
 //        if (currentScene === scene1) {
 //            TransitionManager.go(scene2, transiction)
 //            currentScene = scene2
@@ -54,6 +54,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         val args = Bundle()
         args.putInt("idHuman", idHuman)
         args.putString("currency", currency)
+        args.putString("name", name)
         val fragment = DebtDetailsFragment()
         fragment.arguments = args
         fragmentTransaction.replace(R.id.frameLayout, fragment).addToBackStack("main").commit()

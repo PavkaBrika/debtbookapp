@@ -31,4 +31,8 @@ class HumanRepositoryImpl(private val humanStorage: HumanStorage) : HumanReposit
         return humanStorage.getAllDebtsSum(currency)
     }
 
+    override fun getHumanSumDebt(humanId: Int): Double {
+        return humanStorage.getHumanSumDebtUseCase(humanId = humanId)
+    }
+
 }
