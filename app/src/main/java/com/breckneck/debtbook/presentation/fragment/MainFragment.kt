@@ -29,7 +29,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 class MainFragment : Fragment() {
 
     interface OnButtonClickListener{
-        fun OnHumanClick(idHuman: Int, currency: String)
+        fun OnHumanClick(idHuman: Int, currency: String, name: String)
         fun OnAddButtonClick()
     }
 
@@ -66,7 +66,7 @@ class MainFragment : Fragment() {
 
         val humanClickListener = object: HumanAdapter.OnHumanClickListener {
             override fun onHumanClick(humanDomain: HumanDomain, position: Int) {
-                buttonClickListener?.OnHumanClick(idHuman = humanDomain.id, currency = humanDomain.currency)
+                buttonClickListener?.OnHumanClick(idHuman = humanDomain.id, currency = humanDomain.currency, name = humanDomain.name)
                 Log.e("TAG", "Click on human with id = ${humanDomain.id}")
             }
         }

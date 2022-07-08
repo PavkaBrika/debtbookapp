@@ -21,6 +21,9 @@ interface AppDao {
     @Query("SELECT sumDebt from human WHERE currency = :currency")
     fun getAllDebtsSum(currency: String): List<Double>
 
+    @Query("SELECT sumDebt from human WHERE id = :humanId")
+    fun getHumanSumDebt(humanId: Int): Double
+
     @Insert
     fun insertHuman(human: Human)
 

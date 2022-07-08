@@ -23,6 +23,7 @@
                 app:contentScrim="@color/white"
                 app:titleEnabled="true"
                 app:title="@string/app_name"
+                app:expandedTitleMarginStart="8dp"
                 app:titleCollapseMode="scale"
                 app:expandedTitleGravity="bottom"
                 app:layout_scrollFlags="scroll">
@@ -39,20 +40,20 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_above="@id/overallNegativeSumTextView"
-                        android:text="HELLO"
+                        android:text="+1 000 000 000.00 RUB"
                         android:textAlignment="viewEnd"
                         android:textColor="@color/green"
-                        android:textSize="17sp" />
+                        android:textSize="18sp" />
 
                     <TextView
                         android:id="@+id/overallNegativeSumTextView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_alignParentBottom="true"
-                        android:text="HELLO"
+                        android:text="+1 000 000 000.00 RUB"
                         android:textAlignment="viewEnd"
                         android:textColor="@color/red"
-                        android:textSize="17sp" />
+                        android:textSize="18sp" />
 
                 </RelativeLayout>
 

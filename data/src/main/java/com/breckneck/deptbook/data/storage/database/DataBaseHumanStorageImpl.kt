@@ -41,5 +41,9 @@ class DataBaseHumanStorageImpl(context: Context) : HumanStorage {
         return db.appDao().getAllDebtsSum(currency)
     }
 
+    override fun getHumanSumDebtUseCase(humanId: Int): Double {
+        return db.appDao().getHumanSumDebt(humanId = humanId)
+    }
+
 
 }

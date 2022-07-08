@@ -10,7 +10,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
@@ -24,11 +26,15 @@ import com.breckneck.deptbook.domain.model.DebtDomain
 import com.breckneck.deptbook.domain.usecase.Debt.DeleteDebtUseCase
 import com.breckneck.deptbook.domain.usecase.Debt.GetAllDebtsUseCase
 import com.breckneck.deptbook.domain.usecase.Human.AddSumUseCase
+import com.breckneck.deptbook.domain.usecase.Human.GetHumanSumDebtUseCase
 import com.breckneck.deptbook.domain.usecase.Human.GetLastHumanIdUseCase
 import com.breckneck.deptbook.domain.usecase.Human.SetHumanUseCase
+import com.google.android.material.appbar.CollapsingToolbarLayout
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
 
 class DebtDetailsFragment: Fragment() {
 
@@ -55,6 +61,7 @@ class DebtDetailsFragment: Fragment() {
     lateinit var humanRepository: HumanRepositoryImpl
     lateinit var getLastHumanIdUseCase: GetLastHumanIdUseCase
     lateinit var addSumUseCase: AddSumUseCase
+    lateinit var getHumanSumDebt: GetHumanSumDebtUseCase
 
     lateinit var dataBaseDebtStorage: DataBaseDebtStorageImpl
     lateinit var debtRepository: DebtRepositoryImpl
@@ -71,6 +78,7 @@ class DebtDetailsFragment: Fragment() {
         humanRepository = HumanRepositoryImpl(humanStorage = dataBaseHumanStorage)
         getLastHumanIdUseCase = GetLastHumanIdUseCase(humanRepository = humanRepository)
         addSumUseCase = AddSumUseCase(humanRepository = humanRepository)
+        getHumanSumDebt = GetHumanSumDebtUseCase(humanRepository = humanRepository)
 
         dataBaseDebtStorage = DataBaseDebtStorageImpl(context = view.context)
         debtRepository = DebtRepositoryImpl(debtStorage = dataBaseDebtStorage)
@@ -83,6 +91,10 @@ class DebtDetailsFragment: Fragment() {
         var idHuman = arguments?.getInt("idHuman", 0)
         val newHuman = arguments?.getBoolean("newHuman", false)
         val currency = arguments?.getString("currency")
+        val name = arguments?.getString("name")
+
+        val collaps: CollapsingToolbarLayout = view.findViewById(R.id.collaps)
+        collaps.title = name
 
         val actions = arrayOf(getString(R.string.deletedebt), getString(R.string.editdebt))
         debtClickListener = object : DebtAdapter.OnDebtClickListener{ //ALERT DIALOG
@@ -127,6 +139,32 @@ class DebtDetailsFragment: Fragment() {
                 val adapter = DebtAdapter(it, debtClickListener, currency!!)
                 recyclerView.adapter = adapter
                 Log.e("TAG", "Debts load success")
+            }, {
+
+            })
+
+        val overallSumTextView: TextView = view.findViewById(R.id.overallSumTextView)
+        Single.just(overallSumTextView)
+            .map {
+                return@map getHumanSumDebt.execute(idHuman!!)
+            }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                val decimalFormat = DecimalFormat("###,###,###.##")
+                val customSymbol: DecimalFormatSymbols = DecimalFormatSymbols()
+                customSymbol.groupingSeparator = ' '
+                decimalFormat.decimalFormatSymbols = customSymbol
+                if (it > 0) {
+                    overallSumTextView.setTextColor(ContextCompat.getColor(view.context, R.color.green))
+                    overallSumTextView.text = "+${decimalFormat.format(it)} $currency"
+                }
+                else {
+                    overallSumTextView.setTextColor(ContextCompat.getColor(view.context, R.color.red))
+                    overallSumTextView.text = "${decimalFormat.format(it)} $currency"
+                }
+
+
             }, {
 
             })
