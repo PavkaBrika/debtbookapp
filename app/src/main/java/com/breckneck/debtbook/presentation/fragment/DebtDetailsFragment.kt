@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
+import android.transition.TransitionInflater
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -34,7 +35,7 @@ class DebtDetailsFragment: Fragment() {
     interface OnButtonClickListener{
         fun addNewDebtFragment(idHuman: Int, currency: String)
 
-        fun editDebt(debtDomain: DebtDomain)
+        fun editDebt(debtDomain: DebtDomain, currency: String)
     }
 
     var buttonClickListener: OnButtonClickListener? = null
@@ -42,6 +43,12 @@ class DebtDetailsFragment: Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         buttonClickListener = context as OnButtonClickListener
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val inflater = TransitionInflater.from(requireContext())
+        enterTransition = inflater.inflateTransition(R.transition.slide_right)
     }
 
     lateinit var dataBaseHumanStorage: DataBaseHumanStorageImpl
@@ -98,7 +105,7 @@ class DebtDetailsFragment: Fragment() {
                                 Log.e("TAG", "Debts load success")
                             },{})
                     } else { //EDIT DEBT
-                        buttonClickListener?.editDebt(debtDomain = debtDomain)
+                        buttonClickListener?.editDebt(debtDomain = debtDomain, currency = currency!!)
                     }
                 }
                 builder.show()

@@ -42,7 +42,7 @@
                         android:text="HELLO"
                         android:textAlignment="viewEnd"
                         android:textColor="@color/green"
-                        android:textSize="17sp" />
+                        android:textSize="20sp" />
 
                     <TextView
                         android:id="@+id/overallNegativeSumTextView"
@@ -52,7 +52,7 @@
                         android:text="HELLO"
                         android:textAlignment="viewEnd"
                         android:textColor="@color/red"
-                        android:textSize="17sp" />
+                        android:textSize="20sp" />
 
                 </RelativeLayout>
 

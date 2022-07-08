@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.transition.TransitionInflater
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -25,9 +26,14 @@ import io.ghyeok.stickyswitch.widget.StickySwitch
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
 import java.util.*
 
 class NewDebtFragment: Fragment() {
+
+    val decimalFormat = DecimalFormat("###,###,###.##")
+    val customSymbol: DecimalFormatSymbols = DecimalFormatSymbols()
 
     interface OnButtonClickListener{
         fun DebtDetailsNewHuman(currency: String)
@@ -41,8 +47,17 @@ class NewDebtFragment: Fragment() {
         buttonClickListener = context as OnButtonClickListener
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val inflater = TransitionInflater.from(requireContext())
+        enterTransition = inflater.inflateTransition(R.transition.slide_up)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_addnewhuman, container, false)
+
+        customSymbol.groupingSeparator = ' '
+        decimalFormat.decimalFormatSymbols = customSymbol
 
         val dataBaseHumanStorage by lazy { DataBaseHumanStorageImpl(context = view.context) }
         val humanRepository by lazy { HumanRepositoryImpl(humanStorage = dataBaseHumanStorage) }
@@ -62,17 +77,16 @@ class NewDebtFragment: Fragment() {
         val idHuman = arguments?.getInt("idHuman", -1)
         val idDebt = arguments?.getInt("idDebt", -1)
         var currency = arguments?.getString("currency", "")
+        val sumArgs = arguments?.getDouble("sum", 0.0)
+        val dateArgs = arguments?.getString("date", "")
+        val infoArgs = arguments?.getString("info", "")
 
+        val humanNameEditText: EditText = view.findViewById(R.id.humanNameEditText)
+        val infoEditText: EditText = view.findViewById(R.id.debtInfoEditText)
+        val debtDateTextView: TextView = view.findViewById(R.id.debtDateTextView)
+        val debtSumEditText : EditText = view.findViewById(R.id.debtSumEditText)
         val currencySpinner: Spinner = view.findViewById(R.id.debtCurrencySpinner)
         val currencyTextView: TextView = view.findViewById(R.id.debtCurrencyTextView)
-        if (currency != null) {
-            currencyTextView.visibility = View.VISIBLE
-            currencySpinner.visibility = View.GONE
-            currencyTextView.text = currency
-        } else {
-            currencyTextView.visibility = View.GONE
-            currencySpinner.visibility = View.VISIBLE
-        }
 
         val currencyNames = arrayOf(getString(R.string.rub), getString(R.string.usd), getString(R.string.eur))
         val adapter = ArrayAdapter(view.context, android.R.layout.simple_spinner_dropdown_item, currencyNames)
@@ -95,7 +109,6 @@ class NewDebtFragment: Fragment() {
             }
         }
 
-        val debtSumEditText : EditText = view.findViewById(R.id.debtSumEditText)
         debtSumEditText.addTextChangedListener { object: TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
@@ -116,23 +129,32 @@ class NewDebtFragment: Fragment() {
             }
         } }
 
-        val humanNameEditText: EditText = view.findViewById(R.id.humanNameEditText)
-        val infoEditText: EditText = view.findViewById(R.id.debtInfoEditText)
-        val debtDateTextView: TextView = view.findViewById(R.id.debtDateTextView)
-
         val calendar = Calendar.getInstance()
-
         val dateSetListener = DatePickerDialog.OnDateSetListener{view, year, month, day ->
             debtDateTextView.text = setDateUseCase.execute(year, month, day)
         }
 
-        val date = getCurrentDateUseCase.execute() + " ${getString(R.string.year)}"
+        var date = getCurrentDateUseCase.execute() + " ${getString(R.string.year)}"
         debtDateTextView.text = date
         debtDateTextView.setOnClickListener{
             DatePickerDialog(view.context, dateSetListener,
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
                 calendar.get(Calendar.DAY_OF_MONTH)).show()
+        }
+
+        if (currency != null) {
+            currencyTextView.visibility = View.VISIBLE
+            currencySpinner.visibility = View.GONE
+            currencyTextView.text = currency
+            if (sumArgs != 0.0) {
+                debtSumEditText.setText(decimalFormat.format(sumArgs))
+                debtDateTextView.text = dateArgs
+                infoEditText.setText(infoArgs)
+            }
+        } else {
+            currencyTextView.visibility = View.GONE
+            currencySpinner.visibility = View.VISIBLE
         }
 
         if (idHuman != null) {
@@ -145,6 +167,7 @@ class NewDebtFragment: Fragment() {
             if (stickySwitch.getDirection() == StickySwitch.Direction.RIGHT) {
                 sum = (sum.toDouble() * (-1.0)).toString()
             }
+            date = debtDateTextView.text.toString()
             val info = infoEditText.text.toString()
             if (idHuman == null) { //if add debt in new human
                 if ((!checkEditTextIsEmpty.execute(name)) && (!checkEditTextIsEmpty.execute(sum))) { //user check if user is not bad
