@@ -1,6 +1,5 @@
 package com.breckneck.debtbook.presentation.fragment
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
@@ -13,7 +12,6 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
@@ -28,6 +26,7 @@ import com.breckneck.deptbook.data.storage.repository.DebtRepositoryImpl
 import com.breckneck.deptbook.data.storage.repository.HumanRepositoryImpl
 import com.breckneck.deptbook.domain.model.DebtDomain
 import com.breckneck.deptbook.domain.usecase.Debt.DeleteDebtUseCase
+import com.breckneck.deptbook.domain.usecase.Debt.DeleteDebtsByHumanIdUseCase
 import com.breckneck.deptbook.domain.usecase.Debt.GetAllDebtsUseCase
 import com.breckneck.deptbook.domain.usecase.Human.*
 import com.google.android.material.appbar.CollapsingToolbarLayout
@@ -62,15 +61,16 @@ class DebtDetailsFragment: Fragment() {
 
     lateinit var dataBaseHumanStorage: DataBaseHumanStorageImpl
     lateinit var humanRepository: HumanRepositoryImpl
-    lateinit var getLastHumanIdUseCase: GetLastHumanIdUseCase
+    lateinit var getLastHumanId: GetLastHumanIdUseCase
     lateinit var addSumUseCase: AddSumUseCase
     lateinit var getHumanSumDebt: GetHumanSumDebtUseCase
     lateinit var deleteHuman: DeleteHumanUseCase
 
     lateinit var dataBaseDebtStorage: DataBaseDebtStorageImpl
     lateinit var debtRepository: DebtRepositoryImpl
-    lateinit var getAllDebtsUseCase: GetAllDebtsUseCase
-    lateinit var deleteDebtUseCase: DeleteDebtUseCase
+    lateinit var getAllDebts: GetAllDebtsUseCase
+    lateinit var deleteDebt: DeleteDebtUseCase
+    lateinit var deleteDebtsByHumanId: DeleteDebtsByHumanIdUseCase
 
     lateinit var debtClickListener: DebtAdapter.OnDebtClickListener
 
@@ -78,21 +78,18 @@ class DebtDetailsFragment: Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_debt_details, container, false)
 
-        val toolbar: Toolbar = view.findViewById(R.id.toolbar)
-        (activity as AppCompatActivity).setSupportActionBar(toolbar)
-
         dataBaseHumanStorage = DataBaseHumanStorageImpl(context = view.context)
         humanRepository = HumanRepositoryImpl(humanStorage = dataBaseHumanStorage)
-        getLastHumanIdUseCase = GetLastHumanIdUseCase(humanRepository = humanRepository)
+        getLastHumanId = GetLastHumanIdUseCase(humanRepository = humanRepository)
         addSumUseCase = AddSumUseCase(humanRepository = humanRepository)
         getHumanSumDebt = GetHumanSumDebtUseCase(humanRepository = humanRepository)
-        getLastHumanIdUseCase = GetLastHumanIdUseCase(humanRepository = humanRepository)
         deleteHuman = DeleteHumanUseCase(humanRepository = humanRepository)
 
         dataBaseDebtStorage = DataBaseDebtStorageImpl(context = view.context)
         debtRepository = DebtRepositoryImpl(debtStorage = dataBaseDebtStorage)
-        getAllDebtsUseCase = GetAllDebtsUseCase(debtRepository = debtRepository)
-        deleteDebtUseCase = DeleteDebtUseCase(debtRepository = debtRepository)
+        getAllDebts = GetAllDebtsUseCase(debtRepository = debtRepository)
+        deleteDebt = DeleteDebtUseCase(debtRepository = debtRepository)
+        deleteDebtsByHumanId = DeleteDebtsByHumanIdUseCase(debtRepository = debtRepository)
 
         val recyclerView: RecyclerView = view.findViewById(R.id.debtsRecyclerView)
         recyclerView.addItemDecoration(DividerItemDecoration(view.context, DividerItemDecoration.VERTICAL))
@@ -113,10 +110,10 @@ class DebtDetailsFragment: Fragment() {
                     if (actions[which] == getString(R.string.deletedebt)) { //DELETE DEBT
                         Single.just(actions)
                             .map {
-                                deleteDebtUseCase.execute(debtDomain)
+                                deleteDebt.execute(debtDomain)
                                 addSumUseCase.execute(humanId = debtDomain.idHuman, sum = (debtDomain.sum * (-1.0)))
                                 Log.e("TAG", "Debt delete success")
-                                return@map getAllDebtsUseCase.execute(id = idHuman!!)
+                                return@map getAllDebts.execute(id = idHuman!!)
                             }
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
@@ -137,10 +134,10 @@ class DebtDetailsFragment: Fragment() {
         Single.just("1")
             .map {
                 if (newHuman == true) {
-                    idHuman = getLastHumanIdUseCase.exectute()
+                    idHuman = getLastHumanId.exectute()
                 }
                 Log.e("TAG", "Open Debt Details of Human id = $idHuman")
-                return@map getAllDebtsUseCase.execute(id = idHuman!!)
+                return@map getAllDebts.execute(id = idHuman!!)
             }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -156,7 +153,7 @@ class DebtDetailsFragment: Fragment() {
         Single.just(overallSumTextView)
             .map {
                 if (newHuman == true) {
-                    idHuman = getLastHumanIdUseCase.exectute()
+                    idHuman = getLastHumanId.exectute()
                 }
                 return@map getHumanSumDebt.execute(idHuman!!)
             }
@@ -171,8 +168,11 @@ class DebtDetailsFragment: Fragment() {
                     overallSumTextView.setTextColor(ContextCompat.getColor(view.context, R.color.green))
                     overallSumTextView.text = "+${decimalFormat.format(it)} $currency"
                 }
-                else {
+                else if (it < 0) {
                     overallSumTextView.setTextColor(ContextCompat.getColor(view.context, R.color.red))
+                    overallSumTextView.text = "${decimalFormat.format(it)} $currency"
+                } else {
+                    overallSumTextView.setTextColor(ContextCompat.getColor(view.context, R.color.darkgray))
                     overallSumTextView.text = "${decimalFormat.format(it)} $currency"
                 }
             }, {
@@ -188,9 +188,10 @@ class DebtDetailsFragment: Fragment() {
                     Single.just(deleteHumanButton)
                         .map {
                             if (newHuman == true) {
-                                idHuman = getLastHumanIdUseCase.exectute()
+                                idHuman = getLastHumanId.exectute()
                             }
                             deleteHuman.execute(id = idHuman!!)
+                            deleteDebtsByHumanId.execute(id = idHuman!!)
                         }
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())

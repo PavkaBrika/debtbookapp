@@ -19,4 +19,6 @@
     <string name="payoffTitle">Pay off</string>
     <string name="yes">Yes</string>
     <string name="No">No</string>
+    <string name="newdebt">Add new debt</string>
+    <string name="editdebtcollaps">Edit debt</string>
 </resources>

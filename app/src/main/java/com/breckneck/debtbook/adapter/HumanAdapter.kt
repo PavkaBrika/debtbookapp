@@ -28,6 +28,7 @@ class HumanAdapter(private val humanDomainList: List<HumanDomain>, val humanClic
         val currency: TextView = itemView.findViewById(R.id.currency)
         val greenColor = itemView.resources.getColor(R.color.green)
         val redColor = itemView.resources.getColor(R.color.red)
+        val grayColor = itemView.resources.getColor(R.color.darkgray)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HumanViewHolder {
@@ -46,9 +47,13 @@ class HumanAdapter(private val humanDomainList: List<HumanDomain>, val humanClic
             holder.debt.setTextColor(holder.greenColor)
             holder.currency.setTextColor(holder.greenColor)
             holder.debt.text = "+${decimalFormat.format(humanDomain.sumDebt)}"
-        } else {
+        } else if (humanDomain.sumDebt < 0) {
             holder.debt.setTextColor(holder.redColor)
             holder.currency.setTextColor(holder.redColor)
+            holder.debt.text = decimalFormat.format(humanDomain.sumDebt)
+        } else {
+            holder.debt.setTextColor(holder.grayColor)
+            holder.currency.setTextColor(holder.grayColor)
             holder.debt.text = decimalFormat.format(humanDomain.sumDebt)
         }
 

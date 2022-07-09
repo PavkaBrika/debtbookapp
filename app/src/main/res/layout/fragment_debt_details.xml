@@ -2,8 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="#FFFFFF">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -19,9 +18,8 @@
                 android:id="@+id/collaps"
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
-                android:background="@color/white"
                 android:fitsSystemWindows="true"
-                app:contentScrim="@color/white"
+                style="@style/collapsContentScrim"
                 app:expandedTitleGravity="bottom"
                 app:expandedTitleMarginStart="8dp"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
@@ -61,7 +59,8 @@
                         android:layout_height="30dp"
                         android:layout_gravity="end"
                         android:layout_marginRight="16dp"
-                        android:src="@drawable/ic_baseline_delete_outline_24" />
+                        android:src="@drawable/ic_baseline_delete_outline_24"
+                        style="@style/imageViewButton"/>
 
                 </androidx.appcompat.widget.Toolbar>
 
@@ -72,7 +71,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/lightgray"
+            style="@style/collapsLines"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -81,7 +80,6 @@
             android:layout_height="match_parent"
             android:layout_marginBottom="?attr/actionBarSize"
             android:layout_marginTop="1dp"
-            android:background="@color/white"
             android:clickable="true"
             android:focusable="true"
             android:scrollbars="vertical"

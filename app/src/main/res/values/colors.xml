@@ -9,8 +9,8 @@
     <color name="white">#FFFFFFFF</color>
     <color name="gray">#BDBDBD</color>
     <color name="lightgray">#E0E0E0</color>
-<!--    <color name="green">#00E676</color>    -->
+    <color name="darkgray">#9E9E9E</color>
     <color name="green">#59CB72</color>
-<!--    <color name="red">#FF3D00</color>  -->
     <color name="red">#E25D56</color>
+    <color name="nightCollapsLine">#1f1f1f</color>
 </resources>
