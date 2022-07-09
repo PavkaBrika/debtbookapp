@@ -3,6 +3,7 @@ package com.breckneck.debtbook.presentation.fragment
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
 import android.transition.TransitionInflater
 import android.util.Log
@@ -10,8 +11,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -25,10 +29,7 @@ import com.breckneck.deptbook.data.storage.repository.HumanRepositoryImpl
 import com.breckneck.deptbook.domain.model.DebtDomain
 import com.breckneck.deptbook.domain.usecase.Debt.DeleteDebtUseCase
 import com.breckneck.deptbook.domain.usecase.Debt.GetAllDebtsUseCase
-import com.breckneck.deptbook.domain.usecase.Human.AddSumUseCase
-import com.breckneck.deptbook.domain.usecase.Human.GetHumanSumDebtUseCase
-import com.breckneck.deptbook.domain.usecase.Human.GetLastHumanIdUseCase
-import com.breckneck.deptbook.domain.usecase.Human.SetHumanUseCase
+import com.breckneck.deptbook.domain.usecase.Human.*
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
@@ -39,9 +40,11 @@ import java.text.DecimalFormatSymbols
 class DebtDetailsFragment: Fragment() {
 
     interface OnButtonClickListener{
-        fun addNewDebtFragment(idHuman: Int, currency: String)
+        fun addNewDebtFragment(idHuman: Int, currency: String, name: String)
 
-        fun editDebt(debtDomain: DebtDomain, currency: String)
+        fun editDebt(debtDomain: DebtDomain, currency: String, name: String)
+
+        fun deleteHuman()
     }
 
     var buttonClickListener: OnButtonClickListener? = null
@@ -62,6 +65,7 @@ class DebtDetailsFragment: Fragment() {
     lateinit var getLastHumanIdUseCase: GetLastHumanIdUseCase
     lateinit var addSumUseCase: AddSumUseCase
     lateinit var getHumanSumDebt: GetHumanSumDebtUseCase
+    lateinit var deleteHuman: DeleteHumanUseCase
 
     lateinit var dataBaseDebtStorage: DataBaseDebtStorageImpl
     lateinit var debtRepository: DebtRepositoryImpl
@@ -74,11 +78,16 @@ class DebtDetailsFragment: Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_debt_details, container, false)
 
+        val toolbar: Toolbar = view.findViewById(R.id.toolbar)
+        (activity as AppCompatActivity).setSupportActionBar(toolbar)
+
         dataBaseHumanStorage = DataBaseHumanStorageImpl(context = view.context)
         humanRepository = HumanRepositoryImpl(humanStorage = dataBaseHumanStorage)
         getLastHumanIdUseCase = GetLastHumanIdUseCase(humanRepository = humanRepository)
         addSumUseCase = AddSumUseCase(humanRepository = humanRepository)
         getHumanSumDebt = GetHumanSumDebtUseCase(humanRepository = humanRepository)
+        getLastHumanIdUseCase = GetLastHumanIdUseCase(humanRepository = humanRepository)
+        deleteHuman = DeleteHumanUseCase(humanRepository = humanRepository)
 
         dataBaseDebtStorage = DataBaseDebtStorageImpl(context = view.context)
         debtRepository = DebtRepositoryImpl(debtStorage = dataBaseDebtStorage)
@@ -117,7 +126,7 @@ class DebtDetailsFragment: Fragment() {
                                 Log.e("TAG", "Debts load success")
                             },{})
                     } else { //EDIT DEBT
-                        buttonClickListener?.editDebt(debtDomain = debtDomain, currency = currency!!)
+                        buttonClickListener?.editDebt(debtDomain = debtDomain, currency = currency!!, name = name!!)
                     }
                 }
                 builder.show()
@@ -146,6 +155,9 @@ class DebtDetailsFragment: Fragment() {
         val overallSumTextView: TextView = view.findViewById(R.id.overallSumTextView)
         Single.just(overallSumTextView)
             .map {
+                if (newHuman == true) {
+                    idHuman = getLastHumanIdUseCase.exectute()
+                }
                 return@map getHumanSumDebt.execute(idHuman!!)
             }
             .subscribeOn(Schedulers.io())
@@ -163,16 +175,39 @@ class DebtDetailsFragment: Fragment() {
                     overallSumTextView.setTextColor(ContextCompat.getColor(view.context, R.color.red))
                     overallSumTextView.text = "${decimalFormat.format(it)} $currency"
                 }
-
-
             }, {
-
             })
+
+        val deleteHumanButton: ImageView = view.findViewById(R.id.deleteHumanButton)
+        deleteHumanButton.setOnClickListener {
+            val builder = AlertDialog.Builder(view.context)
+            builder.setTitle(R.string.payoffTitle)
+            builder.setMessage(R.string.payoffMessage)
+            builder.setPositiveButton(R.string.yes, object: DialogInterface.OnClickListener {
+                override fun onClick(p0: DialogInterface?, p1: Int) {
+                    Single.just(deleteHumanButton)
+                        .map {
+                            if (newHuman == true) {
+                                idHuman = getLastHumanIdUseCase.exectute()
+                            }
+                            deleteHuman.execute(id = idHuman!!)
+                        }
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({
+                            Log.e("TAG", "Human with id = $idHuman deleted")
+                        },{})
+                    buttonClickListener?.deleteHuman()
+                }
+            })
+            builder.setNegativeButton(R.string.No, null)
+            builder.show()
+        }
 
         val addDebtButton: Button = view.findViewById(R.id.addDebtButton)
         addDebtButton.setOnClickListener{
             if (idHuman != null) {
-                buttonClickListener?.addNewDebtFragment(idHuman = idHuman!!, currency = currency!!)
+                buttonClickListener?.addNewDebtFragment(idHuman = idHuman!!, currency = currency!!, name = name!!)
             }
         }
 

@@ -2,6 +2,7 @@ package com.breckneck.debtbook.presentation.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
 import androidx.fragment.app.FragmentTransaction
@@ -69,7 +70,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         fragmentTransaction.replace(R.id.frameLayout, NewDebtFragment()).addToBackStack("main").commit()
     }
 //NewDebtFragment interfaces
-    override fun DebtDetailsNewHuman(currency: String) {
+    override fun DebtDetailsNewHuman(currency: String, name: String) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
 //            .setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
@@ -77,12 +78,13 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         val args = Bundle()
         args.putBoolean("newHuman", true)
         args.putString("currency", currency)
+        args.putString("name", name)
         val fragment = DebtDetailsFragment()
         fragment.arguments = args
         fragmentTransaction.replace(R.id.frameLayout, fragment).commit()
     }
 
-    override fun DebtDetailsExistHuman(idHuman: Int, currency: String) {
+    override fun DebtDetailsExistHuman(idHuman: Int, currency: String, name: String) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
 //            .setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
@@ -90,24 +92,26 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         val args = Bundle()
         args.putInt("idHuman", idHuman)
         args.putString("currency", currency)
+        args.putString("name", name)
         val fragment = DebtDetailsFragment()
         fragment.arguments = args
         fragmentTransaction.replace(R.id.frameLayout, fragment).commit()
     }
 //DebtDetailsFragment interfaces
-    override fun addNewDebtFragment(idHuman: Int, currency: String) {
+    override fun addNewDebtFragment(idHuman: Int, currency: String, name: String) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
 //            .setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
         val args = Bundle()
         args.putInt("idHuman", idHuman)
         args.putString("currency", currency)
+        args.putString("name", name)
         val fragment = NewDebtFragment()
         fragment.arguments = args
         fragmentTransaction.replace(R.id.frameLayout, fragment).addToBackStack("secondary").commit()
     }
 
-    override fun editDebt(debtDomain: DebtDomain, currency: String) {
+    override fun editDebt(debtDomain: DebtDomain, currency: String, name: String) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
 //            .setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
@@ -117,10 +121,17 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         args.putDouble("sum", debtDomain.sum)
         args.putString("date", debtDomain.date)
         args.putString("info", debtDomain.info)
+        args.putString("name", name)
         args.putString("currency", currency)
         val fragment = NewDebtFragment()
         fragment.arguments = args
         fragmentTransaction.replace(R.id.frameLayout, fragment).addToBackStack("secondary").commit()
+    }
+
+    override fun deleteHuman() {
+        val fragmentManager = supportFragmentManager
+        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.frameLayout, MainFragment()).commit()
     }
 
 

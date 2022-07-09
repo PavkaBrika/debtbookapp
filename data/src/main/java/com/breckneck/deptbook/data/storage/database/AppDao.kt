@@ -24,6 +24,9 @@ interface AppDao {
     @Query("SELECT sumDebt from human WHERE id = :humanId")
     fun getHumanSumDebt(humanId: Int): Double
 
+    @Query("DELETE FROM human WHERE id = :id")
+    fun deleteHumanById(id: Int)
+
     @Insert
     fun insertHuman(human: Human)
 

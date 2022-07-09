@@ -35,4 +35,8 @@ class HumanRepositoryImpl(private val humanStorage: HumanStorage) : HumanReposit
         return humanStorage.getHumanSumDebtUseCase(humanId = humanId)
     }
 
+    override fun deleteHuman(id: Int) {
+        humanStorage.deleteHumanById(id)
+    }
+
 }
