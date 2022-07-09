@@ -43,6 +43,9 @@ interface AppDao {
     @Query("SELECT * FROM debt WHERE idHuman = :id")
     fun getAllDebtsById(id: Int): List<Debt>
 
+    @Query("DELETE FROM debt WHERE idHuman = :id")
+    fun deleteDebtsByHumanId(id: Int)
+
     @Insert
     fun insertDebt(debt: Debt)
 

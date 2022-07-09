@@ -4,15 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.activity.MainActivity"
-    android:background="@color/white">
+    tools:context=".presentation.activity.MainActivity">
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/frameLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/ad"
-        android:background="@color/white"/>
+        android:layout_above="@id/ad" />
 
     <TextView
         android:id="@+id/ad"
@@ -21,7 +19,6 @@
         android:text="hello world!"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
-        android:textSize="50sp"
-        android:elevation="2dp"/>
+        android:textSize="50sp" />
 
 </RelativeLayout>

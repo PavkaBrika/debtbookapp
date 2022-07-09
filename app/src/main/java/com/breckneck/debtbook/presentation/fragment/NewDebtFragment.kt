@@ -23,6 +23,7 @@ import com.breckneck.deptbook.domain.usecase.Debt.*
 import com.breckneck.deptbook.domain.usecase.Human.AddSumUseCase
 import com.breckneck.deptbook.domain.usecase.Human.GetLastHumanIdUseCase
 import com.breckneck.deptbook.domain.usecase.Human.SetHumanUseCase
+import com.google.android.material.appbar.CollapsingToolbarLayout
 import io.ghyeok.stickyswitch.widget.StickySwitch
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
@@ -85,6 +86,7 @@ class NewDebtFragment: Fragment() {
         val debtSumEditText : EditText = view.findViewById(R.id.debtSumEditText)
         val currencySpinner: Spinner = view.findViewById(R.id.debtCurrencySpinner)
         val currencyTextView: TextView = view.findViewById(R.id.debtCurrencyTextView)
+        val collapsed: CollapsingToolbarLayout = view.findViewById(R.id.collapsNewDebt)
 
         val currencyNames = arrayOf(getString(R.string.rub), getString(R.string.usd), getString(R.string.eur))
         val adapter = ArrayAdapter(view.context, android.R.layout.simple_spinner_dropdown_item, currencyNames)
@@ -141,14 +143,15 @@ class NewDebtFragment: Fragment() {
                 calendar.get(Calendar.DAY_OF_MONTH)).show()
         }
 
-        if (currency != null) {
+        if (currency != null) { //EXIST HUMAN DEBT DEBT LAYOUT CHANGES
             currencyTextView.visibility = View.VISIBLE
             currencySpinner.visibility = View.GONE
             currencyTextView.text = currency
-            if (sumArgs != 0.0) {
+            if (sumArgs != 0.0) { //EXIST HUMAN EDIT DEBT LAYOUT CHANGES
                 debtSumEditText.setText(decimalFormat.format(sumArgs)) ////fasdfadsfasfsadfFSDAFSDF
                 debtDateTextView.text = dateArgs
                 infoEditText.setText(infoArgs)
+                collapsed.title = getString(R.string.editdebtcollaps)
             }
         } else {
             currencyTextView.visibility = View.GONE

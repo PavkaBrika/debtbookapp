@@ -29,4 +29,8 @@ class DebtRepositoryImpl(val debtStorage: DebtStorage): DebtRepository {
         val debt = Debt(id = debtDomain.id, sum = debtDomain.sum, idHuman = debtDomain.idHuman, info = debtDomain.info, date = debtDomain.date)
         debtStorage.editDebt(debt)
     }
+
+    override fun deleteDebtsByHumanId(id: Int) {
+        debtStorage.deleteDebtsByHumanId(id = id)
+    }
 }

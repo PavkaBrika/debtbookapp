@@ -11,4 +11,6 @@ interface DebtStorage {
     fun deleteDebt(debt: Debt)
 
     fun editDebt(debt: Debt)
+
+    fun deleteDebtsByHumanId(id: Int)
 }
