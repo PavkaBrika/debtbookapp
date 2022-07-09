@@ -15,4 +15,6 @@ interface HumanStorage  {
     fun getAllDebtsSum(currency: String): List<Double>
 
     fun getHumanSumDebtUseCase(humanId: Int): Double
+
+    fun deleteHumanById(id: Int)
 }

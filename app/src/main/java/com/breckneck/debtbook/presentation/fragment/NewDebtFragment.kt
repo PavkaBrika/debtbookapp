@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import com.breckneck.debtbook.R
@@ -32,12 +33,11 @@ import java.util.*
 
 class NewDebtFragment: Fragment() {
 
-    val decimalFormat = DecimalFormat("###,###,###.##")
-    val customSymbol: DecimalFormatSymbols = DecimalFormatSymbols()
+    val decimalFormat = DecimalFormat("#.##")
 
     interface OnButtonClickListener{
-        fun DebtDetailsNewHuman(currency: String)
-        fun DebtDetailsExistHuman(idHuman: Int, currency: String)
+        fun DebtDetailsNewHuman(currency: String, name: String)
+        fun DebtDetailsExistHuman(idHuman: Int, currency: String, name: String)
     }
 
     lateinit var buttonClickListener: OnButtonClickListener
@@ -55,9 +55,6 @@ class NewDebtFragment: Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_addnewhuman, container, false)
-
-        customSymbol.groupingSeparator = ' '
-        decimalFormat.decimalFormatSymbols = customSymbol
 
         val dataBaseHumanStorage by lazy { DataBaseHumanStorageImpl(context = view.context) }
         val humanRepository by lazy { HumanRepositoryImpl(humanStorage = dataBaseHumanStorage) }
@@ -80,6 +77,7 @@ class NewDebtFragment: Fragment() {
         val sumArgs = arguments?.getDouble("sum", 0.0)
         val dateArgs = arguments?.getString("date", "")
         val infoArgs = arguments?.getString("info", "")
+        val nameArgs = arguments?.getString("name", "")
 
         val humanNameEditText: EditText = view.findViewById(R.id.humanNameEditText)
         val infoEditText: EditText = view.findViewById(R.id.debtInfoEditText)
@@ -148,7 +146,7 @@ class NewDebtFragment: Fragment() {
             currencySpinner.visibility = View.GONE
             currencyTextView.text = currency
             if (sumArgs != 0.0) {
-                debtSumEditText.setText(decimalFormat.format(sumArgs))
+                debtSumEditText.setText(decimalFormat.format(sumArgs)) ////fasdfadsfasfsadfFSDAFSDF
                 debtDateTextView.text = dateArgs
                 infoEditText.setText(infoArgs)
             }
@@ -159,6 +157,7 @@ class NewDebtFragment: Fragment() {
 
         if (idHuman != null) {
             humanNameEditText.visibility = View.GONE
+            humanNameEditText.setText(nameArgs)
         }
         val setButton : Button = view.findViewById(R.id.setDebtButton)
         setButton.setOnClickListener{
@@ -185,7 +184,7 @@ class NewDebtFragment: Fragment() {
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe({
-                                buttonClickListener.DebtDetailsNewHuman(currency = currency!!)
+                                buttonClickListener.DebtDetailsNewHuman(currency = currency!!, name = name)
                             }, {
 
                             })
@@ -211,7 +210,7 @@ class NewDebtFragment: Fragment() {
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe({
-                                buttonClickListener.DebtDetailsExistHuman(idHuman = idHuman, currency = currency!!)
+                                buttonClickListener.DebtDetailsExistHuman(idHuman = idHuman, currency = currency!!, name = name)
                             }, {
 
                             })
@@ -238,7 +237,7 @@ class NewDebtFragment: Fragment() {
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe({
-                                buttonClickListener.DebtDetailsExistHuman(idHuman = idHuman, currency = currency!!)
+                                buttonClickListener.DebtDetailsExistHuman(idHuman = idHuman, currency = currency!!, name = name)
                             }, {
 
                             })

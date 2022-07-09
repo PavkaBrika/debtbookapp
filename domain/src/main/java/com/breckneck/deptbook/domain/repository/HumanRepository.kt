@@ -15,4 +15,6 @@ interface HumanRepository {
     fun getAllDebtsSum(currency: String): List<Double>
 
     fun getHumanSumDebt(humanId: Int): Double
+
+    fun deleteHuman(id: Int)
 }

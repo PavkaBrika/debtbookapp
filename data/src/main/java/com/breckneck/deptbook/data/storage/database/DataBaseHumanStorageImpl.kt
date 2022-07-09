@@ -45,5 +45,9 @@ class DataBaseHumanStorageImpl(context: Context) : HumanStorage {
         return db.appDao().getHumanSumDebt(humanId = humanId)
     }
 
+    override fun deleteHumanById(id: Int) {
+        db.appDao().deleteHumanById(id = id)
+    }
+
 
 }

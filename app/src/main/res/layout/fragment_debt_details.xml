@@ -49,9 +49,21 @@
                 </RelativeLayout>
 
                 <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
-                    android:fitsSystemWindows="true" />
+                    android:fitsSystemWindows="true"
+                    app:layout_collapseMode="pin">
+
+                    <ImageView
+                        android:id="@+id/deleteHumanButton"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="end"
+                        android:layout_marginRight="16dp"
+                        android:src="@drawable/ic_baseline_delete_outline_24" />
+
+                </androidx.appcompat.widget.Toolbar>
 
             </com.google.android.material.appbar.CollapsingToolbarLayout>
 

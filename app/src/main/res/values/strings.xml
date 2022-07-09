@@ -15,4 +15,8 @@
     <string name="give">Give</string>
     <string name="take">Take</string>
     <string name="zerodebt">Debt cannot be zero</string>
+    <string name="payoffMessage">Pay off this debt in full?</string>
+    <string name="payoffTitle">Pay off</string>
+    <string name="yes">Yes</string>
+    <string name="No">No</string>
 </resources>
