@@ -27,7 +27,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:layout_marginLeft="8dp"
                 android:layout_marginRight="4dp"
                 android:text="debt"
                 android:textSize="22sp"
@@ -57,7 +56,6 @@
                     android:layout_height="wrap_content"
                     android:text="info"
                     android:textSize="20sp"
-                    android:layout_marginLeft="8dp"
                     android:layout_marginBottom="8dp"
                     android:background="@android:color/transparent"/>
 
@@ -72,7 +70,7 @@
         android:orientation="horizontal"
         android:layout_weight="3"
         android:layout_gravity="center"
-        android:layout_marginRight="8dp"
+        android:layout_marginRight="4dp"
         android:background="@android:color/transparent">
 
         <TextView
