@@ -24,6 +24,7 @@
                 style="@style/collapsContentScrim"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 app:title="@string/newdebt"
+                app:maxLines="3"
                 app:titleEnabled="true">
 
                 <androidx.appcompat.widget.Toolbar
@@ -79,13 +80,14 @@
 
                     <EditText
                         android:id="@+id/humanNameEditText"
+                        style="@style/addNewHumanEditText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
                         android:layout_marginRight="8dp"
-                        style="@style/addNewHumanEditText"
                         android:hint="@string/name"
-                        android:maxLines="1" />
+                        android:maxLines="1"
+                        android:maxLength="11"/>
 
                 </RelativeLayout>
 

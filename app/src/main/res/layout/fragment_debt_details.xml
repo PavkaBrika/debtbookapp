@@ -23,7 +23,7 @@
                 app:expandedTitleGravity="bottom"
                 app:expandedTitleMarginStart="8dp"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
-                app:title="@string/app_name"
+                app:maxLines="3"
                 app:titleCollapseMode="scale"
                 app:titleEnabled="true">
 
@@ -39,7 +39,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_alignParentBottom="true"
-                        android:text="HELLO"
                         android:textAlignment="viewEnd"
                         android:textColor="@color/green"
                         android:textSize="18sp" />
