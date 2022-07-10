@@ -2,6 +2,7 @@ package com.breckneck.debtbook.presentation.fragment
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
 import android.transition.TransitionInflater
 import android.util.Log
@@ -51,8 +52,11 @@ class MainFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_main, container, false)
 
-//        val bigTitle: CollapsingToolbarLayout = view.findViewById(R.id.collapsing)
-//        bigTitle.setTitle("Your Title")
+        val collaps: CollapsingToolbarLayout = view.findViewById(R.id.collaps)
+        collaps.apply {
+            setCollapsedTitleTypeface(Typeface.DEFAULT_BOLD)
+            setExpandedTitleTypeface(Typeface.DEFAULT_BOLD)
+        }
 
         val dataBaseHumanStorage by lazy { DataBaseHumanStorageImpl(context = view.context) }
         val humanRepository by lazy { HumanRepositoryImpl(humanStorage = dataBaseHumanStorage) }

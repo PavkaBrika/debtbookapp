@@ -2,6 +2,7 @@ package com.breckneck.debtbook.presentation.fragment
 
 import android.app.DatePickerDialog
 import android.content.Context
+import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -88,6 +89,10 @@ class NewDebtFragment: Fragment() {
         val currencySpinner: Spinner = view.findViewById(R.id.debtCurrencySpinner)
         val currencyTextView: TextView = view.findViewById(R.id.debtCurrencyTextView)
         val collapsed: CollapsingToolbarLayout = view.findViewById(R.id.collapsNewDebt)
+        collapsed.apply {
+            setCollapsedTitleTypeface(Typeface.DEFAULT_BOLD)
+            setExpandedTitleTypeface(Typeface.DEFAULT_BOLD)
+        }
 
         val currencyNames = arrayOf(getString(R.string.rub), getString(R.string.usd), getString(R.string.eur))
         val adapter = ArrayAdapter(view.context, android.R.layout.simple_spinner_dropdown_item, currencyNames)
