@@ -77,7 +77,6 @@
             android:id="@+id/namesRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="?attr/actionBarSize"
             android:layout_marginTop="1dp"
             android:clickable="true"
             android:focusable="true"
@@ -86,27 +85,19 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab"
+            android:id="@+id/addHumanButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            style="@style/fabTheme"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
             app:layout_anchor="@id/namesRecyclerView"
-            app:layout_anchorGravity="bottom|end"
+            app:layout_anchorGravity="bottom|center"
             app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"
             android:src="@drawable/ic_baseline_add_24" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-    <Button
-        android:id="@+id/addHumanButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="add"
-        android:layout_alignParentBottom="true" />
-
-
 
 </RelativeLayout>

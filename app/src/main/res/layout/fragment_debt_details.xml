@@ -78,7 +78,6 @@
             android:id="@+id/debtsRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="?attr/actionBarSize"
             android:layout_marginTop="1dp"
             android:clickable="true"
             android:focusable="true"
@@ -86,16 +85,20 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/addDebtButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/fabTheme"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            app:layout_anchor="@id/debtsRecyclerView"
+            app:layout_anchorGravity="bottom|center"
+            app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"
+            android:src="@drawable/ic_baseline_add_24" />
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-    <Button
-        android:id="@+id/addDebtButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="add"
-        android:layout_alignParentBottom="true" />
-
-
-
 
 </RelativeLayout>
