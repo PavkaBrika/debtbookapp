@@ -62,4 +62,7 @@ dependencies {
     //Custom toggle button
     implementation 'com.github.GwonHyeok:StickySwitch:0.0.16'
 
+    //Yandex Mobile Ads
+    implementation 'com.yandex.android:mobileads:5.1.1'
+    implementation 'com.yandex.android:mobmetricalib:5.0.0'
 }

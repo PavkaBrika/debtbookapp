@@ -10,15 +10,13 @@
         android:id="@+id/frameLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/ad" />
+        android:layout_above="@id/bannerAdView" />
 
-    <TextView
-        android:id="@+id/ad"
-        android:layout_width="wrap_content"
+    <com.yandex.mobile.ads.banner.BannerAdView
+        android:id="@+id/bannerAdView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="hello world!"
-        android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
-        android:textSize="50sp" />
+        android:visibility="gone" />
 
 </RelativeLayout>
