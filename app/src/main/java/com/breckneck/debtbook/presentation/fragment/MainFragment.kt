@@ -22,6 +22,7 @@ import com.breckneck.deptbook.domain.model.HumanDomain
 import com.breckneck.deptbook.domain.usecase.Debt.GetAllDebtsUseCase
 import com.breckneck.deptbook.domain.usecase.Human.GetAllDebtsSumUseCase
 import com.breckneck.deptbook.domain.usecase.Human.GetAllHumansUseCase
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -61,7 +62,7 @@ class MainFragment : Fragment() {
         val recyclerView: RecyclerView = view.findViewById(R.id.namesRecyclerView)
         recyclerView.addItemDecoration(DividerItemDecoration(view.context, DividerItemDecoration.VERTICAL))
 
-        val addButton: Button = view.findViewById(R.id.addHumanButton)
+        val addButton: FloatingActionButton = view.findViewById(R.id.addHumanButton)
         addButton.setOnClickListener{
             buttonClickListener?.OnAddButtonClick()
         }

@@ -30,6 +30,7 @@ import com.breckneck.deptbook.domain.usecase.Debt.DeleteDebtsByHumanIdUseCase
 import com.breckneck.deptbook.domain.usecase.Debt.GetAllDebtsUseCase
 import com.breckneck.deptbook.domain.usecase.Human.*
 import com.google.android.material.appbar.CollapsingToolbarLayout
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -205,7 +206,7 @@ class DebtDetailsFragment: Fragment() {
             builder.show()
         }
 
-        val addDebtButton: Button = view.findViewById(R.id.addDebtButton)
+        val addDebtButton: FloatingActionButton = view.findViewById(R.id.addDebtButton)
         addDebtButton.setOnClickListener{
             if (idHuman != null) {
                 buttonClickListener?.addNewDebtFragment(idHuman = idHuman!!, currency = currency!!, name = name!!)

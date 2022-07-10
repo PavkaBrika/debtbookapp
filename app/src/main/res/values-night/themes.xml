@@ -2,7 +2,7 @@
     <!-- Base application theme. -->
     <style name="Theme.Debtbook" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_200</item>
+        <item name="colorPrimary">@color/white</item>
         <item name="colorPrimaryVariant">@color/black</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
@@ -41,4 +41,13 @@
     <style name="imageViewButton">
         <item name="android:tint">@color/white</item>
     </style>
+
+    <style name="fabTheme">
+        <item name="android:backgroundTint">@color/nightCollapsLine</item>
+        <item name="borderWidth">0dp</item>
+        <item name="android:tint">@color/white</item>
+        <item name="fabCustomSize">70dp</item>
+        <item name="maxImageSize">35dp</item>
+    </style>
+
 </resources>

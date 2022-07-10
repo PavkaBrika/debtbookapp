@@ -24,6 +24,7 @@ import com.breckneck.deptbook.domain.usecase.Human.AddSumUseCase
 import com.breckneck.deptbook.domain.usecase.Human.GetLastHumanIdUseCase
 import com.breckneck.deptbook.domain.usecase.Human.SetHumanUseCase
 import com.google.android.material.appbar.CollapsingToolbarLayout
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import io.ghyeok.stickyswitch.widget.StickySwitch
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
@@ -162,17 +163,16 @@ class NewDebtFragment: Fragment() {
             humanNameEditText.visibility = View.GONE
             humanNameEditText.setText(nameArgs)
         }
-        val setButton : Button = view.findViewById(R.id.setDebtButton)
+        val setButton : FloatingActionButton = view.findViewById(R.id.setDebtButton)
         setButton.setOnClickListener{
             val name = humanNameEditText.text.toString()
             var sum = debtSumEditText.text.toString()
-            if (stickySwitch.getDirection() == StickySwitch.Direction.RIGHT) {
-                sum = (sum.toDouble() * (-1.0)).toString()
-            }
             date = debtDateTextView.text.toString()
             val info = infoEditText.text.toString()
             if (idHuman == null) { //if add debt in new human
                 if ((!checkEditTextIsEmpty.execute(name)) && (!checkEditTextIsEmpty.execute(sum))) { //user check if user is not bad
+                    if (stickySwitch.getDirection() == StickySwitch.Direction.RIGHT)
+                        sum = (sum.toDouble() * (-1.0)).toString()
                     if (sum.toDouble() != 0.0) {
                         Single.just(name)
                             .map {
@@ -200,6 +200,8 @@ class NewDebtFragment: Fragment() {
                 }
             } else if (idDebt == -1) { //if add debt in existing human
                 if (!checkEditTextIsEmpty.execute(sum)) { // user check if user not bad
+                    if (stickySwitch.getDirection() == StickySwitch.Direction.RIGHT)
+                        sum = (sum.toDouble() * (-1.0)).toString()
                     if (sum.toDouble() != 0.0) {
                         Single.just(sum)
                             .map {
@@ -225,6 +227,8 @@ class NewDebtFragment: Fragment() {
                 }
             } else if ((idDebt != null) && (idDebt != -1)) { //if edit debt in existing human
                 if (!checkEditTextIsEmpty.execute(sum)) { // user check if user not bad
+                    if (stickySwitch.getDirection() == StickySwitch.Direction.RIGHT)
+                        sum = (sum.toDouble() * (-1.0)).toString()
                     if (sum.toDouble() != 0.0) {
                         Single.just(sum)
                             .map {
