@@ -68,9 +68,9 @@
         </com.google.android.material.appbar.AppBarLayout>
 
         <TextView
+            style="@style/collapsLines"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            style="@style/collapsLines"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -78,6 +78,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="1dp"
+            android:layout_marginLeft="10dp"
             android:clickable="true"
             android:focusable="true"
             android:scrollbars="vertical"

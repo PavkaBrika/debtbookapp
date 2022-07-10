@@ -3,6 +3,7 @@ package com.breckneck.debtbook.presentation.fragment
 import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
+import android.graphics.Typeface
 import android.os.Bundle
 import android.transition.TransitionInflater
 import android.util.Log
@@ -102,6 +103,10 @@ class DebtDetailsFragment: Fragment() {
 
         val collaps: CollapsingToolbarLayout = view.findViewById(R.id.collaps)
         collaps.title = name
+        collaps.apply {
+            setCollapsedTitleTypeface(Typeface.DEFAULT_BOLD)
+            setExpandedTitleTypeface(Typeface.DEFAULT_BOLD)
+        }
 
         val actions = arrayOf(getString(R.string.deletedebt), getString(R.string.editdebt))
         debtClickListener = object : DebtAdapter.OnDebtClickListener{ //ALERT DIALOG
