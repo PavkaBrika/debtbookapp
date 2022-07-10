@@ -1,6 +1,7 @@
 package com.breckneck.debtbook.presentation.activity
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentContainerView
@@ -15,6 +16,9 @@ import com.breckneck.debtbook.presentation.fragment.DebtDetailsFragment
 import com.breckneck.debtbook.presentation.fragment.MainFragment
 import com.breckneck.debtbook.presentation.fragment.NewDebtFragment
 import com.breckneck.deptbook.domain.model.DebtDomain
+import com.yandex.mobile.ads.banner.BannerAdView
+import com.yandex.mobile.ads.common.InitializationListener
+import com.yandex.mobile.ads.common.MobileAds
 
 class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, NewDebtFragment.OnButtonClickListener, DebtDetailsFragment.OnButtonClickListener {
 
@@ -26,6 +30,15 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        MobileAds.initialize(this, object: InitializationListener {
+            override fun onInitializationCompleted() {
+                Log.e("TAG", "Yandex initialized")
+            }
+        })
+
+        val bannerAd: BannerAdView = findViewById(R.id.bannerAdView)
+        bannerAd.setAdUnitId("R-M-DEMO-300x250")
 //        val container: FragmentContainerView = findViewById(R.id.frameLayout)
 //        scene1 = Scene.getSceneForLayout(container , R.layout.fragment_main, this)
 //        scene2 = Scene.getSceneForLayout(container , R.layout.fragment_debt_details, this)
