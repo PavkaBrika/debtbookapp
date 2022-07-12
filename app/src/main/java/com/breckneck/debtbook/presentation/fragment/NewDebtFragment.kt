@@ -137,7 +137,7 @@ class NewDebtFragment: Fragment() {
 
         val calendar = Calendar.getInstance()
         val dateSetListener = DatePickerDialog.OnDateSetListener{view, year, month, day ->
-            debtDateTextView.text = setDateUseCase.execute(year, month, day)
+            debtDateTextView.text = setDateUseCase.execute(year, month, day) + " ${getString(R.string.year)}"
         }
 
         var date = getCurrentDateUseCase.execute() + " ${getString(R.string.year)}"

@@ -20,4 +20,5 @@
     <string name="newdebt">Add new debt</string>
     <string name="editdebtcollaps">Edit debt</string>
     <string name="debts">Debts</string>
+    <string name="nodebts">There are no debts yet. Click the button below to add.</string>
 </resources>

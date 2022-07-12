@@ -66,6 +66,8 @@ class MainFragment : Fragment() {
         val recyclerView: RecyclerView = view.findViewById(R.id.namesRecyclerView)
         recyclerView.addItemDecoration(DividerItemDecoration(view.context, DividerItemDecoration.VERTICAL))
 
+        val noDebtsTextView: TextView = view.findViewById(R.id.noDebtTextView)
+
         val addButton: FloatingActionButton = view.findViewById(R.id.addHumanButton)
         addButton.setOnClickListener{
             buttonClickListener?.OnAddButtonClick()
@@ -80,6 +82,8 @@ class MainFragment : Fragment() {
 
         Single.just("1")
             .map { val humanList = getAllHumansUseCase.execute()
+                if (humanList.isNotEmpty())
+                    noDebtsTextView.visibility = View.INVISIBLE
                 return@map humanList
             }
             .subscribeOn(Schedulers.io())
