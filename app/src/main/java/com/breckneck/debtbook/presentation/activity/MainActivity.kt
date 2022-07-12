@@ -15,11 +15,18 @@ import com.breckneck.debtbook.R
 import com.breckneck.debtbook.presentation.fragment.DebtDetailsFragment
 import com.breckneck.debtbook.presentation.fragment.MainFragment
 import com.breckneck.debtbook.presentation.fragment.NewDebtFragment
+import com.breckneck.deptbook.data.storage.repository.AdRepositoryImpl
+import com.breckneck.deptbook.data.storage.sharedprefs.SharedPrefsAdStorageImpl
 import com.breckneck.deptbook.domain.model.DebtDomain
+import com.breckneck.deptbook.domain.usecase.Ad.AddClickUseCase
+import com.breckneck.deptbook.domain.usecase.Ad.GetClicksUseCase
+import com.breckneck.deptbook.domain.usecase.Ad.SetClicksUseCase
 import com.yandex.mobile.ads.banner.AdSize
 import com.yandex.mobile.ads.banner.BannerAdEventListener
 import com.yandex.mobile.ads.banner.BannerAdView
 import com.yandex.mobile.ads.common.*
+import com.yandex.mobile.ads.interstitial.InterstitialAd
+import com.yandex.mobile.ads.interstitial.InterstitialAdEventListener
 
 class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, NewDebtFragment.OnButtonClickListener, DebtDetailsFragment.OnButtonClickListener {
 
@@ -27,47 +34,105 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
 //    private lateinit var scene2: Scene
 //    private lateinit var currentScene: Scene
 //    private lateinit var transiction: Transition
+    private lateinit var interstitialAd: InterstitialAd
+
+    lateinit var sharedPrefsAdStorage: SharedPrefsAdStorageImpl
+    lateinit var adRepository: AdRepositoryImpl
+    lateinit var getClicks: GetClicksUseCase
+    lateinit var addClick: AddClickUseCase
+    lateinit var setClick: SetClicksUseCase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        sharedPrefsAdStorage = SharedPrefsAdStorageImpl(context = this)
+        adRepository = AdRepositoryImpl(adStorage = sharedPrefsAdStorage)
+        getClicks = GetClicksUseCase(adRepository = adRepository)
+        addClick = AddClickUseCase(adRepository = adRepository)
+        setClick = SetClicksUseCase(adRepository = adRepository)
 
         MobileAds.initialize(this, object: InitializationListener {
             override fun onInitializationCompleted() {
                 Log.e("TAG", "Yandex initialized")
             }
         })
-
+        MobileAds.setUserConsent(false)
+        //BANNER AD
         val bannerAd: BannerAdView = findViewById(R.id.bannerAdView)
         val adRequestBuild = AdRequest.Builder().build()
         bannerAd.apply {
-            setAdUnitId("R-M-DEMO-320x50")
+            setAdUnitId("R-M-1611210-2")
             setAdSize(AdSize.flexibleSize(320, 50))
             setBannerAdEventListener(object : BannerAdEventListener{
                 override fun onAdLoaded() {
-                    Log.e("TAG", "AD LOADED")
+                    Log.e("TAG", "BANNER LOADED")
                 }
 
                 override fun onAdFailedToLoad(p0: AdRequestError) {
-                    Log.e("TAG", "AD LOAD FAILED")
+                    Log.e("TAG", "BANNER LOAD FAILED")
+                    loadAd(adRequestBuild)
                 }
 
                 override fun onAdClicked() {
-                    Log.e("TAG", "AD CLICKED")
+                    Log.e("TAG", "BANNER CLICKED")
                 }
 
                 override fun onLeftApplication() {
-                    Log.e("TAG", "AD LEFT")
+                    Log.e("TAG", "BANNER LEFT")
                 }
 
                 override fun onReturnedToApplication() {
-                    Log.e("TAG", "AD RETURN")
+                    Log.e("TAG", "BANNER RETURN")
                 }
 
                 override fun onImpression(p0: ImpressionData?) {
-                    Log.e("TAG", "AD IMPRESSION")
+                    Log.e("TAG", "BANNER IMPRESSION")
+                    loadAd(adRequestBuild)
                 }
 
+            })
+            loadAd(adRequestBuild)
+        }
+
+        //INTERSTITIAL AD
+        interstitialAd = InterstitialAd(this)
+        interstitialAd.apply {
+            setAdUnitId("R-M-1611210-3")
+            setInterstitialAdEventListener(object : InterstitialAdEventListener {
+                override fun onAdLoaded() {
+                    Log.e("TAG", "INTERSTITIAL LOADED")
+                }
+
+                override fun onAdFailedToLoad(p0: AdRequestError) {
+                    Log.e("TAG", "INTERSTITIAL LOAD FAILED")
+                    loadAd(adRequestBuild)
+                }
+
+                override fun onAdShown() {
+                    Log.e("TAG", "INTERSTITIAL SHOWN")
+                }
+
+                override fun onAdDismissed() {
+                    Log.e("TAG", "INTERSTITIAL DISMISSED")
+                }
+
+                override fun onAdClicked() {
+                    Log.e("TAG", "INTERSTITIAL CLICKED")
+                }
+
+                override fun onLeftApplication() {
+                    Log.e("TAG", "INTERSTITIAL LEFT APP")
+                }
+
+                override fun onReturnedToApplication() {
+                    Log.e("TAG", "INTERSTITIAL RETURN APP")
+                }
+
+                override fun onImpression(p0: ImpressionData?) {
+                    Log.e("TAG", "INTERSTITIAL IMPRESSION")
+                    loadAd(adRequestBuild)
+                }
             })
             loadAd(adRequestBuild)
         }
@@ -104,6 +169,13 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         val fragment = DebtDetailsFragment()
         fragment.arguments = args
         fragmentTransaction.replace(R.id.frameLayout, fragment).addToBackStack("main").commit()
+        addClick.execute()
+        if (getClicks.execute())
+            if (interstitialAd.isLoaded) {
+                interstitialAd.show()
+                setClick.execute()
+            }
+
     }
 
     override fun OnAddButtonClick() {
@@ -113,6 +185,12 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
 ////            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
 
         fragmentTransaction.replace(R.id.frameLayout, NewDebtFragment()).addToBackStack("main").commit()
+        addClick.execute()
+        if (getClicks.execute())
+            if (interstitialAd.isLoaded) {
+                interstitialAd.show()
+                setClick.execute()
+            }
     }
 //NewDebtFragment interfaces
     override fun DebtDetailsNewHuman(currency: String, name: String) {
@@ -127,6 +205,12 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         val fragment = DebtDetailsFragment()
         fragment.arguments = args
         fragmentTransaction.replace(R.id.frameLayout, fragment).commit()
+        addClick.execute()
+        if (getClicks.execute())
+            if (interstitialAd.isLoaded) {
+                interstitialAd.show()
+                setClick.execute()
+            }
     }
 
     override fun DebtDetailsExistHuman(idHuman: Int, currency: String, name: String) {
@@ -141,6 +225,12 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         val fragment = DebtDetailsFragment()
         fragment.arguments = args
         fragmentTransaction.replace(R.id.frameLayout, fragment).commit()
+        addClick.execute()
+        if (getClicks.execute())
+            if (interstitialAd.isLoaded) {
+                interstitialAd.show()
+                setClick.execute()
+            }
     }
 //DebtDetailsFragment interfaces
     override fun addNewDebtFragment(idHuman: Int, currency: String, name: String) {
@@ -154,6 +244,12 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         val fragment = NewDebtFragment()
         fragment.arguments = args
         fragmentTransaction.replace(R.id.frameLayout, fragment).addToBackStack("secondary").commit()
+        addClick.execute()
+        if (getClicks.execute())
+            if (interstitialAd.isLoaded) {
+                interstitialAd.show()
+                setClick.execute()
+            }
     }
 
     override fun editDebt(debtDomain: DebtDomain, currency: String, name: String) {
@@ -171,12 +267,24 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         val fragment = NewDebtFragment()
         fragment.arguments = args
         fragmentTransaction.replace(R.id.frameLayout, fragment).addToBackStack("secondary").commit()
+        addClick.execute()
+        if (getClicks.execute())
+            if (interstitialAd.isLoaded) {
+                interstitialAd.show()
+                setClick.execute()
+            }
     }
 
     override fun deleteHuman() {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.frameLayout, MainFragment()).commit()
+        addClick.execute()
+        if (getClicks.execute())
+            if (interstitialAd.isLoaded) {
+                interstitialAd.show()
+                setClick.execute()
+            }
     }
 
 
