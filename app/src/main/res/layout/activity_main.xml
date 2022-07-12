@@ -16,6 +16,7 @@
         android:id="@+id/bannerAdView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/black"
         android:layout_alignParentBottom="true" />
 
 </RelativeLayout>

@@ -75,6 +75,8 @@ class DebtDetailsFragment: Fragment() {
     lateinit var deleteDebtsByHumanId: DeleteDebtsByHumanIdUseCase
 
     lateinit var debtClickListener: DebtAdapter.OnDebtClickListener
+    lateinit var overallSumTextView: TextView
+//    val overallSumTextView: TextView = view.findViewById(R.id.overallSumTextView)
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -118,6 +120,7 @@ class DebtDetailsFragment: Fragment() {
                             .map {
                                 deleteDebt.execute(debtDomain)
                                 addSumUseCase.execute(humanId = debtDomain.idHuman, sum = (debtDomain.sum * (-1.0)))
+                                setOverallSumText(sum = getHumanSumDebt.execute(idHuman!!), currency = currency!!)
                                 Log.e("TAG", "Debt delete success")
                                 return@map getAllDebts.execute(id = idHuman!!)
                             }
@@ -166,21 +169,7 @@ class DebtDetailsFragment: Fragment() {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                val decimalFormat = DecimalFormat("###,###,###.##")
-                val customSymbol: DecimalFormatSymbols = DecimalFormatSymbols()
-                customSymbol.groupingSeparator = ' '
-                decimalFormat.decimalFormatSymbols = customSymbol
-                if (it > 0) {
-                    overallSumTextView.setTextColor(ContextCompat.getColor(view.context, R.color.green))
-                    overallSumTextView.text = "+${decimalFormat.format(it)} $currency"
-                }
-                else if (it < 0) {
-                    overallSumTextView.setTextColor(ContextCompat.getColor(view.context, R.color.red))
-                    overallSumTextView.text = "${decimalFormat.format(it)} $currency"
-                } else {
-                    overallSumTextView.setTextColor(ContextCompat.getColor(view.context, R.color.darkgray))
-                    overallSumTextView.text = "${decimalFormat.format(it)} $currency"
-                }
+                setOverallSumText(sum = it, currency = currency!!)
             }, {
             })
 
@@ -219,5 +208,24 @@ class DebtDetailsFragment: Fragment() {
         }
 
         return view
+    }
+
+    fun setOverallSumText(sum: Double, currency: String) {
+        overallSumTextView = requireView().findViewById(R.id.overallSumTextView)
+        val decimalFormat = DecimalFormat("###,###,###.##")
+        val customSymbol: DecimalFormatSymbols = DecimalFormatSymbols()
+        customSymbol.groupingSeparator = ' '
+        decimalFormat.decimalFormatSymbols = customSymbol
+        if (sum > 0) {
+            overallSumTextView.setTextColor(ContextCompat.getColor(requireView().context, R.color.green))
+            overallSumTextView.text = "+${decimalFormat.format(sum)} $currency"
+        }
+        else if (sum < 0) {
+            overallSumTextView.setTextColor(ContextCompat.getColor(requireView().context, R.color.red))
+            overallSumTextView.text = "${decimalFormat.format(sum)} $currency"
+        } else {
+            overallSumTextView.setTextColor(ContextCompat.getColor(requireView().context, R.color.darkgray))
+            overallSumTextView.text = "${decimalFormat.format(sum)} $currency"
+        }
     }
 }
