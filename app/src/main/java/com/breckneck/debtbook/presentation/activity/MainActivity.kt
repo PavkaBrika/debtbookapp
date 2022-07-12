@@ -16,9 +16,10 @@ import com.breckneck.debtbook.presentation.fragment.DebtDetailsFragment
 import com.breckneck.debtbook.presentation.fragment.MainFragment
 import com.breckneck.debtbook.presentation.fragment.NewDebtFragment
 import com.breckneck.deptbook.domain.model.DebtDomain
+import com.yandex.mobile.ads.banner.AdSize
+import com.yandex.mobile.ads.banner.BannerAdEventListener
 import com.yandex.mobile.ads.banner.BannerAdView
-import com.yandex.mobile.ads.common.InitializationListener
-import com.yandex.mobile.ads.common.MobileAds
+import com.yandex.mobile.ads.common.*
 
 class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, NewDebtFragment.OnButtonClickListener, DebtDetailsFragment.OnButtonClickListener {
 
@@ -38,7 +39,38 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         })
 
         val bannerAd: BannerAdView = findViewById(R.id.bannerAdView)
-        bannerAd.setAdUnitId("R-M-DEMO-300x250")
+        val adRequestBuild = AdRequest.Builder().build()
+        bannerAd.apply {
+            setAdUnitId("R-M-DEMO-320x50")
+            setAdSize(AdSize.flexibleSize(320, 50))
+            setBannerAdEventListener(object : BannerAdEventListener{
+                override fun onAdLoaded() {
+                    Log.e("TAG", "AD LOADED")
+                }
+
+                override fun onAdFailedToLoad(p0: AdRequestError) {
+                    Log.e("TAG", "AD LOAD FAILED")
+                }
+
+                override fun onAdClicked() {
+                    Log.e("TAG", "AD CLICKED")
+                }
+
+                override fun onLeftApplication() {
+                    Log.e("TAG", "AD LEFT")
+                }
+
+                override fun onReturnedToApplication() {
+                    Log.e("TAG", "AD RETURN")
+                }
+
+                override fun onImpression(p0: ImpressionData?) {
+                    Log.e("TAG", "AD IMPRESSION")
+                }
+
+            })
+            loadAd(adRequestBuild)
+        }
 //        val container: FragmentContainerView = findViewById(R.id.frameLayout)
 //        scene1 = Scene.getSceneForLayout(container , R.layout.fragment_main, this)
 //        scene2 = Scene.getSceneForLayout(container , R.layout.fragment_debt_details, this)

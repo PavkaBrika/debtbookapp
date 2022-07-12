@@ -18,4 +18,5 @@
     <string name="newdebt">Добавить новый долг</string>
     <string name="editdebtcollaps">Изменить долг</string>
     <string name="debts">Долги</string>
+    <string name="nodebts">Долгов пока что нет. Нажмите кнопку внизу, чтобы добавить.</string>
 </resources>
