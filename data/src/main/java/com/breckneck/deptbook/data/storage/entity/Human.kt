@@ -3,7 +3,6 @@ package com.breckneck.deptbook.data.storage.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-
 @Entity
 data class Human(
     @PrimaryKey

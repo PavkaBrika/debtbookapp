@@ -3,14 +3,8 @@ package com.breckneck.debtbook.presentation.activity
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
 import androidx.fragment.app.FragmentTransaction
-import androidx.transition.Scene
-import androidx.transition.Transition
-import androidx.transition.TransitionInflater
-import androidx.transition.TransitionManager
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.presentation.fragment.DebtDetailsFragment
 import com.breckneck.debtbook.presentation.fragment.MainFragment
@@ -30,10 +24,6 @@ import com.yandex.mobile.ads.interstitial.InterstitialAdEventListener
 
 class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, NewDebtFragment.OnButtonClickListener, DebtDetailsFragment.OnButtonClickListener {
 
-//    private lateinit var scene1: Scene
-//    private lateinit var scene2: Scene
-//    private lateinit var currentScene: Scene
-//    private lateinit var transiction: Transition
     private lateinit var interstitialAd: InterstitialAd
 
     lateinit var sharedPrefsAdStorage: SharedPrefsAdStorageImpl
@@ -62,7 +52,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         val bannerAd: BannerAdView = findViewById(R.id.bannerAdView)
         val adRequestBuild = AdRequest.Builder().build()
         bannerAd.apply {
-            setAdUnitId("R-M-1611210-2")
+            setAdUnitId("R-M-1753297-1")
             setAdSize(AdSize.flexibleSize(320, 50))
             setBannerAdEventListener(object : BannerAdEventListener{
                 override fun onAdLoaded() {
@@ -98,7 +88,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         //INTERSTITIAL AD
         interstitialAd = InterstitialAd(this)
         interstitialAd.apply {
-            setAdUnitId("R-M-1611210-3")
+            setAdUnitId("R-M-1753297-2")
             setInterstitialAdEventListener(object : InterstitialAdEventListener {
                 override fun onAdLoaded() {
                     Log.e("TAG", "INTERSTITIAL LOADED")
@@ -136,14 +126,6 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
             })
             loadAd(adRequestBuild)
         }
-//        val container: FragmentContainerView = findViewById(R.id.frameLayout)
-//        scene1 = Scene.getSceneForLayout(container , R.layout.fragment_main, this)
-//        scene2 = Scene.getSceneForLayout(container , R.layout.fragment_debt_details, this)
-//
-//        scene1.enter()
-//        currentScene = scene1
-//
-//        transiction = TransitionInflater.from(this).inflateTransition(R.transition.slide_right)
 
         val fragmentManager = supportFragmentManager
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
@@ -151,17 +133,8 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
     }
 //MainFragment interfaces
     override fun OnHumanClick(idHuman: Int, currency: String, name: String) {
-//        if (currentScene === scene1) {
-//            TransitionManager.go(scene2, transiction)
-//            currentScene = scene2
-//        } else {
-//            TransitionManager.go(scene1, transiction)
-//            currentScene = scene1
-//        }
         val fragmentManager = supportFragmentManager
-        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
-//            .setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
-            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
         val args = Bundle()
         args.putInt("idHuman", idHuman)
         args.putString("currency", currency)
@@ -175,15 +148,11 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
                 interstitialAd.show()
                 setClick.execute()
             }
-
     }
 
     override fun OnAddButtonClick() {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-//            .setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
-////            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-
         fragmentTransaction.replace(R.id.frameLayout, NewDebtFragment()).addToBackStack("main").commit()
         addClick.execute()
         if (getClicks.execute())
@@ -196,7 +165,6 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
     override fun DebtDetailsNewHuman(currency: String, name: String) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-//            .setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
         supportFragmentManager.popBackStack("secondary",  POP_BACK_STACK_INCLUSIVE)
         val args = Bundle()
         args.putBoolean("newHuman", true)
@@ -216,7 +184,6 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
     override fun DebtDetailsExistHuman(idHuman: Int, currency: String, name: String) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-//            .setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
         supportFragmentManager.popBackStack("secondary",  POP_BACK_STACK_INCLUSIVE)
         val args = Bundle()
         args.putInt("idHuman", idHuman)
@@ -236,7 +203,6 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
     override fun addNewDebtFragment(idHuman: Int, currency: String, name: String) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-//            .setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
         val args = Bundle()
         args.putInt("idHuman", idHuman)
         args.putString("currency", currency)
@@ -255,7 +221,6 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
     override fun editDebt(debtDomain: DebtDomain, currency: String, name: String) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-//            .setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
         val args = Bundle()
         args.putInt("idDebt", debtDomain.id)
         args.putInt("idHuman", debtDomain.idHuman)
@@ -286,6 +251,4 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
                 setClick.execute()
             }
     }
-
-
 }

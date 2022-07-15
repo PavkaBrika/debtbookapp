@@ -1,7 +1,6 @@
 package com.breckneck.deptbook.data.storage.database
 
 import android.content.Context
-import android.content.SharedPreferences
 import androidx.room.Room
 import com.breckneck.deptbook.data.storage.HumanStorage
 import com.breckneck.deptbook.data.storage.entity.Human
