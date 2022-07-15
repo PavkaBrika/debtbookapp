@@ -10,11 +10,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -76,8 +73,6 @@ class DebtDetailsFragment: Fragment() {
 
     lateinit var debtClickListener: DebtAdapter.OnDebtClickListener
     lateinit var overallSumTextView: TextView
-//    val overallSumTextView: TextView = view.findViewById(R.id.overallSumTextView)
-
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_debt_details, container, false)

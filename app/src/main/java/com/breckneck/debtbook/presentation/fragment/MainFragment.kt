@@ -1,17 +1,13 @@
 package com.breckneck.debtbook.presentation.fragment
 
 import android.content.Context
-import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
-import android.transition.TransitionInflater
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.TextView
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
@@ -20,10 +16,8 @@ import com.breckneck.debtbook.adapter.HumanAdapter
 import com.breckneck.deptbook.data.storage.database.DataBaseHumanStorageImpl
 import com.breckneck.deptbook.data.storage.repository.HumanRepositoryImpl
 import com.breckneck.deptbook.domain.model.HumanDomain
-import com.breckneck.deptbook.domain.usecase.Debt.GetAllDebtsUseCase
 import com.breckneck.deptbook.domain.usecase.Human.GetAllDebtsSumUseCase
 import com.breckneck.deptbook.domain.usecase.Human.GetAllHumansUseCase
-import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -42,12 +36,6 @@ class MainFragment : Fragment() {
         super.onAttach(context)
         buttonClickListener = context as OnButtonClickListener
     }
-
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        val inflater = TransitionInflater.from(requireContext())
-//        exitTransition = inflater.inflateTransition(R.transition.slide_right)
-//    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_main, container, false)
@@ -126,7 +114,6 @@ class MainFragment : Fragment() {
                     overallNegativeSumTextView.text = it
                 }
             },{})
-
 
         return view
     }

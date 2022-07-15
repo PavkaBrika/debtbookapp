@@ -2,7 +2,7 @@ package com.breckneck.deptbook.data.storage.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.util.*
+
 @Entity
 data class Debt(
     @PrimaryKey
