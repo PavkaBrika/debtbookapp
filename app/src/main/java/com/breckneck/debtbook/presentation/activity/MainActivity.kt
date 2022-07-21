@@ -1,12 +1,10 @@
 package com.breckneck.debtbook.presentation.activity
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
 import androidx.fragment.app.FragmentTransaction
 import com.breckneck.debtbook.R
-import com.breckneck.debtbook.presentation.MainViewModel
 import com.breckneck.debtbook.presentation.fragment.DebtDetailsFragment
 import com.breckneck.debtbook.presentation.fragment.MainFragment
 import com.breckneck.debtbook.presentation.fragment.NewDebtFragment
@@ -16,12 +14,7 @@ import com.breckneck.deptbook.domain.model.DebtDomain
 import com.breckneck.deptbook.domain.usecase.Ad.AddClickUseCase
 import com.breckneck.deptbook.domain.usecase.Ad.GetClicksUseCase
 import com.breckneck.deptbook.domain.usecase.Ad.SetClicksUseCase
-import com.yandex.mobile.ads.banner.AdSize
-import com.yandex.mobile.ads.banner.BannerAdEventListener
-import com.yandex.mobile.ads.banner.BannerAdView
-import com.yandex.mobile.ads.common.*
 import com.yandex.mobile.ads.interstitial.InterstitialAd
-import com.yandex.mobile.ads.interstitial.InterstitialAdEventListener
 
 class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, NewDebtFragment.OnButtonClickListener, DebtDetailsFragment.OnButtonClickListener {
 
@@ -32,15 +25,15 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
     lateinit var getClicks: GetClicksUseCase
     lateinit var addClick: AddClickUseCase
     lateinit var setClick: SetClicksUseCase
-
-    private lateinit var vm: MainViewModel
+//
+//    private lateinit var vm: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        Log.e("TAG", "Activity created")
-        vm = MainViewModel()
+//        Log.e("TAG", "Activity created")
+//        vm = ViewModelProvider(this).get(MainViewModel::class.java)
 
 
 
@@ -48,11 +41,11 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
 
 //        YANDEX MOBILE ADVERTISMENT
 //
-//        sharedPrefsAdStorage = SharedPrefsAdStorageImpl(context = this)
-//        adRepository = AdRepositoryImpl(adStorage = sharedPrefsAdStorage)
-//        getClicks = GetClicksUseCase(adRepository = adRepository)
-//        addClick = AddClickUseCase(adRepository = adRepository)
-//        setClick = SetClicksUseCase(adRepository = adRepository)
+        sharedPrefsAdStorage = SharedPrefsAdStorageImpl(context = this)
+        adRepository = AdRepositoryImpl(adStorage = sharedPrefsAdStorage)
+        getClicks = GetClicksUseCase(adRepository = adRepository)
+        addClick = AddClickUseCase(adRepository = adRepository)
+        setClick = SetClicksUseCase(adRepository = adRepository)
 //
 //
 //        MobileAds.initialize(this, object: InitializationListener {
@@ -145,6 +138,8 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.frameLayout, MainFragment()).commit()
     }
+
+
 //MainFragment interfaces
     override fun OnHumanClick(idHuman: Int, currency: String, name: String) {
         val fragmentManager = supportFragmentManager
@@ -156,24 +151,24 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         val fragment = DebtDetailsFragment()
         fragment.arguments = args
         fragmentTransaction.replace(R.id.frameLayout, fragment).addToBackStack("main").commit()
-        addClick.execute()
-        if (getClicks.execute())
-            if (interstitialAd.isLoaded) {
-                interstitialAd.show()
-                setClick.execute()
-            }
+//        addClick.execute()
+//        if (getClicks.execute())
+//            if (interstitialAd.isLoaded) {
+//                interstitialAd.show()
+//                setClick.execute()
+//            }
     }
 
     override fun OnAddButtonClick() {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
         fragmentTransaction.replace(R.id.frameLayout, NewDebtFragment()).addToBackStack("main").commit()
-        addClick.execute()
-        if (getClicks.execute())
-            if (interstitialAd.isLoaded) {
-                interstitialAd.show()
-                setClick.execute()
-            }
+//        addClick.execute()
+//        if (getClicks.execute())
+//            if (interstitialAd.isLoaded) {
+//                interstitialAd.show()
+//                setClick.execute()
+//            }
     }
 //NewDebtFragment interfaces
     override fun DebtDetailsNewHuman(currency: String, name: String) {
@@ -187,12 +182,12 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         val fragment = DebtDetailsFragment()
         fragment.arguments = args
         fragmentTransaction.replace(R.id.frameLayout, fragment).commit()
-        addClick.execute()
-        if (getClicks.execute())
-            if (interstitialAd.isLoaded) {
-                interstitialAd.show()
-                setClick.execute()
-            }
+//        addClick.execute()
+//        if (getClicks.execute())
+//            if (interstitialAd.isLoaded) {
+//                interstitialAd.show()
+//                setClick.execute()
+//            }
     }
 
     override fun DebtDetailsExistHuman(idHuman: Int, currency: String, name: String) {
@@ -206,12 +201,12 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         val fragment = DebtDetailsFragment()
         fragment.arguments = args
         fragmentTransaction.replace(R.id.frameLayout, fragment).commit()
-        addClick.execute()
-        if (getClicks.execute())
-            if (interstitialAd.isLoaded) {
-                interstitialAd.show()
-                setClick.execute()
-            }
+//        addClick.execute()
+//        if (getClicks.execute())
+//            if (interstitialAd.isLoaded) {
+//                interstitialAd.show()
+//                setClick.execute()
+//            }
     }
 //DebtDetailsFragment interfaces
     override fun addNewDebtFragment(idHuman: Int, currency: String, name: String) {
@@ -224,12 +219,12 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         val fragment = NewDebtFragment()
         fragment.arguments = args
         fragmentTransaction.replace(R.id.frameLayout, fragment).addToBackStack("secondary").commit()
-        addClick.execute()
-        if (getClicks.execute())
-            if (interstitialAd.isLoaded) {
-                interstitialAd.show()
-                setClick.execute()
-            }
+//        addClick.execute()
+//        if (getClicks.execute())
+//            if (interstitialAd.isLoaded) {
+//                interstitialAd.show()
+//                setClick.execute()
+//            }
     }
 
     override fun editDebt(debtDomain: DebtDomain, currency: String, name: String) {
@@ -246,23 +241,23 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         val fragment = NewDebtFragment()
         fragment.arguments = args
         fragmentTransaction.replace(R.id.frameLayout, fragment).addToBackStack("secondary").commit()
-        addClick.execute()
-        if (getClicks.execute())
-            if (interstitialAd.isLoaded) {
-                interstitialAd.show()
-                setClick.execute()
-            }
+//        addClick.execute()
+//        if (getClicks.execute())
+//            if (interstitialAd.isLoaded) {
+//                interstitialAd.show()
+//                setClick.execute()
+//            }
     }
 
     override fun deleteHuman() {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.frameLayout, MainFragment()).commit()
-        addClick.execute()
-        if (getClicks.execute())
-            if (interstitialAd.isLoaded) {
-                interstitialAd.show()
-                setClick.execute()
-            }
+//        addClick.execute()
+//        if (getClicks.execute())
+//            if (interstitialAd.isLoaded) {
+//                interstitialAd.show()
+//                setClick.execute()
+//            }
     }
 }

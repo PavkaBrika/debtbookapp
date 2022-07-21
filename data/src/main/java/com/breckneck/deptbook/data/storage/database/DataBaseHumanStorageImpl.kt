@@ -11,8 +11,6 @@ private val ZONE_ID = "zoneid"
 
 class DataBaseHumanStorageImpl(context: Context) : HumanStorage {
 
-
-
     val sharedPreferences = context.getSharedPreferences(SHARED_PREFS_NAME, Context.MODE_PRIVATE)
     val db = Room.databaseBuilder(context, AppDataBase::class.java, "HumanDataBase").build()
 
