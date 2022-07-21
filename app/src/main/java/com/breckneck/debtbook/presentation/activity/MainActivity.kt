@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
 import androidx.fragment.app.FragmentTransaction
 import com.breckneck.debtbook.R
+import com.breckneck.debtbook.presentation.MainViewModel
 import com.breckneck.debtbook.presentation.fragment.DebtDetailsFragment
 import com.breckneck.debtbook.presentation.fragment.MainFragment
 import com.breckneck.debtbook.presentation.fragment.NewDebtFragment
@@ -32,100 +33,113 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
     lateinit var addClick: AddClickUseCase
     lateinit var setClick: SetClicksUseCase
 
+    private lateinit var vm: MainViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        sharedPrefsAdStorage = SharedPrefsAdStorageImpl(context = this)
-        adRepository = AdRepositoryImpl(adStorage = sharedPrefsAdStorage)
-        getClicks = GetClicksUseCase(adRepository = adRepository)
-        addClick = AddClickUseCase(adRepository = adRepository)
-        setClick = SetClicksUseCase(adRepository = adRepository)
+        Log.e("TAG", "Activity created")
+        vm = MainViewModel()
 
-        MobileAds.initialize(this, object: InitializationListener {
-            override fun onInitializationCompleted() {
-                Log.e("TAG", "Yandex initialized")
-            }
-        })
-        MobileAds.setUserConsent(false)
-        //BANNER AD
-        val bannerAd: BannerAdView = findViewById(R.id.bannerAdView)
-        val adRequestBuild = AdRequest.Builder().build()
-        bannerAd.apply {
-            setAdUnitId("R-M-1753297-1")
-            setAdSize(AdSize.flexibleSize(320, 50))
-            setBannerAdEventListener(object : BannerAdEventListener{
-                override fun onAdLoaded() {
-                    Log.e("TAG", "BANNER LOADED")
-                }
 
-                override fun onAdFailedToLoad(p0: AdRequestError) {
-                    Log.e("TAG", "BANNER LOAD FAILED")
-                    loadAd(adRequestBuild)
-                }
 
-                override fun onAdClicked() {
-                    Log.e("TAG", "BANNER CLICKED")
-                }
 
-                override fun onLeftApplication() {
-                    Log.e("TAG", "BANNER LEFT")
-                }
 
-                override fun onReturnedToApplication() {
-                    Log.e("TAG", "BANNER RETURN")
-                }
-
-                override fun onImpression(p0: ImpressionData?) {
-                    Log.e("TAG", "BANNER IMPRESSION")
-                    loadAd(adRequestBuild)
-                }
-
-            })
-            loadAd(adRequestBuild)
-        }
-
-        //INTERSTITIAL AD
-        interstitialAd = InterstitialAd(this)
-        interstitialAd.apply {
-            setAdUnitId("R-M-1753297-2")
-            setInterstitialAdEventListener(object : InterstitialAdEventListener {
-                override fun onAdLoaded() {
-                    Log.e("TAG", "INTERSTITIAL LOADED")
-                }
-
-                override fun onAdFailedToLoad(p0: AdRequestError) {
-                    Log.e("TAG", "INTERSTITIAL LOAD FAILED")
-                    loadAd(adRequestBuild)
-                }
-
-                override fun onAdShown() {
-                    Log.e("TAG", "INTERSTITIAL SHOWN")
-                }
-
-                override fun onAdDismissed() {
-                    Log.e("TAG", "INTERSTITIAL DISMISSED")
-                }
-
-                override fun onAdClicked() {
-                    Log.e("TAG", "INTERSTITIAL CLICKED")
-                }
-
-                override fun onLeftApplication() {
-                    Log.e("TAG", "INTERSTITIAL LEFT APP")
-                }
-
-                override fun onReturnedToApplication() {
-                    Log.e("TAG", "INTERSTITIAL RETURN APP")
-                }
-
-                override fun onImpression(p0: ImpressionData?) {
-                    Log.e("TAG", "INTERSTITIAL IMPRESSION")
-                    loadAd(adRequestBuild)
-                }
-            })
-            loadAd(adRequestBuild)
-        }
+//        YANDEX MOBILE ADVERTISMENT
+//
+//        sharedPrefsAdStorage = SharedPrefsAdStorageImpl(context = this)
+//        adRepository = AdRepositoryImpl(adStorage = sharedPrefsAdStorage)
+//        getClicks = GetClicksUseCase(adRepository = adRepository)
+//        addClick = AddClickUseCase(adRepository = adRepository)
+//        setClick = SetClicksUseCase(adRepository = adRepository)
+//
+//
+//        MobileAds.initialize(this, object: InitializationListener {
+//            override fun onInitializationCompleted() {
+//                Log.e("TAG", "Yandex initialized")
+//            }
+//        })
+//        MobileAds.setUserConsent(false)
+//        //BANNER AD
+//        val bannerAd: BannerAdView = findViewById(R.id.bannerAdView)
+//        val adRequestBuild = AdRequest.Builder().build()
+//        bannerAd.apply {
+//            //setAdUnitId("R-M-1753297-1")
+//            setAdUnitId("R-M-DEMO-320x50")
+//            setAdSize(AdSize.flexibleSize(320, 50))
+//            setBannerAdEventListener(object : BannerAdEventListener{
+//                override fun onAdLoaded() {
+//                    Log.e("TAG", "BANNER LOADED")
+//                }
+//
+//                override fun onAdFailedToLoad(p0: AdRequestError) {
+//                    Log.e("TAG", "BANNER LOAD FAILED")
+//                    loadAd(adRequestBuild)
+//                }
+//
+//                override fun onAdClicked() {
+//                    Log.e("TAG", "BANNER CLICKED")
+//                }
+//
+//                override fun onLeftApplication() {
+//                    Log.e("TAG", "BANNER LEFT")
+//                }
+//
+//                override fun onReturnedToApplication() {
+//                    Log.e("TAG", "BANNER RETURN")
+//                }
+//
+//                override fun onImpression(p0: ImpressionData?) {
+//                    Log.e("TAG", "BANNER IMPRESSION")
+//                    loadAd(adRequestBuild)
+//                }
+//
+//            })
+//            loadAd(adRequestBuild)
+//        }
+//
+//        //INTERSTITIAL AD
+//        interstitialAd = InterstitialAd(this)
+//        interstitialAd.apply {
+//            setAdUnitId("R-M-1753297-2")
+//            setInterstitialAdEventListener(object : InterstitialAdEventListener {
+//                override fun onAdLoaded() {
+//                    Log.e("TAG", "INTERSTITIAL LOADED")
+//                }
+//
+//                override fun onAdFailedToLoad(p0: AdRequestError) {
+//                    Log.e("TAG", "INTERSTITIAL LOAD FAILED")
+//                    loadAd(adRequestBuild)
+//                }
+//
+//                override fun onAdShown() {
+//                    Log.e("TAG", "INTERSTITIAL SHOWN")
+//                }
+//
+//                override fun onAdDismissed() {
+//                    Log.e("TAG", "INTERSTITIAL DISMISSED")
+//                }
+//
+//                override fun onAdClicked() {
+//                    Log.e("TAG", "INTERSTITIAL CLICKED")
+//                }
+//
+//                override fun onLeftApplication() {
+//                    Log.e("TAG", "INTERSTITIAL LEFT APP")
+//                }
+//
+//                override fun onReturnedToApplication() {
+//                    Log.e("TAG", "INTERSTITIAL RETURN APP")
+//                }
+//
+//                override fun onImpression(p0: ImpressionData?) {
+//                    Log.e("TAG", "INTERSTITIAL IMPRESSION")
+//                    loadAd(adRequestBuild)
+//                }
+//            })
+//            loadAd(adRequestBuild)
+//        }
 
         val fragmentManager = supportFragmentManager
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
