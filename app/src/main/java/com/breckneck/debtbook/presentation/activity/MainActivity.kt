@@ -21,7 +21,9 @@ import com.yandex.mobile.ads.banner.BannerAdView
 import com.yandex.mobile.ads.common.*
 import com.yandex.mobile.ads.interstitial.InterstitialAd
 import com.yandex.mobile.ads.interstitial.InterstitialAdEventListener
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, NewDebtFragment.OnButtonClickListener, DebtDetailsFragment.OnButtonClickListener {
 
     private lateinit var interstitialAd: InterstitialAd

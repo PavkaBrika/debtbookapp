@@ -9,20 +9,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.adapter.HumanAdapter
-import com.breckneck.debtbook.presentation.viewmodel.mainfragment.MainFragmentViewModel
-import com.breckneck.debtbook.presentation.viewmodel.mainfragment.MainFragmentViewModelFactory
+import com.breckneck.debtbook.presentation.viewmodel.MainFragmentViewModel
 import com.breckneck.deptbook.domain.model.HumanDomain
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainFragment : Fragment() {
 
-    private lateinit var vm: MainFragmentViewModel
+    private val vm: MainFragmentViewModel by viewModels()
 
     interface OnButtonClickListener{
         fun OnHumanClick(idHuman: Int, currency: String, name: String)
@@ -38,8 +40,6 @@ class MainFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.e("TAG", "Activity created")
-        vm = ViewModelProvider(requireActivity(), MainFragmentViewModelFactory(requireActivity())).get(
-            MainFragmentViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

@@ -29,12 +29,15 @@ import com.breckneck.deptbook.domain.usecase.Debt.GetAllDebtsUseCase
 import com.breckneck.deptbook.domain.usecase.Human.*
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class DebtDetailsFragment: Fragment() {
 
     interface OnButtonClickListener{
@@ -58,37 +61,21 @@ class DebtDetailsFragment: Fragment() {
         enterTransition = inflater.inflateTransition(R.transition.slide_right)
     }
 
-    lateinit var dataBaseHumanStorage: DataBaseHumanStorageImpl
-    lateinit var humanRepository: HumanRepositoryImpl
-    lateinit var getLastHumanId: GetLastHumanIdUseCase
-    lateinit var addSumUseCase: AddSumUseCase
-    lateinit var getHumanSumDebt: GetHumanSumDebtUseCase
-    lateinit var deleteHuman: DeleteHumanUseCase
 
-    lateinit var dataBaseDebtStorage: DataBaseDebtStorageImpl
-    lateinit var debtRepository: DebtRepositoryImpl
-    lateinit var getAllDebts: GetAllDebtsUseCase
-    lateinit var deleteDebt: DeleteDebtUseCase
-    lateinit var deleteDebtsByHumanId: DeleteDebtsByHumanIdUseCase
+    @Inject lateinit var getLastHumanId: GetLastHumanIdUseCase
+    @Inject lateinit var addSumUseCase: AddSumUseCase
+    @Inject lateinit var getHumanSumDebt: GetHumanSumDebtUseCase
+    @Inject lateinit var deleteHuman: DeleteHumanUseCase
+
+    @Inject lateinit var getAllDebts: GetAllDebtsUseCase
+    @Inject lateinit var deleteDebt: DeleteDebtUseCase
+    @Inject lateinit var deleteDebtsByHumanId: DeleteDebtsByHumanIdUseCase
 
     lateinit var debtClickListener: DebtAdapter.OnDebtClickListener
     lateinit var overallSumTextView: TextView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_debt_details, container, false)
-
-        dataBaseHumanStorage = DataBaseHumanStorageImpl(context = view.context)
-        humanRepository = HumanRepositoryImpl(humanStorage = dataBaseHumanStorage)
-        getLastHumanId = GetLastHumanIdUseCase(humanRepository = humanRepository)
-        addSumUseCase = AddSumUseCase(humanRepository = humanRepository)
-        getHumanSumDebt = GetHumanSumDebtUseCase(humanRepository = humanRepository)
-        deleteHuman = DeleteHumanUseCase(humanRepository = humanRepository)
-
-        dataBaseDebtStorage = DataBaseDebtStorageImpl(context = view.context)
-        debtRepository = DebtRepositoryImpl(debtStorage = dataBaseDebtStorage)
-        getAllDebts = GetAllDebtsUseCase(debtRepository = debtRepository)
-        deleteDebt = DeleteDebtUseCase(debtRepository = debtRepository)
-        deleteDebtsByHumanId = DeleteDebtsByHumanIdUseCase(debtRepository = debtRepository)
 
         val recyclerView: RecyclerView = view.findViewById(R.id.debtsRecyclerView)
         recyclerView.addItemDecoration(DividerItemDecoration(view.context, DividerItemDecoration.VERTICAL))

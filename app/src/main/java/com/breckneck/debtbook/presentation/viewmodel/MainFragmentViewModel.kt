@@ -1,4 +1,4 @@
-package com.breckneck.debtbook.presentation.viewmodel.mainfragment
+package com.breckneck.debtbook.presentation.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
@@ -6,11 +6,15 @@ import androidx.lifecycle.ViewModel
 import com.breckneck.deptbook.domain.model.HumanDomain
 import com.breckneck.deptbook.domain.usecase.Human.GetAllDebtsSumUseCase
 import com.breckneck.deptbook.domain.usecase.Human.GetAllHumansUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
+import javax.inject.Inject
 
-class MainFragmentViewModel(
+
+@HiltViewModel
+class MainFragmentViewModel @Inject constructor(
     private val getAllHumansUseCase: GetAllHumansUseCase,
     private val getAllDebtsSumUseCase: GetAllDebtsSumUseCase
 ) : ViewModel() {

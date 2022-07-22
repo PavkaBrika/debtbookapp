@@ -25,13 +25,16 @@ import com.breckneck.deptbook.domain.usecase.Human.GetLastHumanIdUseCase
 import com.breckneck.deptbook.domain.usecase.Human.SetHumanUseCase
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import dagger.hilt.android.AndroidEntryPoint
 import io.ghyeok.stickyswitch.widget.StickySwitch
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.text.DecimalFormat
 import java.util.*
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class NewDebtFragment: Fragment() {
 
     val decimalFormat = DecimalFormat("#.##")
@@ -54,24 +57,21 @@ class NewDebtFragment: Fragment() {
         enterTransition = inflater.inflateTransition(R.transition.slide_up)
     }
 
+
+    @Inject lateinit var setHumanUseCase: SetHumanUseCase
+    @Inject lateinit var getLastHumanIdUseCase: GetLastHumanIdUseCase
+    @Inject lateinit var addSumUseCase: AddSumUseCase
+
+    @Inject lateinit var setDebtUseCase: SetDebtUseCase
+    @Inject lateinit var getCurrentDateUseCase: GetCurrentDateUseCase
+    @Inject lateinit var setDateUseCase: SetDateUseCase
+    @Inject lateinit var checkEditTextIsEmpty: CheckEditTextIsEmpty
+    @Inject lateinit var editDebtUseCase: EditDebtUseCase
+    @Inject lateinit var updateCurrentSumUseCase: UpdateCurrentSumUseCase
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_addnewhuman, container, false)
-
-        val dataBaseHumanStorage by lazy { DataBaseHumanStorageImpl(context = view.context) }
-        val humanRepository by lazy { HumanRepositoryImpl(humanStorage = dataBaseHumanStorage) }
-        val setHumanUseCase by lazy { SetHumanUseCase(humanRepository = humanRepository) }
-        val getLastHumanIdUseCase by lazy { GetLastHumanIdUseCase(humanRepository = humanRepository) }
-        val addSumUseCase by lazy { AddSumUseCase(humanRepository = humanRepository) }
-
-        val dataBaseDebtStorage by lazy { DataBaseDebtStorageImpl(context = view.context) }
-        val debtRepository by lazy { DebtRepositoryImpl(debtStorage = dataBaseDebtStorage) }
-        val setDebtUseCase by lazy { SetDebtUseCase(debtRepository = debtRepository)}
-        val getCurrentDateUseCase by lazy { GetCurrentDateUseCase() }
-        val setDateUseCase by lazy { SetDateUseCase() }
-        val checkEditTextIsEmpty by lazy { CheckEditTextIsEmpty() }
-        val editDebtUseCase by lazy { EditDebtUseCase(debtRepository = debtRepository) }
-        val updateCurrentSumUseCase by lazy { UpdateCurrentSumUseCase() }
-
+        
         val idHuman = arguments?.getInt("idHuman", -1)
         val idDebt = arguments?.getInt("idDebt", -1)
         var currency = arguments?.getString("currency", "")
