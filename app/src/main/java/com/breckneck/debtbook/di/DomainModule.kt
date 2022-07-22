@@ -48,28 +48,8 @@ class DomainModule {
     }
 
     @Provides
-    fun provideGetCurrentDateUseCase(): GetCurrentDateUseCase {
-        return GetCurrentDateUseCase()
-    }
-
-    @Provides
-    fun provideSetDateUseCase(): SetDateUseCase {
-        return SetDateUseCase()
-    }
-
-    @Provides
-    fun provideCheckEditTextIsEmpty(): CheckEditTextIsEmpty {
-        return CheckEditTextIsEmpty()
-    }
-
-    @Provides
     fun provideEditDebtUseCase(debtRepository: DebtRepository): EditDebtUseCase {
         return EditDebtUseCase(debtRepository = debtRepository)
-    }
-
-    @Provides
-    fun UpdateCurrentSumUseCase(): UpdateCurrentSumUseCase {
-        return UpdateCurrentSumUseCase()
     }
 
     @Provides

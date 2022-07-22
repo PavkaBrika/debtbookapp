@@ -63,15 +63,16 @@ class NewDebtFragment: Fragment() {
     @Inject lateinit var addSumUseCase: AddSumUseCase
 
     @Inject lateinit var setDebtUseCase: SetDebtUseCase
-    @Inject lateinit var getCurrentDateUseCase: GetCurrentDateUseCase
-    @Inject lateinit var setDateUseCase: SetDateUseCase
-    @Inject lateinit var checkEditTextIsEmpty: CheckEditTextIsEmpty
     @Inject lateinit var editDebtUseCase: EditDebtUseCase
-    @Inject lateinit var updateCurrentSumUseCase: UpdateCurrentSumUseCase
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_addnewhuman, container, false)
-        
+
+        val getCurrentDateUseCase by lazy { GetCurrentDateUseCase() }
+        val setDateUseCase by lazy { SetDateUseCase() }
+        val checkEditTextIsEmpty by lazy { CheckEditTextIsEmpty() }
+        val updateCurrentSumUseCase by lazy { UpdateCurrentSumUseCase() }
+
         val idHuman = arguments?.getInt("idHuman", -1)
         val idDebt = arguments?.getInt("idDebt", -1)
         var currency = arguments?.getString("currency", "")
