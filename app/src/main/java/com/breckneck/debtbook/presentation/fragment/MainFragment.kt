@@ -14,13 +14,18 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.adapter.HumanAdapter
+import com.breckneck.debtbook.app.App
 import com.breckneck.debtbook.presentation.viewmodel.mainfragment.MainFragmentViewModel
 import com.breckneck.debtbook.presentation.viewmodel.mainfragment.MainFragmentViewModelFactory
 import com.breckneck.deptbook.domain.model.HumanDomain
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import javax.inject.Inject
 
 class MainFragment : Fragment() {
+
+    @Inject
+    lateinit var vmFactory: MainFragmentViewModelFactory
 
     private lateinit var vm: MainFragmentViewModel
 
@@ -38,8 +43,8 @@ class MainFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.e("TAG", "Activity created")
-        vm = ViewModelProvider(requireActivity(), MainFragmentViewModelFactory(requireActivity())).get(
-            MainFragmentViewModel::class.java)
+        (requireActivity().applicationContext as App).appComponent.inject(this)
+        vm = ViewModelProvider(requireActivity(), vmFactory).get(MainFragmentViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

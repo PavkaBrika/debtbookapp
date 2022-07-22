@@ -15,6 +15,7 @@ import android.widget.*
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import com.breckneck.debtbook.R
+import com.breckneck.debtbook.app.App
 import com.breckneck.deptbook.data.storage.database.DataBaseDebtStorageImpl
 import com.breckneck.deptbook.data.storage.database.DataBaseHumanStorageImpl
 import com.breckneck.deptbook.data.storage.repository.DebtRepositoryImpl
@@ -31,10 +32,18 @@ import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.text.DecimalFormat
 import java.util.*
+import javax.inject.Inject
 
 class NewDebtFragment: Fragment() {
 
     val decimalFormat = DecimalFormat("#.##")
+
+//    @Inject
+//    lateinit var setHumanUseCase: SetHumanUseCase
+//    @Inject
+//    lateinit var getLastHumanIdUseCase: GetLastHumanIdUseCase
+//    @Inject
+//    lateinit var addSumUseCase: AddSumUseCase
 
     interface OnButtonClickListener{
         fun DebtDetailsNewHuman(currency: String, name: String)
@@ -46,12 +55,14 @@ class NewDebtFragment: Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         buttonClickListener = context as OnButtonClickListener
+//        (context as App).appComponent.inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val inflater = TransitionInflater.from(requireContext())
         enterTransition = inflater.inflateTransition(R.transition.slide_up)
+//        (requireActivity().applicationContext as App).appComponent.inject(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
