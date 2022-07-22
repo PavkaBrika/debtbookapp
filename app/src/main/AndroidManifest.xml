@@ -3,6 +3,7 @@
     package="com.breckneck.debtbook">
 
     <application
+        android:name=".app.App"
         android:allowBackup="false"
         android:fullBackupContent="false"
         android:icon="@mipmap/ic_launcher"
