@@ -1,4 +1,4 @@
-package com.breckneck.debtbook.presentation.viewmodel.mainfragment
+package com.breckneck.debtbook.presentation.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData

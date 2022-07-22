@@ -66,4 +66,11 @@ dependencies {
     def lifecycle_version = "2.5.0"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
+
+    //Koin
+    def koin_version = "3.2.0"
+    implementation "io.insert-koin:koin-core:$koin_version"
+    implementation "io.insert-koin:koin-android:$koin_version"
+    //Testing
+    testImplementation "io.insert-koin:koin-test:$koin_version"
 }

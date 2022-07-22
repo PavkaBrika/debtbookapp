@@ -29,6 +29,7 @@ import io.ghyeok.stickyswitch.widget.StickySwitch
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
+import org.koin.android.ext.android.inject
 import java.text.DecimalFormat
 import java.util.*
 
@@ -54,23 +55,20 @@ class NewDebtFragment: Fragment() {
         enterTransition = inflater.inflateTransition(R.transition.slide_up)
     }
 
+    private val setHumanUseCase: SetHumanUseCase by inject()
+    private val getLastHumanIdUseCase: GetLastHumanIdUseCase by inject()
+    private val addSumUseCase: AddSumUseCase by inject()
+
+    private val setDebtUseCase: SetDebtUseCase by inject()
+    private val getCurrentDateUseCase: GetCurrentDateUseCase by inject()
+    private val setDateUseCase: SetDateUseCase by inject()
+    private val checkEditTextIsEmpty: CheckEditTextIsEmpty by inject()
+    private val editDebtUseCase: EditDebtUseCase by inject()
+    private val updateCurrentSumUseCase: UpdateCurrentSumUseCase by inject()
+
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_addnewhuman, container, false)
-
-        val dataBaseHumanStorage by lazy { DataBaseHumanStorageImpl(context = view.context) }
-        val humanRepository by lazy { HumanRepositoryImpl(humanStorage = dataBaseHumanStorage) }
-        val setHumanUseCase by lazy { SetHumanUseCase(humanRepository = humanRepository) }
-        val getLastHumanIdUseCase by lazy { GetLastHumanIdUseCase(humanRepository = humanRepository) }
-        val addSumUseCase by lazy { AddSumUseCase(humanRepository = humanRepository) }
-
-        val dataBaseDebtStorage by lazy { DataBaseDebtStorageImpl(context = view.context) }
-        val debtRepository by lazy { DebtRepositoryImpl(debtStorage = dataBaseDebtStorage) }
-        val setDebtUseCase by lazy { SetDebtUseCase(debtRepository = debtRepository)}
-        val getCurrentDateUseCase by lazy { GetCurrentDateUseCase() }
-        val setDateUseCase by lazy { SetDateUseCase() }
-        val checkEditTextIsEmpty by lazy { CheckEditTextIsEmpty() }
-        val editDebtUseCase by lazy { EditDebtUseCase(debtRepository = debtRepository) }
-        val updateCurrentSumUseCase by lazy { UpdateCurrentSumUseCase() }
 
         val idHuman = arguments?.getInt("idHuman", -1)
         val idDebt = arguments?.getInt("idDebt", -1)
