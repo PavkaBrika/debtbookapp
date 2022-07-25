@@ -23,7 +23,7 @@
                 style="@style/collapsContentScrim"
                 app:titleEnabled="true"
                 app:title="@string/debts"
-                app:expandedTitleMarginStart="8dp"
+                app:expandedTitleMarginStart="16dp"
                 app:titleCollapseMode="scale"
                 app:expandedTitleGravity="bottom"
                 app:layout_scrollFlags="scroll">
@@ -76,7 +76,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="1dp"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="12dp"
             android:clickable="true"
             android:focusable="true"
             android:scrollbars="vertical"
