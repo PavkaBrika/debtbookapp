@@ -8,7 +8,7 @@ class CheckEditTextIsEmpty {
         for (arg in arr) {
             if (arg == "")
                 isEmpty = true
-            if (arg != " ") {
+            if ((arg != " ")&&(arg != "")) {
                 isEmpty = false
                 break
             }
