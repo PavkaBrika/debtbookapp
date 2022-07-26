@@ -63,8 +63,8 @@ val domainModule = module {
         SetDateUseCase()
     }
 
-    factory<CheckEditTextIsEmpty> {
-        CheckEditTextIsEmpty()
+    factory<CheckEditTextIsEmptyUseCase> {
+        CheckEditTextIsEmptyUseCase()
     }
 
     factory<EditDebtUseCase> {

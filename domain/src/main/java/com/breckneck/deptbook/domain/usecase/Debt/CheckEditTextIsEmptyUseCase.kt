@@ -1,6 +1,6 @@
 package com.breckneck.deptbook.domain.usecase.Debt
 
-class CheckEditTextIsEmpty {
+class CheckEditTextIsEmptyUseCase {
 
     fun execute(text: String): Boolean {
         val arr = text.split("")
@@ -8,7 +8,7 @@ class CheckEditTextIsEmpty {
         for (arg in arr) {
             if (arg == "")
                 isEmpty = true
-            if (arg != " ") {
+            if ((arg != " ")&&(arg != "")) {
                 isEmpty = false
                 break
             }

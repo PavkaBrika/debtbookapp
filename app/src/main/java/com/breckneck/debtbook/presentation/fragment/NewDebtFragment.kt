@@ -15,10 +15,6 @@ import android.widget.*
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import com.breckneck.debtbook.R
-import com.breckneck.deptbook.data.storage.database.DataBaseDebtStorageImpl
-import com.breckneck.deptbook.data.storage.database.DataBaseHumanStorageImpl
-import com.breckneck.deptbook.data.storage.repository.DebtRepositoryImpl
-import com.breckneck.deptbook.data.storage.repository.HumanRepositoryImpl
 import com.breckneck.deptbook.domain.usecase.Debt.*
 import com.breckneck.deptbook.domain.usecase.Human.AddSumUseCase
 import com.breckneck.deptbook.domain.usecase.Human.GetLastHumanIdUseCase
@@ -62,7 +58,7 @@ class NewDebtFragment: Fragment() {
     private val setDebtUseCase: SetDebtUseCase by inject()
     private val getCurrentDateUseCase: GetCurrentDateUseCase by inject()
     private val setDateUseCase: SetDateUseCase by inject()
-    private val checkEditTextIsEmpty: CheckEditTextIsEmpty by inject()
+    private val checkEditTextIsEmptyUseCase: CheckEditTextIsEmptyUseCase by inject()
     private val editDebtUseCase: EditDebtUseCase by inject()
     private val updateCurrentSumUseCase: UpdateCurrentSumUseCase by inject()
 
@@ -171,7 +167,7 @@ class NewDebtFragment: Fragment() {
             date = debtDateTextView.text.toString()
             val info = infoEditText.text.toString()
             if (idHuman == null) { //if add debt in new human
-                if ((!checkEditTextIsEmpty.execute(name)) && (!checkEditTextIsEmpty.execute(sum))) { //user check if user is not bad
+                if ((!checkEditTextIsEmptyUseCase.execute(name)) && (!checkEditTextIsEmptyUseCase.execute(sum))) { //user check if user is not bad
                     if (stickySwitch.getDirection() == StickySwitch.Direction.RIGHT)
                         sum = (sum.toDouble() * (-1.0)).toString()
                     if (sum.toDouble() != 0.0) {
@@ -179,7 +175,7 @@ class NewDebtFragment: Fragment() {
                             .map {
                                 setHumanUseCase.execute(name = name, sumDebt = sum.toDouble(), currency = currency!!)
                                 val lastId = getLastHumanIdUseCase.exectute()
-                                if (checkEditTextIsEmpty.execute(info))
+                                if (checkEditTextIsEmptyUseCase.execute(info))
                                     setDebtUseCase.execute(sum = sum.toDouble(), idHuman = lastId, info = null, date = date)
                                 else
                                     setDebtUseCase.execute(sum = sum.toDouble(), idHuman = lastId, info = info, date = date)
@@ -200,13 +196,13 @@ class NewDebtFragment: Fragment() {
                     Toast.makeText(view.context, R.string.youmustentername, Toast.LENGTH_SHORT).show()
                 }
             } else if (idDebt == -1) { //if add debt in existing human
-                if (!checkEditTextIsEmpty.execute(sum)) { // user check if user not bad
+                if (!checkEditTextIsEmptyUseCase.execute(sum)) { // user check if user not bad
                     if (stickySwitch.getDirection() == StickySwitch.Direction.RIGHT)
                         sum = (sum.toDouble() * (-1.0)).toString()
                     if (sum.toDouble() != 0.0) {
                         Single.just(sum)
                             .map {
-                                if (checkEditTextIsEmpty.execute(info))
+                                if (checkEditTextIsEmptyUseCase.execute(info))
                                     setDebtUseCase.execute(sum = sum.toDouble(), idHuman = idHuman, info = null, date = date)
                                 else
                                     setDebtUseCase.execute(sum = sum.toDouble(), idHuman = idHuman, info = info, date = date)
@@ -227,7 +223,7 @@ class NewDebtFragment: Fragment() {
                     Toast.makeText(view.context, R.string.youmustentername, Toast.LENGTH_SHORT).show()
                 }
             } else if ((idDebt != null) && (idDebt != -1)) { //if edit debt in existing human
-                if (!checkEditTextIsEmpty.execute(sum)) { // user check if user not bad
+                if (!checkEditTextIsEmptyUseCase.execute(sum)) { // user check if user not bad
                     if (stickySwitch.getDirection() == StickySwitch.Direction.RIGHT)
                         sum = (sum.toDouble() * (-1.0)).toString()
                     if (sum.toDouble() != 0.0) {
@@ -235,7 +231,7 @@ class NewDebtFragment: Fragment() {
                             .map {
                                 val pastSum = arguments?.getDouble("sum")
                                 val currentSum = updateCurrentSumUseCase.execute(sum.toDouble(), pastSum!!)
-                                if (checkEditTextIsEmpty.execute(info))
+                                if (checkEditTextIsEmptyUseCase.execute(info))
                                     editDebtUseCase.execute(id = idDebt,sum = sum.toDouble(), idHuman = idHuman, info = null, date = date)
                                 else
                                     editDebtUseCase.execute(id = idDebt ,sum = sum.toDouble(), idHuman = idHuman, info = info, date = date)
