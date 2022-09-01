@@ -21,7 +21,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainFragment : Fragment() {
 
-//    private lateinit var vm: MainFragmentViewModel
     private val vm by viewModel<MainFragmentViewModel>()
 
     interface OnButtonClickListener{
@@ -38,8 +37,6 @@ class MainFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.e("TAG", "Activity created")
-//        vm = ViewModelProvider(requireActivity(), MainFragmentViewModelFactory(requireActivity())).get(
-//            MainFragmentViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

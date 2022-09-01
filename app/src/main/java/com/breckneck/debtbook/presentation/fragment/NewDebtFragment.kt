@@ -15,10 +15,6 @@ import android.widget.*
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import com.breckneck.debtbook.R
-import com.breckneck.deptbook.data.storage.database.DataBaseDebtStorageImpl
-import com.breckneck.deptbook.data.storage.database.DataBaseHumanStorageImpl
-import com.breckneck.deptbook.data.storage.repository.DebtRepositoryImpl
-import com.breckneck.deptbook.data.storage.repository.HumanRepositoryImpl
 import com.breckneck.deptbook.domain.usecase.Debt.*
 import com.breckneck.deptbook.domain.usecase.Human.AddSumUseCase
 import com.breckneck.deptbook.domain.usecase.Human.GetLastHumanIdUseCase
@@ -150,7 +146,7 @@ class NewDebtFragment: Fragment() {
             currencySpinner.visibility = View.GONE
             currencyTextView.text = currency
             if (sumArgs != 0.0) { //EXIST HUMAN EDIT DEBT LAYOUT CHANGES
-                debtSumEditText.setText(decimalFormat.format(sumArgs)) ////fasdfadsfasfsadfFSDAFSDF
+                debtSumEditText.setText(decimalFormat.format(sumArgs))
                 debtDateTextView.text = dateArgs
                 infoEditText.setText(infoArgs)
                 collapsed.title = getString(R.string.editdebtcollaps)
