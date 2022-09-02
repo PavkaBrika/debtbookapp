@@ -14,6 +14,8 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.navigation.Navigation
+import androidx.navigation.fragment.navArgs
 import com.breckneck.debtbook.R
 import com.breckneck.deptbook.domain.usecase.Debt.*
 import com.breckneck.deptbook.domain.usecase.Human.AddSumUseCase
@@ -33,16 +35,18 @@ class NewDebtFragment: Fragment() {
 
     val decimalFormat = DecimalFormat("#.##")
 
-    interface OnButtonClickListener{
-        fun DebtDetailsNewHuman(currency: String, name: String)
-        fun DebtDetailsExistHuman(idHuman: Int, currency: String, name: String)
-    }
+    private val args: NewDebtFragmentArgs by navArgs()
+//
+//    interface OnButtonClickListener{
+//        fun DebtDetailsCreateNewHuman(currency: String, name: String)
+//        fun DebtDetailsEditExistHuman(idHuman: Int, currency: String, name: String)
+//    }
 
-    lateinit var buttonClickListener: OnButtonClickListener
+//    lateinit var buttonClickListener: OnButtonClickListener
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        buttonClickListener = context as OnButtonClickListener
+//        buttonClickListener = context as OnButtonClickListener
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,13 +70,21 @@ class NewDebtFragment: Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_addnewhuman, container, false)
 
-        val idHuman = arguments?.getInt("idHuman", -1)
-        val idDebt = arguments?.getInt("idDebt", -1)
-        var currency = arguments?.getString("currency", "")
-        val sumArgs = arguments?.getDouble("sum", 0.0)
-        val dateArgs = arguments?.getString("date", "")
-        val infoArgs = arguments?.getString("info", "")
-        val nameArgs = arguments?.getString("name", "")
+//        val idHuman = arguments?.getInt("idHuman", -1)
+//        val idDebt = arguments?.getInt("idDebt", -1)
+//        var currency = arguments?.getString("currency", "")
+//        val sumArgs = arguments?.getDouble("sum", 0.0)
+//        val dateArgs = arguments?.getString("date", "")
+//        val infoArgs = arguments?.getString("info", "")
+//        val nameArgs = arguments?.getString("name", "")
+
+        val idHuman = args.idHuman
+        val idDebt = args.idDebt
+        var currency = args.currency
+        val sumArgs = args.sumArgs.toDouble()
+        val dateArgs = args.date
+        val infoArgs = args.info
+        val nameArgs = args.name
 
         val humanNameEditText: EditText = view.findViewById(R.id.humanNameEditText)
         val infoEditText: EditText = view.findViewById(R.id.debtInfoEditText)
@@ -141,7 +153,7 @@ class NewDebtFragment: Fragment() {
                 calendar.get(Calendar.DAY_OF_MONTH)).show()
         }
 
-        if (currency != null) { //EXIST HUMAN DEBT DEBT LAYOUT CHANGES
+        if (currency != "") { //EXIST HUMAN DEBT DEBT LAYOUT CHANGES
             currencyTextView.visibility = View.VISIBLE
             currencySpinner.visibility = View.GONE
             currencyTextView.text = currency
@@ -156,7 +168,7 @@ class NewDebtFragment: Fragment() {
             currencySpinner.visibility = View.VISIBLE
         }
 
-        if (idHuman != null) {
+        if (idHuman != -1) {
             humanNameEditText.visibility = View.GONE
             humanNameEditText.setText(nameArgs)
         }
@@ -166,14 +178,14 @@ class NewDebtFragment: Fragment() {
             var sum = debtSumEditText.text.toString()
             date = debtDateTextView.text.toString()
             val info = infoEditText.text.toString()
-            if (idHuman == null) { //if add debt in new human
+            if (idHuman == -1) { //if add debt in new human
                 if ((!checkEditTextIsEmpty.execute(name)) && (!checkEditTextIsEmpty.execute(sum))) { //user check if user is not bad
                     if (stickySwitch.getDirection() == StickySwitch.Direction.RIGHT)
                         sum = (sum.toDouble() * (-1.0)).toString()
                     if (sum.toDouble() != 0.0) {
                         Single.just(name)
                             .map {
-                                setHumanUseCase.execute(name = name, sumDebt = sum.toDouble(), currency = currency!!)
+                                setHumanUseCase.execute(name = name, sumDebt = sum.toDouble(), currency = currency)
                                 val lastId = getLastHumanIdUseCase.exectute()
                                 if (checkEditTextIsEmpty.execute(info))
                                     setDebtUseCase.execute(sum = sum.toDouble(), idHuman = lastId, info = null, date = date)
@@ -184,7 +196,9 @@ class NewDebtFragment: Fragment() {
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe({
-                                buttonClickListener.DebtDetailsNewHuman(currency = currency!!, name = name)
+//                                buttonClickListener.DebtDetailsCreateNewHuman(currency = currency!!, name = name)
+                                val action = NewDebtFragmentDirections.actionNewDebtFragmentToDebtDetailsFragment(newHuman = true, currency = currency, name = name)
+                                Navigation.findNavController(view).navigate(action)
                             }, {
 
                             })
@@ -212,7 +226,9 @@ class NewDebtFragment: Fragment() {
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe({
-                                buttonClickListener.DebtDetailsExistHuman(idHuman = idHuman, currency = currency!!, name = name)
+//                                buttonClickListener.DebtDetailsEditExistHuman(idHuman = idHuman, currency = currency!!, name = name)
+                                val action = NewDebtFragmentDirections.actionNewDebtFragmentToDebtDetailsFragment(idHuman = idHuman, currency = currency, name = name)
+                                Navigation.findNavController(view).navigate(action)
                             }, {
 
                             })
@@ -222,7 +238,7 @@ class NewDebtFragment: Fragment() {
                 } else { //if user is bad
                     Toast.makeText(view.context, R.string.youmustentername, Toast.LENGTH_SHORT).show()
                 }
-            } else if ((idDebt != null) && (idDebt != -1)) { //if edit debt in existing human
+            } else if (idDebt != -1) { //if edit debt in existing human
                 if (!checkEditTextIsEmpty.execute(sum)) { // user check if user not bad
                     if (stickySwitch.getDirection() == StickySwitch.Direction.RIGHT)
                         sum = (sum.toDouble() * (-1.0)).toString()
@@ -241,7 +257,9 @@ class NewDebtFragment: Fragment() {
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe({
-                                buttonClickListener.DebtDetailsExistHuman(idHuman = idHuman, currency = currency!!, name = name)
+//                                buttonClickListener.DebtDetailsEditExistHuman(idHuman = idHuman, currency = currency!!, name = name)
+                                val action = NewDebtFragmentDirections.actionNewDebtFragmentToDebtDetailsFragment(idHuman = idHuman, currency = currency, name = name)
+                                Navigation.findNavController(view).navigate(action)
                             }, {
 
                             })

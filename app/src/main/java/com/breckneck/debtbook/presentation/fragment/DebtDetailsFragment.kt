@@ -14,6 +14,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
@@ -37,6 +38,8 @@ import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 
 class DebtDetailsFragment: Fragment() {
+
+    private val args: DebtDetailsFragmentArgs by navArgs()
 
     interface OnButtonClickListener{
         fun addNewDebtFragment(idHuman: Int, currency: String, name: String)
@@ -77,10 +80,15 @@ class DebtDetailsFragment: Fragment() {
         val recyclerView: RecyclerView = view.findViewById(R.id.debtsRecyclerView)
         recyclerView.addItemDecoration(DividerItemDecoration(view.context, DividerItemDecoration.VERTICAL))
 
-        var idHuman = arguments?.getInt("idHuman", 0)
-        val newHuman = arguments?.getBoolean("newHuman", false)
-        val currency = arguments?.getString("currency")
-        val name = arguments?.getString("name")
+//        var idHuman = arguments?.getInt("idHuman", 0)
+//        val newHuman = arguments?.getBoolean("newHuman", false)
+//        val currency = arguments?.getString("currency")
+//        val name = arguments?.getString("name")
+
+        var idHuman = args.idHuman
+        val newHuman = args.newHuman
+        val currency = args.currency
+        val name = args.name
 
         val collaps: CollapsingToolbarLayout = view.findViewById(R.id.collaps)
         collaps.title = name

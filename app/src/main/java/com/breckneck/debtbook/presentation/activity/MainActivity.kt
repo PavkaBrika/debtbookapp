@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
 import androidx.fragment.app.FragmentTransaction
+import androidx.navigation.fragment.NavHostFragment
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.presentation.fragment.DebtDetailsFragment
 import com.breckneck.debtbook.presentation.fragment.MainFragment
@@ -22,7 +23,11 @@ import com.yandex.mobile.ads.common.*
 import com.yandex.mobile.ads.interstitial.InterstitialAd
 import com.yandex.mobile.ads.interstitial.InterstitialAdEventListener
 
-class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, NewDebtFragment.OnButtonClickListener, DebtDetailsFragment.OnButtonClickListener {
+class MainActivity :
+    AppCompatActivity(),
+//    MainFragment.OnButtonClickListener,
+//    NewDebtFragment.OnButtonClickListener,
+    DebtDetailsFragment.OnButtonClickListener {
 
     private lateinit var interstitialAd: InterstitialAd
 
@@ -36,11 +41,16 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        if (savedInstanceState == null) {
-            val fragmentManager = supportFragmentManager
-            val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
-            fragmentTransaction.replace(R.id.frameLayout, MainFragment()).commit()
-        }
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.frameLayout) as NavHostFragment
+        val navController = navHostFragment.navController
+//
+//        if (savedInstanceState == null) {
+//            val fragmentManager = supportFragmentManager
+//            val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
+//            fragmentTransaction.replace(R.id.frameLayout, MainFragment()).commit()
+//        }
+
+
 
 //        YANDEX MOBILE ADVERTISMENT
 
@@ -51,91 +61,91 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         setClick = SetClicksUseCase(adRepository = adRepository)
 
 
-        MobileAds.initialize(this, object: InitializationListener {
-            override fun onInitializationCompleted() {
-                Log.e("TAG", "Yandex initialized")
-            }
-        })
-        MobileAds.setUserConsent(false)
-        //BANNER AD
-        val bannerAd: BannerAdView = findViewById(R.id.bannerAdView)
-        val adRequestBuild = AdRequest.Builder().build()
-        bannerAd.apply {
-            setAdUnitId("R-M-1753297-1")
-//            setAdUnitId("R-M-DEMO-320x50")
-            setAdSize(AdSize.flexibleSize(320, 50))
-            setBannerAdEventListener(object : BannerAdEventListener {
-                override fun onAdLoaded() {
-                    Log.e("TAG", "BANNER LOADED")
-                }
-
-                override fun onAdFailedToLoad(p0: AdRequestError) {
-                    Log.e("TAG", "BANNER LOAD FAILED")
-                    loadAd(adRequestBuild)
-                }
-
-                override fun onAdClicked() {
-                    Log.e("TAG", "BANNER CLICKED")
-                }
-
-                override fun onLeftApplication() {
-                    Log.e("TAG", "BANNER LEFT")
-                }
-
-                override fun onReturnedToApplication() {
-                    Log.e("TAG", "BANNER RETURN")
-                }
-
-                override fun onImpression(p0: ImpressionData?) {
-                    Log.e("TAG", "BANNER IMPRESSION")
-                    loadAd(adRequestBuild)
-                }
-
-            })
-            loadAd(adRequestBuild)
-        }
-
-//        //INTERSTITIAL AD
-        interstitialAd = InterstitialAd(this)
-        interstitialAd.apply {
-            setAdUnitId("R-M-1753297-2")
-            setInterstitialAdEventListener(object : InterstitialAdEventListener {
-                override fun onAdLoaded() {
-                    Log.e("TAG", "INTERSTITIAL LOADED")
-                }
-
-                override fun onAdFailedToLoad(p0: AdRequestError) {
-                    Log.e("TAG", "INTERSTITIAL LOAD FAILED")
-                    loadAd(adRequestBuild)
-                }
-
-                override fun onAdShown() {
-                    Log.e("TAG", "INTERSTITIAL SHOWN")
-                }
-
-                override fun onAdDismissed() {
-                    Log.e("TAG", "INTERSTITIAL DISMISSED")
-                }
-
-                override fun onAdClicked() {
-                    Log.e("TAG", "INTERSTITIAL CLICKED")
-                }
-
-                override fun onLeftApplication() {
-                    Log.e("TAG", "INTERSTITIAL LEFT APP")
-                }
-
-                override fun onReturnedToApplication() {
-                    Log.e("TAG", "INTERSTITIAL RETURN APP")
-                }
-
-                override fun onImpression(p0: ImpressionData?) {
-                    Log.e("TAG", "INTERSTITIAL IMPRESSION")
-                    loadAd(adRequestBuild)
-                }
-            })
-            loadAd(adRequestBuild)
-        }
+//        MobileAds.initialize(this, object: InitializationListener { //ADD THIS TO THE APP CLASS
+//            override fun onInitializationCompleted() {
+//                Log.e("TAG", "Yandex initialized")
+//            }
+//        })
+//        MobileAds.setUserConsent(false)
+//        //BANNER AD
+//        val bannerAd: BannerAdView = findViewById(R.id.bannerAdView)
+//        val adRequestBuild = AdRequest.Builder().build()
+//        bannerAd.apply {
+//            setAdUnitId("R-M-1753297-1")
+////            setAdUnitId("R-M-DEMO-320x50")
+//            setAdSize(AdSize.flexibleSize(320, 50))
+//            setBannerAdEventListener(object : BannerAdEventListener {
+//                override fun onAdLoaded() {
+//                    Log.e("TAG", "BANNER LOADED")
+//                }
+//
+//                override fun onAdFailedToLoad(p0: AdRequestError) {
+//                    Log.e("TAG", "BANNER LOAD FAILED")
+//                    loadAd(adRequestBuild)
+//                }
+//
+//                override fun onAdClicked() {
+//                    Log.e("TAG", "BANNER CLICKED")
+//                }
+//
+//                override fun onLeftApplication() {
+//                    Log.e("TAG", "BANNER LEFT")
+//                }
+//
+//                override fun onReturnedToApplication() {
+//                    Log.e("TAG", "BANNER RETURN")
+//                }
+//
+//                override fun onImpression(p0: ImpressionData?) {
+//                    Log.e("TAG", "BANNER IMPRESSION")
+//                    loadAd(adRequestBuild)
+//                }
+//
+//            })
+//            loadAd(adRequestBuild)
+//        }
+//
+////        //INTERSTITIAL AD
+//        interstitialAd = InterstitialAd(this)
+//        interstitialAd.apply {
+//            setAdUnitId("R-M-1753297-2")
+//            setInterstitialAdEventListener(object : InterstitialAdEventListener {
+//                override fun onAdLoaded() {
+//                    Log.e("TAG", "INTERSTITIAL LOADED")
+//                }
+//
+//                override fun onAdFailedToLoad(p0: AdRequestError) {
+//                    Log.e("TAG", "INTERSTITIAL LOAD FAILED")
+//                    loadAd(adRequestBuild)
+//                }
+//
+//                override fun onAdShown() {
+//                    Log.e("TAG", "INTERSTITIAL SHOWN")
+//                }
+//
+//                override fun onAdDismissed() {
+//                    Log.e("TAG", "INTERSTITIAL DISMISSED")
+//                }
+//
+//                override fun onAdClicked() {
+//                    Log.e("TAG", "INTERSTITIAL CLICKED")
+//                }
+//
+//                override fun onLeftApplication() {
+//                    Log.e("TAG", "INTERSTITIAL LEFT APP")
+//                }
+//
+//                override fun onReturnedToApplication() {
+//                    Log.e("TAG", "INTERSTITIAL RETURN APP")
+//                }
+//
+//                override fun onImpression(p0: ImpressionData?) {
+//                    Log.e("TAG", "INTERSTITIAL IMPRESSION")
+//                    loadAd(adRequestBuild)
+//                }
+//            })
+//            loadAd(adRequestBuild)
+//        }
 
 
     }
@@ -147,73 +157,73 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
 
 
 //MainFragment interfaces
-    override fun OnHumanClick(idHuman: Int, currency: String, name: String) {
-        val fragmentManager = supportFragmentManager
-        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-        val args = Bundle()
-        args.putInt("idHuman", idHuman)
-        args.putString("currency", currency)
-        args.putString("name", name)
-        val fragment = DebtDetailsFragment()
-        fragment.arguments = args
-        fragmentTransaction.replace(R.id.frameLayout, fragment).addToBackStack("main").commit()
-        addClick.execute()
-        if (getClicks.execute())
-            if (interstitialAd.isLoaded) {
-                interstitialAd.show()
-                setClick.execute()
-            }
-    }
-
-    override fun OnAddButtonClick() {
-        val fragmentManager = supportFragmentManager
-        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-        fragmentTransaction.replace(R.id.frameLayout, NewDebtFragment()).addToBackStack("main").commit()
-        addClick.execute()
-        if (getClicks.execute())
-            if (interstitialAd.isLoaded) {
-                interstitialAd.show()
-                setClick.execute()
-            }
-    }
+//    override fun OnHumanClick(idHuman: Int, currency: String, name: String) {
+//        val fragmentManager = supportFragmentManager
+//        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+//        val args = Bundle()
+//        args.putInt("idHuman", idHuman)
+//        args.putString("currency", currency)
+//        args.putString("name", name)
+//        val fragment = DebtDetailsFragment()
+//        fragment.arguments = args
+//        fragmentTransaction.replace(R.id.frameLayout, fragment).addToBackStack("main").commit()
+//        addClick.execute()
+//        if (getClicks.execute())
+//            if (interstitialAd.isLoaded) {
+//                interstitialAd.show()
+//                setClick.execute()
+//            }
+//    }
+//
+//    override fun OnAddButtonClick() {
+//        val fragmentManager = supportFragmentManager
+//        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+//        fragmentTransaction.replace(R.id.frameLayout, NewDebtFragment()).addToBackStack("main").commit()
+//        addClick.execute()
+//        if (getClicks.execute())
+//            if (interstitialAd.isLoaded) {
+//                interstitialAd.show()
+//                setClick.execute()
+//            }
+//    }
 //NewDebtFragment interfaces
-    override fun DebtDetailsNewHuman(currency: String, name: String) {
-        val fragmentManager = supportFragmentManager
-        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-        supportFragmentManager.popBackStack("secondary",  POP_BACK_STACK_INCLUSIVE)
-        val args = Bundle()
-        args.putBoolean("newHuman", true)
-        args.putString("currency", currency)
-        args.putString("name", name)
-        val fragment = DebtDetailsFragment()
-        fragment.arguments = args
-        fragmentTransaction.replace(R.id.frameLayout, fragment).commit()
-        addClick.execute()
-        if (getClicks.execute())
-            if (interstitialAd.isLoaded) {
-                interstitialAd.show()
-                setClick.execute()
-            }
-    }
-
-    override fun DebtDetailsExistHuman(idHuman: Int, currency: String, name: String) {
-        val fragmentManager = supportFragmentManager
-        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-        supportFragmentManager.popBackStack("secondary",  POP_BACK_STACK_INCLUSIVE)
-        val args = Bundle()
-        args.putInt("idHuman", idHuman)
-        args.putString("currency", currency)
-        args.putString("name", name)
-        val fragment = DebtDetailsFragment()
-        fragment.arguments = args
-        fragmentTransaction.replace(R.id.frameLayout, fragment).commit()
-        addClick.execute()
-        if (getClicks.execute())
-            if (interstitialAd.isLoaded) {
-                interstitialAd.show()
-                setClick.execute()
-            }
-    }
+//    override fun DebtDetailsCreateNewHuman(currency: String, name: String) {
+//        val fragmentManager = supportFragmentManager
+//        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+//        supportFragmentManager.popBackStack("secondary",  POP_BACK_STACK_INCLUSIVE)
+//        val args = Bundle()
+//        args.putBoolean("newHuman", true)
+//        args.putString("currency", currency)
+//        args.putString("name", name)
+//        val fragment = DebtDetailsFragment()
+//        fragment.arguments = args
+//        fragmentTransaction.replace(R.id.frameLayout, fragment).commit()
+//        addClick.execute()
+//        if (getClicks.execute())
+//            if (interstitialAd.isLoaded) {
+//                interstitialAd.show()
+//                setClick.execute()
+//            }
+//    }
+//
+//    override fun DebtDetailsEditExistHuman(idHuman: Int, currency: String, name: String) {
+//        val fragmentManager = supportFragmentManager
+//        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+//        supportFragmentManager.popBackStack("secondary",  POP_BACK_STACK_INCLUSIVE)
+//        val args = Bundle()
+//        args.putInt("idHuman", idHuman)
+//        args.putString("currency", currency)
+//        args.putString("name", name)
+//        val fragment = DebtDetailsFragment()
+//        fragment.arguments = args
+//        fragmentTransaction.replace(R.id.frameLayout, fragment).commit()
+//        addClick.execute()
+//        if (getClicks.execute())
+//            if (interstitialAd.isLoaded) {
+//                interstitialAd.show()
+//                setClick.execute()
+//            }
+//    }
 //DebtDetailsFragment interfaces
     override fun addNewDebtFragment(idHuman: Int, currency: String, name: String) {
         val fragmentManager = supportFragmentManager

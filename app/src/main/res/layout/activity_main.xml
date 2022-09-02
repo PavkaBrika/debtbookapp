@@ -8,9 +8,12 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/frameLayout"
+        android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/bannerAdView" />
+        android:layout_above="@id/bannerAdView"
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/nav" />
 
     <com.yandex.mobile.ads.banner.BannerAdView
         android:id="@+id/bannerAdView"

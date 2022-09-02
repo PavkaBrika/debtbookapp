@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
@@ -23,15 +24,15 @@ class MainFragment : Fragment() {
 
     private val vm by viewModel<MainFragmentViewModel>()
 
-    interface OnButtonClickListener{
-        fun OnHumanClick(idHuman: Int, currency: String, name: String)
-        fun OnAddButtonClick()
-    }
+//    interface OnButtonClickListener{
+//        fun OnHumanClick(idHuman: Int, currency: String, name: String)
+//        fun OnAddButtonClick()
+//    }
 
-    var buttonClickListener: OnButtonClickListener? = null
+//    var buttonClickListener: OnButtonClickListener? = null
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        buttonClickListener = context as OnButtonClickListener
+//        buttonClickListener = context as OnButtonClickListener
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,12 +56,15 @@ class MainFragment : Fragment() {
 
         val addButton: FloatingActionButton = view.findViewById(R.id.addHumanButton)
         addButton.setOnClickListener{
-            buttonClickListener?.OnAddButtonClick()
+//            buttonClickListener?.OnAddButtonClick()
+            Navigation.findNavController(view).navigate(MainFragmentDirections.actionMainFragmentToNewDebtFragment())
         }
 
         val humanClickListener = object: HumanAdapter.OnHumanClickListener {
             override fun onHumanClick(humanDomain: HumanDomain, position: Int) {
-                buttonClickListener?.OnHumanClick(idHuman = humanDomain.id, currency = humanDomain.currency, name = humanDomain.name)
+//                buttonClickListener?.OnHumanClick(idHuman = humanDomain.id, currency = humanDomain.currency, name = humanDomain.name)
+                val action = MainFragmentDirections.actionMainFragmentToDebtDetailsFragment(idHuman = humanDomain.id, currency = humanDomain.currency, name = humanDomain.name)
+                Navigation.findNavController(view).navigate(action)
                 Log.e("TAG", "Click on human with id = ${humanDomain.id}")
             }
         }

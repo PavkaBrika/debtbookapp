@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav"
+    app:startDestination="@id/mainFragment">
+
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.breckneck.debtbook.presentation.fragment.MainFragment"
+        android:label="MainFragment" >
+        <action
+            android:id="@+id/action_mainFragment_to_debtDetailsFragment"
+            app:destination="@id/debtDetailsFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_newDebtFragment"
+            app:destination="@id/newDebtFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/debtDetailsFragment"
+        android:name="com.breckneck.debtbook.presentation.fragment.DebtDetailsFragment"
+        android:label="DebtDetailsFragment" >
+        <action
+            android:id="@+id/action_debtDetailsFragment_to_newDebtFragment"
+            app:destination="@id/newDebtFragment" />
+        <argument
+            android:name="idHuman"
+            app:argType="integer"
+            android:defaultValue="-1" />
+        <argument
+            android:name="currency"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="name"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="newHuman"
+            app:argType="boolean"
+            android:defaultValue="false" />
+    </fragment>
+    <fragment
+        android:id="@+id/newDebtFragment"
+        android:name="com.breckneck.debtbook.presentation.fragment.NewDebtFragment"
+        android:label="NewDebtFragment" >
+        <action
+            android:id="@+id/action_newDebtFragment_to_debtDetailsFragment"
+            app:destination="@id/debtDetailsFragment" />
+        <argument
+            android:name="idHuman"
+            app:argType="integer"
+            android:defaultValue="-1" />
+        <argument
+            android:name="idDebt"
+            app:argType="integer"
+            android:defaultValue="-1" />
+        <argument
+            android:name="currency"
+            app:argType="string"
+            android:defaultValue="" />
+        <argument android:name="sumArgs"
+            app:argType="float"
+            android:defaultValue="0.0" />
+        <argument
+            android:name="date"
+            app:argType="string"
+            android:defaultValue="" />
+        <argument
+            android:name="info"
+            app:argType="string"
+            android:defaultValue="" />
+        <argument
+            android:name="name"
+            app:argType="string"
+            android:defaultValue="" />
+    </fragment>
+</navigation>
