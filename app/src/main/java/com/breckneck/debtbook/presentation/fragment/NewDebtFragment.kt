@@ -52,7 +52,7 @@ class NewDebtFragment: Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val inflater = TransitionInflater.from(requireContext())
-        enterTransition = inflater.inflateTransition(R.transition.slide_up)
+//        enterTransition = inflater.inflateTransition(R.transition.slide_up)
     }
 
     private val setHumanUseCase: SetHumanUseCase by inject()

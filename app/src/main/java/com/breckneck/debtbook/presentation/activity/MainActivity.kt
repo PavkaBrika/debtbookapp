@@ -24,10 +24,11 @@ import com.yandex.mobile.ads.interstitial.InterstitialAd
 import com.yandex.mobile.ads.interstitial.InterstitialAdEventListener
 
 class MainActivity :
-    AppCompatActivity(),
+    AppCompatActivity()
 //    MainFragment.OnButtonClickListener,
 //    NewDebtFragment.OnButtonClickListener,
-    DebtDetailsFragment.OnButtonClickListener {
+//    DebtDetailsFragment.OnButtonClickListener
+    {
 
     private lateinit var interstitialAd: InterstitialAd
 
@@ -225,55 +226,55 @@ class MainActivity :
 //            }
 //    }
 //DebtDetailsFragment interfaces
-    override fun addNewDebtFragment(idHuman: Int, currency: String, name: String) {
-        val fragmentManager = supportFragmentManager
-        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-        val args = Bundle()
-        args.putInt("idHuman", idHuman)
-        args.putString("currency", currency)
-        args.putString("name", name)
-        val fragment = NewDebtFragment()
-        fragment.arguments = args
-        fragmentTransaction.replace(R.id.frameLayout, fragment).addToBackStack("secondary").commit()
-        addClick.execute()
-        if (getClicks.execute())
-            if (interstitialAd.isLoaded) {
-                interstitialAd.show()
-                setClick.execute()
-            }
-    }
-
-    override fun editDebt(debtDomain: DebtDomain, currency: String, name: String) {
-        val fragmentManager = supportFragmentManager
-        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-        val args = Bundle()
-        args.putInt("idDebt", debtDomain.id)
-        args.putInt("idHuman", debtDomain.idHuman)
-        args.putDouble("sum", debtDomain.sum)
-        args.putString("date", debtDomain.date)
-        args.putString("info", debtDomain.info)
-        args.putString("name", name)
-        args.putString("currency", currency)
-        val fragment = NewDebtFragment()
-        fragment.arguments = args
-        fragmentTransaction.replace(R.id.frameLayout, fragment).addToBackStack("secondary").commit()
-        addClick.execute()
-        if (getClicks.execute())
-            if (interstitialAd.isLoaded) {
-                interstitialAd.show()
-                setClick.execute()
-            }
-    }
-
-    override fun deleteHuman() {
-        val fragmentManager = supportFragmentManager
-        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.frameLayout, MainFragment()).commit()
-        addClick.execute()
-        if (getClicks.execute())
-            if (interstitialAd.isLoaded) {
-                interstitialAd.show()
-                setClick.execute()
-            }
-    }
+//    override fun addNewDebtFragment(idHuman: Int, currency: String, name: String) {
+//        val fragmentManager = supportFragmentManager
+//        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+//        val args = Bundle()
+//        args.putInt("idHuman", idHuman)
+//        args.putString("currency", currency)
+//        args.putString("name", name)
+//        val fragment = NewDebtFragment()
+//        fragment.arguments = args
+//        fragmentTransaction.replace(R.id.frameLayout, fragment).addToBackStack("secondary").commit()
+//        addClick.execute()
+//        if (getClicks.execute())
+//            if (interstitialAd.isLoaded) {
+//                interstitialAd.show()
+//                setClick.execute()
+//            }
+//    }
+//
+//    override fun editDebt(debtDomain: DebtDomain, currency: String, name: String) {
+//        val fragmentManager = supportFragmentManager
+//        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+//        val args = Bundle()
+//        args.putInt("idDebt", debtDomain.id)
+//        args.putInt("idHuman", debtDomain.idHuman)
+//        args.putDouble("sum", debtDomain.sum)
+//        args.putString("date", debtDomain.date)
+//        args.putString("info", debtDomain.info)
+//        args.putString("name", name)
+//        args.putString("currency", currency)
+//        val fragment = NewDebtFragment()
+//        fragment.arguments = args
+//        fragmentTransaction.replace(R.id.frameLayout, fragment).addToBackStack("secondary").commit()
+//        addClick.execute()
+//        if (getClicks.execute())
+//            if (interstitialAd.isLoaded) {
+//                interstitialAd.show()
+//                setClick.execute()
+//            }
+//    }
+//
+//    override fun deleteHuman() {
+//        val fragmentManager = supportFragmentManager
+//        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
+//        fragmentTransaction.replace(R.id.frameLayout, MainFragment()).commit()
+//        addClick.execute()
+//        if (getClicks.execute())
+//            if (interstitialAd.isLoaded) {
+//                interstitialAd.show()
+//                setClick.execute()
+//            }
+//    }
 }

@@ -29,15 +29,18 @@
         <argument
             android:name="currency"
             app:argType="string"
-            app:nullable="true" />
+            android:defaultValue="" />
         <argument
             android:name="name"
             app:argType="string"
-            app:nullable="true" />
+            android:defaultValue="" />
         <argument
             android:name="newHuman"
             app:argType="boolean"
             android:defaultValue="false" />
+        <action
+            android:id="@+id/action_debtDetailsFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
     </fragment>
     <fragment
         android:id="@+id/newDebtFragment"
@@ -68,6 +71,7 @@
         <argument
             android:name="info"
             app:argType="string"
+            app:nullable="true"
             android:defaultValue="" />
         <argument
             android:name="name"

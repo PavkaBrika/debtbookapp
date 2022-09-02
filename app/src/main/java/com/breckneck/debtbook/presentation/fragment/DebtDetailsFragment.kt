@@ -14,6 +14,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
@@ -41,25 +42,25 @@ class DebtDetailsFragment: Fragment() {
 
     private val args: DebtDetailsFragmentArgs by navArgs()
 
-    interface OnButtonClickListener{
-        fun addNewDebtFragment(idHuman: Int, currency: String, name: String)
+//    interface OnButtonClickListener{
+//        fun addNewDebtFragment(idHuman: Int, currency: String, name: String)
+//
+//        fun editDebt(debtDomain: DebtDomain, currency: String, name: String)
+//
+//        fun deleteHuman()
+//    }
 
-        fun editDebt(debtDomain: DebtDomain, currency: String, name: String)
-
-        fun deleteHuman()
-    }
-
-    var buttonClickListener: OnButtonClickListener? = null
+//    var buttonClickListener: OnButtonClickListener? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        buttonClickListener = context as OnButtonClickListener
+//        buttonClickListener = context as OnButtonClickListener
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val inflater = TransitionInflater.from(requireContext())
-        enterTransition = inflater.inflateTransition(R.transition.slide_right)
+//        enterTransition = inflater.inflateTransition(R.transition.slide_right)
     }
 
     val getLastHumanId: GetLastHumanIdUseCase by inject()
@@ -119,7 +120,18 @@ class DebtDetailsFragment: Fragment() {
                                 Log.e("TAG", "Debts load success")
                             },{})
                     } else { //EDIT DEBT
-                        buttonClickListener?.editDebt(debtDomain = debtDomain, currency = currency!!, name = name!!)
+//                        buttonClickListener?.editDebt(debtDomain = debtDomain, currency = currency!!, name = name!!)
+                        val action =
+                            DebtDetailsFragmentDirections.actionDebtDetailsFragmentToNewDebtFragment(
+                                idHuman = debtDomain.idHuman,
+                                idDebt = debtDomain.id,
+                                currency = currency,
+                                sumArgs = debtDomain.sum.toFloat(),
+                                date = debtDomain.date,
+                                info = debtDomain.info,
+                                name = name
+                            )
+                        Navigation.findNavController(view).navigate(action)
                     }
                 }
                 builder.show()
@@ -180,7 +192,8 @@ class DebtDetailsFragment: Fragment() {
                         .subscribe({
                             Log.e("TAG", "Human with id = $idHuman deleted")
                         },{})
-                    buttonClickListener?.deleteHuman()
+//                    buttonClickListener?.deleteHuman()
+                    Navigation.findNavController(view).navigate(DebtDetailsFragmentDirections.actionDebtDetailsFragmentToMainFragment())
                 }
             })
             builder.setNegativeButton(R.string.No, null)
@@ -189,8 +202,10 @@ class DebtDetailsFragment: Fragment() {
 
         val addDebtButton: FloatingActionButton = view.findViewById(R.id.addDebtButton)
         addDebtButton.setOnClickListener{
-            if (idHuman != null) {
-                buttonClickListener?.addNewDebtFragment(idHuman = idHuman!!, currency = currency!!, name = name!!)
+            if (idHuman != -1) {
+//                buttonClickListener?.addNewDebtFragment(idHuman = idHuman!!, currency = currency!!, name = name!!)
+                val action = DebtDetailsFragmentDirections.actionDebtDetailsFragmentToNewDebtFragment(idHuman = idHuman, currency = currency, name = name)
+                Navigation.findNavController(view).navigate(action)
             }
         }
 
