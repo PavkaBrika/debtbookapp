@@ -40,7 +40,8 @@
             android:defaultValue="false" />
         <action
             android:id="@+id/action_debtDetailsFragment_to_mainFragment"
-            app:destination="@id/mainFragment" />
+            app:destination="@id/mainFragment"
+            app:popUpTo="@id/nav" />
     </fragment>
     <fragment
         android:id="@+id/newDebtFragment"
@@ -48,7 +49,8 @@
         android:label="NewDebtFragment" >
         <action
             android:id="@+id/action_newDebtFragment_to_debtDetailsFragment"
-            app:destination="@id/debtDetailsFragment" />
+            app:destination="@id/debtDetailsFragment"
+            app:popUpTo="@id/mainFragment" />
         <argument
             android:name="idHuman"
             app:argType="integer"
