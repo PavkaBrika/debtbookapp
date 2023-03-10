@@ -50,7 +50,6 @@
                 android:text="1000"
                 android:textAlignment="textEnd"
                 android:textSize="20sp"
-                android:textStyle="bold"
                 app:autoSizeMinTextSize="12sp"
                 app:autoSizeStepGranularity="1px"
                 app:autoSizeTextType="uniform" />
@@ -68,7 +67,6 @@
                 android:text="CUR"
                 android:textAlignment="textEnd"
                 android:textSize="20sp"
-                android:textStyle="bold"
                 app:autoSizeMinTextSize="12sp"
                 app:autoSizeStepGranularity="1px"
                 app:autoSizeTextType="uniform" />
