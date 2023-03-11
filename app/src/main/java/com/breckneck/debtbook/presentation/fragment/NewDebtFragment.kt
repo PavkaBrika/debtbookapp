@@ -81,18 +81,24 @@ class NewDebtFragment: Fragment() {
         val currencySpinner: Spinner = view.findViewById(R.id.debtCurrencySpinner)
         val currencyTextView: TextView = view.findViewById(R.id.debtCurrencyTextView)
         val collapsed: CollapsingToolbarLayout = view.findViewById(R.id.collapsNewDebt)
+
         collapsed.apply {
             setCollapsedTitleTypeface(Typeface.DEFAULT_BOLD)
             setExpandedTitleTypeface(Typeface.DEFAULT_BOLD)
         }
 
-        val currencyNames = arrayOf(getString(R.string.rub), getString(R.string.usd), getString(R.string.eur))
+        val currencyNames = arrayOf(getString(R.string.usd), getString(R.string.eur), getString(R.string.rub),
+            getString(R.string.byn), getString(R.string.uah), getString(R.string.kzt),
+            getString(R.string.jpy), getString(R.string.gpb), getString(R.string.aud),
+            getString(R.string.cad), getString(R.string.chf), getString(R.string.cny),
+            getString(R.string.sek), getString(R.string.mxn))
         val adapter = ArrayAdapter(view.context, android.R.layout.simple_spinner_dropdown_item, currencyNames)
         currencySpinner.adapter = adapter
         currencySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                 currency = p0?.getItemAtPosition(p2).toString()
+                currency = p0?.getItemAtPosition(p2).toString().substring(p0?.getItemAtPosition(p2).toString().lastIndexOf(" ") + 1)
             }
+
             override fun onNothingSelected(p0: AdapterView<*>?) {
             }
         }
