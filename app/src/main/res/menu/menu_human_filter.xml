@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/filterShowAll"
+        android:title="@string/show_all" />
+    <item
+        android:id="@+id/filterShowPositive"
+        android:title="@string/show_positive" />
+    <item
+        android:id="@+id/filterShowNegative"
+        android:title="@string/show_negative" />
+</menu>

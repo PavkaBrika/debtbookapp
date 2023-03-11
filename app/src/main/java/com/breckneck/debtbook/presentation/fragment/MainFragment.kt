@@ -4,9 +4,9 @@ import android.content.Context
 import android.graphics.Typeface
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.widget.ImageView
+import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -16,6 +16,7 @@ import com.breckneck.debtbook.adapter.HumanAdapter
 import com.breckneck.debtbook.presentation.viewmodel.MainFragmentViewModel
 import com.breckneck.deptbook.domain.model.HumanDomain
 import com.google.android.material.appbar.CollapsingToolbarLayout
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -65,6 +66,15 @@ class MainFragment : Fragment() {
             }
         }
 
+        val filterButton: ImageView = view.findViewById(R.id.filterHumanButton)
+        filterButton.setOnClickListener {
+            val popupMenu = PopupMenu(context, view)
+            val inflater = popupMenu.menuInflater
+            inflater.inflate(R.menu.menu_human_filter, popupMenu.menu)
+            popupMenu.show()
+//            popupMenu.setOnMenuItemClickListener
+        }
+
         vm.apply {
             getAllHumans()
             getNegativeSum()
@@ -104,4 +114,6 @@ class MainFragment : Fragment() {
 
         return view
     }
+
+
 }

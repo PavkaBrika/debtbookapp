@@ -32,4 +32,7 @@
     <string name="editdebtcollaps">Edit debt</string>
     <string name="debts">Debts</string>
     <string name="nodebts">There are no debts yet. Click the button below to add.</string>
+    <string name="show_all">Show all debts</string>
+    <string name="show_positive">Show positive debts</string>
+    <string name="show_negative">Show negative debts</string>
 </resources>

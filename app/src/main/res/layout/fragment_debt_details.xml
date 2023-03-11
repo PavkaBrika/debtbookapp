@@ -58,7 +58,7 @@
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_gravity="end"
-                        android:layout_marginRight="16dp"
+                        android:layout_marginEnd="16dp"
                         android:src="@drawable/ic_baseline_delete_outline_24"
                         style="@style/imageViewButton"/>
 
