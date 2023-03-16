@@ -66,14 +66,14 @@ class MainFragment : Fragment() {
             }
         }
 
-        val filterButton: ImageView = view.findViewById(R.id.filterHumanButton)
-        filterButton.setOnClickListener {
-            val popupMenu = PopupMenu(context, view)
-            val inflater = popupMenu.menuInflater
-            inflater.inflate(R.menu.menu_human_filter, popupMenu.menu)
-            popupMenu.show()
-//            popupMenu.setOnMenuItemClickListener
-        }
+//        val filterButton: ImageView = view.findViewById(R.id.filterHumanButton)
+//        filterButton.setOnClickListener {
+//            val popupMenu = PopupMenu(context, view)
+//            val inflater = popupMenu.menuInflater
+//            inflater.inflate(R.menu.menu_human_filter, popupMenu.menu)
+//            popupMenu.show()
+////            popupMenu.setOnMenuItemClickListener
+//        }
 
         vm.apply {
             getAllHumans()
