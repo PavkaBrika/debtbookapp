@@ -9,7 +9,9 @@ val appModule = module {
     viewModel<MainFragmentViewModel> {
         MainFragmentViewModel(
             getAllDebtsSumUseCase = get(),
-            getAllHumansUseCase = get()
+            getAllHumansUseCase = get(),
+            getPositiveHumansUseCase = get(),
+            getNegativeHumansUseCase = get()
         )
     }
 }

@@ -6,13 +6,17 @@ import androidx.lifecycle.ViewModel
 import com.breckneck.deptbook.domain.model.HumanDomain
 import com.breckneck.deptbook.domain.usecase.Human.GetAllDebtsSumUseCase
 import com.breckneck.deptbook.domain.usecase.Human.GetAllHumansUseCase
+import com.breckneck.deptbook.domain.usecase.Human.GetNegativeHumansUseCase
+import com.breckneck.deptbook.domain.usecase.Human.GetPositiveHumansUseCase
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 
 class MainFragmentViewModel(
     private val getAllHumansUseCase: GetAllHumansUseCase,
-    private val getAllDebtsSumUseCase: GetAllDebtsSumUseCase
+    private val getAllDebtsSumUseCase: GetAllDebtsSumUseCase,
+    private val getPositiveHumansUseCase: GetPositiveHumansUseCase,
+    private val getNegativeHumansUseCase: GetNegativeHumansUseCase
 ) : ViewModel() {
 
     var resultPos = MutableLiveData<String>()
@@ -32,6 +36,34 @@ class MainFragmentViewModel(
         Single.just("1")
             .map {
                 return@map getAllHumansUseCase.execute()
+            }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                resultHumanList.value = it
+                Log.e("TAG", "humans loaded in VM")
+            }, {})
+
+    }
+
+    fun getPositiveHumans() {
+        Single.just("1")
+            .map {
+                return@map getPositiveHumansUseCase.execute()
+            }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                resultHumanList.value = it
+                Log.e("TAG", "humans loaded in VM")
+            }, {})
+
+    }
+
+    fun getNegativeHumans() {
+        Single.just("1")
+            .map {
+                return@map getNegativeHumansUseCase.execute()
             }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

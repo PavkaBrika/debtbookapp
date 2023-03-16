@@ -5,6 +5,7 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
@@ -68,8 +69,23 @@ class MainFragment : Fragment() {
 
         val filterButton: ImageView = view.findViewById(R.id.filterHumanButton)
         filterButton.setOnClickListener {
-            val bottomSheetDialogFilter = BottomSheetDialog(context!!)
+            val bottomSheetDialogFilter = BottomSheetDialog(requireContext())
             bottomSheetDialogFilter.setContentView(R.layout.dialog_filter)
+            bottomSheetDialogFilter.findViewById<Button>(R.id.showAllButton)!!.setOnClickListener {
+                vm.getAllHumans()
+                filterButton.setColorFilter(resources.getColor(R.color.black))
+                bottomSheetDialogFilter.cancel()
+            }
+            bottomSheetDialogFilter.findViewById<Button>(R.id.showPositiveButton)!!.setOnClickListener {
+                filterButton.setColorFilter(resources.getColor(R.color.green))
+                vm.getPositiveHumans()
+                bottomSheetDialogFilter.cancel()
+            }
+            bottomSheetDialogFilter.findViewById<Button>(R.id.showNegativeButton)!!.setOnClickListener {
+                filterButton.setColorFilter(resources.getColor(R.color.red))
+                vm.getNegativeHumans()
+                bottomSheetDialogFilter.cancel()
+            }
             bottomSheetDialogFilter.show()
         }
 
@@ -78,6 +94,7 @@ class MainFragment : Fragment() {
             getNegativeSum()
             getPositiveSum()
         }
+
         vm.resultHumanList.observe(requireActivity()) {
             if (it.isNotEmpty())
                 noDebtsTextView.visibility = View.INVISIBLE

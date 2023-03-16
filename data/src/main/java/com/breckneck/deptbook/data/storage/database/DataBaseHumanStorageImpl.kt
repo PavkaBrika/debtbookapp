@@ -18,6 +18,16 @@ class DataBaseHumanStorageImpl(context: Context) : HumanStorage {
         return humanList
     }
 
+    override fun getPositiveHumans(): List<Human> {
+        val humanList = db.appDao().getPositiveHumans()
+        return humanList
+    }
+
+    override fun getNegativeHumans(): List<Human> {
+        val humanList = db.appDao().getNegativeHumans()
+        return humanList
+    }
+
     override fun insertHuman(human: Human) {
         var humanid = sharedPreferences.getInt(ZONE_ID, 0)
         human.id = humanid

@@ -6,6 +6,10 @@ interface HumanRepository {
 
     fun getAllHumans() : List<HumanDomain>
 
+    fun getPositiveHumans(): List<HumanDomain>
+
+    fun getNegativeHumans(): List<HumanDomain>
+
     fun insertHuman(humanDomain: HumanDomain)
 
     fun getLastHumanId() : Int
@@ -17,4 +21,5 @@ interface HumanRepository {
     fun getHumanSumDebt(humanId: Int): Double
 
     fun deleteHuman(id: Int)
+
 }

@@ -15,6 +15,22 @@ class HumanRepositoryImpl(private val humanStorage: HumanStorage) : HumanReposit
         return humanDomainList
     }
 
+    override fun getPositiveHumans(): List<HumanDomain> {
+        val humanList: List<Human> = humanStorage.getPositiveHumans()
+        val humanDomainList : List<HumanDomain> = humanList.map {
+            HumanDomain(id = it.id, name = it.name, sumDebt = it.sumDebt, currency = it.currency)
+        }
+        return humanDomainList
+    }
+
+    override fun getNegativeHumans(): List<HumanDomain> {
+        val humanList: List<Human> = humanStorage.getNegativeHumans()
+        val humanDomainList : List<HumanDomain> = humanList.map {
+            HumanDomain(id = it.id, name = it.name, sumDebt = it.sumDebt, currency = it.currency)
+        }
+        return humanDomainList
+    }
+
     override fun insertHuman(humanDomain: HumanDomain) {
         humanStorage.insertHuman(Human(id = humanDomain.id, name = humanDomain.name, sumDebt = humanDomain.sumDebt, currency = humanDomain.currency))
     }
