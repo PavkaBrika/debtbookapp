@@ -1,7 +1,6 @@
 package com.breckneck.debtbook.adapter
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +11,10 @@ import com.breckneck.deptbook.domain.model.HumanDomain
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 
-class HumanAdapter(private val humanDomainList: List<HumanDomain>, val humanClickListener: OnHumanClickListener): RecyclerView.Adapter<HumanAdapter.HumanViewHolder>() {
+class HumanAdapter(
+    private val humanDomainList: List<HumanDomain>,
+    val humanClickListener: OnHumanClickListener
+) : RecyclerView.Adapter<HumanAdapter.HumanViewHolder>() {
 
     val decimalFormat = DecimalFormat("###,###,###.##")
     val customSymbol: DecimalFormatSymbols = DecimalFormatSymbols()

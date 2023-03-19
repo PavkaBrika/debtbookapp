@@ -36,4 +36,5 @@
     <string name="show_positive">Show positive debts</string>
     <string name="show_negative">Show negative debts</string>
     <string name="filter">Filter</string>
+    <string name="conacts">Conacts</string>
 </resources>

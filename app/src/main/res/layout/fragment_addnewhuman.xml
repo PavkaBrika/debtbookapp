@@ -91,7 +91,7 @@
                         android:hint="@string/name"
                         android:layout_weight="20"
                         android:maxLines="1"
-                        android:maxLength="11" />
+                        android:maxLength="20" />
 
                     <ImageView
                         android:id="@+id/contactsImageView"
@@ -140,7 +140,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
                         android:layout_marginTop="8dp"
-                        android:textAlignment="center" />
+                        android:textAlignment="center"
+                        android:fadeScrollbars="false"/>
 
                     <TextView
                         android:id="@+id/debtCurrencyTextView"
