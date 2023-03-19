@@ -2,6 +2,7 @@ package com.breckneck.debtbook.presentation.fragment
 
 import android.content.Context
 import android.graphics.Typeface
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -73,7 +74,14 @@ class MainFragment : Fragment() {
             bottomSheetDialogFilter.setContentView(R.layout.dialog_filter)
             bottomSheetDialogFilter.findViewById<Button>(R.id.showAllButton)!!.setOnClickListener {
                 vm.getAllHumans()
-                filterButton.setColorFilter(resources.getColor(R.color.black))
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    if (resources.configuration.isNightModeActive)
+                        filterButton.setColorFilter(resources.getColor(R.color.white))
+                    else
+                        filterButton.setColorFilter(resources.getColor(R.color.black))
+                } else {
+                    filterButton.setColorFilter(resources.getColor(R.color.black))
+                }
                 bottomSheetDialogFilter.cancel()
             }
             bottomSheetDialogFilter.findViewById<Button>(R.id.showPositiveButton)!!.setOnClickListener {

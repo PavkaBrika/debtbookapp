@@ -75,22 +75,35 @@
                     app:ss_animationType="curved"
                     style="@style/switchStyle"/>
 
-                <RelativeLayout
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp">
 
                     <EditText
                         android:id="@+id/humanNameEditText"
                         style="@style/addNewHumanEditText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginRight="8dp"
+                        android:layout_marginEnd="4dp"
                         android:hint="@string/name"
+                        android:layout_weight="20"
                         android:maxLines="1"
-                        android:maxLength="11"/>
+                        android:maxLength="11" />
 
-                </RelativeLayout>
+                    <ImageView
+                        android:id="@+id/contactsImageView"
+                        android:layout_width="40dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:layout_marginStart="4dp"
+                        android:src="@drawable/outline_contacts_24"
+                        style="@style/imageViewButton" />
+
+
+                </LinearLayout>
 
 
 
