@@ -2,23 +2,125 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/namesRecyclerView"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#FFFFFF">
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordinator"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?android:selectableItemBackground"
-        android:clickable="true"
-        android:focusable="true"
-        android:scrollbars="vertical"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+        android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/addHumanButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="add"
-        android:layout_alignParentBottom="true" />
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/app_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true">
+
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:id="@+id/collaps"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:fitsSystemWindows="true"
+                style="@style/collapsContentScrim"
+                app:titleEnabled="true"
+                app:title="@string/debts"
+                app:expandedTitleMarginStart="16dp"
+                app:titleCollapseMode="scale"
+                app:expandedTitleGravity="bottom"
+                app:layout_scrollFlags="scroll">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="end"
+                    android:layout_marginBottom="24dp"
+                    android:layout_marginRight="12dp">
+
+                    <TextView
+                        android:id="@+id/overallPositiveSumTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_above="@id/overallNegativeSumTextView"
+                        android:textAlignment="viewEnd"
+                        android:textColor="@color/green"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/overallNegativeSumTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:textAlignment="viewEnd"
+                        android:textColor="@color/red"
+                        android:textSize="18sp" />
+
+                </RelativeLayout>
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/mainToolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:fitsSystemWindows="true"
+                    app:layout_collapseMode="pin">
+
+                    <ImageView
+                        android:id="@+id/filterHumanButton"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="end"
+                        android:layout_marginEnd="16dp"
+                        android:src="@drawable/ic_outline_filter_alt_24"
+                        style="@style/imageViewButton"/>
+
+                </androidx.appcompat.widget.Toolbar>
+
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            style="@style/collapsLines"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/namesRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="1dp"
+            android:layout_marginLeft="12dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:scrollbars="vertical"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/addHumanButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/fabTheme"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            app:layout_anchor="@id/namesRecyclerView"
+            app:layout_anchorGravity="bottom|center"
+            app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"
+            android:src="@drawable/ic_baseline_add_24" />
+
+        <TextView
+            android:id="@+id/noDebtTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/nodebts"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:gravity="center"
+            android:textColor="@color/darkgray"
+            android:textSize="25sp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
 
 </RelativeLayout>

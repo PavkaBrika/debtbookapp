@@ -1,9 +1,15 @@
 package com.breckneck.debtbook.presentation.fragment
 
+import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.DatePickerDialog
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.database.Cursor
 import android.graphics.Typeface
 import android.os.Bundle
+import android.provider.ContactsContract
 import android.text.Editable
 import android.text.TextWatcher
 import android.transition.TransitionInflater
@@ -12,18 +18,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.activity.result.contract.ActivityResultContract
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
-import com.breckneck.deptbook.data.storage.database.DataBaseDebtStorageImpl
-import com.breckneck.deptbook.data.storage.database.DataBaseHumanStorageImpl
-import com.breckneck.deptbook.data.storage.repository.DebtRepositoryImpl
-import com.breckneck.deptbook.data.storage.repository.HumanRepositoryImpl
+import com.breckneck.debtbook.adapter.ContactsAdapter
 import com.breckneck.deptbook.domain.usecase.Debt.*
 import com.breckneck.deptbook.domain.usecase.Human.AddSumUseCase
 import com.breckneck.deptbook.domain.usecase.Human.GetLastHumanIdUseCase
 import com.breckneck.deptbook.domain.usecase.Human.SetHumanUseCase
 import com.google.android.material.appbar.CollapsingToolbarLayout
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import io.ghyeok.stickyswitch.widget.StickySwitch
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -32,6 +42,8 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import org.koin.android.ext.android.inject
 import java.text.DecimalFormat
 import java.util.*
+import java.util.jar.Manifest
+import kotlin.collections.ArrayList
 
 class NewDebtFragment: Fragment() {
 
@@ -67,6 +79,7 @@ class NewDebtFragment: Fragment() {
     private val updateCurrentSumUseCase: UpdateCurrentSumUseCase by inject()
 
 
+    @SuppressLint("Range")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_addnewhuman, container, false)
 
@@ -79,24 +92,31 @@ class NewDebtFragment: Fragment() {
         val nameArgs = arguments?.getString("name", "")
 
         val humanNameEditText: EditText = view.findViewById(R.id.humanNameEditText)
+        val contactsImageView: ImageView = view.findViewById(R.id.contactsImageView)
         val infoEditText: EditText = view.findViewById(R.id.debtInfoEditText)
         val debtDateTextView: TextView = view.findViewById(R.id.debtDateTextView)
         val debtSumEditText : EditText = view.findViewById(R.id.debtSumEditText)
         val currencySpinner: Spinner = view.findViewById(R.id.debtCurrencySpinner)
         val currencyTextView: TextView = view.findViewById(R.id.debtCurrencyTextView)
         val collapsed: CollapsingToolbarLayout = view.findViewById(R.id.collapsNewDebt)
+
         collapsed.apply {
             setCollapsedTitleTypeface(Typeface.DEFAULT_BOLD)
             setExpandedTitleTypeface(Typeface.DEFAULT_BOLD)
         }
 
-        val currencyNames = arrayOf(getString(R.string.rub), getString(R.string.usd), getString(R.string.eur))
+        val currencyNames = arrayOf(getString(R.string.usd), getString(R.string.eur), getString(R.string.rub),
+            getString(R.string.byn), getString(R.string.uah), getString(R.string.kzt),
+            getString(R.string.jpy), getString(R.string.gpb), getString(R.string.aud),
+            getString(R.string.cad), getString(R.string.chf), getString(R.string.cny),
+            getString(R.string.sek), getString(R.string.mxn))
         val adapter = ArrayAdapter(view.context, android.R.layout.simple_spinner_dropdown_item, currencyNames)
         currencySpinner.adapter = adapter
         currencySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                 currency = p0?.getItemAtPosition(p2).toString()
+                currency = p0?.getItemAtPosition(p2).toString().substring(p0?.getItemAtPosition(p2).toString().lastIndexOf(" ") + 1)
             }
+
             override fun onNothingSelected(p0: AdapterView<*>?) {
             }
         }
@@ -150,7 +170,7 @@ class NewDebtFragment: Fragment() {
             currencySpinner.visibility = View.GONE
             currencyTextView.text = currency
             if (sumArgs != 0.0) { //EXIST HUMAN EDIT DEBT LAYOUT CHANGES
-                debtSumEditText.setText(decimalFormat.format(sumArgs)) ////fasdfadsfasfsadfFSDAFSDF
+                debtSumEditText.setText(decimalFormat.format(sumArgs))
                 debtDateTextView.text = dateArgs
                 infoEditText.setText(infoArgs)
                 collapsed.title = getString(R.string.editdebtcollaps)
@@ -162,6 +182,7 @@ class NewDebtFragment: Fragment() {
 
         if (idHuman != null) {
             humanNameEditText.visibility = View.GONE
+            contactsImageView.visibility = View.GONE
             humanNameEditText.setText(nameArgs)
         }
         val setButton : FloatingActionButton = view.findViewById(R.id.setDebtButton)
@@ -255,6 +276,47 @@ class NewDebtFragment: Fragment() {
                     } else { //if user is bad
                     Toast.makeText(view.context, R.string.youmustentername, Toast.LENGTH_SHORT).show()
                 }
+            }
+        }
+
+        fun showContacts() {
+            val contactNameList = ArrayList<String>()
+            val uri = ContactsContract.Contacts.CONTENT_URI
+            val contacts = requireActivity().contentResolver.query(uri, null, null, null, null)
+            if (contacts != null) {
+                while (contacts.moveToNext()) {
+                    contactNameList.add(contacts.getString(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)))
+                }
+                contacts.close()
+            }
+            val bottomSheetDialog = BottomSheetDialog(requireContext())
+            bottomSheetDialog.setContentView(R.layout.dialog_contacts)
+            val contactsRecyclerView = bottomSheetDialog.findViewById<RecyclerView>(R.id.contactsRecyclerView)
+            val onContactClickListener = object: ContactsAdapter.OnContactClickListener {
+                override fun onContactClick(contact: String, position: Int) {
+                    humanNameEditText.setText(contact)
+                    bottomSheetDialog.dismiss()
+                }
+            }
+            contactsRecyclerView!!.addItemDecoration(DividerItemDecoration(view.context, DividerItemDecoration.VERTICAL))
+            contactsRecyclerView.adapter = ContactsAdapter(contactsList = contactNameList, contactClickListener = onContactClickListener)
+            bottomSheetDialog.show()
+        }
+
+        val permissionRequestLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { permission ->
+            if (permission) {
+                showContacts()
+            } else {
+                Toast.makeText(requireContext(), "No permission", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        contactsImageView.setOnClickListener {
+            if (ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+                showContacts()
+            }
+            else {
+                permissionRequestLauncher.launch(android.Manifest.permission.READ_CONTACTS)
             }
         }
         return view

@@ -1,7 +1,41 @@
 <resources>
-    <string name="app_name">debtbook</string>
+    <string name="app_name">Debt book</string>
     <string name="name">Name</string>
     <string name="sum">Sum</string>
-    <string name="set">Set</string>
-    <string name="currency">Currency</string>
+    <string name="comment">Comment</string>
+    <string name="year">y.</string>
+    <string name="usd" translatable="false">&#127482;&#127480; USD</string>
+    <string name="eur" translatable="false">&#127466;&#127482; EUR</string>
+    <string name="rub" translatable="false">&#127479;&#127482; RUB</string>
+    <string name="byn" translatable="false">&#127463;&#127486; BYN</string>
+    <string name="uah" translatable="false">&#127482;&#127462; UAH</string>
+    <string name="kzt" translatable="false">&#127472;&#127487; KZT</string>
+    <string name="jpy" translatable="false">&#127471;&#127477; JPY</string>
+    <string name="gpb" translatable="false">&#127468;&#127463; GPB</string>
+    <string name="aud" translatable="false">&#127462;&#127482; AUD</string>
+    <string name="cad" translatable="false">&#127464;&#127462; CAD</string>
+    <string name="chf" translatable="false">&#127464;&#127469; CHF</string>
+    <string name="cny" translatable="false">&#127464;&#127475; CNY</string>
+    <string name="sek" translatable="false">&#127480;&#127466; SEK</string>
+    <string name="mxn" translatable="false">&#127474;&#127485; MXN</string>
+    <string name="youmustentername">You didn\'t enter all the information</string>
+    <string name="deletedebt">Delete this debt</string>
+    <string name="editdebt">Edit this debt</string>
+    <string name="give">Give</string>
+    <string name="take">Take</string>
+    <string name="zerodebt">Debt cannot be zero</string>
+    <string name="payoffMessage">Pay off this debt in full?</string>
+    <string name="payoffTitle">Pay off</string>
+    <string name="yes">Yes</string>
+    <string name="No">No</string>
+    <string name="newdebt">Add new debt</string>
+    <string name="editdebtcollaps">Edit debt</string>
+    <string name="debts">Debts</string>
+    <string name="nodebts">There are no debts yet. Click the button below to add.</string>
+    <string name="show_all">Show all debts</string>
+    <string name="show_positive">Show positive debts</string>
+    <string name="show_negative">Show negative debts</string>
+    <string name="filter">Filter</string>
+    <string name="conacts">Conacts</string>
+    <string name="no_permission">No permission</string>
 </resources>

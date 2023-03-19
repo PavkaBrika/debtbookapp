@@ -2,11 +2,13 @@ package com.breckneck.debtbook.presentation.fragment
 
 import android.content.Context
 import android.graphics.Typeface
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -16,12 +18,12 @@ import com.breckneck.debtbook.adapter.HumanAdapter
 import com.breckneck.debtbook.presentation.viewmodel.MainFragmentViewModel
 import com.breckneck.deptbook.domain.model.HumanDomain
 import com.google.android.material.appbar.CollapsingToolbarLayout
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainFragment : Fragment() {
 
-//    private lateinit var vm: MainFragmentViewModel
     private val vm by viewModel<MainFragmentViewModel>()
 
     interface OnButtonClickListener{
@@ -38,8 +40,6 @@ class MainFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.e("TAG", "Activity created")
-//        vm = ViewModelProvider(requireActivity(), MainFragmentViewModelFactory(requireActivity())).get(
-//            MainFragmentViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -68,11 +68,41 @@ class MainFragment : Fragment() {
             }
         }
 
+        val filterButton: ImageView = view.findViewById(R.id.filterHumanButton)
+        filterButton.setOnClickListener {
+            val bottomSheetDialogFilter = BottomSheetDialog(requireContext())
+            bottomSheetDialogFilter.setContentView(R.layout.dialog_filter)
+            bottomSheetDialogFilter.findViewById<Button>(R.id.showAllButton)!!.setOnClickListener {
+                vm.getAllHumans()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    if (resources.configuration.isNightModeActive)
+                        filterButton.setColorFilter(resources.getColor(R.color.white))
+                    else
+                        filterButton.setColorFilter(resources.getColor(R.color.black))
+                } else {
+                    filterButton.setColorFilter(resources.getColor(R.color.black))
+                }
+                bottomSheetDialogFilter.cancel()
+            }
+            bottomSheetDialogFilter.findViewById<Button>(R.id.showPositiveButton)!!.setOnClickListener {
+                filterButton.setColorFilter(resources.getColor(R.color.green))
+                vm.getPositiveHumans()
+                bottomSheetDialogFilter.cancel()
+            }
+            bottomSheetDialogFilter.findViewById<Button>(R.id.showNegativeButton)!!.setOnClickListener {
+                filterButton.setColorFilter(resources.getColor(R.color.red))
+                vm.getNegativeHumans()
+                bottomSheetDialogFilter.cancel()
+            }
+            bottomSheetDialogFilter.show()
+        }
+
         vm.apply {
             getAllHumans()
             getNegativeSum()
             getPositiveSum()
         }
+
         vm.resultHumanList.observe(requireActivity()) {
             if (it.isNotEmpty())
                 noDebtsTextView.visibility = View.INVISIBLE
@@ -107,4 +137,6 @@ class MainFragment : Fragment() {
 
         return view
     }
+
+
 }

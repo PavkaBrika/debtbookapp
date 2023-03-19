@@ -9,12 +9,16 @@ val domainModule = module {
 
     //HUMAN
 
-    factory<GetAllDebtsSumUseCase> {
-        GetAllDebtsSumUseCase(humanRepository = get())
-    }
-
     factory<GetAllHumansUseCase> {
         GetAllHumansUseCase(humanRepository = get())
+    }
+
+    factory<GetPositiveHumansUseCase> {
+        GetPositiveHumansUseCase(humanRepository = get())
+    }
+
+    factory<GetNegativeHumansUseCase> {
+        GetNegativeHumansUseCase(humanRepository = get())
     }
 
     factory<GetLastHumanIdUseCase> {
@@ -38,6 +42,10 @@ val domainModule = module {
     }
 
     //DEBT
+
+    factory<GetAllDebtsSumUseCase> {
+        GetAllDebtsSumUseCase(humanRepository = get())
+    }
 
     factory<GetAllDebtsUseCase> {
         GetAllDebtsUseCase(debtRepository = get())

@@ -25,5 +25,17 @@ class DataBaseDebtStorageImpl(context: Context): DebtStorage {
         sharedPreferences.edit().putInt(DEBT_ID ,debtId).apply()
     }
 
+    override fun deleteDebt(debt: Debt) {
+        db.appDao().deleteDebt(debt)
+    }
+
+    override fun editDebt(debt: Debt) {
+        db.appDao().updateDebt(debt)
+    }
+
+    override fun deleteDebtsByHumanId(id: Int) {
+        db.appDao().deleteHumanById(id = id)
+    }
+
 
 }

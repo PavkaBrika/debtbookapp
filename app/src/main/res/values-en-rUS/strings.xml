@@ -4,9 +4,6 @@
     <string name="sum">Sum</string>
     <string name="comment">Comment</string>
     <string name="year">y.</string>
-    <string name="usd" translatable="false">USD</string>
-    <string name="eur" translatable="false">EUR</string>
-    <string name="rub" translatable="false">RUB</string>
     <string name="youmustentername">You didn\'t enter all the information</string>
     <string name="deletedebt">Delete this debt</string>
     <string name="editdebt">Edit this debt</string>
@@ -21,4 +18,10 @@
     <string name="editdebtcollaps">Edit debt</string>
     <string name="debts">Debts</string>
     <string name="nodebts">There are no debts yet. Click the button below to add.</string>
+    <string name="show_all">Show all debts</string>
+    <string name="show_positive">Show positive debts</string>
+    <string name="show_negative">Show negative debts</string>
+    <string name="filter">Filter</string>
+    <string name="conacts">Contacts</string>
+    <string name="no_permission">No permission</string>
 </resources>

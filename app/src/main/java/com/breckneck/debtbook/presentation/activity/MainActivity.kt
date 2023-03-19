@@ -95,7 +95,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
             loadAd(adRequestBuild)
         }
 
-        //INTERSTITIAL AD
+//        //INTERSTITIAL AD
         interstitialAd = InterstitialAd(this)
         interstitialAd.apply {
             setAdUnitId("R-M-1753297-2")

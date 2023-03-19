@@ -20,8 +20,9 @@
                 android:layout_height="180dp"
                 android:fitsSystemWindows="true"
                 style="@style/collapsContentScrim"
+                app:expandedTitleMarginBottom="64dp"
                 app:expandedTitleGravity="bottom"
-                app:expandedTitleMarginStart="8dp"
+                app:expandedTitleMarginStart="16dp"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 app:maxLines="3"
                 app:titleCollapseMode="scale"
@@ -57,7 +58,7 @@
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_gravity="end"
-                        android:layout_marginRight="16dp"
+                        android:layout_marginEnd="16dp"
                         android:src="@drawable/ic_baseline_delete_outline_24"
                         style="@style/imageViewButton"/>
 
@@ -78,7 +79,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="1dp"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="12dp"
             android:clickable="true"
             android:focusable="true"
             android:scrollbars="vertical"
