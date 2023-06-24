@@ -62,6 +62,15 @@
                         android:src="@drawable/ic_baseline_delete_outline_24"
                         style="@style/imageViewButton"/>
 
+                    <ImageView
+                        android:id="@+id/shareHumanButton"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="end"
+                        android:layout_marginEnd="16dp"
+                        android:src="@drawable/baseline_share_24"
+                        style="@style/imageViewButton"/>
+
                 </androidx.appcompat.widget.Toolbar>
 
             </com.google.android.material.appbar.CollapsingToolbarLayout>

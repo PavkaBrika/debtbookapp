@@ -75,6 +75,10 @@ val domainModule = module {
         CheckEditTextIsEmpty()
     }
 
+    factory<GetDebtShareString> {
+        GetDebtShareString()
+    }
+
     factory<EditDebtUseCase> {
         EditDebtUseCase(debtRepository = get())
     }

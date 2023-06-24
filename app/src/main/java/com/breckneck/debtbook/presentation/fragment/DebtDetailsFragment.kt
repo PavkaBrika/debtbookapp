@@ -3,6 +3,8 @@ package com.breckneck.debtbook.presentation.fragment
 import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
+import android.content.Intent
+import android.content.Intent.*
 import android.graphics.Typeface
 import android.os.Bundle
 import android.transition.TransitionInflater
@@ -26,6 +28,7 @@ import com.breckneck.deptbook.domain.model.DebtDomain
 import com.breckneck.deptbook.domain.usecase.Debt.DeleteDebtUseCase
 import com.breckneck.deptbook.domain.usecase.Debt.DeleteDebtsByHumanIdUseCase
 import com.breckneck.deptbook.domain.usecase.Debt.GetAllDebtsUseCase
+import com.breckneck.deptbook.domain.usecase.Debt.GetDebtShareString
 import com.breckneck.deptbook.domain.usecase.Human.*
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -59,6 +62,9 @@ class DebtDetailsFragment: Fragment() {
         enterTransition = inflater.inflateTransition(R.transition.slide_right)
     }
 
+    lateinit var allDebts: List<DebtDomain>
+    var overallSum: Double = 0.0;
+
     val getLastHumanId: GetLastHumanIdUseCase by inject()
     val addSumUseCase: AddSumUseCase by inject()
     val getHumanSumDebt: GetHumanSumDebtUseCase by inject()
@@ -67,6 +73,7 @@ class DebtDetailsFragment: Fragment() {
     val getAllDebts: GetAllDebtsUseCase by inject()
     val deleteDebt: DeleteDebtUseCase by inject()
     val deleteDebtsByHumanId: DeleteDebtsByHumanIdUseCase by inject()
+    val getDebtShareString: GetDebtShareString by inject()
 
     lateinit var debtClickListener: DebtAdapter.OnDebtClickListener
     lateinit var overallSumTextView: TextView
@@ -132,12 +139,13 @@ class DebtDetailsFragment: Fragment() {
             .subscribe({
                 val adapter = DebtAdapter(it, debtClickListener, currency!!)
                 recyclerView.adapter = adapter
+                allDebts = it
                 Log.e("TAG", "Debts load success")
             }, {
 
             })
 
-        val overallSumTextView: TextView = view.findViewById(R.id.overallSumTextView)
+        var overallSumTextView: TextView = view.findViewById(R.id.overallSumTextView)
         Single.just(overallSumTextView)
             .map {
                 if (newHuman == true) {
@@ -149,6 +157,7 @@ class DebtDetailsFragment: Fragment() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 setOverallSumText(sum = it, currency = currency!!, view = view)
+                overallSum = it
             }, {
             })
 
@@ -177,6 +186,15 @@ class DebtDetailsFragment: Fragment() {
             })
             builder.setNegativeButton(R.string.No, null)
             builder.show()
+        }
+
+        val shareHumanButton: ImageView = view.findViewById(R.id.shareHumanButton)
+        shareHumanButton.setOnClickListener {
+            val intent = Intent(ACTION_SEND)
+            intent.type = "text/plain"
+            intent.putExtra(EXTRA_SUBJECT, name)
+            intent.putExtra(EXTRA_TEXT, getDebtShareString.execute(debtList = allDebts, name = name!!, currency = currency!!, sum = overallSum))
+            startActivity(Intent.createChooser(intent, name))
         }
 
         val addDebtButton: FloatingActionButton = view.findViewById(R.id.addDebtButton)
