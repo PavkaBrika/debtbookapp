@@ -1,5 +1,6 @@
 package com.breckneck.debtbook.presentation.viewmodel
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -32,6 +33,7 @@ class MainFragmentViewModel(
         super.onCleared()
     }
 
+    @SuppressLint("CheckResult")
     fun getAllHumans() {
         Single.just("1")
             .map {
@@ -46,6 +48,7 @@ class MainFragmentViewModel(
 
     }
 
+    @SuppressLint("CheckResult")
     fun getPositiveHumans() {
         Single.just("1")
             .map {

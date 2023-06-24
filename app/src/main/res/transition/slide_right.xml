@@ -2,6 +2,3 @@
 <slide xmlns:android="http://schemas.android.com/apk/res/android"
     android:duration="360"
     android:slideEdge="right" />
-<!--<changeBounds-->
-<!--    xmlns:android="http://schemas.android.com/apk/res/android"-->
-<!--    android:duration="500" />-->

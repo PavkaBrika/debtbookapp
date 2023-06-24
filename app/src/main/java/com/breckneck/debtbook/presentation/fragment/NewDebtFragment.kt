@@ -185,6 +185,7 @@ class NewDebtFragment: Fragment() {
             contactsImageView.visibility = View.GONE
             humanNameEditText.setText(nameArgs)
         }
+
         val setButton : FloatingActionButton = view.findViewById(R.id.setDebtButton)
         setButton.setOnClickListener{
             val name = humanNameEditText.text.toString()

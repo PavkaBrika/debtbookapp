@@ -147,7 +147,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
 
 
 //MainFragment interfaces
-    override fun OnHumanClick(idHuman: Int, currency: String, name: String) {
+    override fun onHumanClick(idHuman: Int, currency: String, name: String) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
         val args = Bundle()
@@ -165,10 +165,12 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
             }
     }
 
-    override fun OnAddButtonClick() {
+    override fun onAddButtonClick() {
         val fragmentManager = supportFragmentManager
-        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-        fragmentTransaction.replace(R.id.frameLayout, NewDebtFragment()).addToBackStack("main").commit()
+        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
+            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+        fragmentTransaction.replace(R.id.frameLayout, NewDebtFragment()).addToBackStack("main")
+            .commit()
         addClick.execute()
         if (getClicks.execute())
             if (interstitialAd.isLoaded) {

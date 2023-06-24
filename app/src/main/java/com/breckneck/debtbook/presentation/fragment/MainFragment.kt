@@ -8,7 +8,6 @@ import android.util.Log
 import android.view.*
 import android.widget.Button
 import android.widget.ImageView
-import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -27,8 +26,9 @@ class MainFragment : Fragment() {
     private val vm by viewModel<MainFragmentViewModel>()
 
     interface OnButtonClickListener{
-        fun OnHumanClick(idHuman: Int, currency: String, name: String)
-        fun OnAddButtonClick()
+        fun onHumanClick(idHuman: Int, currency: String, name: String)
+
+        fun onAddButtonClick()
     }
 
     var buttonClickListener: OnButtonClickListener? = null
@@ -58,12 +58,12 @@ class MainFragment : Fragment() {
 
         val addButton: FloatingActionButton = view.findViewById(R.id.addHumanButton)
         addButton.setOnClickListener{
-            buttonClickListener?.OnAddButtonClick()
+            buttonClickListener?.onAddButtonClick()
         }
 
         val humanClickListener = object: HumanAdapter.OnHumanClickListener {
             override fun onHumanClick(humanDomain: HumanDomain, position: Int) {
-                buttonClickListener?.OnHumanClick(idHuman = humanDomain.id, currency = humanDomain.currency, name = humanDomain.name)
+                buttonClickListener?.onHumanClick(idHuman = humanDomain.id, currency = humanDomain.currency, name = humanDomain.name)
                 Log.e("TAG", "Click on human with id = ${humanDomain.id}")
             }
         }
@@ -134,9 +134,6 @@ class MainFragment : Fragment() {
                 overallNegativeSumTextView.text = it
             }
         }
-
         return view
     }
-
-
 }
