@@ -38,4 +38,5 @@
     <string name="filter">Filter</string>
     <string name="conacts">Conacts</string>
     <string name="no_permission">No permission</string>
+    <string name="contact_name">Contact name</string>
 </resources>

@@ -9,6 +9,8 @@ import android.content.pm.PackageManager
 import android.database.Cursor
 import android.graphics.Typeface
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.provider.ContactsContract
 import android.text.Editable
 import android.text.TextWatcher
@@ -33,6 +35,7 @@ import com.breckneck.deptbook.domain.usecase.Human.AddSumUseCase
 import com.breckneck.deptbook.domain.usecase.Human.GetLastHumanIdUseCase
 import com.breckneck.deptbook.domain.usecase.Human.SetHumanUseCase
 import com.google.android.material.appbar.CollapsingToolbarLayout
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import io.ghyeok.stickyswitch.widget.StickySwitch
@@ -290,8 +293,14 @@ class NewDebtFragment: Fragment() {
                 }
                 contacts.close()
             }
-            val bottomSheetDialog = BottomSheetDialog(requireContext())
+            Collections.sort(contactNameList, object : Comparator<String> {
+                override fun compare(p0: String?, p1: String?): Int {
+                    return p0!!.compareTo(p1!!)
+                }
+            })
+            val bottomSheetDialog = BottomSheetDialog(requireContext(), R.style.DialogStyle)
             bottomSheetDialog.setContentView(R.layout.dialog_contacts)
+            bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
             val contactsRecyclerView = bottomSheetDialog.findViewById<RecyclerView>(R.id.contactsRecyclerView)
             val onContactClickListener = object: ContactsAdapter.OnContactClickListener {
                 override fun onContactClick(contact: String, position: Int) {
@@ -300,7 +309,44 @@ class NewDebtFragment: Fragment() {
                 }
             }
             contactsRecyclerView!!.addItemDecoration(DividerItemDecoration(view.context, DividerItemDecoration.VERTICAL))
-            contactsRecyclerView.adapter = ContactsAdapter(contactsList = contactNameList, contactClickListener = onContactClickListener)
+            val contactsAdapter = ContactsAdapter(contactsList = contactNameList, contactClickListener = onContactClickListener)
+            contactsRecyclerView.adapter = contactsAdapter
+            val contactsSearchView = bottomSheetDialog.findViewById<SearchView>(R.id.contactsSearchView)
+            contactsSearchView?.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(p0: String?): Boolean {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onQueryTextChange(query: String?): Boolean {
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        if (query!!.isNotEmpty()) {
+                            val disposable = Single.just(query)
+                                .map {
+                                    val queryContactsList = ArrayList<String>()
+                                    for (contact in contactNameList) {
+                                        if (contact.lowercase().contains(it.lowercase())) {
+                                            queryContactsList.add(contact)
+                                        }
+                                    }
+                                    Collections.sort(queryContactsList, object : Comparator<String> {
+                                        override fun compare(p0: String?, p1: String?): Int {
+                                            return p0!!.compareTo(p1!!)
+                                        }
+                                    })
+                                    return@map queryContactsList
+                                }
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe({
+                                    contactsAdapter.replaceAll(it)
+                                }, {})
+                        } else {
+                            contactsAdapter.replaceAll(contactNameList)
+                        }
+                    }, 500)
+                    return true
+                }
+            })
             bottomSheetDialog.show()
         }
 

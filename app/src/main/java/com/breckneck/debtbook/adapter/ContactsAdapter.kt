@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 
 class ContactsAdapter(
-    private val contactsList: List<String>,
+    private var contactsList: List<String>,
     val contactClickListener: OnContactClickListener
 ) : RecyclerView.Adapter<ContactsAdapter.ContactsViewHolder>() {
 
@@ -41,5 +41,8 @@ class ContactsAdapter(
         return contactsList.size
     }
 
-
+    fun replaceAll(contactsList: List<String>) {
+        this.contactsList = contactsList
+        notifyDataSetChanged()
+    }
 }
