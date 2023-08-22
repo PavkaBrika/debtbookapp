@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingBottom="16dp"
-        android:text="@string/conacts"
+        android:text="@string/contacts"
         android:textSize="24sp"
         android:padding="24dp" />
 
