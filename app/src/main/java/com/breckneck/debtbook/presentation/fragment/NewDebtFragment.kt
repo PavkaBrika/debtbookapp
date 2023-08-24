@@ -1,12 +1,9 @@
 package com.breckneck.debtbook.presentation.fragment
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.DatePickerDialog
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
-import android.database.Cursor
 import android.graphics.Typeface
 import android.os.Bundle
 import android.os.Handler
@@ -20,9 +17,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
@@ -45,7 +40,6 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import org.koin.android.ext.android.inject
 import java.text.DecimalFormat
 import java.util.*
-import java.util.jar.Manifest
 import kotlin.collections.ArrayList
 
 class NewDebtFragment: Fragment() {

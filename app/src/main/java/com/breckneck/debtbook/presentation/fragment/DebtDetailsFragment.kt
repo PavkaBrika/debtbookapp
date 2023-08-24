@@ -20,10 +20,6 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.adapter.DebtAdapter
-import com.breckneck.deptbook.data.storage.database.DataBaseDebtStorageImpl
-import com.breckneck.deptbook.data.storage.database.DataBaseHumanStorageImpl
-import com.breckneck.deptbook.data.storage.repository.DebtRepositoryImpl
-import com.breckneck.deptbook.data.storage.repository.HumanRepositoryImpl
 import com.breckneck.deptbook.domain.model.DebtDomain
 import com.breckneck.deptbook.domain.usecase.Debt.DeleteDebtUseCase
 import com.breckneck.deptbook.domain.usecase.Debt.DeleteDebtsByHumanIdUseCase
