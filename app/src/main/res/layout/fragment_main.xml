@@ -64,6 +64,15 @@
                     app:layout_collapseMode="pin">
 
                     <ImageView
+                        android:id="@+id/settingsButton"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="end"
+                        android:layout_marginEnd="16dp"
+                        android:src="@drawable/outline_settings_24"
+                        style="@style/imageViewButton"/>
+
+                    <ImageView
                         android:id="@+id/filterHumanButton"
                         android:layout_width="30dp"
                         android:layout_height="30dp"

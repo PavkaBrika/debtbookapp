@@ -29,6 +29,8 @@ class MainFragment : Fragment() {
         fun onHumanClick(idHuman: Int, currency: String, name: String)
 
         fun onAddButtonClick()
+
+        fun onSettingsButtonClick()
     }
 
     var buttonClickListener: OnButtonClickListener? = null
@@ -66,6 +68,11 @@ class MainFragment : Fragment() {
                 buttonClickListener?.onHumanClick(idHuman = humanDomain.id, currency = humanDomain.currency, name = humanDomain.name)
                 Log.e("TAG", "Click on human with id = ${humanDomain.id}")
             }
+        }
+
+        val settingsButton: ImageView = view.findViewById(R.id.settingsButton)
+        settingsButton.setOnClickListener {
+            buttonClickListener?.onSettingsButtonClick()
         }
 
         val filterButton: ImageView = view.findViewById(R.id.filterHumanButton)
