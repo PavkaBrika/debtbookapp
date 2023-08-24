@@ -5,12 +5,12 @@ import androidx.room.Room
 import com.breckneck.deptbook.data.storage.HumanStorage
 import com.breckneck.deptbook.data.storage.entity.Human
 
-private val SHARED_PREFS_NAME = "shared_prefs_name"
-private val ZONE_ID = "zoneid"
+private const val SHARED_PREFS_HUMAN = "shared_prefs_name"
+private const val HUMAN_ID = "zoneid"
 
 class DataBaseHumanStorageImpl(context: Context) : HumanStorage {
 
-    val sharedPreferences = context.getSharedPreferences(SHARED_PREFS_NAME, Context.MODE_PRIVATE)
+    val sharedPreferences = context.getSharedPreferences(SHARED_PREFS_HUMAN, Context.MODE_PRIVATE)
     val db = Room.databaseBuilder(context, AppDataBase::class.java, "HumanDataBase").build()
 
     override fun getAllHumans(): List<Human> {
@@ -29,11 +29,11 @@ class DataBaseHumanStorageImpl(context: Context) : HumanStorage {
     }
 
     override fun insertHuman(human: Human) {
-        var humanid = sharedPreferences.getInt(ZONE_ID, 0)
+        var humanid = sharedPreferences.getInt(HUMAN_ID, 0)
         human.id = humanid
         humanid++
         db.appDao().insertHuman(human)
-        sharedPreferences.edit().putInt(ZONE_ID, humanid).apply()
+        sharedPreferences.edit().putInt(HUMAN_ID, humanid).apply()
     }
 
     override fun getLastHumanId(): Int {

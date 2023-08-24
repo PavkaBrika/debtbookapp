@@ -3,12 +3,12 @@ package com.breckneck.deptbook.data.storage.sharedprefs
 import android.content.Context
 import com.breckneck.deptbook.data.storage.AdStorage
 
-private val SHARED_PREFS_NAME_3 = "shared_prefs_name_3"
+private val SHARED_PREFS_ADS = "shared_prefs_name_3"
 private val AD_ID = "adid"
 
 class SharedPrefsAdStorageImpl(context: Context): AdStorage {
 
-    val sharedPreferences = context.getSharedPreferences(SHARED_PREFS_NAME_3, Context.MODE_PRIVATE)
+    val sharedPreferences = context.getSharedPreferences(SHARED_PREFS_ADS, Context.MODE_PRIVATE)
 
     override fun getClicks(): Int {
         return sharedPreferences.getInt(AD_ID, 0)
