@@ -9,6 +9,8 @@ import com.breckneck.deptbook.domain.usecase.Human.GetAllDebtsSumUseCase
 import com.breckneck.deptbook.domain.usecase.Human.GetAllHumansUseCase
 import com.breckneck.deptbook.domain.usecase.Human.GetNegativeHumansUseCase
 import com.breckneck.deptbook.domain.usecase.Human.GetPositiveHumansUseCase
+import com.breckneck.deptbook.domain.usecase.Settings.GetFirstMainCurrency
+import com.breckneck.deptbook.domain.usecase.Settings.GetSecondMainCurrency
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -17,7 +19,9 @@ class MainFragmentViewModel(
     private val getAllHumansUseCase: GetAllHumansUseCase,
     private val getAllDebtsSumUseCase: GetAllDebtsSumUseCase,
     private val getPositiveHumansUseCase: GetPositiveHumansUseCase,
-    private val getNegativeHumansUseCase: GetNegativeHumansUseCase
+    private val getNegativeHumansUseCase: GetNegativeHumansUseCase,
+    private val getFirstMainCurrency: GetFirstMainCurrency,
+    private val getSecondMainCurrency: GetSecondMainCurrency
 ) : ViewModel() {
 
     var resultPos = MutableLiveData<String>()
@@ -80,7 +84,10 @@ class MainFragmentViewModel(
     fun getPositiveSum() {
         Single.just("1")
             .map {
-                return@map getAllDebtsSumUseCase.execute("positive")
+                return@map getAllDebtsSumUseCase.execute(
+                    "positive",
+                    getFirstMainCurrency.execute(),
+                    getSecondMainCurrency.execute())
             }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -92,7 +99,10 @@ class MainFragmentViewModel(
     fun getNegativeSum() {
         Single.just("1")
             .map {
-                return@map getAllDebtsSumUseCase.execute("negative")
+                return@map getAllDebtsSumUseCase.execute(
+                    "negative",
+                    getFirstMainCurrency.execute(),
+                    getSecondMainCurrency.execute())
             }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

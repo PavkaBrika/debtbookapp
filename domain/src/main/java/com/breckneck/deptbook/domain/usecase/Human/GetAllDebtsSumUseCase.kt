@@ -10,61 +10,46 @@ class GetAllDebtsSumUseCase(val humanRepository: HumanRepository) {
     val decimalFormat = DecimalFormat("###,###,###.##")
     val customSymbol: DecimalFormatSymbols = DecimalFormatSymbols()
 
-    fun execute(sign: String): String {
+    fun execute(sign: String, firstCurrency: String, secondCurrency: String): String {
         customSymbol.groupingSeparator = ' '
         decimalFormat.decimalFormatSymbols = customSymbol
-        val debtsRUB = humanRepository.getAllDebtsSum(currency = "RUB")
-        val debtsEUR = humanRepository.getAllDebtsSum(currency = "EUR")
-        val debtsUSD = humanRepository.getAllDebtsSum(currency = "USD")
+        val debtsInFirstCurrency = humanRepository.getAllDebtsSum(currency = firstCurrency)
+        val debtsInSecondCurrency = humanRepository.getAllDebtsSum(currency = secondCurrency)
         var positiveNumbers = 0.0
         var positiveText = ""
         var negativeText = ""
         var negativeNumbers = 0.0
-        if (debtsRUB.isNotEmpty()) {
-            for (i in debtsRUB.indices) {
-                if (debtsRUB[i] > 0) {
-                    positiveNumbers += debtsRUB[i]
+        positiveNumbers = 0.0
+        negativeNumbers = 0.0
+        if (debtsInFirstCurrency.isNotEmpty()) {
+            for (i in debtsInFirstCurrency.indices) {
+                if (debtsInFirstCurrency[i] > 0) {
+                    positiveNumbers += debtsInFirstCurrency[i]
                 }
-                if (debtsRUB[i] < 0) {
-                    negativeNumbers += abs(debtsRUB[i])
+                if (debtsInFirstCurrency[i] < 0) {
+                    negativeNumbers += abs(debtsInFirstCurrency[i])
                 }
             }
             if (positiveNumbers != 0.0)
-                positiveText = "+${decimalFormat.format(positiveNumbers)} RUB"
+                positiveText = "$positiveText\n+${decimalFormat.format(positiveNumbers)} $firstCurrency"
             if (negativeNumbers != 0.0)
-                negativeText = "-${decimalFormat.format(negativeNumbers)} RUB"
+                negativeText = "$negativeText\n-${decimalFormat.format(negativeNumbers)} $firstCurrency"
         }
         positiveNumbers = 0.0
         negativeNumbers = 0.0
-        if (debtsUSD.isNotEmpty()) {
-            for (i in debtsUSD.indices) {
-                if (debtsUSD[i] > 0) {
-                    positiveNumbers += debtsUSD[i]
+        if (debtsInSecondCurrency.isNotEmpty()) {
+            for (i in debtsInSecondCurrency.indices) {
+                if (debtsInSecondCurrency[i] > 0) {
+                    positiveNumbers += debtsInSecondCurrency[i]
                 }
-                if (debtsUSD[i] < 0) {
-                    negativeNumbers += abs(debtsUSD[i])
-                }
-            }
-            if (positiveNumbers != 0.0)
-                positiveText = "$positiveText\n+${decimalFormat.format(positiveNumbers)} USD"
-            if (negativeNumbers != 0.0)
-                negativeText = "$negativeText\n-${decimalFormat.format(negativeNumbers)} USD"
-        }
-        positiveNumbers = 0.0
-        negativeNumbers = 0.0
-        if (debtsEUR.isNotEmpty()) {
-            for (i in debtsEUR.indices) {
-                if (debtsEUR[i] > 0) {
-                    positiveNumbers += debtsEUR[i]
-                }
-                if (debtsEUR[i] < 0) {
-                    negativeNumbers += abs(debtsEUR[i])
+                if (debtsInSecondCurrency[i] < 0) {
+                    negativeNumbers += abs(debtsInSecondCurrency[i])
                 }
             }
             if (positiveNumbers != 0.0)
-                positiveText = "$positiveText\n+${decimalFormat.format(positiveNumbers)} EUR"
+                positiveText = "$positiveText\n+${decimalFormat.format(positiveNumbers)} $secondCurrency"
             if (negativeNumbers != 0.0)
-                negativeText = "$negativeText\n-${decimalFormat.format(negativeNumbers)} EUR"
+                negativeText = "$negativeText\n-${decimalFormat.format(negativeNumbers)} $secondCurrency"
         }
         if (sign == "positive")
             return positiveText
