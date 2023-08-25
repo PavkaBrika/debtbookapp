@@ -180,9 +180,8 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
 
     override fun onSettingsButtonClick() {
         val fragmentManager = supportFragmentManager
-        val fragmentTransaction = fragmentManager.beginTransaction()
-            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-            .replace(R.id.frameLayout, SettingsFragment()).addToBackStack("main")
+        val fragmentTransaction = fragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+        fragmentTransaction.replace(R.id.frameLayout, SettingsFragment()).addToBackStack("main")
             .commit()
         addClickToAdCounter.execute()
         if (getAdCounterClicks.execute())

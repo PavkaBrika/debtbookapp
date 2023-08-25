@@ -27,7 +27,8 @@ class SettingsFragment: Fragment() {
         fun onBackButtonClick()
     }
 
-    var buttonClickListener: OnButtonClickListener? = null
+    lateinit var buttonClickListener: OnButtonClickListener
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         buttonClickListener = context as OnButtonClickListener
@@ -71,6 +72,7 @@ class SettingsFragment: Fragment() {
         val firstCurrencySpinner: Spinner = view.findViewById(R.id.firstCurrencySpinner)
         firstCurrencySpinner.adapter = spinnerAdapter
         var firstMainCurrency = getFirstMainCurrency.execute()
+//        var firstMainCurrency = "USD"
         firstCurrencySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                 firstMainCurrency = p0?.getItemAtPosition(p2).toString().substring(p0?.getItemAtPosition(p2).toString().lastIndexOf(" ") + 1)
@@ -81,6 +83,7 @@ class SettingsFragment: Fragment() {
         }
 
         var secondMainCurrency = getSecondMainCurrency.execute()
+//        var secondMainCurrency = "USD"
         val secondCurrencySpinner: Spinner = view.findViewById(R.id.secondCurrencySpinner)
         secondCurrencySpinner.adapter = spinnerAdapter
         secondCurrencySpinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
@@ -95,6 +98,7 @@ class SettingsFragment: Fragment() {
         val defaultCurrencySpinner: Spinner = view.findViewById(R.id.defaultCurrencySpinner)
         defaultCurrencySpinner.adapter = spinnerAdapter
         var defaultCurrency = getDefaultCurrency.execute()
+//        var defaultCurrency = "USD"
         defaultCurrencySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                 defaultCurrency = p0?.getItemAtPosition(p2).toString().substring(p0?.getItemAtPosition(p2).toString().lastIndexOf(" ") + 1)
@@ -114,6 +118,7 @@ class SettingsFragment: Fragment() {
         }
 
         var addSumShareText = getAddSumInShareText.execute()
+//        var addSumShareText = true
         val balanceShareTextSwitch: SwitchCompat = view.findViewById(R.id.balanceShareTextSwitch)
         balanceShareTextSwitch.isChecked = addSumShareText
         balanceShareTextSwitch.setOnCheckedChangeListener(object : OnCheckedChangeListener {
@@ -130,7 +135,7 @@ class SettingsFragment: Fragment() {
             setSecondMainCurrency.execute(currency = secondMainCurrency)
             setDefaultCurrency.execute(currency = defaultCurrency)
             setAddSumInShareText.execute(addSumInShareText = addSumShareText)
-            buttonClickListener?.onBackButtonClick()
+            buttonClickListener.onBackButtonClick()
         }
 
         return view
@@ -139,7 +144,7 @@ class SettingsFragment: Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
-                buttonClickListener?.onBackButtonClick()
+                buttonClickListener.onBackButtonClick()
             }
         }
         return super.onOptionsItemSelected(item)

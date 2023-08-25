@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:background="#FFFFFF">
+    android:background="#FFFFFF"
+    android:orientation="vertical">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -18,14 +18,14 @@
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:id="@+id/collapsSettings"
+                style="@style/collapsContentScrim"
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
                 android:fitsSystemWindows="true"
-                style="@style/collapsContentScrim"
                 app:expandedTitleGravity="center_vertical"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
-                app:title="@string/settings"
                 app:maxLines="3"
+                app:title="@string/settings"
                 app:titleEnabled="true">
 
                 <androidx.appcompat.widget.Toolbar
@@ -33,16 +33,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     android:fitsSystemWindows="true"
-                    app:layout_collapseMode="pin"/>
+                    app:layout_collapseMode="pin" />
 
             </com.google.android.material.appbar.CollapsingToolbarLayout>
 
         </com.google.android.material.appbar.AppBarLayout>
 
         <TextView
+            style="@style/collapsLines"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            style="@style/collapsLines"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
         <androidx.core.widget.NestedScrollView
@@ -55,19 +55,21 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="36dp">
+                android:layout_marginTop="36dp"
+                android:orientation="vertical">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="16dp">
+                    android:layout_margin="16dp"
+                    android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/textView"
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_toStartOf="@+id/firstCurrencySpinner"
+                        android:layout_weight="2"
                         android:text="First main currecy"
                         android:textSize="24sp"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -77,27 +79,32 @@
 
                     <Spinner
                         android:id="@+id/firstCurrencySpinner"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
-                        android:textAlignment="center"
+                        android:layout_weight="4"
                         android:fadeScrollbars="false"
+                        android:textAlignment="center"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                </LinearLayout>
 
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="16dp">
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/textView1"
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_toStartOf="@+id/secondCurrencySpinner"
+                        android:layout_weight="2"
                         android:text="Second main currecy"
                         android:textSize="24sp"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -107,75 +114,81 @@
 
                     <Spinner
                         android:id="@+id/secondCurrencySpinner"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
-                        android:textAlignment="center"
+                        android:layout_weight="4"
                         android:fadeScrollbars="false"
+                        android:textAlignment="center"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/mainCurrenciesHint"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="this options helps bla bla bla"
-                    android:textColor="@android:color/darker_gray"
                     android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp" />
+                    android:layout_marginEnd="16dp"
+                    android:text="this options helps bla bla bla"
+                    android:textColor="@android:color/darker_gray" />
 
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="16dp">
+                    android:layout_margin="16dp"
+                    android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/textView3"
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_toStartOf="@+id/mainCurrencySpinner"
+                        android:layout_weight="2"
                         android:text="Default currency"
                         android:textSize="24sp"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/mainCurrencySpinner"
+                        app:layout_constraintEnd_toStartOf="@+id/defaultCurrencySpinner"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <Spinner
                         android:id="@+id/defaultCurrencySpinner"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
-                        android:textAlignment="center"
+                        android:layout_weight="4"
                         android:fadeScrollbars="false"
+                        android:textAlignment="center"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/mainCurrencyHint"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="this options helps bla bla bla"
-                    android:textColor="@android:color/darker_gray"
                     android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp" />
+                    android:layout_marginEnd="16dp"
+                    android:text="this options helps bla bla bla"
+                    android:textColor="@android:color/darker_gray" />
 
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="16dp">
+                    android:layout_margin="16dp"
+                    android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/textView4"
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_toStartOf="@+id/balanceShareTextSwitch"
+                        android:layout_weight="2"
+                        android:layout_gravity="center_vertical"
                         android:text="Main currecy"
                         android:textSize="24sp"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -183,25 +196,36 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                    <androidx.appcompat.widget.SwitchCompat
-                        android:id="@+id/balanceShareTextSwitch"
-                        android:layout_width="wrap_content"
+                    <RelativeLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        android:layout_gravity="center_horizontal"
+                        android:layout_weight="4">
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/balanceShareTextSwitch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                    </RelativeLayout>
+
+
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/balanceShareHint"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="this options helps bla bla bla"
-                    android:textColor="@android:color/darker_gray"
                     android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp" />
+                    android:layout_marginEnd="16dp"
+                    android:text="this options helps bla bla bla"
+                    android:textColor="@android:color/darker_gray" />
 
             </LinearLayout>
 
@@ -209,13 +233,13 @@
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/setSettingsButton"
+            style="@style/fabTheme"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/fabTheme"
             android:layout_margin="24dp"
+            android:src="@drawable/ic_baseline_check_24"
             app:layout_anchor="@id/app_bar"
-            app:layout_anchorGravity="bottom|end"
-            android:src="@drawable/ic_baseline_check_24" />
+            app:layout_anchorGravity="bottom|end" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </RelativeLayout>

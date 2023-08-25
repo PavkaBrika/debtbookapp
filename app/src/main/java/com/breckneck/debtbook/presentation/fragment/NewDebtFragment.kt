@@ -29,6 +29,7 @@ import com.breckneck.deptbook.domain.usecase.Debt.*
 import com.breckneck.deptbook.domain.usecase.Human.AddSumUseCase
 import com.breckneck.deptbook.domain.usecase.Human.GetLastHumanIdUseCase
 import com.breckneck.deptbook.domain.usecase.Human.SetHumanUseCase
+import com.breckneck.deptbook.domain.usecase.Settings.GetDefaultCurrency
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -74,6 +75,7 @@ class NewDebtFragment: Fragment() {
     private val checkEditTextIsEmpty: CheckEditTextIsEmpty by inject()
     private val editDebtUseCase: EditDebtUseCase by inject()
     private val updateCurrentSumUseCase: UpdateCurrentSumUseCase by inject()
+    private val getDefaultCurrency: GetDefaultCurrency by inject()
 
 
     @SuppressLint("Range")
@@ -109,6 +111,10 @@ class NewDebtFragment: Fragment() {
             getString(R.string.sek), getString(R.string.mxn))
         val adapter = ArrayAdapter(view.context, android.R.layout.simple_spinner_dropdown_item, currencyNames)
         currencySpinner.adapter = adapter
+        val defaultCurrency = getDefaultCurrency.execute()
+        for (i in currencyNames.indices)
+            if (currencyNames[i].contains(defaultCurrency))
+                currencySpinner.setSelection(i)
         currencySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                 currency = p0?.getItemAtPosition(p2).toString().substring(p0?.getItemAtPosition(p2).toString().lastIndexOf(" ") + 1)
