@@ -12,4 +12,28 @@ class SettingsRepositoryImpl(private val settingsStorage: SettingsStorage): Sett
     override fun getFirstMainCurrency(): String {
         return settingsStorage.getFirstMainCurrency()
     }
+
+    override fun setSecondMainCurrency(currency: String) {
+        settingsStorage.setSecondMainCurrency(currency = currency)
+    }
+
+    override fun getSecondMainCurrency(): String {
+        return settingsStorage.getSecondMainCurrency()
+    }
+
+    override fun setDefaultCurrency(currency: String) {
+        settingsStorage.setDefaultCurrency(currency = currency)
+    }
+
+    override fun getDefaultCurrency(): String {
+        return settingsStorage.getDefaultCurrency()
+    }
+
+    override fun setAddSumInShareText(addSumInShareText: Boolean) {
+        settingsStorage.setAddSumInShareText(addSumInShareText = addSumInShareText)
+    }
+
+    override fun getAddSumInShareText(): Boolean {
+        return settingsStorage.getAddSumInShareText()
+    }
 }

@@ -6,4 +6,15 @@ interface SettingsStorage {
 
     fun getFirstMainCurrency(): String
 
+    fun setSecondMainCurrency(currency: String)
+
+    fun getSecondMainCurrency(): String
+
+    fun setDefaultCurrency(currency: String)
+
+    fun getDefaultCurrency(): String
+
+    fun setAddSumInShareText(addSumInShareText: Boolean)
+
+    fun getAddSumInShareText(): Boolean
 }
