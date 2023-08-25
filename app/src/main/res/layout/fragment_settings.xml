@@ -137,7 +137,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_toStartOf="@+id/mainCurrencySpinner"
-                        android:text="Main currecy"
+                        android:text="Default currency"
                         android:textSize="24sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/mainCurrencySpinner"
@@ -145,7 +145,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <Spinner
-                        android:id="@+id/mainCurrencySpinner"
+                        android:id="@+id/defaultCurrencySpinner"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
