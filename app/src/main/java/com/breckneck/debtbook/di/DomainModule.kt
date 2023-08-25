@@ -2,8 +2,7 @@ package com.breckneck.debtbook.di
 
 import com.breckneck.deptbook.domain.usecase.Debt.*
 import com.breckneck.deptbook.domain.usecase.Human.*
-import com.breckneck.deptbook.domain.usecase.Settings.GetFirstMainCurrency
-import com.breckneck.deptbook.domain.usecase.Settings.SetFirstMainCurrency
+import com.breckneck.deptbook.domain.usecase.Settings.*
 import org.koin.dsl.module
 
 
@@ -97,5 +96,29 @@ val domainModule = module {
 
     factory<GetFirstMainCurrency> {
         GetFirstMainCurrency(settingsRepository = get())
+    }
+
+    factory<SetSecondMainCurrency> {
+        SetSecondMainCurrency(settingsRepository = get())
+    }
+
+    factory<GetSecondMainCurrency> {
+        GetSecondMainCurrency(settingsRepository = get())
+    }
+
+    factory<SetDefaultCurrency> {
+        SetDefaultCurrency(settingsRepository = get())
+    }
+
+    factory<GetDefaultCurrency> {
+        GetDefaultCurrency(settingsRepository = get())
+    }
+
+    factory<SetAddSumInShareText> {
+        SetAddSumInShareText(settingsRepository = get())
+    }
+
+    factory<GetAddSumInShareText> {
+        GetAddSumInShareText(settingsRepository = get())
     }
 }
