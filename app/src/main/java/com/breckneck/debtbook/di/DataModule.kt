@@ -2,10 +2,10 @@ package com.breckneck.debtbook.di
 
 import com.breckneck.deptbook.data.storage.DebtStorage
 import com.breckneck.deptbook.data.storage.HumanStorage
-import com.breckneck.deptbook.data.storage.database.DataBaseDebtStorageImpl
-import com.breckneck.deptbook.data.storage.database.DataBaseHumanStorageImpl
-import com.breckneck.deptbook.data.storage.repository.DebtRepositoryImpl
-import com.breckneck.deptbook.data.storage.repository.HumanRepositoryImpl
+import database.DataBaseDebtStorageImpl
+import database.DataBaseHumanStorageImpl
+import repository.DebtRepositoryImpl
+import repository.HumanRepositoryImpl
 import com.breckneck.deptbook.domain.repository.DebtRepository
 import com.breckneck.deptbook.domain.repository.HumanRepository
 import org.koin.dsl.module

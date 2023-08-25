@@ -1,7 +1,7 @@
-package com.breckneck.deptbook.data.storage.repository
+package repository
 
 import com.breckneck.deptbook.data.storage.DebtStorage
-import com.breckneck.deptbook.data.storage.entity.Debt
+import entity.Debt
 import com.breckneck.deptbook.domain.model.DebtDomain
 import com.breckneck.deptbook.domain.repository.DebtRepository
 

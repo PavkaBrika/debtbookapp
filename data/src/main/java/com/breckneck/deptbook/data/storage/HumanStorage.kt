@@ -1,6 +1,6 @@
 package com.breckneck.deptbook.data.storage
 
-import com.breckneck.deptbook.data.storage.entity.Human
+import entity.Human
 
 interface HumanStorage  {
 

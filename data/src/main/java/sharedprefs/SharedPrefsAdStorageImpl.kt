@@ -1,4 +1,4 @@
-package com.breckneck.deptbook.data.storage.sharedprefs
+package sharedprefs
 
 import android.content.Context
 import com.breckneck.deptbook.data.storage.AdStorage

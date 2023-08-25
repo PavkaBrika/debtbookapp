@@ -1,8 +1,8 @@
-package com.breckneck.deptbook.data.storage.database
+package database
 
 import androidx.room.*
-import com.breckneck.deptbook.data.storage.entity.Debt
-import com.breckneck.deptbook.data.storage.entity.Human
+import entity.Debt
+import entity.Human
 
 
 @Dao

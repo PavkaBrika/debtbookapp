@@ -1,4 +1,4 @@
-package com.breckneck.deptbook.data.storage.repository
+package repository
 
 import com.breckneck.deptbook.data.storage.AdStorage
 import com.breckneck.deptbook.domain.repository.AdRepository

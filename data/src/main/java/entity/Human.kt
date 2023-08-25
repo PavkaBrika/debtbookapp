@@ -1,4 +1,4 @@
-package com.breckneck.deptbook.data.storage.entity
+package entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

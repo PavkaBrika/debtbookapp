@@ -1,7 +1,7 @@
-package com.breckneck.deptbook.data.storage.repository
+package repository
 
 import com.breckneck.deptbook.data.storage.HumanStorage
-import com.breckneck.deptbook.data.storage.entity.Human
+import entity.Human
 import com.breckneck.deptbook.domain.model.HumanDomain
 import com.breckneck.deptbook.domain.repository.HumanRepository
 

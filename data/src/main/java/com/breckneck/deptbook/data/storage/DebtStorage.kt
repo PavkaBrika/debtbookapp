@@ -1,6 +1,6 @@
 package com.breckneck.deptbook.data.storage
 
-import com.breckneck.deptbook.data.storage.entity.Debt
+import entity.Debt
 
 interface DebtStorage {
 

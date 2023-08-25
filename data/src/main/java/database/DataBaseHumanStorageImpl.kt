@@ -1,9 +1,9 @@
-package com.breckneck.deptbook.data.storage.database
+package database
 
 import android.content.Context
 import androidx.room.Room
 import com.breckneck.deptbook.data.storage.HumanStorage
-import com.breckneck.deptbook.data.storage.entity.Human
+import entity.Human
 
 private const val SHARED_PREFS_HUMAN = "shared_prefs_name"
 private const val HUMAN_ID = "zoneid"

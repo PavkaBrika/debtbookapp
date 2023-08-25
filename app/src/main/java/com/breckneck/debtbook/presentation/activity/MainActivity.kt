@@ -10,8 +10,8 @@ import com.breckneck.debtbook.presentation.fragment.DebtDetailsFragment
 import com.breckneck.debtbook.presentation.fragment.MainFragment
 import com.breckneck.debtbook.presentation.fragment.NewDebtFragment
 import com.breckneck.debtbook.presentation.fragment.SettingsFragment
-import com.breckneck.deptbook.data.storage.repository.AdRepositoryImpl
-import com.breckneck.deptbook.data.storage.sharedprefs.SharedPrefsAdStorageImpl
+import repository.AdRepositoryImpl
+import sharedprefs.SharedPrefsAdStorageImpl
 import com.breckneck.deptbook.domain.model.DebtDomain
 import com.breckneck.deptbook.domain.usecase.Ad.AddClickUseCase
 import com.breckneck.deptbook.domain.usecase.Ad.GetClicksUseCase
@@ -23,7 +23,7 @@ import com.yandex.mobile.ads.common.*
 import com.yandex.mobile.ads.interstitial.InterstitialAd
 import com.yandex.mobile.ads.interstitial.InterstitialAdEventListener
 
-class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, NewDebtFragment.OnButtonClickListener, DebtDetailsFragment.OnButtonClickListener {
+class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, NewDebtFragment.OnButtonClickListener, DebtDetailsFragment.OnButtonClickListener, SettingsFragment.OnButtonClickListener {
 
     private lateinit var interstitialAd: InterstitialAd
 
@@ -137,8 +137,6 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
             })
             loadAd(adRequestBuild)
         }
-
-
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -190,7 +188,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         if (getAdCounterClicks.execute())
             if (interstitialAd.isLoaded) {
                 interstitialAd.show()
-
+                refreshAdCounter.execute()
             }
     }
 
@@ -283,5 +281,10 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
                 interstitialAd.show()
                 refreshAdCounter.execute()
             }
+    }
+
+    //settings interface
+    override fun onBackButtonClick() {
+        supportFragmentManager.popBackStackImmediate()
     }
 }

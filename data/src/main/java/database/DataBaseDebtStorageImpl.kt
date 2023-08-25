@@ -1,9 +1,9 @@
-package com.breckneck.deptbook.data.storage.database
+package database
 
 import android.content.Context
 import androidx.room.Room
 import com.breckneck.deptbook.data.storage.DebtStorage
-import com.breckneck.deptbook.data.storage.entity.Debt
+import entity.Debt
 
 private const val SHARED_PREFS_DEBT = "shared_prefs_name_2"
 private const val DEBT_ID = "debtid"
