@@ -10,11 +10,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.Spinner
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.breckneck.debtbook.R
+import com.breckneck.deptbook.domain.usecase.Settings.GetFirstMainCurrency
+import com.breckneck.deptbook.domain.usecase.Settings.SetFirstMainCurrency
 import com.google.android.material.appbar.CollapsingToolbarLayout
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import org.koin.android.ext.android.inject
 
 class SettingsFragment: Fragment() {
 
@@ -33,6 +38,9 @@ class SettingsFragment: Fragment() {
         val inflater = TransitionInflater.from(requireContext())
         enterTransition = inflater.inflateTransition(R.transition.slide_up)
     }
+
+    private val setFirstMainCurrency: SetFirstMainCurrency by inject()
+    private val getFirstMainCurrency: GetFirstMainCurrency by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,14 +64,20 @@ class SettingsFragment: Fragment() {
 
         val firstCurrencySpinner: Spinner = view.findViewById(R.id.firstCurrencySpinner)
         firstCurrencySpinner.adapter = adapter
+        var firstMainCurrency = getFirstMainCurrency.execute()
+        for (i in currencyNames.indices) {
+            if (currencyNames[i].contains(firstMainCurrency))
+                firstCurrencySpinner.setSelection(i)
+        }
         firstCurrencySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-//                currency = p0?.getItemAtPosition(p2).toString().substring(p0?.getItemAtPosition(p2).toString().lastIndexOf(" ") + 1)
+                firstMainCurrency = p0?.getItemAtPosition(p2).toString().substring(p0?.getItemAtPosition(p2).toString().lastIndexOf(" ") + 1)
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
             }
         }
+
         val secondCurrencySpinner: Spinner = view.findViewById(R.id.secondCurrencySpinner)
         secondCurrencySpinner.adapter = adapter
         secondCurrencySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
@@ -75,7 +89,11 @@ class SettingsFragment: Fragment() {
             }
         }
 
-
+        val setSettingsButton: FloatingActionButton = view.findViewById(R.id.setSettingsButton)
+        setSettingsButton.setOnClickListener {
+            setFirstMainCurrency.execute(firstMainCurrency)
+            buttonClickListener?.onBackButtonClick()
+        }
 
         return view
     }

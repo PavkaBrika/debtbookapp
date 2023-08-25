@@ -2,6 +2,8 @@ package com.breckneck.debtbook.di
 
 import com.breckneck.deptbook.domain.usecase.Debt.*
 import com.breckneck.deptbook.domain.usecase.Human.*
+import com.breckneck.deptbook.domain.usecase.Settings.GetFirstMainCurrency
+import com.breckneck.deptbook.domain.usecase.Settings.SetFirstMainCurrency
 import org.koin.dsl.module
 
 
@@ -87,4 +89,13 @@ val domainModule = module {
         UpdateCurrentSumUseCase()
     }
 
+    //SETTINGS
+
+    factory<SetFirstMainCurrency> {
+        SetFirstMainCurrency(settingsRepository = get())
+    }
+
+    factory<GetFirstMainCurrency> {
+        GetFirstMainCurrency(settingsRepository = get())
+    }
 }

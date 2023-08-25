@@ -183,7 +183,7 @@ class NewDebtFragment: Fragment() {
             humanNameEditText.setText(nameArgs)
         }
 
-        val setButton : FloatingActionButton = view.findViewById(R.id.setDebtButton)
+        val setButton : FloatingActionButton = view.findViewById(R.id.setSettingsButton)
         setButton.setOnClickListener{
             val name = humanNameEditText.text.toString()
             var sum = debtSumEditText.text.toString()
