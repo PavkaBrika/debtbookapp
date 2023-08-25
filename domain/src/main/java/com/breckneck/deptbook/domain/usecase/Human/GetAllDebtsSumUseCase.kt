@@ -31,9 +31,15 @@ class GetAllDebtsSumUseCase(val humanRepository: HumanRepository) {
                 }
             }
             if (positiveNumbers != 0.0)
-                positiveText = "$positiveText\n+${decimalFormat.format(positiveNumbers)} $firstCurrency"
+                if (positiveText.isEmpty())
+                    positiveText = "+${decimalFormat.format(positiveNumbers)} $firstCurrency"
+                else
+                    positiveText = "$positiveText\n+${decimalFormat.format(positiveNumbers)} $firstCurrency"
             if (negativeNumbers != 0.0)
-                negativeText = "$negativeText\n-${decimalFormat.format(negativeNumbers)} $firstCurrency"
+                if (negativeText.isEmpty())
+                    negativeText = "-${decimalFormat.format(negativeNumbers)} $firstCurrency"
+                else
+                    negativeText = "$negativeText\n-${decimalFormat.format(negativeNumbers)} $firstCurrency"
         }
         positiveNumbers = 0.0
         negativeNumbers = 0.0
@@ -47,9 +53,15 @@ class GetAllDebtsSumUseCase(val humanRepository: HumanRepository) {
                 }
             }
             if (positiveNumbers != 0.0)
-                positiveText = "$positiveText\n+${decimalFormat.format(positiveNumbers)} $secondCurrency"
+                if (positiveText.isEmpty())
+                    positiveText = "+${decimalFormat.format(positiveNumbers)} $secondCurrency"
+                else
+                    positiveText = "$positiveText\n+${decimalFormat.format(positiveNumbers)} $secondCurrency"
             if (negativeNumbers != 0.0)
-                negativeText = "$negativeText\n-${decimalFormat.format(negativeNumbers)} $secondCurrency"
+                if (negativeText.isEmpty())
+                    negativeText = "-${decimalFormat.format(negativeNumbers)} $secondCurrency"
+                else
+                    negativeText = "$negativeText\n-${decimalFormat.format(negativeNumbers)} $secondCurrency"
         }
         if (sign == "positive")
             return positiveText
