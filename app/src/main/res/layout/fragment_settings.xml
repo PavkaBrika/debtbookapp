@@ -140,6 +140,7 @@
                     android:background="@color/gray" />
 
                 <LinearLayout
+                    android:id="@+id/defaultCurrencyLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
@@ -183,6 +184,7 @@
                     android:background="@color/gray" />
 
                 <LinearLayout
+                    android:id="@+id/addSumShareTextLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
@@ -238,6 +240,7 @@
                     android:background="@color/gray" />
 
                 <LinearLayout
+                    android:id="@+id/appThemeLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
@@ -255,7 +258,7 @@
                         android:textSize="24sp" />
 
                     <Spinner
-                        android:id="@+id/nightModeSpinner"
+                        android:id="@+id/appThemeSpinner"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="4"
@@ -271,6 +274,7 @@
                     android:background="@color/gray" />
 
                 <LinearLayout
+                    android:id="@+id/rateAppLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
@@ -341,6 +345,7 @@
                     android:background="@color/gray" />
 
                 <LinearLayout
+                    android:id="@+id/writeEmailLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"

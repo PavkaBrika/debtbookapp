@@ -79,6 +79,10 @@ class SettingsFragment: Fragment() {
             override fun onNothingSelected(p0: AdapterView<*>?) {
             }
         }
+        val firstCurrencyLayout: LinearLayout = view.findViewById(R.id.firstCurrencyLayout)
+        firstCurrencyLayout.setOnClickListener {
+            firstCurrencySpinner.performClick()
+        }
 
         var secondMainCurrency = getSecondMainCurrency.execute()
 //        var secondMainCurrency = "USD"
@@ -91,6 +95,10 @@ class SettingsFragment: Fragment() {
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
             }
+        }
+        val secondCurrencyLayout: LinearLayout = view.findViewById(R.id.secondCurrencyLayout)
+        secondCurrencyLayout.setOnClickListener {
+            secondCurrencySpinner.performClick()
         }
 
         val defaultCurrencySpinner: Spinner = view.findViewById(R.id.defaultCurrencySpinner)
@@ -105,6 +113,10 @@ class SettingsFragment: Fragment() {
             override fun onNothingSelected(p0: AdapterView<*>?) {
             }
         }
+        val defaultCurrencyLayout: LinearLayout = view.findViewById(R.id.defaultCurrencyLayout)
+        defaultCurrencyLayout.setOnClickListener {
+            defaultCurrencySpinner.performClick()
+        }
 
         for (i in currencyNames.indices) {
             if (currencyNames[i].contains(firstMainCurrency))
@@ -117,15 +129,41 @@ class SettingsFragment: Fragment() {
 
         var addSumShareText = getAddSumInShareText.execute()
 //        var addSumShareText = true
-        val balanceShareTextSwitch: SwitchCompat = view.findViewById(R.id.balanceShareTextSwitch)
-        balanceShareTextSwitch.isChecked = addSumShareText
-        balanceShareTextSwitch.setOnCheckedChangeListener(object : OnCheckedChangeListener {
+        val addSumShareInTextSwitch: SwitchCompat = view.findViewById(R.id.balanceShareTextSwitch)
+        addSumShareInTextSwitch.isChecked = addSumShareText
+        addSumShareInTextSwitch.setOnCheckedChangeListener(object : OnCheckedChangeListener {
 
             override fun onCheckedChanged(p0: CompoundButton?, p1: Boolean) {
                 addSumShareText = p1
             }
 
         })
+        val addSumShareTextLayout: LinearLayout = view.findViewById(R.id.addSumShareTextLayout)
+        addSumShareTextLayout.setOnClickListener {
+            addSumShareInTextSwitch.performClick()
+        }
+
+        val appThemes = arrayOf(getString(R.string.system_theme), getString(R.string.light_theme), getString(R.string.dark_theme))
+        val themeSpinnerAdapter = ArrayAdapter(view.context, android.R.layout.simple_spinner_dropdown_item, appThemes)
+        val appThemeSpinner: Spinner = view.findViewById(R.id.appThemeSpinner)
+        appThemeSpinner.adapter = themeSpinnerAdapter
+        var theme = ""
+        appThemeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                theme = p0?.getItemAtPosition(p2).toString()
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+                TODO("Not yet implemented")
+            }
+
+        }
+        val appThemeLayout: LinearLayout = view.findViewById(R.id.appThemeLayout)
+        appThemeLayout.setOnClickListener {
+            appThemeSpinner.performClick()
+        }
+
+
 
         val appVersionTextView: TextView = view.findViewById(R.id.appVersionTextView)
         appVersionTextView.text = "${getString(R.string.app_version)} ${BuildConfig.VERSION_NAME}"
