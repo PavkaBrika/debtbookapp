@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
@@ -25,9 +24,9 @@
                 android:fitsSystemWindows="true"
                 app:expandedTitleGravity="center_vertical"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
-                app:titleCollapseMode="scale"
                 app:maxLines="3"
                 app:title="@string/settings"
+                app:titleCollapseMode="scale"
                 app:titleEnabled="true">
 
                 <androidx.appcompat.widget.Toolbar
@@ -61,15 +60,20 @@
                 android:orientation="vertical">
 
                 <LinearLayout
+                    android:id="@+id/firstCurrencyLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:orientation="horizontal">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
+                        android:background="@android:color/transparent"
                         android:text="First main currecy"
                         android:textSize="24sp"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -91,17 +95,22 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/secondCurrencyLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"
                     android:layout_marginBottom="16dp"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:orientation="horizontal">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
+                        android:background="@android:color/transparent"
                         android:text="Second main currecy"
                         android:textSize="24sp" />
 
@@ -135,12 +144,16 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginBottom="16dp"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:orientation="horizontal">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
+                        android:background="@android:color/transparent"
                         android:text="Default currency"
                         android:textSize="24sp" />
 
@@ -174,13 +187,17 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginBottom="16dp"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:orientation="horizontal">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="2"
                         android:layout_gravity="center_vertical"
+                        android:layout_weight="2"
+                        android:background="@android:color/transparent"
                         android:text="Main currecy"
                         android:textSize="24sp" />
 
@@ -188,13 +205,15 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:layout_weight="4">
+                        android:layout_weight="4"
+                        android:background="@android:color/transparent">
 
                         <androidx.appcompat.widget.SwitchCompat
                             android:id="@+id/balanceShareTextSwitch"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerInParent="true"
+
                             android:layout_gravity="center"
                             android:gravity="center" />
 
@@ -222,13 +241,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
-
+                    android:background="?android:attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:orientation="horizontal">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
+                        android:background="@android:color/transparent"
                         android:text="App Theme"
                         android:textSize="24sp" />
 
@@ -252,51 +274,61 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:orientation="horizontal">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
+                        android:background="@android:color/transparent"
                         android:text="Rate app"
                         android:textSize="24sp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
                         android:layout_weight="4"
-                        android:orientation="horizontal"
-                        android:layout_gravity="center_vertical">
+                        android:background="@android:color/transparent"
+                        android:orientation="horizontal">
 
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:src="@drawable/baseline_star_24"/>
+                            android:background="@android:color/transparent"
+                            android:src="@drawable/baseline_star_24" />
 
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:src="@drawable/baseline_star_24"/>
+                            android:background="@android:color/transparent"
+                            android:src="@drawable/baseline_star_24" />
 
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:src="@drawable/baseline_star_24"/>
+                            android:background="@android:color/transparent"
+                            android:src="@drawable/baseline_star_24" />
 
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:src="@drawable/baseline_star_24"/>
+                            android:background="@android:color/transparent"
+                            android:src="@drawable/baseline_star_24" />
 
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:src="@drawable/baseline_star_24"/>
+                            android:background="@android:color/transparent"
+                            android:src="@drawable/baseline_star_24" />
 
                     </LinearLayout>
 
@@ -312,11 +344,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:orientation="horizontal">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
                         android:text="Write email to developer"
                         android:textSize="24sp" />
 
