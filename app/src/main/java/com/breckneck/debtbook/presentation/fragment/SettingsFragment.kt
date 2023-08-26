@@ -8,13 +8,11 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.CompoundButton
+import android.widget.*
 import android.widget.CompoundButton.OnCheckedChangeListener
-import android.widget.Spinner
 import androidx.appcompat.widget.SwitchCompat
 import androidx.fragment.app.Fragment
+import com.breckneck.debtbook.BuildConfig
 import com.breckneck.debtbook.R
 import com.breckneck.deptbook.domain.usecase.Settings.*
 import com.google.android.material.appbar.CollapsingToolbarLayout
@@ -128,6 +126,9 @@ class SettingsFragment: Fragment() {
             }
 
         })
+
+        val appVersionTextView: TextView = view.findViewById(R.id.appVersionTextView)
+        appVersionTextView.text = "${getString(R.string.app_version)} ${BuildConfig.VERSION_NAME}"
 
         val setSettingsButton: FloatingActionButton = view.findViewById(R.id.setSettingsButton)
         setSettingsButton.setOnClickListener {
