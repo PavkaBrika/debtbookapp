@@ -26,6 +26,7 @@ import com.breckneck.deptbook.domain.usecase.Debt.DeleteDebtsByHumanIdUseCase
 import com.breckneck.deptbook.domain.usecase.Debt.GetAllDebtsUseCase
 import com.breckneck.deptbook.domain.usecase.Debt.GetDebtShareString
 import com.breckneck.deptbook.domain.usecase.Human.*
+import com.breckneck.deptbook.domain.usecase.Settings.GetAddSumInShareText
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -70,6 +71,7 @@ class DebtDetailsFragment: Fragment() {
     val deleteDebt: DeleteDebtUseCase by inject()
     val deleteDebtsByHumanId: DeleteDebtsByHumanIdUseCase by inject()
     val getDebtShareString: GetDebtShareString by inject()
+    val getAddSumInShareText: GetAddSumInShareText by inject()
 
     lateinit var debtClickListener: DebtAdapter.OnDebtClickListener
     lateinit var overallSumTextView: TextView
@@ -189,7 +191,7 @@ class DebtDetailsFragment: Fragment() {
             val intent = Intent(ACTION_SEND)
             intent.type = "text/plain"
             intent.putExtra(EXTRA_SUBJECT, name)
-            intent.putExtra(EXTRA_TEXT, getDebtShareString.execute(debtList = allDebts, name = name!!, currency = currency!!, sum = overallSum))
+            intent.putExtra(EXTRA_TEXT, getDebtShareString.execute(debtList = allDebts, name = name!!, currency = currency!!, sum = overallSum, getAddSumInShareText.execute()))
             startActivity(Intent.createChooser(intent, name))
         }
 
