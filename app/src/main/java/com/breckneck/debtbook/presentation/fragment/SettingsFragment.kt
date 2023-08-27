@@ -18,6 +18,7 @@ import com.breckneck.debtbook.BuildConfig
 import com.breckneck.debtbook.R
 import com.breckneck.deptbook.domain.usecase.Settings.*
 import com.google.android.material.appbar.CollapsingToolbarLayout
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.koin.android.ext.android.inject
 
@@ -165,6 +166,32 @@ class SettingsFragment: Fragment() {
             appThemeSpinner.performClick()
         }
 
+        val rateAppLayout: LinearLayout = view.findViewById(R.id.rateAppLayout)
+        rateAppLayout.setOnClickListener {
+            Toast.makeText(requireContext(), "RATE APP LAYOUT CLICKED", Toast.LENGTH_SHORT).show()
+        }
+
+        val lowRateListener: View.OnClickListener = object: View.OnClickListener {
+            override fun onClick(p0: View?) {
+                lowAppRateDialog()
+            }
+        }
+        val highRateListener: View.OnClickListener = object: View.OnClickListener {
+            override fun onClick(p0: View?) {
+                Toast.makeText(requireContext(), "IN APP REVIEW", Toast.LENGTH_SHORT).show()
+            }
+        }
+        val rateStar1ImageView: ImageView = view.findViewById(R.id.rateStar1ImageView)
+        val rateStar2ImageView: ImageView = view.findViewById(R.id.rateStar2ImageView)
+        val rateStar3ImageView: ImageView = view.findViewById(R.id.rateStar3ImageView)
+        val rateStar4ImageView: ImageView = view.findViewById(R.id.rateStar4ImageView)
+        val rateStar5ImageView: ImageView = view.findViewById(R.id.rateStar5ImageView)
+        rateStar1ImageView.setOnClickListener(lowRateListener)
+        rateStar2ImageView.setOnClickListener(lowRateListener)
+        rateStar3ImageView.setOnClickListener(lowRateListener)
+        rateStar4ImageView.setOnClickListener(highRateListener)
+        rateStar5ImageView.setOnClickListener(highRateListener)
+
         val writeEmailLayout: LinearLayout = view.findViewById(R.id.writeEmailLayout)
         writeEmailLayout.setOnClickListener {
             val intent = Intent(Intent.ACTION_SENDTO)
@@ -186,6 +213,21 @@ class SettingsFragment: Fragment() {
         }
 
         return view
+    }
+
+    private fun lowAppRateDialog() {
+        val lowRateBottomSheetDialog = BottomSheetDialog(requireContext())
+        lowRateBottomSheetDialog.setContentView(R.layout.dialog_low_app_rate)
+        val reviewEditText: EditText = lowRateBottomSheetDialog.findViewById(R.id.reviewEditText)!!
+        val sendReviewButton: Button = lowRateBottomSheetDialog.findViewById(R.id.sendReviewButton)!!
+        sendReviewButton.setOnClickListener {
+            val intent = Intent(Intent.ACTION_SENDTO)
+            intent.data = Uri.parse("mailto:pavlikbrichkin@yandex.ru")
+            intent.putExtra(Intent.EXTRA_SUBJECT, "${getString(R.string.email_subject)} ${BuildConfig.VERSION_NAME}")
+            intent.putExtra(Intent.EXTRA_TEXT, reviewEditText.text.toString())
+            startActivity(intent)
+        }
+        lowRateBottomSheetDialog.show()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

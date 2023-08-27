@@ -45,4 +45,6 @@
     <string name="light_theme">Light</string>
     <string name="dark_theme">Dark</string>
     <string name="email_subject">Email about Simple Debt Book app, version </string>
+    <string name="review_hint">Tell us about your experience</string>
+    <string name="review_dialog_title">Review</string>
 </resources>

@@ -306,6 +306,7 @@
                         android:orientation="horizontal">
 
                         <ImageView
+                            android:id="@+id/rateStar1ImageView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -313,6 +314,7 @@
                             android:src="@drawable/baseline_star_24" />
 
                         <ImageView
+                            android:id="@+id/rateStar2ImageView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -320,6 +322,7 @@
                             android:src="@drawable/baseline_star_24" />
 
                         <ImageView
+                            android:id="@+id/rateStar3ImageView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -327,6 +330,7 @@
                             android:src="@drawable/baseline_star_24" />
 
                         <ImageView
+                            android:id="@+id/rateStar4ImageView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -334,6 +338,7 @@
                             android:src="@drawable/baseline_star_24" />
 
                         <ImageView
+                            android:id="@+id/rateStar5ImageView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
