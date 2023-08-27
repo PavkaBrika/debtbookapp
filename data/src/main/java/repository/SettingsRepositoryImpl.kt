@@ -36,4 +36,12 @@ class SettingsRepositoryImpl(private val settingsStorage: SettingsStorage): Sett
     override fun getAddSumInShareText(): Boolean {
         return settingsStorage.getAddSumInShareText()
     }
+
+    override fun setAppRate(rate: Int) {
+        settingsStorage.setAppRate(rate = rate)
+    }
+
+    override fun getAppRate(): Int {
+        return settingsStorage.getAppRate()
+    }
 }

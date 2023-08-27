@@ -17,4 +17,8 @@ interface SettingsRepository {
     fun setAddSumInShareText(addSumInShareText: Boolean)
 
     fun getAddSumInShareText(): Boolean
+
+    fun setAppRate(rate: Int)
+
+    fun getAppRate(): Int
 }

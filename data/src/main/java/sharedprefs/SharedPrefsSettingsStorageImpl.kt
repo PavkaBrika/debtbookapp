@@ -8,6 +8,8 @@ private const val MAIN_CURRENCY_FIRST = "main_currency_first" // currency that s
 private const val MAIN_CURRENCY_SECOND = "main_currency_second" // currency that shown statistics in main fragment
 private const val DEFAULT_CURRENCY = "default_currency" // start currency in switch in NewDebtFragment
 private const val SUM_IN_SHARE_TEXT = "sum_in_share_text" // enable sum for each debt
+private const val APP_RATE = "app_rate"
+private const val APP_THEME = "app_theme"
 
 class SharedPrefsSettingsStorageImpl(val context: Context): SettingsStorage {
 
@@ -43,5 +45,13 @@ class SharedPrefsSettingsStorageImpl(val context: Context): SettingsStorage {
 
     override fun getAddSumInShareText(): Boolean {
         return sharedPreferences.getBoolean(SUM_IN_SHARE_TEXT, false)
+    }
+
+    override fun setAppRate(rate: Int) {
+        sharedPreferences.edit().putInt(APP_RATE, rate).apply()
+    }
+
+    override fun getAppRate(): Int {
+        return sharedPreferences.getInt(APP_RATE, 0)
     }
 }

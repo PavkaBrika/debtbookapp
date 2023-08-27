@@ -121,4 +121,12 @@ val domainModule = module {
     factory<GetAddSumInShareText> {
         GetAddSumInShareText(settingsRepository = get())
     }
+
+    factory<SetAppRate> {
+        SetAppRate(settingsRepository = get())
+    }
+
+    factory<GetAppRate> {
+        GetAppRate(settingsRepository = get())
+    }
 }

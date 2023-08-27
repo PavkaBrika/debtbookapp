@@ -209,6 +209,7 @@ class SettingsFragment: Fragment() {
             setSecondMainCurrency.execute(currency = secondMainCurrency)
             setDefaultCurrency.execute(currency = defaultCurrency)
             setAddSumInShareText.execute(addSumInShareText = addSumShareText)
+
             buttonClickListener.onBackButtonClick()
         }
 
