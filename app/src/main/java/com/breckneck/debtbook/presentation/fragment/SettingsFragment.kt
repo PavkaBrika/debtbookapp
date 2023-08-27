@@ -1,7 +1,9 @@
 package com.breckneck.debtbook.presentation.fragment
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Typeface
+import android.net.Uri
 import android.os.Bundle
 import android.transition.TransitionInflater
 import android.view.LayoutInflater
@@ -163,7 +165,13 @@ class SettingsFragment: Fragment() {
             appThemeSpinner.performClick()
         }
 
-
+        val writeEmailLayout: LinearLayout = view.findViewById(R.id.writeEmailLayout)
+        writeEmailLayout.setOnClickListener {
+            val intent = Intent(Intent.ACTION_SENDTO)
+            intent.data = Uri.parse("mailto:pavlikbrichkin@yandex.ru")
+            intent.putExtra(Intent.EXTRA_SUBJECT, "${getString(R.string.email_subject)} ${BuildConfig.VERSION_NAME}")
+            startActivity(intent)
+        }
 
         val appVersionTextView: TextView = view.findViewById(R.id.appVersionTextView)
         appVersionTextView.text = "${getString(R.string.app_version)} ${BuildConfig.VERSION_NAME}"

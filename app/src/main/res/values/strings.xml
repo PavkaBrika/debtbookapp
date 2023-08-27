@@ -44,4 +44,5 @@
     <string name="system_theme">System</string>
     <string name="light_theme">Light</string>
     <string name="dark_theme">Dark</string>
+    <string name="email_subject">Email about Simple Debt Book app, version </string>
 </resources>
