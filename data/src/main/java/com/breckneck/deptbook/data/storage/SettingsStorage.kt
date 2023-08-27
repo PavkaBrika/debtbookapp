@@ -21,4 +21,9 @@ interface SettingsStorage {
     fun setAppRate(rate: Int)
 
     fun getAppRate(): Int
+
+    fun setAppTheme(theme: String)
+
+    fun getAppTheme(): String
+
 }

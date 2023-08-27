@@ -44,4 +44,12 @@ class SettingsRepositoryImpl(private val settingsStorage: SettingsStorage): Sett
     override fun getAppRate(): Int {
         return settingsStorage.getAppRate()
     }
+
+    override fun setAppTheme(theme: String) {
+        settingsStorage.setAppTheme(theme = theme)
+    }
+
+    override fun getAppTheme(): String {
+        return settingsStorage.getAppTheme()
+    }
 }
