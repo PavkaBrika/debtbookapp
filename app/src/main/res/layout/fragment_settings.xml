@@ -56,14 +56,16 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="36dp"
+                android:layout_marginTop="44dp"
                 android:orientation="vertical">
 
                 <LinearLayout
                     android:id="@+id/firstCurrencyLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingHorizontal="16dp"
+                    android:paddingBottom="8dp"
                     android:background="?android:attr/selectableItemBackground"
                     android:clickable="true"
                     android:focusable="true"
@@ -75,7 +77,7 @@
                         android:layout_weight="2"
                         android:background="@android:color/transparent"
                         android:text="First main currecy"
-                        android:textSize="24sp"
+                        android:textSize="20sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/firstCurrencySpinner"
                         app:layout_constraintStart_toStartOf="parent"
@@ -98,9 +100,8 @@
                     android:id="@+id/secondCurrencyLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="16dp"
+                    android:paddingVertical="8dp"
+                    android:paddingHorizontal="16dp"
                     android:background="?android:attr/selectableItemBackground"
                     android:clickable="true"
                     android:focusable="true"
@@ -112,7 +113,7 @@
                         android:layout_weight="2"
                         android:background="@android:color/transparent"
                         android:text="Second main currecy"
-                        android:textSize="24sp" />
+                        android:textSize="20sp" />
 
                     <Spinner
                         android:id="@+id/secondCurrencySpinner"
@@ -128,6 +129,7 @@
                     android:id="@+id/mainCurrenciesHint"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"
                     android:text="this options helps bla bla bla"
@@ -136,15 +138,16 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginVertical="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginHorizontal="16dp"
                     android:background="@color/gray" />
 
                 <LinearLayout
                     android:id="@+id/defaultCurrencyLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="16dp"
-                    android:layout_marginBottom="16dp"
+                    android:paddingVertical="8dp"
+                    android:paddingHorizontal="16dp"
                     android:background="?android:attr/selectableItemBackground"
                     android:clickable="true"
                     android:focusable="true"
@@ -156,7 +159,7 @@
                         android:layout_weight="2"
                         android:background="@android:color/transparent"
                         android:text="Default currency"
-                        android:textSize="24sp" />
+                        android:textSize="20sp" />
 
                     <Spinner
                         android:id="@+id/defaultCurrencySpinner"
@@ -172,23 +175,23 @@
                     android:id="@+id/mainCurrencyHint"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="8dp"
                     android:text="this options helps bla bla bla"
                     android:textColor="@android:color/darker_gray" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginVertical="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginHorizontal="16dp"
                     android:background="@color/gray" />
 
                 <LinearLayout
                     android:id="@+id/addSumShareTextLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="16dp"
-                    android:layout_marginBottom="16dp"
+                    android:paddingHorizontal="16dp"
                     android:background="?android:attr/selectableItemBackground"
                     android:clickable="true"
                     android:focusable="true"
@@ -201,7 +204,7 @@
                         android:layout_weight="2"
                         android:background="@android:color/transparent"
                         android:text="Main currecy"
-                        android:textSize="24sp" />
+                        android:textSize="20sp" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -214,8 +217,8 @@
                             android:id="@+id/balanceShareTextSwitch"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_centerInParent="true"
 
+                            android:layout_centerInParent="true"
                             android:layout_gravity="center"
                             android:gravity="center" />
 
@@ -236,14 +239,16 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginVertical="16dp"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="8dp"
                     android:background="@color/gray" />
 
                 <LinearLayout
                     android:id="@+id/appThemeLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="16dp"
+                    android:paddingVertical="12dp"
+                    android:paddingHorizontal="16dp"
                     android:background="?android:attr/selectableItemBackground"
                     android:clickable="true"
                     android:focusable="true"
@@ -255,7 +260,7 @@
                         android:layout_weight="2"
                         android:background="@android:color/transparent"
                         android:text="App Theme"
-                        android:textSize="24sp" />
+                        android:textSize="20sp" />
 
                     <Spinner
                         android:id="@+id/appThemeSpinner"
@@ -270,14 +275,15 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginVertical="16dp"
+                    android:layout_marginHorizontal="16dp"
                     android:background="@color/gray" />
 
                 <LinearLayout
                     android:id="@+id/rateAppLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="16dp"
+                    android:paddingVertical="12dp"
+                    android:paddingHorizontal="16dp"
                     android:background="?android:attr/selectableItemBackground"
                     android:clickable="true"
                     android:focusable="true"
@@ -289,7 +295,7 @@
                         android:layout_weight="2"
                         android:background="@android:color/transparent"
                         android:text="Rate app"
-                        android:textSize="24sp" />
+                        android:textSize="20sp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -341,14 +347,15 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginVertical="16dp"
+                    android:layout_marginHorizontal="16dp"
                     android:background="@color/gray" />
 
                 <LinearLayout
                     android:id="@+id/writeEmailLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="16dp"
+                    android:paddingVertical="12dp"
+                    android:paddingHorizontal="16dp"
                     android:background="?android:attr/selectableItemBackground"
                     android:clickable="true"
                     android:focusable="true"
@@ -359,21 +366,21 @@
                         android:layout_height="wrap_content"
                         android:background="@android:color/transparent"
                         android:text="Write email to developer"
-                        android:textSize="24sp" />
+                        android:textSize="20sp" />
 
                 </LinearLayout>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginVertical="16dp"
+                    android:layout_marginHorizontal="16dp"
                     android:background="@color/gray" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="16dp"
-                    android:layout_marginBottom="16dp"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="12dp"
                     android:orientation="horizontal">
 
                     <TextView
@@ -381,7 +388,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/app_version"
-                        android:textSize="24sp" />
+                        android:textSize="20sp" />
 
                 </LinearLayout>
 
