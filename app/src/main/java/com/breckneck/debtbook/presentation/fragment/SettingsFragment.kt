@@ -17,9 +17,12 @@ import androidx.fragment.app.Fragment
 import com.breckneck.debtbook.BuildConfig
 import com.breckneck.debtbook.R
 import com.breckneck.deptbook.domain.usecase.Settings.*
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Task
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.play.core.review.ReviewManagerFactory
 import org.koin.android.ext.android.inject
 
 class SettingsFragment: Fragment() {
@@ -178,7 +181,23 @@ class SettingsFragment: Fragment() {
         }
         val highRateListener: View.OnClickListener = object: View.OnClickListener {
             override fun onClick(p0: View?) {
-                Toast.makeText(requireContext(), "IN APP REVIEW", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(requireContext(), "IN APP REVIEW", Toast.LENGTH_SHORT).show()
+                val reviewManager = ReviewManagerFactory.create(requireContext())
+                val requestReviewFlow = reviewManager.requestReviewFlow()
+                requestReviewFlow.addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val reviewInfo = task.result
+                        val flow = reviewManager.launchReviewFlow(requireActivity(), reviewInfo)
+                        flow.addOnCompleteListener(object: OnCompleteListener<Void> {
+                            override fun onComplete(p0: Task<Void>) {
+                                TODO("Not yet implemented")
+                            }
+                        })
+                    } else {
+                        Toast.makeText(requireContext(), "REVIEW ERROR", Toast.LENGTH_SHORT).show()
+                    }
+
+                }
             }
         }
         val rateStar1ImageView: ImageView = view.findViewById(R.id.rateStar1ImageView)
