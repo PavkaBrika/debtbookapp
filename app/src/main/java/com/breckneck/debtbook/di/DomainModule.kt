@@ -126,7 +126,7 @@ val domainModule = module {
         SetAppRate(settingsRepository = get())
     }
 
-    factory<GetAppRate> {
-        GetAppRate(settingsRepository = get())
+    factory<GetAppIsRated> {
+        GetAppIsRated(settingsRepository = get())
     }
 }

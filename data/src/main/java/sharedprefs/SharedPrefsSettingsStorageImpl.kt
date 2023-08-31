@@ -47,12 +47,12 @@ class SharedPrefsSettingsStorageImpl(val context: Context): SettingsStorage {
         return sharedPreferences.getBoolean(SUM_IN_SHARE_TEXT, false)
     }
 
-    override fun setAppRate(rate: Int) {
-        sharedPreferences.edit().putInt(APP_RATE, rate).apply()
+    override fun setAppIsRated(isRated: Boolean) {
+        sharedPreferences.edit().putBoolean(APP_RATE, isRated).apply()
     }
 
-    override fun getAppRate(): Int {
-        return sharedPreferences.getInt(APP_RATE, 0)
+    override fun getAppIsRated(): Boolean {
+        return sharedPreferences.getBoolean(APP_RATE, false)
     }
 
     override fun setAppTheme(theme: String) {

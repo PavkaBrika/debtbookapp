@@ -18,9 +18,9 @@ interface SettingsStorage {
 
     fun getAddSumInShareText(): Boolean
 
-    fun setAppRate(rate: Int)
+    fun setAppIsRated(isRated: Boolean)
 
-    fun getAppRate(): Int
+    fun getAppIsRated(): Boolean
 
     fun setAppTheme(theme: String)
 
