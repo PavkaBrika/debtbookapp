@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="16dp"
+        android:text="@string/rate_this_app"
+        android:textSize="24sp"
+        android:padding="24dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:orientation="horizontal"
+        android:paddingHorizontal="64dp"
+        android:paddingVertical="8dp">
+
+        <ImageView
+            android:id="@+id/rateStar1ImageView"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_weight="1"
+            android:paddingVertical="4dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:src="@drawable/baseline_star_rate_24" />
+
+        <ImageView
+            android:id="@+id/rateStar2ImageView"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_weight="1"
+            android:paddingVertical="4dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:src="@drawable/baseline_star_rate_24" />
+
+        <ImageView
+            android:id="@+id/rateStar3ImageView"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_weight="1"
+            android:paddingVertical="4dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:src="@drawable/baseline_star_rate_24" />
+
+        <ImageView
+            android:id="@+id/rateStar4ImageView"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_weight="1"
+            android:paddingVertical="4dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:src="@drawable/baseline_star_rate_24" />
+
+        <ImageView
+            android:id="@+id/rateStar5ImageView"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_weight="1"
+            android:paddingVertical="4dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:src="@drawable/baseline_star_rate_24" />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="24dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/buttonCancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:text="@string/later"
+                style="@style/ButtonsColor"/>
+
+            <Button
+                android:id="@+id/buttonOk"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="@string/continue_b"
+                style="@style/ButtonsColor"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>

@@ -9,6 +9,7 @@ import android.view.*
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
@@ -83,21 +84,21 @@ class MainFragment : Fragment() {
                 vm.getAllHumans()
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                     if (resources.configuration.isNightModeActive)
-                        filterButton.setColorFilter(resources.getColor(R.color.white))
+                        filterButton.setColorFilter(ContextCompat.getColor(view.context, R.color.white))
                     else
-                        filterButton.setColorFilter(resources.getColor(R.color.black))
+                        filterButton.setColorFilter(ContextCompat.getColor(view.context, R.color.black))
                 } else {
-                    filterButton.setColorFilter(resources.getColor(R.color.black))
+                    filterButton.setColorFilter(ContextCompat.getColor(view.context, R.color.black))
                 }
                 bottomSheetDialogFilter.cancel()
             }
             bottomSheetDialogFilter.findViewById<Button>(R.id.showPositiveButton)!!.setOnClickListener {
-                filterButton.setColorFilter(resources.getColor(R.color.green))
+                filterButton.setColorFilter(ContextCompat.getColor(view.context, R.color.green))
                 vm.getPositiveHumans()
                 bottomSheetDialogFilter.cancel()
             }
             bottomSheetDialogFilter.findViewById<Button>(R.id.showNegativeButton)!!.setOnClickListener {
-                filterButton.setColorFilter(resources.getColor(R.color.red))
+                filterButton.setColorFilter(ContextCompat.getColor(view.context, R.color.red))
                 vm.getNegativeHumans()
                 bottomSheetDialogFilter.cancel()
             }

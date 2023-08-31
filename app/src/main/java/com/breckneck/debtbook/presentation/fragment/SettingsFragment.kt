@@ -2,6 +2,7 @@ package com.breckneck.debtbook.presentation.fragment
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.Resources
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
@@ -13,6 +14,7 @@ import android.view.ViewGroup
 import android.widget.*
 import android.widget.CompoundButton.OnCheckedChangeListener
 import androidx.appcompat.widget.SwitchCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.breckneck.debtbook.BuildConfig
 import com.breckneck.debtbook.R
@@ -171,45 +173,8 @@ class SettingsFragment: Fragment() {
 
         val rateAppLayout: LinearLayout = view.findViewById(R.id.rateAppLayout)
         rateAppLayout.setOnClickListener {
-            Toast.makeText(requireContext(), "RATE APP LAYOUT CLICKED", Toast.LENGTH_SHORT).show()
+            showAppRateDialog()
         }
-
-        val lowRateListener: View.OnClickListener = object: View.OnClickListener {
-            override fun onClick(p0: View?) {
-                lowAppRateDialog()
-            }
-        }
-        val highRateListener: View.OnClickListener = object: View.OnClickListener {
-            override fun onClick(p0: View?) {
-//                Toast.makeText(requireContext(), "IN APP REVIEW", Toast.LENGTH_SHORT).show()
-                val reviewManager = ReviewManagerFactory.create(requireContext())
-                val requestReviewFlow = reviewManager.requestReviewFlow()
-                requestReviewFlow.addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        val reviewInfo = task.result
-                        val flow = reviewManager.launchReviewFlow(requireActivity(), reviewInfo)
-                        flow.addOnCompleteListener(object: OnCompleteListener<Void> {
-                            override fun onComplete(p0: Task<Void>) {
-                                TODO("Not yet implemented")
-                            }
-                        })
-                    } else {
-                        Toast.makeText(requireContext(), "REVIEW ERROR", Toast.LENGTH_SHORT).show()
-                    }
-
-                }
-            }
-        }
-        val rateStar1ImageView: ImageView = view.findViewById(R.id.rateStar1ImageView)
-        val rateStar2ImageView: ImageView = view.findViewById(R.id.rateStar2ImageView)
-        val rateStar3ImageView: ImageView = view.findViewById(R.id.rateStar3ImageView)
-        val rateStar4ImageView: ImageView = view.findViewById(R.id.rateStar4ImageView)
-        val rateStar5ImageView: ImageView = view.findViewById(R.id.rateStar5ImageView)
-        rateStar1ImageView.setOnClickListener(lowRateListener)
-        rateStar2ImageView.setOnClickListener(lowRateListener)
-        rateStar3ImageView.setOnClickListener(lowRateListener)
-        rateStar4ImageView.setOnClickListener(highRateListener)
-        rateStar5ImageView.setOnClickListener(highRateListener)
 
         val writeEmailLayout: LinearLayout = view.findViewById(R.id.writeEmailLayout)
         writeEmailLayout.setOnClickListener {
@@ -235,9 +200,83 @@ class SettingsFragment: Fragment() {
         return view
     }
 
-    private fun lowAppRateDialog() {
+    private fun showAppRateDialog() {
+        var rate = 0
+        val rateAppBottomSheetDialog = BottomSheetDialog(requireContext())
+        rateAppBottomSheetDialog.setContentView(R.layout.dialog_rate_app)
+        rateAppBottomSheetDialog.setCanceledOnTouchOutside(false)
+
+        rateAppBottomSheetDialog.findViewById<Button>(R.id.buttonOk)!!.setOnClickListener {
+            when (rate) {
+                1, 2, 3 -> {
+                    showLowAppRateDialog()
+                }
+                4, 5 -> {
+                    showInAppReview()
+                }
+                0 -> {
+                    Toast.makeText(requireContext(), getString(R.string.rate_app_toast), Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+        rateAppBottomSheetDialog.findViewById<Button>(R.id.buttonCancel)!!.setOnClickListener {
+            rateAppBottomSheetDialog.cancel()
+        }
+
+        val rateStar1ImageView: ImageView = rateAppBottomSheetDialog.findViewById(R.id.rateStar1ImageView)!!
+        val rateStar2ImageView: ImageView = rateAppBottomSheetDialog.findViewById(R.id.rateStar2ImageView)!!
+        val rateStar3ImageView: ImageView = rateAppBottomSheetDialog.findViewById(R.id.rateStar3ImageView)!!
+        val rateStar4ImageView: ImageView = rateAppBottomSheetDialog.findViewById(R.id.rateStar4ImageView)!!
+        val rateStar5ImageView: ImageView = rateAppBottomSheetDialog.findViewById(R.id.rateStar5ImageView)!!
+        rateStar1ImageView.setOnClickListener {
+            rateStar1ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.red))
+            rateStar2ImageView.clearColorFilter()
+            rateStar3ImageView.clearColorFilter()
+            rateStar4ImageView.clearColorFilter()
+            rateStar5ImageView.clearColorFilter()
+            rate = 1
+        }
+        rateStar2ImageView.setOnClickListener {
+            rateStar1ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.red))
+            rateStar2ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.red))
+            rateStar3ImageView.clearColorFilter()
+            rateStar4ImageView.clearColorFilter()
+            rateStar5ImageView.clearColorFilter()
+            rate = 2
+        }
+        rateStar3ImageView.setOnClickListener {
+            rateStar1ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.red))
+            rateStar2ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.red))
+            rateStar3ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.red))
+            rateStar4ImageView.clearColorFilter()
+            rateStar5ImageView.clearColorFilter()
+            rate = 3
+        }
+        rateStar4ImageView.setOnClickListener {
+            rateStar1ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.red))
+            rateStar2ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.red))
+            rateStar3ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.red))
+            rateStar4ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.red))
+            rateStar5ImageView.clearColorFilter()
+            rate = 4
+        }
+        rateStar5ImageView.setOnClickListener {
+            rateStar1ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.red))
+            rateStar2ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.red))
+            rateStar3ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.red))
+            rateStar4ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.red))
+            rateStar5ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.red))
+            rate = 5
+        }
+
+        rateAppBottomSheetDialog.show()
+    }
+
+    private fun showLowAppRateDialog() {
         val lowRateBottomSheetDialog = BottomSheetDialog(requireContext())
         lowRateBottomSheetDialog.setContentView(R.layout.dialog_low_app_rate)
+        lowRateBottomSheetDialog.setCanceledOnTouchOutside(false)
         val reviewEditText: EditText = lowRateBottomSheetDialog.findViewById(R.id.reviewEditText)!!
         val sendReviewButton: Button = lowRateBottomSheetDialog.findViewById(R.id.sendReviewButton)!!
         sendReviewButton.setOnClickListener {
@@ -248,6 +287,25 @@ class SettingsFragment: Fragment() {
             startActivity(intent)
         }
         lowRateBottomSheetDialog.show()
+    }
+
+    private fun showInAppReview() {
+        val reviewManager = ReviewManagerFactory.create(requireContext())
+        val requestReviewFlow = reviewManager.requestReviewFlow()
+        requestReviewFlow.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val reviewInfo = task.result
+                val flow = reviewManager.launchReviewFlow(requireActivity(), reviewInfo)
+                flow.addOnCompleteListener(object: OnCompleteListener<Void> {
+                    override fun onComplete(p0: Task<Void>) {
+                        TODO("Not yet implemented")
+                    }
+                })
+            } else {
+                Toast.makeText(requireContext(), "REVIEW ERROR", Toast.LENGTH_SHORT).show()
+            }
+
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

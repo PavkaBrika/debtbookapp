@@ -64,4 +64,12 @@
     <style name="searchViewStyle">
         <item name="colorControlNormal">@color/black</item>
     </style>
+
+    <style name="ButtonsColor">
+        <item name="android:tint">@color/black</item>
+        <item name="android:backgroundTint">@color/gray</item>
+        <item name="cornerRadius">24dp</item>
+        <item name="textAllCaps">false</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
 </resources>

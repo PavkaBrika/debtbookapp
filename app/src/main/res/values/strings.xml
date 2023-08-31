@@ -47,4 +47,8 @@
     <string name="email_subject">Email about Simple Debt Book app, version </string>
     <string name="review_hint">Tell us about your experience</string>
     <string name="review_dialog_title">Review</string>
+    <string name="rate_this_app">Rate this app</string>
+    <string name="later">Later</string>
+    <string name="continue_b">Continue</string>
+    <string name="rate_app_toast">Please, rate app by click on stars</string>
 </resources>
