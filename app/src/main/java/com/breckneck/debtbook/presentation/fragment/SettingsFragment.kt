@@ -210,9 +210,11 @@ class SettingsFragment: Fragment() {
             when (rate) {
                 1, 2, 3 -> {
                     showLowAppRateDialog()
+                    rateAppBottomSheetDialog.dismiss()
                 }
                 4, 5 -> {
                     showInAppReview()
+                    rateAppBottomSheetDialog.dismiss()
                 }
                 0 -> {
                     Toast.makeText(requireContext(), getString(R.string.rate_app_toast), Toast.LENGTH_SHORT).show()
@@ -230,7 +232,7 @@ class SettingsFragment: Fragment() {
         val rateStar4ImageView: ImageView = rateAppBottomSheetDialog.findViewById(R.id.rateStar4ImageView)!!
         val rateStar5ImageView: ImageView = rateAppBottomSheetDialog.findViewById(R.id.rateStar5ImageView)!!
         rateStar1ImageView.setOnClickListener {
-            rateStar1ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.red))
+            rateStar1ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.yellow))
             rateStar2ImageView.clearColorFilter()
             rateStar3ImageView.clearColorFilter()
             rateStar4ImageView.clearColorFilter()
@@ -238,35 +240,35 @@ class SettingsFragment: Fragment() {
             rate = 1
         }
         rateStar2ImageView.setOnClickListener {
-            rateStar1ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.red))
-            rateStar2ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.red))
+            rateStar1ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.yellow))
+            rateStar2ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.yellow))
             rateStar3ImageView.clearColorFilter()
             rateStar4ImageView.clearColorFilter()
             rateStar5ImageView.clearColorFilter()
             rate = 2
         }
         rateStar3ImageView.setOnClickListener {
-            rateStar1ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.red))
-            rateStar2ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.red))
-            rateStar3ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.red))
+            rateStar1ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.yellow))
+            rateStar2ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.yellow))
+            rateStar3ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.yellow))
             rateStar4ImageView.clearColorFilter()
             rateStar5ImageView.clearColorFilter()
             rate = 3
         }
         rateStar4ImageView.setOnClickListener {
-            rateStar1ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.red))
-            rateStar2ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.red))
-            rateStar3ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.red))
-            rateStar4ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.red))
+            rateStar1ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.yellow))
+            rateStar2ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.yellow))
+            rateStar3ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.yellow))
+            rateStar4ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.yellow))
             rateStar5ImageView.clearColorFilter()
             rate = 4
         }
         rateStar5ImageView.setOnClickListener {
-            rateStar1ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.red))
-            rateStar2ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.red))
-            rateStar3ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.red))
-            rateStar4ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.red))
-            rateStar5ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.red))
+            rateStar1ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.yellow))
+            rateStar2ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.yellow))
+            rateStar3ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.yellow))
+            rateStar4ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.yellow))
+            rateStar5ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.yellow))
             rate = 5
         }
 
@@ -278,7 +280,8 @@ class SettingsFragment: Fragment() {
         lowRateBottomSheetDialog.setContentView(R.layout.dialog_low_app_rate)
         lowRateBottomSheetDialog.setCanceledOnTouchOutside(false)
         val reviewEditText: EditText = lowRateBottomSheetDialog.findViewById(R.id.reviewEditText)!!
-        val sendReviewButton: Button = lowRateBottomSheetDialog.findViewById(R.id.sendReviewButton)!!
+        val sendReviewButton: Button = lowRateBottomSheetDialog.findViewById(R.id.buttonOk)!!
+        val cancelButton: Button = lowRateBottomSheetDialog.findViewById(R.id.buttonCancel)!!
         sendReviewButton.setOnClickListener {
             val intent = Intent(Intent.ACTION_SENDTO)
             intent.data = Uri.parse("mailto:pavlikbrichkin@yandex.ru")
@@ -286,6 +289,10 @@ class SettingsFragment: Fragment() {
             intent.putExtra(Intent.EXTRA_TEXT, reviewEditText.text.toString())
             startActivity(intent)
         }
+        cancelButton.setOnClickListener {
+            lowRateBottomSheetDialog.dismiss()
+        }
+
         lowRateBottomSheetDialog.show()
     }
 
@@ -298,7 +305,7 @@ class SettingsFragment: Fragment() {
                 val flow = reviewManager.launchReviewFlow(requireActivity(), reviewInfo)
                 flow.addOnCompleteListener(object: OnCompleteListener<Void> {
                     override fun onComplete(p0: Task<Void>) {
-                        TODO("Not yet implemented")
+                        Toast.makeText(requireContext(), "REVIEW completed", Toast.LENGTH_SHORT).show()
                     }
                 })
             } else {
