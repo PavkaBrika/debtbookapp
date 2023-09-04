@@ -31,6 +31,8 @@ class MainFragmentViewModel(
     var resultIsAppRateDialogShow = MutableLiveData<Boolean>()
     var resultIsAppReviewDialogShow = MutableLiveData<Boolean>()
     var resultAppReviewText = MutableLiveData<String>()
+    var resultIsFilterDialogShown = MutableLiveData<Boolean>()
+    var resultHumansFilter = MutableLiveData<Int>()
 
     init {
         Log.e("TAG", "MainFragment VM created")
@@ -129,6 +131,14 @@ class MainFragmentViewModel(
 
     fun setAppReviewText(text: String) {
         resultAppReviewText.value = text
+    }
+
+    fun setFilterDialogShown(shown: Boolean) {
+        resultIsFilterDialogShown.value = shown
+    }
+
+    fun setHumansFilter(filter: Int) {
+        resultHumansFilter.value = filter
     }
 
 }

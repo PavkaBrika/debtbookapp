@@ -19,13 +19,19 @@ import com.breckneck.debtbook.presentation.activity.MainActivity
 import com.breckneck.debtbook.presentation.viewmodel.MainFragmentViewModel
 import com.breckneck.deptbook.domain.model.HumanDomain
 import com.google.android.material.appbar.CollapsingToolbarLayout
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class MainFragment : Fragment() {
+private const val ALL_HUMANS_FILTER = 1
+private const val POSITIVE_HUMANS_FILTER = 2
+private const val NEGATIVE_HUMANS_FILTER = 3
 
+class MainFragment : Fragment() {
     private val vm by viewModel<MainFragmentViewModel>()
+
+    lateinit var filterButton: ImageView
 
     interface OnButtonClickListener{
         fun onHumanClick(idHuman: Int, currency: String, name: String)
@@ -48,6 +54,10 @@ class MainFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_main, container, false)
+
+        if (vm.resultIsFilterDialogShown.value == true) {
+            showHumanFilterDialog()
+        }
 
         val collaps: CollapsingToolbarLayout = view.findViewById(R.id.collaps)
         collaps.apply {
@@ -77,37 +87,23 @@ class MainFragment : Fragment() {
             buttonClickListener?.onSettingsButtonClick()
         }
 
-        val filterButton: ImageView = view.findViewById(R.id.filterHumanButton)
+        filterButton = view.findViewById(R.id.filterHumanButton)
         filterButton.setOnClickListener {
-            val bottomSheetDialogFilter = BottomSheetDialog(requireContext())
-            bottomSheetDialogFilter.setContentView(R.layout.dialog_filter)
-            bottomSheetDialogFilter.findViewById<Button>(R.id.showAllButton)!!.setOnClickListener {
-                vm.getAllHumans()
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                    if (resources.configuration.isNightModeActive)
-                        filterButton.setColorFilter(ContextCompat.getColor(view.context, R.color.white))
-                    else
-                        filterButton.setColorFilter(ContextCompat.getColor(view.context, R.color.black))
-                } else {
-                    filterButton.setColorFilter(ContextCompat.getColor(view.context, R.color.black))
-                }
-                bottomSheetDialogFilter.cancel()
-            }
-            bottomSheetDialogFilter.findViewById<Button>(R.id.showPositiveButton)!!.setOnClickListener {
-                filterButton.setColorFilter(ContextCompat.getColor(view.context, R.color.green))
-                vm.getPositiveHumans()
-                bottomSheetDialogFilter.cancel()
-            }
-            bottomSheetDialogFilter.findViewById<Button>(R.id.showNegativeButton)!!.setOnClickListener {
-                filterButton.setColorFilter(ContextCompat.getColor(view.context, R.color.red))
-                vm.getNegativeHumans()
-                bottomSheetDialogFilter.cancel()
-            }
-            bottomSheetDialogFilter.show()
+            showHumanFilterDialog()
         }
 
         vm.apply {
-            getAllHumans()
+            when (vm.resultHumansFilter.value) {
+                POSITIVE_HUMANS_FILTER -> {
+                    getPositiveHumans()
+                    filterButton.setColorFilter(ContextCompat.getColor(view.context, R.color.green))
+                }
+                NEGATIVE_HUMANS_FILTER -> {
+                    getNegativeHumans()
+                    filterButton.setColorFilter(ContextCompat.getColor(view.context, R.color.red))
+                }
+                else -> getAllHumans()
+            }
             getNegativeSum()
             getPositiveSum()
         }
@@ -144,5 +140,43 @@ class MainFragment : Fragment() {
             }
         }
         return view
+    }
+
+    fun showHumanFilterDialog() {
+        val bottomSheetDialogFilter = BottomSheetDialog(requireContext())
+        bottomSheetDialogFilter.setContentView(R.layout.dialog_filter)
+        bottomSheetDialogFilter.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        vm.setFilterDialogShown(true)
+        bottomSheetDialogFilter.findViewById<Button>(R.id.showAllButton)!!.setOnClickListener {
+            vm.getAllHumans()
+            vm.setHumansFilter(ALL_HUMANS_FILTER)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                if (resources.configuration.isNightModeActive)
+                    filterButton.setColorFilter(ContextCompat.getColor(requireContext(), R.color.white))
+                else
+                    filterButton.setColorFilter(ContextCompat.getColor(requireContext(), R.color.black))
+            } else {
+                filterButton.setColorFilter(ContextCompat.getColor(requireContext(), R.color.black))
+            }
+            bottomSheetDialogFilter.cancel()
+        }
+        bottomSheetDialogFilter.findViewById<Button>(R.id.showPositiveButton)!!.setOnClickListener {
+            filterButton.setColorFilter(ContextCompat.getColor(requireContext(), R.color.green))
+            vm.getPositiveHumans()
+            vm.setHumansFilter(POSITIVE_HUMANS_FILTER)
+            bottomSheetDialogFilter.cancel()
+        }
+        bottomSheetDialogFilter.findViewById<Button>(R.id.showNegativeButton)!!.setOnClickListener {
+            filterButton.setColorFilter(ContextCompat.getColor(requireContext(), R.color.red))
+            vm.getNegativeHumans()
+            vm.setHumansFilter(NEGATIVE_HUMANS_FILTER)
+            bottomSheetDialogFilter.cancel()
+        }
+
+        bottomSheetDialogFilter.setOnCancelListener {
+            vm.setFilterDialogShown(false)
+        }
+
+        bottomSheetDialogFilter.show()
     }
 }
