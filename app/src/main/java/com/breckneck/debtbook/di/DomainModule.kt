@@ -129,4 +129,12 @@ val domainModule = module {
     factory<GetAppIsRated> {
         GetAppIsRated(settingsRepository = get())
     }
+
+    factory<SetAppTheme> {
+        SetAppTheme(settingsRepository = get())
+    }
+
+    factory<GetAppTheme> {
+        GetAppTheme(settingsRepository = get())
+    }
 }

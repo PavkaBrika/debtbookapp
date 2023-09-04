@@ -3,6 +3,7 @@ package com.breckneck.debtbook.presentation.activity
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
 import androidx.fragment.app.FragmentTransaction
 import com.breckneck.debtbook.R
@@ -16,12 +17,14 @@ import com.breckneck.deptbook.domain.model.DebtDomain
 import com.breckneck.deptbook.domain.usecase.Ad.AddClickUseCase
 import com.breckneck.deptbook.domain.usecase.Ad.GetClicksUseCase
 import com.breckneck.deptbook.domain.usecase.Ad.SetClicksUseCase
+import com.breckneck.deptbook.domain.usecase.Settings.GetAppTheme
 import com.yandex.mobile.ads.banner.AdSize
 import com.yandex.mobile.ads.banner.BannerAdEventListener
 import com.yandex.mobile.ads.banner.BannerAdView
 import com.yandex.mobile.ads.common.*
 import com.yandex.mobile.ads.interstitial.InterstitialAd
 import com.yandex.mobile.ads.interstitial.InterstitialAdEventListener
+import org.koin.android.ext.android.inject
 
 class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, NewDebtFragment.OnButtonClickListener, DebtDetailsFragment.OnButtonClickListener, SettingsFragment.OnButtonClickListener {
 
@@ -50,7 +53,15 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         getAdCounterClicks = GetClicksUseCase(adRepository = adRepository)
         addClickToAdCounter = AddClickUseCase(adRepository = adRepository)
         refreshAdCounter = SetClicksUseCase(adRepository = adRepository)
+        val getAppTheme: GetAppTheme by inject()
 
+        val theme = getAppTheme.execute()
+        if (theme.equals(getString(R.string.dark_theme)))
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        else if (theme.equals(getString(R.string.light_theme)))
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        else if (theme.equals(getString(R.string.system_theme)))
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
 
         MobileAds.initialize(this, object: InitializationListener {
             override fun onInitializationCompleted() {

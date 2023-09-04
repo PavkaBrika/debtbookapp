@@ -14,6 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import android.widget.CompoundButton.OnCheckedChangeListener
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -60,6 +61,8 @@ class SettingsFragment: Fragment() {
     private val getDefaultCurrency: GetDefaultCurrency by inject()
     private val setAddSumInShareText: SetAddSumInShareText by inject()
     private val getAddSumInShareText: GetAddSumInShareText by inject()
+    private val getAppTheme: GetAppTheme by inject()
+    private val setAppTheme: SetAppTheme by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -93,6 +96,7 @@ class SettingsFragment: Fragment() {
         firstCurrencySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                 firstMainCurrency = p0?.getItemAtPosition(p2).toString().substring(p0?.getItemAtPosition(p2).toString().lastIndexOf(" ") + 1)
+                setFirstMainCurrency.execute(currency = firstMainCurrency)
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -110,6 +114,7 @@ class SettingsFragment: Fragment() {
         secondCurrencySpinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                 secondMainCurrency = p0?.getItemAtPosition(p2).toString().substring(p0?.getItemAtPosition(p2).toString().lastIndexOf(" ") + 1)
+                setSecondMainCurrency.execute(currency = secondMainCurrency)
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -127,6 +132,7 @@ class SettingsFragment: Fragment() {
         defaultCurrencySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                 defaultCurrency = p0?.getItemAtPosition(p2).toString().substring(p0?.getItemAtPosition(p2).toString().lastIndexOf(" ") + 1)
+                setDefaultCurrency.execute(currency = defaultCurrency)
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -154,6 +160,7 @@ class SettingsFragment: Fragment() {
 
             override fun onCheckedChanged(p0: CompoundButton?, p1: Boolean) {
                 addSumShareText = p1
+                setAddSumInShareText.execute(addSumInShareText = addSumShareText)
             }
 
         })
@@ -166,10 +173,23 @@ class SettingsFragment: Fragment() {
         val themeSpinnerAdapter = ArrayAdapter(view.context, android.R.layout.simple_spinner_dropdown_item, appThemes)
         val appThemeSpinner: Spinner = view.findViewById(R.id.appThemeSpinner)
         appThemeSpinner.adapter = themeSpinnerAdapter
-        var theme = ""
+        var theme = getAppTheme.execute()
+
+        for (i in appThemes.indices) {
+            if (theme.contains(appThemes[i]))
+                appThemeSpinner.setSelection(i)
+        }
+
         appThemeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                 theme = p0?.getItemAtPosition(p2).toString()
+                setAppTheme.execute(theme = theme)
+                if (theme.equals(getString(R.string.dark_theme)))
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                else if (theme.equals(getString(R.string.light_theme)))
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                else if (theme.equals(getString(R.string.system_theme)))
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -177,6 +197,7 @@ class SettingsFragment: Fragment() {
             }
 
         }
+
         val appThemeLayout: LinearLayout = view.findViewById(R.id.appThemeLayout)
         appThemeLayout.setOnClickListener {
             appThemeSpinner.performClick()
@@ -200,11 +221,6 @@ class SettingsFragment: Fragment() {
 
         val setSettingsButton: FloatingActionButton = view.findViewById(R.id.setSettingsButton)
         setSettingsButton.setOnClickListener {
-            setFirstMainCurrency.execute(currency = firstMainCurrency)
-            setSecondMainCurrency.execute(currency = secondMainCurrency)
-            setDefaultCurrency.execute(currency = defaultCurrency)
-            setAddSumInShareText.execute(addSumInShareText = addSumShareText)
-
             buttonClickListener.onBackButtonClick()
         }
 
@@ -222,13 +238,11 @@ class SettingsFragment: Fragment() {
             when (vm.resultAppRate.value) {
                 1, 2, 3 -> {
                     showLowAppRateDialog()
-                    vm.setAppRateDialogShown(shown = false)
-                    rateAppBottomSheetDialog.dismiss()
+                    rateAppBottomSheetDialog.cancel()
                 }
                 4, 5 -> {
                     showInAppReview()
-                    vm.setAppRateDialogShown(shown = false)
-                    rateAppBottomSheetDialog.dismiss()
+                    rateAppBottomSheetDialog.cancel()
                 }
                 0 -> {
                     Toast.makeText(requireContext(), getString(R.string.rate_app_toast), Toast.LENGTH_SHORT).show()

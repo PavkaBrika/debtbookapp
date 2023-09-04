@@ -25,4 +25,5 @@ interface SettingsRepository {
     fun setAppTheme(theme: String)
 
     fun getAppTheme(): String
+
 }
