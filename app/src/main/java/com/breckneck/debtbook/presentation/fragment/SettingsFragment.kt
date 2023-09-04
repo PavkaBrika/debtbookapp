@@ -5,6 +5,8 @@ import android.content.Intent
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.transition.TransitionInflater
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -68,6 +70,8 @@ class SettingsFragment: Fragment() {
 
         if (vm.resultIsAppRateDialogShow.value == true)
             showAppRateDialog()
+        if (vm.resultIsAppReviewDialogShow.value == true)
+            showLowAppRateDialog()
 
         val collaps: CollapsingToolbarLayout = view.findViewById(R.id.collapsSettings)
         collaps.apply {
@@ -233,9 +237,12 @@ class SettingsFragment: Fragment() {
         }
 
         rateAppBottomSheetDialog.findViewById<Button>(R.id.buttonCancel)!!.setOnClickListener {
+            rateAppBottomSheetDialog.cancel()
+        }
+
+        rateAppBottomSheetDialog.setOnCancelListener {
             vm.setAppRateDialogShown(shown = false)
             vm.setAppRate(0)
-            rateAppBottomSheetDialog.dismiss()
         }
 
         val rateStar1ImageView: ImageView = rateAppBottomSheetDialog.findViewById(R.id.rateStar1ImageView)!!
@@ -319,6 +326,8 @@ class SettingsFragment: Fragment() {
         val lowRateBottomSheetDialog = BottomSheetDialog(requireContext())
         lowRateBottomSheetDialog.setContentView(R.layout.dialog_low_app_rate)
         lowRateBottomSheetDialog.setCanceledOnTouchOutside(false)
+        lowRateBottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        vm.setAppReviewDialogShown(true)
         val reviewEditText: EditText = lowRateBottomSheetDialog.findViewById(R.id.reviewEditText)!!
         val sendReviewButton: Button = lowRateBottomSheetDialog.findViewById(R.id.buttonOk)!!
         val cancelButton: Button = lowRateBottomSheetDialog.findViewById(R.id.buttonCancel)!!
@@ -329,8 +338,32 @@ class SettingsFragment: Fragment() {
             intent.putExtra(Intent.EXTRA_TEXT, reviewEditText.text.toString())
             startActivity(intent)
         }
+
+        if (vm.resultAppReviewText.value?.isEmpty() == false) {
+            reviewEditText.setText(vm.resultAppReviewText.value)
+        }
+
+        reviewEditText.addTextChangedListener(object: TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+                vm.setAppReviewText(p0.toString())
+            }
+        })
+
         cancelButton.setOnClickListener {
-            lowRateBottomSheetDialog.dismiss()
+            lowRateBottomSheetDialog.cancel()
+        }
+
+        lowRateBottomSheetDialog.setOnCancelListener {
+            vm.setAppReviewDialogShown(false)
+            vm.setAppReviewText("")
         }
 
         lowRateBottomSheetDialog.show()
@@ -362,6 +395,11 @@ class SettingsFragment: Fragment() {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onPause() {
+        super.onPause()
+
     }
 
 }

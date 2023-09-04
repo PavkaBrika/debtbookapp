@@ -123,4 +123,12 @@ class MainFragmentViewModel(
         resultAppRate.value = rate
     }
 
+    fun setAppReviewDialogShown(shown: Boolean) {
+        resultIsAppReviewDialogShow.value = shown
+    }
+
+    fun setAppReviewText(text: String) {
+        resultAppReviewText.value = text
+    }
+
 }
