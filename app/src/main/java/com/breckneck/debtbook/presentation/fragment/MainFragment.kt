@@ -1,27 +1,38 @@
 package com.breckneck.debtbook.presentation.fragment
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Typeface
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.*
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
+import com.breckneck.debtbook.BuildConfig
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.adapter.HumanAdapter
 import com.breckneck.debtbook.presentation.activity.MainActivity
 import com.breckneck.debtbook.presentation.viewmodel.MainFragmentViewModel
 import com.breckneck.deptbook.domain.model.HumanDomain
+import com.breckneck.deptbook.domain.usecase.Settings.GetAppIsRated
+import com.breckneck.deptbook.domain.usecase.Settings.GetDebtQuantityForAppRateDialogShow
+import com.breckneck.deptbook.domain.usecase.Settings.SetAppIsRated
+import com.breckneck.deptbook.domain.usecase.Settings.SetDebtQuantityForAppRateDialogShow
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Task
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.play.core.review.ReviewManagerFactory
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 private const val ALL_HUMANS_FILTER = 1
@@ -30,6 +41,10 @@ private const val NEGATIVE_HUMANS_FILTER = 3
 
 class MainFragment : Fragment() {
     private val vm by viewModel<MainFragmentViewModel>()
+    private val getDebtQuantityForAppRateDialogShow: GetDebtQuantityForAppRateDialogShow by inject()
+    private val setDebtQuantityForAppRateDialogShow: SetDebtQuantityForAppRateDialogShow by inject()
+    private val setAppIsRated: SetAppIsRated by inject()
+    private val getAppIsRated: GetAppIsRated by inject()
 
     lateinit var filterButton: ImageView
 
@@ -55,9 +70,12 @@ class MainFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_main, container, false)
 
-        if (vm.resultIsFilterDialogShown.value == true) {
+        if (vm.resultIsFilterDialogShown.value == true)
             showHumanFilterDialog()
-        }
+        if (vm.resultIsAppRateDialogShow.value == true)
+            showAppRateDialog()
+        if (vm.resultIsAppReviewDialogShow.value == true)
+            showLowAppRateDialog()
 
         val collaps: CollapsingToolbarLayout = view.findViewById(R.id.collaps)
         collaps.apply {
@@ -106,6 +124,14 @@ class MainFragment : Fragment() {
             }
             getNegativeSum()
             getPositiveSum()
+            getDebtQuantity()
+        }
+
+        if (!getAppIsRated.execute()) {
+            vm.resultDebtQuantity.observe(viewLifecycleOwner) {
+                if (it >= getDebtQuantityForAppRateDialogShow.execute())
+                    showAppRateDialog()
+            }
         }
 
         vm.resultHumanList.observe(requireActivity()) {
@@ -178,5 +204,186 @@ class MainFragment : Fragment() {
         }
 
         bottomSheetDialogFilter.show()
+    }
+
+    private fun showAppRateDialog() {
+        val rateAppBottomSheetDialog = BottomSheetDialog(requireContext())
+        rateAppBottomSheetDialog.setContentView(R.layout.dialog_rate_app)
+        rateAppBottomSheetDialog.setCanceledOnTouchOutside(false)
+        rateAppBottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        vm.setAppRateDialogShown(shown = true)
+
+        rateAppBottomSheetDialog.findViewById<Button>(R.id.buttonOk)!!.setOnClickListener {
+            when (vm.resultAppRate.value) {
+                1, 2, 3 -> {
+                    showLowAppRateDialog()
+                    rateAppBottomSheetDialog.dismiss()
+                    vm.setAppRateDialogShown(shown = false)
+                    vm.setAppRate(0)
+                }
+                4, 5 -> {
+                    showInAppReview()
+                    rateAppBottomSheetDialog.dismiss()
+                    vm.setAppRateDialogShown(shown = false)
+                    vm.setAppRate(0)
+                }
+                0 -> {
+                    Toast.makeText(requireContext(), getString(R.string.rate_app_toast), Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+        rateAppBottomSheetDialog.findViewById<Button>(R.id.buttonCancel)!!.setOnClickListener {
+            rateAppBottomSheetDialog.cancel()
+        }
+
+        rateAppBottomSheetDialog.setOnCancelListener {
+            setDebtQuantityForAppRateDialogShow.execute(getDebtQuantityForAppRateDialogShow.execute() + 10)
+            vm.setAppRateDialogShown(shown = false)
+            vm.setAppRate(0)
+        }
+
+        val rateStar1ImageView: ImageView = rateAppBottomSheetDialog.findViewById(R.id.rateStar1ImageView)!!
+        val rateStar2ImageView: ImageView = rateAppBottomSheetDialog.findViewById(R.id.rateStar2ImageView)!!
+        val rateStar3ImageView: ImageView = rateAppBottomSheetDialog.findViewById(R.id.rateStar3ImageView)!!
+        val rateStar4ImageView: ImageView = rateAppBottomSheetDialog.findViewById(R.id.rateStar4ImageView)!!
+        val rateStar5ImageView: ImageView = rateAppBottomSheetDialog.findViewById(R.id.rateStar5ImageView)!!
+        rateStar1ImageView.setOnClickListener {
+            rateStar1ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.yellow))
+            rateStar2ImageView.clearColorFilter()
+            rateStar3ImageView.clearColorFilter()
+            rateStar4ImageView.clearColorFilter()
+            rateStar5ImageView.clearColorFilter()
+            vm.setAppRate(1)
+        }
+        rateStar2ImageView.setOnClickListener {
+            rateStar1ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.yellow))
+            rateStar2ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.yellow))
+            rateStar3ImageView.clearColorFilter()
+            rateStar4ImageView.clearColorFilter()
+            rateStar5ImageView.clearColorFilter()
+            vm.setAppRate(2)
+        }
+        rateStar3ImageView.setOnClickListener {
+            rateStar1ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.yellow))
+            rateStar2ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.yellow))
+            rateStar3ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.yellow))
+            rateStar4ImageView.clearColorFilter()
+            rateStar5ImageView.clearColorFilter()
+            vm.setAppRate(3)
+        }
+        rateStar4ImageView.setOnClickListener {
+            rateStar1ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.yellow))
+            rateStar2ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.yellow))
+            rateStar3ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.yellow))
+            rateStar4ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.yellow))
+            rateStar5ImageView.clearColorFilter()
+            vm.setAppRate(4)
+        }
+        rateStar5ImageView.setOnClickListener {
+            rateStar1ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.yellow))
+            rateStar2ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.yellow))
+            rateStar3ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.yellow))
+            rateStar4ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.yellow))
+            rateStar5ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.yellow))
+            vm.setAppRate(5)
+        }
+
+        when (vm.resultAppRate.value) {
+            1 -> {
+                rateStar1ImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.yellow))
+            }
+            2 -> {
+                rateStar1ImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.yellow))
+                rateStar2ImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.yellow))
+            }
+            3 -> {
+                rateStar1ImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.yellow))
+                rateStar2ImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.yellow))
+                rateStar3ImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.yellow))
+            }
+            4 -> {
+                rateStar1ImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.yellow))
+                rateStar2ImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.yellow))
+                rateStar3ImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.yellow))
+                rateStar4ImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.yellow))
+            }
+            5 -> {
+                rateStar1ImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.yellow))
+                rateStar2ImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.yellow))
+                rateStar3ImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.yellow))
+                rateStar4ImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.yellow))
+                rateStar5ImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.yellow))
+            }
+        }
+
+        rateAppBottomSheetDialog.show()
+    }
+
+    private fun showLowAppRateDialog() {
+        val lowRateBottomSheetDialog = BottomSheetDialog(requireContext())
+        lowRateBottomSheetDialog.setContentView(R.layout.dialog_low_app_rate)
+        lowRateBottomSheetDialog.setCanceledOnTouchOutside(false)
+        lowRateBottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        vm.setAppReviewDialogShown(true)
+        val reviewEditText: EditText = lowRateBottomSheetDialog.findViewById(R.id.reviewEditText)!!
+        val sendReviewButton: Button = lowRateBottomSheetDialog.findViewById(R.id.buttonOk)!!
+        val cancelButton: Button = lowRateBottomSheetDialog.findViewById(R.id.buttonCancel)!!
+        sendReviewButton.setOnClickListener {
+            val intent = Intent(Intent.ACTION_SENDTO)
+            intent.data = Uri.parse("mailto:pavlikbrichkin@yandex.ru")
+            intent.putExtra(Intent.EXTRA_SUBJECT, "${getString(R.string.email_subject)} ${BuildConfig.VERSION_NAME}")
+            intent.putExtra(Intent.EXTRA_TEXT, reviewEditText.text.toString())
+            startActivity(intent)
+        }
+
+        if (vm.resultAppReviewText.value?.isEmpty() == false) {
+            reviewEditText.setText(vm.resultAppReviewText.value)
+        }
+
+        reviewEditText.addTextChangedListener(object: TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+                vm.setAppReviewText(text = p0.toString())
+            }
+        })
+
+        cancelButton.setOnClickListener {
+            lowRateBottomSheetDialog.cancel()
+        }
+
+        lowRateBottomSheetDialog.setOnCancelListener {
+            setDebtQuantityForAppRateDialogShow.execute(getDebtQuantityForAppRateDialogShow.execute() + 10)
+            vm.setAppReviewDialogShown(shown = false)
+            vm.setAppReviewText(text = "")
+        }
+
+        lowRateBottomSheetDialog.show()
+    }
+
+    private fun showInAppReview() {
+        val reviewManager = ReviewManagerFactory.create(requireContext())
+        val requestReviewFlow = reviewManager.requestReviewFlow()
+        requestReviewFlow.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val reviewInfo = task.result
+                val flow = reviewManager.launchReviewFlow(requireActivity(), reviewInfo)
+                flow.addOnCompleteListener(object: OnCompleteListener<Void> {
+                    override fun onComplete(p0: Task<Void>) {
+                        setAppIsRated.execute(isRated = true)
+                    }
+                })
+            } else {
+                Toast.makeText(requireContext(), "REVIEW ERROR", Toast.LENGTH_SHORT).show()
+            }
+
+        }
     }
 }

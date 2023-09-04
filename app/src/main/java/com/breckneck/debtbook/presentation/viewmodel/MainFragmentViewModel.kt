@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.breckneck.deptbook.domain.model.HumanDomain
+import com.breckneck.deptbook.domain.usecase.Debt.GetDebtQuantity
 import com.breckneck.deptbook.domain.usecase.Human.GetAllDebtsSumUseCase
 import com.breckneck.deptbook.domain.usecase.Human.GetAllHumansUseCase
 import com.breckneck.deptbook.domain.usecase.Human.GetNegativeHumansUseCase
@@ -21,12 +22,14 @@ class MainFragmentViewModel(
     private val getPositiveHumansUseCase: GetPositiveHumansUseCase,
     private val getNegativeHumansUseCase: GetNegativeHumansUseCase,
     private val getFirstMainCurrency: GetFirstMainCurrency,
-    private val getSecondMainCurrency: GetSecondMainCurrency
+    private val getSecondMainCurrency: GetSecondMainCurrency,
+    private val getDebtQuantity: GetDebtQuantity
 ) : ViewModel() {
 
     var resultPos = MutableLiveData<String>()
     var resultNeg = MutableLiveData<String>()
     var resultHumanList = MutableLiveData<List<HumanDomain>>()
+    var resultDebtQuantity = MutableLiveData<Int>()
     var resultAppRate = MutableLiveData<Int>()
     var resultIsAppRateDialogShow = MutableLiveData<Boolean>()
     var resultIsAppReviewDialogShow = MutableLiveData<Boolean>()
@@ -115,6 +118,18 @@ class MainFragmentViewModel(
             .subscribe({
                 resultNeg.value = it
             },{})
+    }
+
+    fun getDebtQuantity() {
+        Single.just("1")
+            .map {
+                return@map getDebtQuantity.execute()
+            }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                resultDebtQuantity.value = it
+            }, {})
     }
 
     fun setAppRateDialogShown(shown: Boolean) {

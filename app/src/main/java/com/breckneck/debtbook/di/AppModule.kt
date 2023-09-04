@@ -13,7 +13,8 @@ val appModule = module {
             getPositiveHumansUseCase = get(),
             getNegativeHumansUseCase = get(),
             getFirstMainCurrency = get(),
-            getSecondMainCurrency = get()
+            getSecondMainCurrency = get(),
+            getDebtQuantity = get()
         )
     }
 }
