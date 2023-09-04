@@ -13,4 +13,6 @@ interface DebtRepository {
     fun editDebt(debtDomain: DebtDomain)
 
     fun deleteDebtsByHumanId(id: Int)
+
+    fun getDebtQuantity(): Int
 }

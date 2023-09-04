@@ -52,4 +52,12 @@ class SettingsRepositoryImpl(private val settingsStorage: SettingsStorage): Sett
     override fun getAppTheme(): String {
         return settingsStorage.getAppTheme()
     }
+
+    override fun setDebtQuantityForAppRateDialogShow(quantity: Int) {
+        settingsStorage.setDebtQuantityForAppRateDialogShow(quantity = quantity)
+    }
+
+    override fun getDebtQuantityForAppRateDialogShow(): Int {
+        return settingsStorage.getDebtQuantityForAppRateDialogShow()
+    }
 }

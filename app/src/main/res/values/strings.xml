@@ -51,4 +51,5 @@
     <string name="later">Later</string>
     <string name="continue_b">Continue</string>
     <string name="rate_app_toast">Please, rate app by click on stars</string>
+    <string name="app_already_rated_hint">Sorry, app is already rated</string>
 </resources>

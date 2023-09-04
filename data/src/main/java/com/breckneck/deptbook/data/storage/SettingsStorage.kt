@@ -26,4 +26,8 @@ interface SettingsStorage {
 
     fun getAppTheme(): String
 
+    fun setDebtQuantityForAppRateDialogShow(quantity: Int)
+
+    fun getDebtQuantityForAppRateDialogShow(): Int
+
 }

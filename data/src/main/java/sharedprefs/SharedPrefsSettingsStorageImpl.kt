@@ -10,6 +10,7 @@ private const val DEFAULT_CURRENCY = "default_currency" // start currency in swi
 private const val SUM_IN_SHARE_TEXT = "sum_in_share_text" // enable sum for each debt
 private const val APP_RATE = "app_rate"
 private const val APP_THEME = "app_theme"
+private const val DEBTS_QUANTITY_FOR_APP_RATE_DIALOG_SHOW = "debts_quantity_for_app_rate_dialog_show"
 
 class SharedPrefsSettingsStorageImpl(val context: Context): SettingsStorage {
 
@@ -61,5 +62,13 @@ class SharedPrefsSettingsStorageImpl(val context: Context): SettingsStorage {
 
     override fun getAppTheme(): String {
         return sharedPreferences.getString(APP_THEME, "System")!!
+    }
+
+    override fun setDebtQuantityForAppRateDialogShow(quantity: Int) {
+        sharedPreferences.edit().putInt(DEBTS_QUANTITY_FOR_APP_RATE_DIALOG_SHOW, quantity).apply()
+    }
+
+    override fun getDebtQuantityForAppRateDialogShow(): Int {
+        return sharedPreferences.getInt(DEBTS_QUANTITY_FOR_APP_RATE_DIALOG_SHOW, 15)
     }
 }

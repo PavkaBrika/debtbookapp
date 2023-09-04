@@ -137,4 +137,12 @@ val domainModule = module {
     factory<GetAppTheme> {
         GetAppTheme(settingsRepository = get())
     }
+
+    factory<SetDebtQuantityForAppRateDialogShow> {
+        SetDebtQuantityForAppRateDialogShow(settingsRepository = get())
+    }
+
+    factory<GetDebtQuantityForAppRateDialogShow> {
+        GetDebtQuantityForAppRateDialogShow(settingsRepository = get())
+    }
 }

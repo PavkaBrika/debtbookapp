@@ -63,6 +63,8 @@ class SettingsFragment: Fragment() {
     private val getAddSumInShareText: GetAddSumInShareText by inject()
     private val getAppTheme: GetAppTheme by inject()
     private val setAppTheme: SetAppTheme by inject()
+    private val setAppIsRated: SetAppIsRated by inject()
+    private val getAppIsRated: GetAppIsRated by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -205,7 +207,10 @@ class SettingsFragment: Fragment() {
 
         val rateAppLayout: LinearLayout = view.findViewById(R.id.rateAppLayout)
         rateAppLayout.setOnClickListener {
-            showAppRateDialog()
+            if (getAppIsRated.execute())
+                showAppRateDialog()
+            else
+                Toast.makeText(requireContext(), getString(R.string.app_already_rated_hint), Toast.LENGTH_SHORT).show()
         }
 
         val writeEmailLayout: LinearLayout = view.findViewById(R.id.writeEmailLayout)
@@ -367,7 +372,7 @@ class SettingsFragment: Fragment() {
             }
 
             override fun afterTextChanged(p0: Editable?) {
-                vm.setAppReviewText(p0.toString())
+                vm.setAppReviewText(text = p0.toString())
             }
         })
 
@@ -376,8 +381,8 @@ class SettingsFragment: Fragment() {
         }
 
         lowRateBottomSheetDialog.setOnCancelListener {
-            vm.setAppReviewDialogShown(false)
-            vm.setAppReviewText("")
+            vm.setAppReviewDialogShown(shown = false)
+            vm.setAppReviewText(text = "")
         }
 
         lowRateBottomSheetDialog.show()
@@ -392,7 +397,7 @@ class SettingsFragment: Fragment() {
                 val flow = reviewManager.launchReviewFlow(requireActivity(), reviewInfo)
                 flow.addOnCompleteListener(object: OnCompleteListener<Void> {
                     override fun onComplete(p0: Task<Void>) {
-                        Toast.makeText(requireContext(), "REVIEW completed", Toast.LENGTH_SHORT).show()
+                        setAppIsRated.execute(isRated = true)
                     }
                 })
             } else {
@@ -410,10 +415,4 @@ class SettingsFragment: Fragment() {
         }
         return super.onOptionsItemSelected(item)
     }
-
-    override fun onPause() {
-        super.onPause()
-
-    }
-
 }
