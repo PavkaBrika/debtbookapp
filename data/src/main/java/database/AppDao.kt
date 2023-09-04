@@ -52,6 +52,9 @@ interface AppDao {
     @Query("DELETE FROM debt WHERE idHuman = :id")
     fun deleteDebtsByHumanId(id: Int)
 
+    @Query("SELECT count(*) FROM debt")
+    fun getDebtQuantity(): Int
+
     @Insert
     fun insertDebt(debt: Debt)
 

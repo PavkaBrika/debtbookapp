@@ -88,6 +88,10 @@ val domainModule = module {
         UpdateCurrentSumUseCase()
     }
 
+    factory<GetDebtQuantity> {
+        GetDebtQuantity(debtRepository = get())
+    }
+
     //SETTINGS
 
     factory<SetFirstMainCurrency> {

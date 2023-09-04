@@ -33,4 +33,8 @@ class DebtRepositoryImpl(val debtStorage: DebtStorage): DebtRepository {
     override fun deleteDebtsByHumanId(id: Int) {
         debtStorage.deleteDebtsByHumanId(id = id)
     }
+
+    override fun getDebtQuantity(): Int {
+        return debtStorage.getDebtQuantity()
+    }
 }
