@@ -2,7 +2,6 @@ package com.breckneck.debtbook.presentation.fragment
 
 import android.content.Context
 import android.content.Intent
-import android.content.res.Resources
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
@@ -18,16 +17,21 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.breckneck.debtbook.BuildConfig
 import com.breckneck.debtbook.R
+import com.breckneck.debtbook.presentation.viewmodel.MainFragmentViewModel
 import com.breckneck.deptbook.domain.usecase.Settings.*
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.android.material.appbar.CollapsingToolbarLayout
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.play.core.review.ReviewManagerFactory
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsFragment: Fragment() {
+
+    private val vm by viewModel<MainFragmentViewModel>()
 
     interface OnButtonClickListener {
         fun onBackButtonClick()
@@ -61,6 +65,9 @@ class SettingsFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_settings, container, false)
+
+        if (vm.resultIsAppRateDialogShow.value == true)
+            showAppRateDialog()
 
         val collaps: CollapsingToolbarLayout = view.findViewById(R.id.collapsSettings)
         collaps.apply {
@@ -201,19 +208,22 @@ class SettingsFragment: Fragment() {
     }
 
     private fun showAppRateDialog() {
-        var rate = 0
         val rateAppBottomSheetDialog = BottomSheetDialog(requireContext())
         rateAppBottomSheetDialog.setContentView(R.layout.dialog_rate_app)
         rateAppBottomSheetDialog.setCanceledOnTouchOutside(false)
+        rateAppBottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        vm.setAppRateDialogShown(shown = true)
 
         rateAppBottomSheetDialog.findViewById<Button>(R.id.buttonOk)!!.setOnClickListener {
-            when (rate) {
+            when (vm.resultAppRate.value) {
                 1, 2, 3 -> {
                     showLowAppRateDialog()
+                    vm.setAppRateDialogShown(shown = false)
                     rateAppBottomSheetDialog.dismiss()
                 }
                 4, 5 -> {
                     showInAppReview()
+                    vm.setAppRateDialogShown(shown = false)
                     rateAppBottomSheetDialog.dismiss()
                 }
                 0 -> {
@@ -223,7 +233,9 @@ class SettingsFragment: Fragment() {
         }
 
         rateAppBottomSheetDialog.findViewById<Button>(R.id.buttonCancel)!!.setOnClickListener {
-            rateAppBottomSheetDialog.cancel()
+            vm.setAppRateDialogShown(shown = false)
+            vm.setAppRate(0)
+            rateAppBottomSheetDialog.dismiss()
         }
 
         val rateStar1ImageView: ImageView = rateAppBottomSheetDialog.findViewById(R.id.rateStar1ImageView)!!
@@ -237,7 +249,7 @@ class SettingsFragment: Fragment() {
             rateStar3ImageView.clearColorFilter()
             rateStar4ImageView.clearColorFilter()
             rateStar5ImageView.clearColorFilter()
-            rate = 1
+            vm.setAppRate(1)
         }
         rateStar2ImageView.setOnClickListener {
             rateStar1ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.yellow))
@@ -245,7 +257,7 @@ class SettingsFragment: Fragment() {
             rateStar3ImageView.clearColorFilter()
             rateStar4ImageView.clearColorFilter()
             rateStar5ImageView.clearColorFilter()
-            rate = 2
+            vm.setAppRate(2)
         }
         rateStar3ImageView.setOnClickListener {
             rateStar1ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.yellow))
@@ -253,7 +265,7 @@ class SettingsFragment: Fragment() {
             rateStar3ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.yellow))
             rateStar4ImageView.clearColorFilter()
             rateStar5ImageView.clearColorFilter()
-            rate = 3
+            vm.setAppRate(3)
         }
         rateStar4ImageView.setOnClickListener {
             rateStar1ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.yellow))
@@ -261,7 +273,7 @@ class SettingsFragment: Fragment() {
             rateStar3ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.yellow))
             rateStar4ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.yellow))
             rateStar5ImageView.clearColorFilter()
-            rate = 4
+            vm.setAppRate(4)
         }
         rateStar5ImageView.setOnClickListener {
             rateStar1ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.yellow))
@@ -269,7 +281,35 @@ class SettingsFragment: Fragment() {
             rateStar3ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.yellow))
             rateStar4ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.yellow))
             rateStar5ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.yellow))
-            rate = 5
+            vm.setAppRate(5)
+        }
+
+        when (vm.resultAppRate.value) {
+            1 -> {
+                rateStar1ImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.yellow))
+            }
+            2 -> {
+                rateStar1ImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.yellow))
+                rateStar2ImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.yellow))
+            }
+            3 -> {
+                rateStar1ImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.yellow))
+                rateStar2ImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.yellow))
+                rateStar3ImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.yellow))
+            }
+            4 -> {
+                rateStar1ImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.yellow))
+                rateStar2ImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.yellow))
+                rateStar3ImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.yellow))
+                rateStar4ImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.yellow))
+            }
+            5 -> {
+                rateStar1ImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.yellow))
+                rateStar2ImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.yellow))
+                rateStar3ImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.yellow))
+                rateStar4ImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.yellow))
+                rateStar5ImageView.setColorFilter(ContextCompat.getColor(requireContext(), R.color.yellow))
+            }
         }
 
         rateAppBottomSheetDialog.show()

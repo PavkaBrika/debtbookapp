@@ -27,6 +27,10 @@ class MainFragmentViewModel(
     var resultPos = MutableLiveData<String>()
     var resultNeg = MutableLiveData<String>()
     var resultHumanList = MutableLiveData<List<HumanDomain>>()
+    var resultAppRate = MutableLiveData<Int>()
+    var resultIsAppRateDialogShow = MutableLiveData<Boolean>()
+    var resultIsAppReviewDialogShow = MutableLiveData<Boolean>()
+    var resultAppReviewText = MutableLiveData<String>()
 
     init {
         Log.e("TAG", "MainFragment VM created")
@@ -109,6 +113,14 @@ class MainFragmentViewModel(
             .subscribe({
                 resultNeg.value = it
             },{})
+    }
+
+    fun setAppRateDialogShown(shown: Boolean) {
+        resultIsAppRateDialogShow.value = shown
+    }
+
+    fun setAppRate(rate: Int) {
+        resultAppRate.value = rate
     }
 
 }
