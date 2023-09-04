@@ -101,6 +101,7 @@
                         android:layout_weight="1"
                         android:layout_marginStart="4dp"
                         android:src="@drawable/outline_contacts_24"
+                        android:foreground="?android:attr/selectableItemBackground"
                         style="@style/imageViewButton" />
 
 
@@ -162,14 +163,6 @@
                     android:layout_height="1dp"
                     style="@style/addNewHumanLines" />
 
-                <!--    <EditText-->
-                <!--        android:id="@+id/debtCurrencyEditText"-->
-                <!--        android:layout_width="match_parent"-->
-                <!--        android:layout_height="wrap_content"-->
-                <!--        android:layout_margin="8dp"-->
-                <!--        android:hint="@string/currency"-->
-                <!--        />-->
-
                 <TextView
                     android:id="@+id/debtDateTextView"
                     android:layout_width="match_parent"
@@ -177,7 +170,8 @@
                     android:layout_margin="4dp"
                     android:text="date"
                     android:textAlignment="center"
-                    android:textSize="26sp"/>
+                    android:textSize="26sp"
+                    android:foreground="?android:attr/selectableItemBackground"/>
 
                 <TextView
                     android:layout_width="match_parent"

@@ -27,7 +27,7 @@
     </style>
 
     <style name="addNewHumanLines">
-        <item name="android:backgroundTint">@color/gray</item>
+        <item name="android:background">@color/gray</item>
     </style>
 
     <style name="addNewHumanEditText">
