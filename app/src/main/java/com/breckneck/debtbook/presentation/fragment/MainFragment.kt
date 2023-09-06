@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.BuildConfig
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.adapter.HumanAdapter
-import com.breckneck.debtbook.presentation.activity.MainActivity
 import com.breckneck.debtbook.presentation.viewmodel.MainFragmentViewModel
 import com.breckneck.deptbook.domain.model.HumanDomain
 import com.breckneck.deptbook.domain.usecase.Settings.GetAppIsRated
@@ -38,6 +37,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 private const val ALL_HUMANS_FILTER = 1
 private const val POSITIVE_HUMANS_FILTER = 2
 private const val NEGATIVE_HUMANS_FILTER = 3
+private const val DEBT_QUANTITY_FOR_LAST_SHOW_APP_RATE_DIALOG = 25
 
 class MainFragment : Fragment() {
     private val vm by viewModel<MainFragmentViewModel>()
@@ -129,7 +129,8 @@ class MainFragment : Fragment() {
 
         if (!getAppIsRated.execute()) {
             vm.resultDebtQuantity.observe(viewLifecycleOwner) {
-                if (it >= getDebtQuantityForAppRateDialogShow.execute())
+                if (it >= getDebtQuantityForAppRateDialogShow.execute() &&
+                    getDebtQuantityForAppRateDialogShow.execute() <= DEBT_QUANTITY_FOR_LAST_SHOW_APP_RATE_DIALOG)
                     showAppRateDialog()
             }
         }
@@ -360,7 +361,7 @@ class MainFragment : Fragment() {
         }
 
         lowRateBottomSheetDialog.setOnCancelListener {
-            setDebtQuantityForAppRateDialogShow.execute(getDebtQuantityForAppRateDialogShow.execute() + 10)
+            setDebtQuantityForAppRateDialogShow.execute(getDebtQuantityForAppRateDialogShow.execute() + 15)
             vm.setAppReviewDialogShown(shown = false)
             vm.setAppReviewText(text = "")
         }
