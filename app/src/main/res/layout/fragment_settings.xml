@@ -193,6 +193,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingHorizontal="16dp"
+                    android:paddingVertical="8dp"
                     android:background="?android:attr/selectableItemBackground"
                     android:clickable="true"
                     android:focusable="true"
@@ -235,6 +236,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"
+                    android:layout_marginTop="8dp"
                     android:text="@string/detailed_share_text_hint"
                     android:textColor="@android:color/darker_gray" />
 
@@ -261,7 +263,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
                         android:background="@android:color/transparent"
-                        android:text="App Theme"
+                        android:text="@string/app_theme"
                         android:textSize="20sp" />
 
                     <Spinner
@@ -296,7 +298,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
                         android:background="@android:color/transparent"
-                        android:text="Rate app"
+                        android:text="@string/rate_app"
                         android:textSize="20sp" />
 
                 </LinearLayout>
@@ -322,7 +324,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@android:color/transparent"
-                        android:text="Write email to developer"
+                        android:text="@string/write_email_to_developer"
                         android:textSize="20sp" />
 
                 </LinearLayout>

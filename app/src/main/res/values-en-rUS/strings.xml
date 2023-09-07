@@ -45,4 +45,7 @@
     <string name="default_currencies_hint">This currency will be selected by default when adding new debts</string>
     <string name="detailed_share_text_hint">Add the total amount at the time of the debt to \'\'share\'\' text Example: 01.01.2001: 10 USD (Comment) (25 USD)</string>
     <string name="more_detailed_share_text">More detailed \'\'share\'\' text</string>
+    <string name="app_theme">App Theme</string>
+    <string name="rate_app">Rate app</string>
+    <string name="write_email_to_developer">Write email to developer</string>
 </resources>

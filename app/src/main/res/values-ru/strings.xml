@@ -46,4 +46,7 @@
     <string name="default_currencies_hint">Эта валюта будет выбрана по умолчанию при добавлении новых долгов</string>
     <string name="detailed_share_text_hint">Добавить к тексту для \"Поделиться\" общую задолженность на момент долга.\nПример: 01.01.2001: 10 USD (Комментарий) (25 USD)</string>
     <string name="more_detailed_share_text">Расширенный текст для \"Поделиться\"</string>
+    <string name="app_theme">Тема приложения</string>
+    <string name="rate_app">Оценить приложение</string>
+    <string name="write_email_to_developer">Написать разработчикам</string>
 </resources>
