@@ -95,4 +95,9 @@
         <item name="cornerSizeTopRight">28dp</item>
         <item name="cornerSizeTopLeft">28dp</item>
     </style>
+    
+    <style name="SwitchTheme">
+        <item name="colorControlActivated">@color/green</item>
+        <item name="colorSwitchThumbNormal">@color/gray</item>
+    </style>
 </resources>

@@ -37,7 +37,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 private const val ALL_HUMANS_FILTER = 1
 private const val POSITIVE_HUMANS_FILTER = 2
 private const val NEGATIVE_HUMANS_FILTER = 3
-private const val DEBT_QUANTITY_FOR_LAST_SHOW_APP_RATE_DIALOG = 25
+private const val DEBT_QUANTITY_FOR_LAST_SHOW_APP_RATE_DIALOG = 35
 
 class MainFragment : Fragment() {
     private val vm by viewModel<MainFragmentViewModel>()
