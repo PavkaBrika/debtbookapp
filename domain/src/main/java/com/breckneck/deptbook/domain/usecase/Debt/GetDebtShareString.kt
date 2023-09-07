@@ -20,7 +20,7 @@ class GetDebtShareString {
             for (debt in debtList) {
                 sumForEachNote += debt.sum
                 if (debt.info == null)
-                    stringBuilder.append("${debt.date}: ${decimalFormat.format(debt.sum)} ${currency} (${decimalFormat.format(sumForEachNote)})\n")
+                    stringBuilder.append("${debt.date}: ${decimalFormat.format(debt.sum)} ${currency} (${decimalFormat.format(sumForEachNote)} ${currency})\n")
                 else
                     stringBuilder.append("${debt.date}: ${decimalFormat.format(debt.sum)} $currency (${debt.info}) (${decimalFormat.format(sumForEachNote)})\n")
             }

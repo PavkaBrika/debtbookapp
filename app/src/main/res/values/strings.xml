@@ -52,4 +52,10 @@
     <string name="continue_b">Continue</string>
     <string name="rate_app_toast">Please, rate app by click on stars</string>
     <string name="app_already_rated_hint">Sorry, app is already rated</string>
+    <string name="main_currencies_hint">Statistics of these currencies will be displayed on the main screen</string>
+    <string name="first_main_currency">First main currency</string>
+    <string name="second_main_currency">Second main currency</string>
+    <string name="default_currency">Default currency</string>
+    <string name="default_currencies_hint">This currency will be selected by default when adding new debts</string>
+    <string name="detailed_share_text_hint">Add the total amount at the time of the debt to \'\'share\'\' text Example: 01.01.2001: 10 USD (Comment) (25 USD)</string>
 </resources>
