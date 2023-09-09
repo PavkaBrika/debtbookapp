@@ -49,6 +49,8 @@ class MainFragment : Fragment() {
         fun onAddButtonClick()
 
         fun onSettingsButtonClick()
+
+        fun getDebtQuantity()
     }
 
     var buttonClickListener: OnButtonClickListener? = null
@@ -115,8 +117,9 @@ class MainFragment : Fragment() {
             }
             getNegativeSum()
             getPositiveSum()
-            getDebtQuantity()
         }
+
+        buttonClickListener?.getDebtQuantity()
 
         vm.resultHumanList.observe(requireActivity()) {
             if (it.isNotEmpty())

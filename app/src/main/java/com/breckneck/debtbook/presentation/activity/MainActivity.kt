@@ -79,7 +79,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
                 if (it >= getDebtQuantityForAppRateDialogShow.execute() &&
                     getDebtQuantityForAppRateDialogShow.execute() <= DEBT_QUANTITY_FOR_LAST_SHOW_APP_RATE_DIALOG
                 )
-                showAppRateDialog(vm.resultIsAppReviewDialogFromSettings.value!!)
+                showAppRateDialog(false)
             }
         }
 
@@ -239,6 +239,10 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
             }
     }
 
+    override fun getDebtQuantity() {
+        vm.getDebtQuantity()
+    }
+
     //NewDebtFragment interfaces
     override fun DebtDetailsNewHuman(currency: String, name: String) {
         val fragmentManager = supportFragmentManager
@@ -337,7 +341,6 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
 
     override fun onRateAppButtonClick() {
         if (!getAppIsRated.execute()) {
-            vm.setAppReviewFromSettings(true)
             showAppRateDialog(true)
         } else {
             Toast.makeText(applicationContext, getString(R.string.app_already_rated_hint), Toast.LENGTH_SHORT).show()
@@ -349,6 +352,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         rateAppBottomSheetDialog.setContentView(R.layout.dialog_rate_app)
         rateAppBottomSheetDialog.setCanceledOnTouchOutside(false)
         rateAppBottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        vm.setAppReviewFromSettings(isFromSettings)
         vm.setAppRateDialogShown(shown = true)
 
         rateAppBottomSheetDialog.findViewById<Button>(R.id.buttonOk)!!.setOnClickListener {
