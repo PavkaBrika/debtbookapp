@@ -462,7 +462,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
     }
 
     private fun showLowAppRateDialog(fromSettings: Boolean) {
-        val lowRateBottomSheetDialog = BottomSheetDialog(applicationContext)
+        val lowRateBottomSheetDialog = BottomSheetDialog(this)
         lowRateBottomSheetDialog.setContentView(R.layout.dialog_low_app_rate)
         lowRateBottomSheetDialog.setCanceledOnTouchOutside(false)
         lowRateBottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
