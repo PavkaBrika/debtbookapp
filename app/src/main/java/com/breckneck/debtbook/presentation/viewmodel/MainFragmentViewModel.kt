@@ -33,6 +33,7 @@ class MainFragmentViewModel(
     var resultAppRate = MutableLiveData<Int>()
     var resultIsAppRateDialogShow = MutableLiveData<Boolean>()
     var resultIsAppReviewDialogShow = MutableLiveData<Boolean>()
+    var resultIsAppReviewDialogFromSettings = MutableLiveData<Boolean>()
     var resultAppReviewText = MutableLiveData<String>()
     var resultIsFilterDialogShown = MutableLiveData<Boolean>()
     var resultHumansFilter = MutableLiveData<Int>()
@@ -156,4 +157,7 @@ class MainFragmentViewModel(
         resultHumansFilter.value = filter
     }
 
+    fun setAppReviewFromSettings(fromSettings: Boolean) {
+        resultIsAppReviewDialogFromSettings.value = fromSettings
+    }
 }
