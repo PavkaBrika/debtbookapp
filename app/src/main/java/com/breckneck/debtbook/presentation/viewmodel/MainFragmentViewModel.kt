@@ -15,6 +15,7 @@ import com.breckneck.deptbook.domain.usecase.Settings.GetSecondMainCurrency
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
+import ru.vk.store.sdk.review.RuStoreReviewManager
 
 class MainFragmentViewModel(
     private val getAllHumansUseCase: GetAllHumansUseCase,
@@ -36,6 +37,9 @@ class MainFragmentViewModel(
     var resultAppReviewText = MutableLiveData<String>()
     var resultIsFilterDialogShown = MutableLiveData<Boolean>()
     var resultHumansFilter = MutableLiveData<Int>()
+
+    private var isInitReviewCalled = false
+    private lateinit var reviewManager: RuStoreReviewManager
 
     init {
         Log.e("TAG", "MainFragment VM created")
@@ -154,6 +158,10 @@ class MainFragmentViewModel(
 
     fun setHumansFilter(filter: Int) {
         resultHumansFilter.value = filter
+    }
+
+    fun initRuStoreReviewFlow() {
+
     }
 
 }

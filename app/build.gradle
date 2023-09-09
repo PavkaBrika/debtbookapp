@@ -73,4 +73,7 @@ dependencies {
     implementation "io.insert-koin:koin-android:$koin_version"
     //Testing
     testImplementation "io.insert-koin:koin-test:$koin_version"
+
+    //RuStore In App Reviews
+    implementation "ru.rustore.sdk:review:0.1.6"
 }
