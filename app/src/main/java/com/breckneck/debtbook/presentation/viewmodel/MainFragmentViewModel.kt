@@ -1,7 +1,6 @@
 package com.breckneck.debtbook.presentation.viewmodel
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -16,10 +15,6 @@ import com.breckneck.deptbook.domain.usecase.Settings.GetSecondMainCurrency
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
-import ru.rustore.sdk.core.tasks.OnCompleteListener
-import ru.vk.store.sdk.review.RuStoreReviewManager
-import ru.vk.store.sdk.review.RuStoreReviewManagerFactory
-import ru.vk.store.sdk.review.model.ReviewInfo
 
 class MainFragmentViewModel(
     private val getAllHumansUseCase: GetAllHumansUseCase,
@@ -41,10 +36,6 @@ class MainFragmentViewModel(
     var resultAppReviewText = MutableLiveData<String>()
     var resultIsFilterDialogShown = MutableLiveData<Boolean>()
     var resultHumansFilter = MutableLiveData<Int>()
-
-    private var isInitReviewCalled = false
-    private lateinit var reviewManager: RuStoreReviewManager
-    private var reviewInfo: ReviewInfo? = null
 
     init {
         Log.e("TAG", "MainFragment VM created")
@@ -164,19 +155,4 @@ class MainFragmentViewModel(
     fun setHumansFilter(filter: Int) {
         resultHumansFilter.value = filter
     }
-
-    fun initRuStoreReviewFlow(context: Context) {
-        if (isInitReviewCalled) return
-        reviewManager = RuStoreReviewManagerFactory.create(context = context)
-        reviewManager.requestReviewFlow().addOnSuccessListener {
-            reviewInfo = it
-        }
-        isInitReviewCalled = true
-    }
-
-    fun launchRuStoreReview() {
-//        val reviewInfo = reviewInfo
-//        reviewManager.launchReviewFlow(reviewInfo)
-    }
-
 }

@@ -24,20 +24,19 @@ import com.breckneck.deptbook.domain.usecase.Settings.GetAppIsRated
 import com.breckneck.deptbook.domain.usecase.Settings.GetDebtQuantityForAppRateDialogShow
 import com.breckneck.deptbook.domain.usecase.Settings.SetAppIsRated
 import com.breckneck.deptbook.domain.usecase.Settings.SetDebtQuantityForAppRateDialogShow
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import ru.vk.store.sdk.review.RuStoreReviewManagerFactory
+import ru.vk.store.sdk.review.model.ReviewInfo
 
 private const val ALL_HUMANS_FILTER = 1
 private const val POSITIVE_HUMANS_FILTER = 2
 private const val NEGATIVE_HUMANS_FILTER = 3
 private const val DEBT_QUANTITY_FOR_LAST_SHOW_APP_RATE_DIALOG = 35
-private const val APP_RUSTORE_LINK = "https://apps.rustore.ru/app/com.breckneck.debtbook"
 
 class MainFragment : Fragment() {
     private val vm by viewModel<MainFragmentViewModel>()
@@ -370,8 +369,19 @@ class MainFragment : Fragment() {
     }
 
     private fun showInAppReview() {
-        val intent = Intent(Intent.ACTION_VIEW)
-        intent.data = Uri.parse(APP_RUSTORE_LINK)
-        startActivity(intent)
+        val reviewManager = RuStoreReviewManagerFactory.create(context = requireContext())
+        reviewManager.requestReviewFlow().addOnCompleteListener(object :
+            ru.rustore.sdk.core.tasks.OnCompleteListener<ReviewInfo> {
+            override fun onFailure(throwable: Throwable) {
+                Toast.makeText(requireContext(), "REVIEW ERROR", Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onSuccess(result: ReviewInfo) {
+                val flow = reviewManager.launchReviewFlow(result)
+                flow.addOnSuccessListener {
+                    setAppIsRated.execute(true)
+                }
+            }
+        })
     }
 }
