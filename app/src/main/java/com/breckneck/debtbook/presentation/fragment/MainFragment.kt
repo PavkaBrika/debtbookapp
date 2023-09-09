@@ -30,7 +30,6 @@ import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.play.core.review.ReviewManagerFactory
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -38,6 +37,7 @@ private const val ALL_HUMANS_FILTER = 1
 private const val POSITIVE_HUMANS_FILTER = 2
 private const val NEGATIVE_HUMANS_FILTER = 3
 private const val DEBT_QUANTITY_FOR_LAST_SHOW_APP_RATE_DIALOG = 35
+private const val APP_RUSTORE_LINK = "https://apps.rustore.ru/app/com.breckneck.debtbook"
 
 class MainFragment : Fragment() {
     private val vm by viewModel<MainFragmentViewModel>()
@@ -370,21 +370,8 @@ class MainFragment : Fragment() {
     }
 
     private fun showInAppReview() {
-        val reviewManager = ReviewManagerFactory.create(requireContext())
-        val requestReviewFlow = reviewManager.requestReviewFlow()
-        requestReviewFlow.addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                val reviewInfo = task.result
-                val flow = reviewManager.launchReviewFlow(requireActivity(), reviewInfo)
-                flow.addOnCompleteListener(object: OnCompleteListener<Void> {
-                    override fun onComplete(p0: Task<Void>) {
-                        setAppIsRated.execute(isRated = true)
-                    }
-                })
-            } else {
-                Toast.makeText(requireContext(), "REVIEW ERROR", Toast.LENGTH_SHORT).show()
-            }
-
-        }
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.data = Uri.parse(APP_RUSTORE_LINK)
+        startActivity(intent)
     }
 }
