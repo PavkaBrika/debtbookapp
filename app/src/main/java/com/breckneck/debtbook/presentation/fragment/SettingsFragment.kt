@@ -207,7 +207,7 @@ class SettingsFragment: Fragment() {
 
         val rateAppLayout: LinearLayout = view.findViewById(R.id.rateAppLayout)
         rateAppLayout.setOnClickListener {
-            if (getAppIsRated.execute())
+            if (!getAppIsRated.execute())
                 showAppRateDialog()
             else
                 Toast.makeText(requireContext(), getString(R.string.app_already_rated_hint), Toast.LENGTH_SHORT).show()
