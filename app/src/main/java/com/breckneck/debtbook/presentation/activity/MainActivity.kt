@@ -28,7 +28,6 @@ import com.breckneck.deptbook.domain.usecase.Ad.SetClicksUseCase
 import com.breckneck.deptbook.domain.usecase.Settings.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.play.core.review.ReviewManagerFactory
 import com.yandex.mobile.ads.banner.AdSize
 import com.yandex.mobile.ads.banner.BannerAdEventListener
 import com.yandex.mobile.ads.banner.BannerAdView
@@ -364,7 +363,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
                     rateAppBottomSheetDialog.cancel()
                 }
                 4, 5 -> {
-                    vm.launchInAppReview(this)
+                    vm.launchInAppReview()
                     rateAppBottomSheetDialog.cancel()
                 }
                 0 -> {
@@ -511,21 +510,6 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         }
 
         lowRateBottomSheetDialog.show()
-    }
-
-    private fun showInAppReview() {
-        val reviewManager = ReviewManagerFactory.create(applicationContext)
-        val requestReviewFlow = reviewManager.requestReviewFlow()
-        requestReviewFlow.addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                val reviewInfo = task.result
-                val flow = reviewManager.launchReviewFlow(this, reviewInfo)
-            } else {
-                Toast.makeText(applicationContext, "REVIEW ERROR", Toast.LENGTH_SHORT).show()
-                vm.setAppReviewFromSettings(false)
-            }
-
-        }
     }
 
     override fun onSettingsFragmentOpen() {
