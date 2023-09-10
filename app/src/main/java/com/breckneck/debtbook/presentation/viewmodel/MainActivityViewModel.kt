@@ -3,8 +3,10 @@ package com.breckneck.debtbook.presentation.viewmodel
 import android.content.Context
 import android.os.CountDownTimer
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.breckneck.debtbook.R
 import com.breckneck.deptbook.domain.usecase.Debt.GetDebtQuantity
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
@@ -78,6 +80,7 @@ class MainActivityViewModel(private val getDebtQuantity: GetDebtQuantity): ViewM
         requestReviewFlow.addOnCompleteListener(object : OnCompleteListener<ReviewInfo> {
             override fun onFailure(throwable: Throwable) {
                 Log.e("TAG", "In app review error $throwable")
+                Toast.makeText(context, "${context.getText(R.string.review_error_toast)} $throwable", Toast.LENGTH_SHORT).show()
             }
 
             override fun onSuccess(result: ReviewInfo) {

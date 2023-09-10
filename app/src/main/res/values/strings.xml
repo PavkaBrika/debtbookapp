@@ -62,4 +62,5 @@
     <string name="app_theme">App Theme</string>
     <string name="rate_app">Rate app</string>
     <string name="write_email_to_developer">Write email to developer</string>
+    <string name="review_error_toast">Sorry, something went wrong. Try later.\nError message:</string>
 </resources>
