@@ -1,6 +1,5 @@
 package com.breckneck.debtbook.presentation.viewmodel
 
-import android.app.Activity
 import android.content.Context
 import android.os.CountDownTimer
 import android.util.Log

@@ -5,7 +5,6 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.breckneck.deptbook.domain.model.HumanDomain
-import com.breckneck.deptbook.domain.usecase.Debt.GetDebtQuantity
 import com.breckneck.deptbook.domain.usecase.Human.GetAllDebtsSumUseCase
 import com.breckneck.deptbook.domain.usecase.Human.GetAllHumansUseCase
 import com.breckneck.deptbook.domain.usecase.Human.GetNegativeHumansUseCase

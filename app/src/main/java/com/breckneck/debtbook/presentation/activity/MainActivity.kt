@@ -29,7 +29,6 @@ import com.breckneck.deptbook.domain.usecase.Ad.SetClicksUseCase
 import com.breckneck.deptbook.domain.usecase.Settings.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.play.core.review.ReviewManagerFactory
 import com.yandex.mobile.ads.banner.BannerAdSize
 import com.yandex.mobile.ads.banner.BannerAdEventListener
 import com.yandex.mobile.ads.banner.BannerAdView
