@@ -69,6 +69,6 @@ class SharedPrefsSettingsStorageImpl(val context: Context): SettingsStorage {
     }
 
     override fun getDebtQuantityForAppRateDialogShow(): Int {
-        return sharedPreferences.getInt(DEBTS_QUANTITY_FOR_APP_RATE_DIALOG_SHOW, 2)
+        return sharedPreferences.getInt(DEBTS_QUANTITY_FOR_APP_RATE_DIALOG_SHOW, 15)
     }
 }

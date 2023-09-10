@@ -34,10 +34,10 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsFragment: Fragment() {
 
-    private val vm by viewModel<MainFragmentViewModel>()
-
     interface OnButtonClickListener {
         fun onBackButtonClick()
+
+        fun onSettingsFragmentOpen()
 
         fun onRateAppButtonClick()
     }
@@ -72,6 +72,8 @@ class SettingsFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_settings, container, false)
+
+        buttonClickListener.onSettingsFragmentOpen()
 
         val collaps: CollapsingToolbarLayout = view.findViewById(R.id.collapsSettings)
         collaps.apply {

@@ -22,19 +22,12 @@ class MainFragmentViewModel(
     private val getPositiveHumansUseCase: GetPositiveHumansUseCase,
     private val getNegativeHumansUseCase: GetNegativeHumansUseCase,
     private val getFirstMainCurrency: GetFirstMainCurrency,
-    private val getSecondMainCurrency: GetSecondMainCurrency,
-    private val getDebtQuantity: GetDebtQuantity
+    private val getSecondMainCurrency: GetSecondMainCurrency
 ) : ViewModel() {
 
     var resultPos = MutableLiveData<String>()
     var resultNeg = MutableLiveData<String>()
     var resultHumanList = MutableLiveData<List<HumanDomain>>()
-    var resultDebtQuantity = MutableLiveData<Int>()
-    var resultAppRate = MutableLiveData<Int>()
-    var resultIsAppRateDialogShow = MutableLiveData<Boolean>()
-    var resultIsAppReviewDialogShow = MutableLiveData<Boolean>()
-    var resultIsAppReviewDialogFromSettings = MutableLiveData<Boolean>()
-    var resultAppReviewText = MutableLiveData<String>()
     var resultIsFilterDialogShown = MutableLiveData<Boolean>()
     var resultHumansFilter = MutableLiveData<Int>()
 
@@ -121,43 +114,11 @@ class MainFragmentViewModel(
             },{})
     }
 
-    fun getDebtQuantity() {
-        Single.just("1")
-            .map {
-                return@map getDebtQuantity.execute()
-            }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                resultDebtQuantity.value = it
-            }, {})
-    }
-
-    fun setAppRateDialogShown(shown: Boolean) {
-        resultIsAppRateDialogShow.value = shown
-    }
-
-    fun setAppRate(rate: Int) {
-        resultAppRate.value = rate
-    }
-
-    fun setAppReviewDialogShown(shown: Boolean) {
-        resultIsAppReviewDialogShow.value = shown
-    }
-
-    fun setAppReviewText(text: String) {
-        resultAppReviewText.value = text
-    }
-
     fun setFilterDialogShown(shown: Boolean) {
         resultIsFilterDialogShown.value = shown
     }
 
     fun setHumansFilter(filter: Int) {
         resultHumansFilter.value = filter
-    }
-
-    fun setAppReviewFromSettings(fromSettings: Boolean) {
-        resultIsAppReviewDialogFromSettings.value = fromSettings
     }
 }

@@ -18,7 +18,7 @@ import androidx.fragment.app.FragmentTransaction
 import com.breckneck.debtbook.BuildConfig
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.presentation.fragment.*
-import com.breckneck.debtbook.presentation.viewmodel.MainFragmentViewModel
+import com.breckneck.debtbook.presentation.viewmodel.MainActivityViewModel
 import repository.AdRepositoryImpl
 import sharedprefs.SharedPrefsAdStorageImpl
 import com.breckneck.deptbook.domain.model.DebtDomain
@@ -26,8 +26,6 @@ import com.breckneck.deptbook.domain.usecase.Ad.AddClickUseCase
 import com.breckneck.deptbook.domain.usecase.Ad.GetClicksUseCase
 import com.breckneck.deptbook.domain.usecase.Ad.SetClicksUseCase
 import com.breckneck.deptbook.domain.usecase.Settings.*
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.play.core.review.ReviewManagerFactory
@@ -46,7 +44,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
 
     private lateinit var interstitialAd: InterstitialAd
 
-    private val vm by viewModel<MainFragmentViewModel>()
+    private val vm by viewModel<MainActivityViewModel>()
 
     lateinit var sharedPrefsAdStorage: SharedPrefsAdStorageImpl
     lateinit var adRepository: AdRepositoryImpl
@@ -78,8 +76,12 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
             vm.resultDebtQuantity.observe(this) {
                 if (it >= getDebtQuantityForAppRateDialogShow.execute() &&
                     getDebtQuantityForAppRateDialogShow.execute() <= DEBT_QUANTITY_FOR_LAST_SHOW_APP_RATE_DIALOG
-                )
-                showAppRateDialog(false)
+                ) {
+                    vm.initInAppReview(applicationContext)
+                    vm.startInAppReviewWithTimer()
+                    if (vm.resultIsInAppReviewTimerEnds.value == true)
+                        showAppRateDialog(false)
+                }
             }
         }
 
@@ -154,7 +156,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
                 }
 
                 override fun onAdFailedToLoad(p0: AdRequestError) {
-                    Log.e("TAG", "INTERSTITIAL LOAD FAILED")
+//                    Log.e("TAG", "INTERSTITIAL LOAD FAILED")
                     loadAd(adRequestBuild)
                 }
 
@@ -362,7 +364,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
                     rateAppBottomSheetDialog.cancel()
                 }
                 4, 5 -> {
-                    showInAppReview()
+                    vm.launchInAppReview(this)
                     rateAppBottomSheetDialog.cancel()
                 }
                 0 -> {
@@ -524,5 +526,9 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
             }
 
         }
+    }
+
+    override fun onSettingsFragmentOpen() {
+        vm.initInAppReview(this)
     }
 }
