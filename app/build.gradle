@@ -10,8 +10,9 @@ android {
         applicationId "com.breckneck.debtbook"
         minSdk 23
         targetSdk 33
-        versionCode 6
-        versionName "1.5"
+        versionCode 8
+        versionName "1.6"
+        setProperty("archivesBaseName", "SimpleDebtBook-v$versionName($versionCode)")
         setProperty("archivesBaseName", "SimpleDebtBook-RuStore-v$versionName($versionCode)")
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
