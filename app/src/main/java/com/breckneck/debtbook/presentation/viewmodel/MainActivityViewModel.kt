@@ -7,9 +7,9 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.breckneck.deptbook.domain.usecase.Debt.GetDebtQuantity
-import com.google.android.play.core.review.ReviewInfo
-import com.google.android.play.core.review.ReviewManager
-import com.google.android.play.core.review.ReviewManagerFactory
+//import com.google.android.play.core.review.ReviewInfo
+//import com.google.android.play.core.review.ReviewManager
+//import com.google.android.play.core.review.ReviewManagerFactory
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -24,9 +24,9 @@ class MainActivityViewModel(private val getDebtQuantity: GetDebtQuantity): ViewM
     var resultAppReviewText = MutableLiveData<String>()
     var resultIsInAppReviewTimerEnds = MutableLiveData<Boolean>()
 
-    private lateinit var reviewManager: ReviewManager
-    private var reviewInfo: ReviewInfo? = null
-    private var isInAppReviewInitCalled = false
+//    private lateinit var reviewManager: ReviewManager
+//    private var reviewInfo: ReviewInfo? = null
+//    private var isInAppReviewInitCalled = false
 
     init {
         Log.e("TAG", "Main Activity View Model Started")
@@ -71,17 +71,17 @@ class MainActivityViewModel(private val getDebtQuantity: GetDebtQuantity): ViewM
     }
 
     fun initInAppReview(context: Context) {
-        if (isInAppReviewInitCalled) return
-        reviewManager = ReviewManagerFactory.create(context)
-        Log.e("TAG", "Init App Review")
-        val requestReviewFlow = reviewManager.requestReviewFlow()
-        requestReviewFlow.addOnCompleteListener {task ->
-            if (task.isSuccessful)
-                reviewInfo = task.result
-            else
-                Log.e("TAG", "In App Review error")
-        }
-        isInAppReviewInitCalled = true
+//        if (isInAppReviewInitCalled) return
+//        reviewManager = ReviewManagerFactory.create(context)
+//        Log.e("TAG", "Init App Review")
+//        val requestReviewFlow = reviewManager.requestReviewFlow()
+//        requestReviewFlow.addOnCompleteListener {task ->
+//            if (task.isSuccessful)
+//                reviewInfo = task.result
+//            else
+//                Log.e("TAG", "In App Review error")
+//        }
+//        isInAppReviewInitCalled = true
     }
 
     fun startInAppReviewWithTimer() {
@@ -100,11 +100,11 @@ class MainActivityViewModel(private val getDebtQuantity: GetDebtQuantity): ViewM
     }
 
     fun launchInAppReview(activity: Activity) {
-        if (reviewInfo != null) {
-            val flow = reviewManager.launchReviewFlow(activity, reviewInfo!!)
-            flow.addOnSuccessListener {
-                Log.e("TAG", "review success")
-            }
-        }
+//        if (reviewInfo != null) {
+//            val flow = reviewManager.launchReviewFlow(activity, reviewInfo!!)
+//            flow.addOnSuccessListener {
+//                Log.e("TAG", "review success")
+//            }
+//        }
     }
 }

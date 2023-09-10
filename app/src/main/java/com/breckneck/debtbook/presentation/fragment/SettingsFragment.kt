@@ -5,8 +5,6 @@ import android.content.Intent
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.transition.TransitionInflater
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -16,21 +14,13 @@ import android.widget.*
 import android.widget.CompoundButton.OnCheckedChangeListener
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SwitchCompat
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.breckneck.debtbook.BuildConfig
 import com.breckneck.debtbook.R
-import com.breckneck.debtbook.presentation.viewmodel.MainFragmentViewModel
 import com.breckneck.deptbook.domain.usecase.Settings.*
 import com.google.android.material.appbar.CollapsingToolbarLayout
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import ru.rustore.sdk.core.tasks.OnCompleteListener
-import ru.vk.store.sdk.review.RuStoreReviewManagerFactory
-import ru.vk.store.sdk.review.model.ReviewInfo
 
 
 class SettingsFragment: Fragment() {
