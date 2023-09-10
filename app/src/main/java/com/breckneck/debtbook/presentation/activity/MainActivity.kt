@@ -9,6 +9,7 @@ import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -28,20 +29,25 @@ import com.breckneck.deptbook.domain.usecase.Ad.SetClicksUseCase
 import com.breckneck.deptbook.domain.usecase.Settings.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.yandex.mobile.ads.banner.AdSize
+import com.google.android.play.core.review.ReviewManagerFactory
+import com.yandex.mobile.ads.banner.BannerAdSize
 import com.yandex.mobile.ads.banner.BannerAdEventListener
 import com.yandex.mobile.ads.banner.BannerAdView
 import com.yandex.mobile.ads.common.*
 import com.yandex.mobile.ads.interstitial.InterstitialAd
 import com.yandex.mobile.ads.interstitial.InterstitialAdEventListener
+import com.yandex.mobile.ads.interstitial.InterstitialAdLoadListener
+import com.yandex.mobile.ads.interstitial.InterstitialAdLoader
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import kotlin.math.roundToInt
 
 private const val DEBT_QUANTITY_FOR_LAST_SHOW_APP_RATE_DIALOG = 35
 
 class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, NewDebtFragment.OnButtonClickListener, DebtDetailsFragment.OnButtonClickListener, SettingsFragment.OnButtonClickListener {
 
-    private lateinit var interstitialAd: InterstitialAd
+    private var interstitialAd: InterstitialAd? = null
+    private var interstitialAdLoader: InterstitialAdLoader? = null
 
     private val vm by viewModel<MainActivityViewModel>()
 
@@ -84,15 +90,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
             }
         }
 
-//        YANDEX MOBILE ADVERTISMENT
-
-        sharedPrefsAdStorage = SharedPrefsAdStorageImpl(context = this)
-        adRepository = AdRepositoryImpl(adStorage = sharedPrefsAdStorage)
-        getAdCounterClicks = GetClicksUseCase(adRepository = adRepository)
-        addClickToAdCounter = AddClickUseCase(adRepository = adRepository)
-        refreshAdCounter = SetClicksUseCase(adRepository = adRepository)
         val getAppTheme: GetAppTheme by inject()
-
         val theme = getAppTheme.execute()
         if (theme.equals(getString(R.string.dark_theme)))
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
@@ -101,27 +99,41 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         else if (theme.equals(getString(R.string.system_theme)))
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
 
-        MobileAds.initialize(this, object: InitializationListener {
-            override fun onInitializationCompleted() {
-                Log.e("TAG", "Yandex initialized")
-            }
-        })
+//        YANDEX MOBILE ADVERTISMENT
+
+        sharedPrefsAdStorage = SharedPrefsAdStorageImpl(context = this)
+        adRepository = AdRepositoryImpl(adStorage = sharedPrefsAdStorage)
+        getAdCounterClicks = GetClicksUseCase(adRepository = adRepository)
+        addClickToAdCounter = AddClickUseCase(adRepository = adRepository)
+        refreshAdCounter = SetClicksUseCase(adRepository = adRepository)
+
         MobileAds.setUserConsent(false)
+
         //BANNER AD
         val bannerAd: BannerAdView = findViewById(R.id.bannerAdView)
         val adRequestBuild = AdRequest.Builder().build()
+
+        var adWidthPixels = findViewById<RelativeLayout>(R.id.rootLayout).width
+        if (adWidthPixels == 0) {
+            adWidthPixels = resources.displayMetrics.widthPixels
+        }
+        val adWidth = (adWidthPixels / resources.displayMetrics.density).roundToInt()
+
         bannerAd.apply {
             setAdUnitId("R-M-1753297-1")
 //            setAdUnitId("R-M-DEMO-320x50")
-            setAdSize(AdSize.flexibleSize(320, 50))
+            setAdSize(BannerAdSize.stickySize(applicationContext, adWidth))
             setBannerAdEventListener(object : BannerAdEventListener {
                 override fun onAdLoaded() {
                     Log.e("TAG", "BANNER LOADED")
+                    if (isDestroyed) {
+                        bannerAd.destroy()
+                        return
+                    }
                 }
 
                 override fun onAdFailedToLoad(p0: AdRequestError) {
                     Log.e("TAG", "BANNER LOAD FAILED")
-                    loadAd(adRequestBuild)
                 }
 
                 override fun onAdClicked() {
@@ -138,7 +150,6 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
 
                 override fun onImpression(p0: ImpressionData?) {
                     Log.e("TAG", "BANNER IMPRESSION")
-                    loadAd(adRequestBuild)
                 }
 
             })
@@ -146,53 +157,72 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         }
 
 //        //INTERSTITIAL AD
-        interstitialAd = InterstitialAd(this)
-        interstitialAd.apply {
-            setAdUnitId("R-M-1753297-2")
-            setInterstitialAdEventListener(object : InterstitialAdEventListener {
-                override fun onAdLoaded() {
-                    Log.e("TAG", "INTERSTITIAL LOADED")
+        interstitialAdLoader = InterstitialAdLoader(applicationContext).apply {
+            setAdLoadListener(object: InterstitialAdLoadListener {
+                override fun onAdLoaded(interstitialAd: InterstitialAd) {
+                    Log.e("TAG", "Interstitial ad load success")
+                    this@MainActivity.interstitialAd = interstitialAd
                 }
 
                 override fun onAdFailedToLoad(p0: AdRequestError) {
-//                    Log.e("TAG", "INTERSTITIAL LOAD FAILED")
-                    loadAd(adRequestBuild)
+                    Log.e("TAG", "Interstitial ad load failed")
+                }
+            })
+        }
+        loadInterstitialAd()
+    }
+
+    private fun loadInterstitialAd() {
+        val adRequestConfiguration = AdRequestConfiguration.Builder("R-M-1753297-2").build()
+        interstitialAdLoader?.loadAd(adRequestConfiguration)
+    }
+
+    private fun showInterstitialAd() {
+        interstitialAd?.apply {
+            setAdEventListener(object: InterstitialAdEventListener {
+                override fun onAdShown() {
+                    Log.e("TAG", "Interstitial ad shown")
                 }
 
-                override fun onAdShown() {
-                    Log.e("TAG", "INTERSTITIAL SHOWN")
+                override fun onAdFailedToShow(p0: AdError) {
+                    Log.e("TAG", "Interstitial ad failed to show")
                 }
 
                 override fun onAdDismissed() {
-                    Log.e("TAG", "INTERSTITIAL DISMISSED")
+                    Log.e("TAG", "Interstitial ad dismissed")
+                    interstitialAd?.setAdEventListener(null)
+                    interstitialAd = null
+                    loadInterstitialAd()
                 }
 
                 override fun onAdClicked() {
-                    Log.e("TAG", "INTERSTITIAL CLICKED")
+                    Log.e("TAG", "Interstitial ad clicked")
                 }
 
-                override fun onLeftApplication() {
-                    Log.e("TAG", "INTERSTITIAL LEFT APP")
-                }
-
-                override fun onReturnedToApplication() {
-                    Log.e("TAG", "INTERSTITIAL RETURN APP")
-                }
-
-                override fun onImpression(p0: ImpressionData?) {
-                    Log.e("TAG", "INTERSTITIAL IMPRESSION")
-                    loadAd(adRequestBuild)
+                override fun onAdImpression(p0: ImpressionData?) {
+                    Log.e("TAG", "Interstitial ad impression")
                 }
             })
-            loadAd(adRequestBuild)
+            show(this@MainActivity)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        interstitialAdLoader?.setAdLoadListener(null)
+        interstitialAdLoader = null
+        destroyInterstitialAd()
+    }
+
+    private fun destroyInterstitialAd() {
+        interstitialAd?.setAdEventListener(null)
+        interstitialAd = null
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putBoolean("Change state", true)
     }
-
 
 //MainFragment interfaces
     override fun onHumanClick(idHuman: Int, currency: String, name: String) {
@@ -207,8 +237,8 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         fragmentTransaction.replace(R.id.frameLayout, fragment).addToBackStack("main").commit()
         addClickToAdCounter.execute()
         if (getAdCounterClicks.execute())
-            if (interstitialAd.isLoaded) {
-                interstitialAd.show()
+            if (interstitialAd != null) {
+                showInterstitialAd()
                 refreshAdCounter.execute()
             }
     }
@@ -221,8 +251,8 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
             .commit()
         addClickToAdCounter.execute()
         if (getAdCounterClicks.execute())
-            if (interstitialAd.isLoaded) {
-                interstitialAd.show()
+            if (interstitialAd != null) {
+                showInterstitialAd()
                 refreshAdCounter.execute()
             }
     }
@@ -234,8 +264,8 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
             .commit()
         addClickToAdCounter.execute()
         if (getAdCounterClicks.execute())
-            if (interstitialAd.isLoaded) {
-                interstitialAd.show()
+            if (interstitialAd != null) {
+                showInterstitialAd()
                 refreshAdCounter.execute()
             }
     }
@@ -258,8 +288,8 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         fragmentTransaction.replace(R.id.frameLayout, fragment).commit()
         addClickToAdCounter.execute()
         if (getAdCounterClicks.execute())
-            if (interstitialAd.isLoaded) {
-                interstitialAd.show()
+            if (interstitialAd != null) {
+                showInterstitialAd()
                 refreshAdCounter.execute()
             }
     }
@@ -277,8 +307,8 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         fragmentTransaction.replace(R.id.frameLayout, fragment).commit()
         addClickToAdCounter.execute()
         if (getAdCounterClicks.execute())
-            if (interstitialAd.isLoaded) {
-                interstitialAd.show()
+            if (interstitialAd != null) {
+                showInterstitialAd()
                 refreshAdCounter.execute()
             }
     }
@@ -295,8 +325,8 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         fragmentTransaction.replace(R.id.frameLayout, fragment).addToBackStack("secondary").commit()
         addClickToAdCounter.execute()
         if (getAdCounterClicks.execute())
-            if (interstitialAd.isLoaded) {
-                interstitialAd.show()
+            if (interstitialAd != null) {
+                showInterstitialAd()
                 refreshAdCounter.execute()
             }
     }
@@ -317,8 +347,8 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         fragmentTransaction.replace(R.id.frameLayout, fragment).addToBackStack("secondary").commit()
         addClickToAdCounter.execute()
         if (getAdCounterClicks.execute())
-            if (interstitialAd.isLoaded) {
-                interstitialAd.show()
+            if (interstitialAd != null) {
+                showInterstitialAd()
                 refreshAdCounter.execute()
             }
     }
@@ -329,8 +359,8 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         fragmentTransaction.replace(R.id.frameLayout, MainFragment()).commit()
         addClickToAdCounter.execute()
         if (getAdCounterClicks.execute())
-            if (interstitialAd.isLoaded) {
-                interstitialAd.show()
+            if (interstitialAd != null) {
+                showInterstitialAd()
                 refreshAdCounter.execute()
             }
     }

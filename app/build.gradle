@@ -10,7 +10,7 @@ android {
         applicationId "com.breckneck.debtbook"
         minSdk 23
         targetSdk 33
-        versionCode 8
+        versionCode 9
         versionName "1.6"
         setProperty("archivesBaseName", "SimpleDebtBook-v$versionName($versionCode)")
         setProperty("archivesBaseName", "SimpleDebtBook-RuStore-v$versionName($versionCode)")
@@ -60,7 +60,7 @@ dependencies {
     implementation 'com.github.GwonHyeok:StickySwitch:0.0.16'
 
     //Yandex Mobile Ads
-    implementation 'com.yandex.android:mobileads:5.2.0'
+    implementation 'com.yandex.android:mobileads:6.0.0'
     implementation 'com.yandex.android:mobmetricalib:5.0.0'
 
     //MVVM
