@@ -49,4 +49,6 @@
     <string name="app_theme">Тема приложения</string>
     <string name="rate_app">Оценить приложение</string>
     <string name="write_email_to_developer">Написать разработчикам</string>
+    <string name="main_recycler_view_hint">Коснитесь для дополнительной информации</string>
+    <string name="details_recycler_view_hint">Коснитесь для дополнительных функций</string>
 </resources>
