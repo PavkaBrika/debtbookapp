@@ -80,6 +80,7 @@ class MainFragment : Fragment() {
         recyclerView.addItemDecoration(DividerItemDecoration(view.context, DividerItemDecoration.VERTICAL))
 
         val noDebtsTextView: TextView = view.findViewById(R.id.noDebtTextView)
+        val mainRecyclerViewHintTextView: TextView = view.findViewById(R.id.mainRecyclerViewHintTextView)
 
         val addButton: FloatingActionButton = view.findViewById(R.id.addHumanButton)
         addButton.setOnClickListener{
@@ -122,10 +123,13 @@ class MainFragment : Fragment() {
         buttonClickListener?.getDebtQuantity()
 
         vm.resultHumanList.observe(requireActivity()) {
-            if (it.isNotEmpty())
+            if (it.isNotEmpty()) {
+                mainRecyclerViewHintTextView.visibility = View.VISIBLE
                 noDebtsTextView.visibility = View.INVISIBLE
-            else
+            } else {
+                mainRecyclerViewHintTextView.visibility = View.INVISIBLE
                 noDebtsTextView.visibility = View.VISIBLE
+            }
             val adapter = HumanAdapter(it, humanClickListener)
             recyclerView.adapter = adapter
             Log.e("TAG", "adapter link success")

@@ -62,4 +62,6 @@
     <string name="app_theme">App Theme</string>
     <string name="rate_app">Rate app</string>
     <string name="write_email_to_developer">Write email to developer</string>
+    <string name="main_recycler_view_hint">Tap for more information</string>
+    <string name="details_recycler_view_hint">Tap for more features</string>
 </resources>

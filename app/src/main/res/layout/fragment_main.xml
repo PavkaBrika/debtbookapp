@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    style="@style/appBarLayoutStyle">
+    style="@style/appBarLayoutStyle"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/coordinator"
         android:layout_width="match_parent"
@@ -11,31 +12,31 @@
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar"
+            style="@style/appBarLayoutStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fitsSystemWindows="true"
-            style="@style/appBarLayoutStyle">
+            android:fitsSystemWindows="true">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:id="@+id/collaps"
+                style="@style/collapsContentScrim"
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
                 android:fitsSystemWindows="true"
-                style="@style/collapsContentScrim"
-                app:titleEnabled="true"
-                app:title="@string/debts"
-                app:expandedTitleMarginStart="16dp"
-                app:titleCollapseMode="scale"
                 app:expandedTitleGravity="bottom"
-                app:layout_scrollFlags="scroll">
+                app:expandedTitleMarginStart="16dp"
+                app:layout_scrollFlags="scroll"
+                app:title="@string/debts"
+                app:titleCollapseMode="scale"
+                app:titleEnabled="true">
 
                 <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="end"
                     android:layout_marginTop="?attr/actionBarSize"
-                    android:layout_marginBottom="24dp"
-                    android:layout_marginEnd="12dp">
+                    android:layout_marginEnd="12dp"
+                    android:layout_marginBottom="24dp">
 
                     <TextView
                         android:id="@+id/overallPositiveSumTextView"
@@ -61,31 +62,31 @@
                     android:id="@+id/mainToolbar"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
-                    android:fitsSystemWindows="true"
                     android:background="@android:color/transparent"
+                    android:fitsSystemWindows="true"
                     app:layout_collapseMode="pin">
 
                     <ImageView
                         android:id="@+id/settingsButton"
+                        style="@style/imageViewButton"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_gravity="end"
                         android:layout_marginEnd="16dp"
                         android:background="@android:color/transparent"
-                        android:src="@drawable/outline_settings_24"
                         android:foreground="?android:attr/selectableItemBackground"
-                        style="@style/imageViewButton"/>
+                        android:src="@drawable/outline_settings_24" />
 
                     <ImageView
                         android:id="@+id/filterHumanButton"
+                        style="@style/imageViewButton"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_gravity="end"
                         android:layout_marginEnd="16dp"
                         android:background="@android:color/transparent"
-                        android:src="@drawable/ic_outline_filter_alt_24"
                         android:foreground="?android:attr/selectableItemBackground"
-                        style="@style/imageViewButton"/>
+                        android:src="@drawable/ic_outline_filter_alt_24" />
 
                 </androidx.appcompat.widget.Toolbar>
 
@@ -94,47 +95,77 @@
         </com.google.android.material.appbar.AppBarLayout>
 
         <TextView
+            style="@style/collapsLines"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            style="@style/collapsLines"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/namesRecyclerView"
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/nestedScroll"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="1dp"
-            android:layout_marginStart="12dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:scrollbars="vertical"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/namesRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="1dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:scrollbars="vertical"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+                <TextView
+                    android:id="@+id/mainRecyclerViewHintTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="32dp"
+                    android:gravity="center"
+                    android:text="@string/main_recycler_view_hint"
+                    android:textColor="@color/darkgray"
+                    android:textSize="16sp"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/namesRecyclerView" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.core.widget.NestedScrollView>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/addHumanButton"
+            style="@style/fabTheme"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/fabTheme"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
-            app:layout_anchor="@id/namesRecyclerView"
+            android:src="@drawable/ic_baseline_add_24"
+            app:layout_anchor="@id/nestedScroll"
             app:layout_anchorGravity="bottom|center"
-            app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"
-            android:src="@drawable/ic_baseline_add_24" />
+            app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior" />
 
         <TextView
             android:id="@+id/noDebtTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/nodebts"
             android:layout_gravity="center_vertical|center_horizontal"
             android:gravity="center"
+            android:text="@string/nodebts"
             android:textColor="@color/darkgray"
             android:textSize="25sp"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

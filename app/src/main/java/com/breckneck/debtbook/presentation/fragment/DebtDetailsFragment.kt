@@ -82,6 +82,8 @@ class DebtDetailsFragment: Fragment() {
         val recyclerView: RecyclerView = view.findViewById(R.id.debtsRecyclerView)
         recyclerView.addItemDecoration(DividerItemDecoration(view.context, DividerItemDecoration.VERTICAL))
 
+        val debtRecyclerViewHintTextView: TextView = view.findViewById(R.id.debtRecyclerViewHintTextView)
+
         var idHuman = arguments?.getInt("idHuman", 0)
         val newHuman = arguments?.getBoolean("newHuman", false)
         val currency = arguments?.getString("currency")
@@ -138,6 +140,11 @@ class DebtDetailsFragment: Fragment() {
                 val adapter = DebtAdapter(it, debtClickListener, currency!!)
                 recyclerView.adapter = adapter
                 allDebts = it
+                if (allDebts.isNotEmpty()) {
+                    debtRecyclerViewHintTextView.visibility = View.VISIBLE
+                } else {
+                    debtRecyclerViewHintTextView.visibility = View.INVISIBLE
+                }
                 Log.e("TAG", "Debts load success")
             }, {
 
