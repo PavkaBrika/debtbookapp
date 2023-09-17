@@ -80,7 +80,7 @@ class MainActivityViewModel(private val getDebtQuantity: GetDebtQuantity): ViewM
         requestReviewFlow.addOnCompleteListener(object : OnCompleteListener<ReviewInfo> {
             override fun onFailure(throwable: Throwable) {
                 Log.e("TAG", "In app review error $throwable")
-                Toast.makeText(context, "${context.getText(R.string.review_error_toast)} $throwable", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(context, "${context.getText(R.string.review_error_toast)} $throwable", Toast.LENGTH_SHORT).show()
             }
 
             override fun onSuccess(result: ReviewInfo) {
