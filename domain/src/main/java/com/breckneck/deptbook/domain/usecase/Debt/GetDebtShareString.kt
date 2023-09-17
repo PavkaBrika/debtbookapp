@@ -10,19 +10,25 @@ class GetDebtShareString {
         val stringBuilder = StringBuilder("$name: ${decimalFormat.format(sum)} $currency\n\n")
         if (!addSumInShareText) {
             for (debt in debtList) {
+                var sumString = decimalFormat.format(debt.sum)
+                if (!sumString.contains("-"))
+                    sumString = "+$sumString"
                 if (debt.info == null)
-                    stringBuilder.append("${debt.date}: ${decimalFormat.format(debt.sum)} ${currency}\n")
+                    stringBuilder.append("${debt.date}: $sumString ${currency}\n")
                 else
-                    stringBuilder.append("${debt.date}: ${decimalFormat.format(debt.sum)} $currency (${debt.info})\n")
+                    stringBuilder.append("${debt.date}: $sumString $currency (${debt.info})\n")
             }
         } else {
             var sumForEachNote = 0.0
             for (debt in debtList) {
+                var sumString = decimalFormat.format(debt.sum)
+                if (!sumString.contains("-"))
+                    sumString = "+$sumString"
                 sumForEachNote += debt.sum
                 if (debt.info == null)
-                    stringBuilder.append("${debt.date}: ${decimalFormat.format(debt.sum)} ${currency} (${decimalFormat.format(sumForEachNote)} ${currency})\n")
+                    stringBuilder.append("${debt.date}: $sumString $currency (${decimalFormat.format(sumForEachNote)} ${currency})\n")
                 else
-                    stringBuilder.append("${debt.date}: ${decimalFormat.format(debt.sum)} $currency (${debt.info}) (${decimalFormat.format(sumForEachNote)})\n")
+                    stringBuilder.append("${debt.date}: $sumString $currency (${debt.info}) (${decimalFormat.format(sumForEachNote)})\n")
             }
         }
         return stringBuilder.toString()

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    style="@style/appBarLayoutStyle">
+    style="@style/appBarLayoutStyle"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -11,19 +11,19 @@
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar"
+            style="@style/appBarLayoutStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fitsSystemWindows="true"
-            style="@style/appBarLayoutStyle">
+            android:fitsSystemWindows="true">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:id="@+id/collaps"
+                style="@style/collapsContentScrim"
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
                 android:fitsSystemWindows="true"
-                style="@style/collapsContentScrim"
-                app:expandedTitleMarginBottom="64dp"
                 app:expandedTitleGravity="bottom"
+                app:expandedTitleMarginBottom="64dp"
                 app:expandedTitleMarginStart="16dp"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 app:maxLines="3"
@@ -57,21 +57,21 @@
 
                     <ImageView
                         android:id="@+id/deleteHumanButton"
+                        style="@style/imageViewButton"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_gravity="end"
                         android:layout_marginEnd="16dp"
-                        android:src="@drawable/ic_baseline_delete_outline_24"
-                        style="@style/imageViewButton"/>
+                        android:src="@drawable/ic_baseline_delete_outline_24" />
 
                     <ImageView
                         android:id="@+id/shareHumanButton"
+                        style="@style/imageViewButton"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_gravity="end"
                         android:layout_marginEnd="16dp"
-                        android:src="@drawable/baseline_share_24"
-                        style="@style/imageViewButton"/>
+                        android:src="@drawable/baseline_share_24" />
 
                 </androidx.appcompat.widget.Toolbar>
 
@@ -85,31 +85,62 @@
             android:layout_height="1dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/debtsRecyclerView"
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/nestedScroll"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="1dp"
-            android:layout_marginLeft="12dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:scrollbars="vertical"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/debtsRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginTop="1dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:scrollbars="vertical"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+
+                <TextView
+                    android:id="@+id/debtRecyclerViewHintTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="32dp"
+                    android:gravity="center"
+                    android:text="@string/details_recycler_view_hint"
+                    android:textColor="@color/darkgray"
+                    android:textSize="16sp"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/debtsRecyclerView" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.core.widget.NestedScrollView>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/addDebtButton"
+            style="@style/fabTheme"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/fabTheme"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
-            app:layout_anchor="@id/debtsRecyclerView"
+            android:src="@drawable/ic_baseline_add_24"
+            app:layout_anchor="@id/nestedScroll"
             app:layout_anchorGravity="bottom|center"
-            app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"
-            android:src="@drawable/ic_baseline_add_24" />
+            app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

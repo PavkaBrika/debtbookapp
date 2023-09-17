@@ -6,7 +6,9 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.Intent.*
 import android.graphics.Typeface
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.transition.TransitionInflater
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,17 +16,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.adapter.DebtAdapter
 import com.breckneck.deptbook.domain.model.DebtDomain
-import com.breckneck.deptbook.domain.usecase.Debt.DeleteDebtUseCase
-import com.breckneck.deptbook.domain.usecase.Debt.DeleteDebtsByHumanIdUseCase
-import com.breckneck.deptbook.domain.usecase.Debt.GetAllDebtsUseCase
-import com.breckneck.deptbook.domain.usecase.Debt.GetDebtShareString
+import com.breckneck.deptbook.domain.usecase.Debt.*
 import com.breckneck.deptbook.domain.usecase.Human.*
 import com.breckneck.deptbook.domain.usecase.Settings.GetAddSumInShareText
 import com.google.android.material.appbar.CollapsingToolbarLayout
@@ -33,6 +34,7 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 import org.koin.android.ext.android.inject
+import java.io.File
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 
@@ -60,6 +62,7 @@ class DebtDetailsFragment: Fragment() {
     }
 
     lateinit var allDebts: List<DebtDomain>
+    lateinit var humanName: String
     var overallSum: Double = 0.0;
 
     val getLastHumanId: GetLastHumanIdUseCase by inject()
@@ -82,13 +85,15 @@ class DebtDetailsFragment: Fragment() {
         val recyclerView: RecyclerView = view.findViewById(R.id.debtsRecyclerView)
         recyclerView.addItemDecoration(DividerItemDecoration(view.context, DividerItemDecoration.VERTICAL))
 
+        val debtRecyclerViewHintTextView: TextView = view.findViewById(R.id.debtRecyclerViewHintTextView)
+
         var idHuman = arguments?.getInt("idHuman", 0)
         val newHuman = arguments?.getBoolean("newHuman", false)
         val currency = arguments?.getString("currency")
-        val name = arguments?.getString("name")
+        val humanName = arguments?.getString("name")
 
         val collaps: CollapsingToolbarLayout = view.findViewById(R.id.collaps)
-        collaps.title = name
+        collaps.title = humanName
         collaps.apply {
             setCollapsedTitleTypeface(Typeface.DEFAULT_BOLD)
             setExpandedTitleTypeface(Typeface.DEFAULT_BOLD)
@@ -116,7 +121,7 @@ class DebtDetailsFragment: Fragment() {
                                 Log.e("TAG", "Debts load success")
                             },{})
                     } else { //EDIT DEBT
-                        buttonClickListener?.editDebt(debtDomain = debtDomain, currency = currency!!, name = name!!)
+                        buttonClickListener?.editDebt(debtDomain = debtDomain, currency = currency!!, name = humanName!!)
                     }
                 }
                 builder.show()
@@ -138,6 +143,11 @@ class DebtDetailsFragment: Fragment() {
                 val adapter = DebtAdapter(it, debtClickListener, currency!!)
                 recyclerView.adapter = adapter
                 allDebts = it
+                if (allDebts.isNotEmpty()) {
+                    debtRecyclerViewHintTextView.visibility = View.VISIBLE
+                } else {
+                    debtRecyclerViewHintTextView.visibility = View.INVISIBLE
+                }
                 Log.e("TAG", "Debts load success")
             }, {
 
@@ -188,17 +198,38 @@ class DebtDetailsFragment: Fragment() {
 
         val shareHumanButton: ImageView = view.findViewById(R.id.shareHumanButton)
         shareHumanButton.setOnClickListener {
-            val intent = Intent(ACTION_SEND)
-            intent.type = "text/plain"
-            intent.putExtra(EXTRA_SUBJECT, name)
-            intent.putExtra(EXTRA_TEXT, getDebtShareString.execute(debtList = allDebts, name = name!!, currency = currency!!, sum = overallSum, getAddSumInShareText.execute()))
-            startActivity(Intent.createChooser(intent, name))
+            val actions = arrayOf(getString(R.string.text_format), getString(R.string.excel_format))
+            val builder = AlertDialog.Builder(requireContext())
+            builder.setTitle(R.string.share_debt_in)
+            builder.setItems(actions) {dialog, which ->
+                if (actions[which] == getString(R.string.text_format)) {
+                    val intent = Intent(ACTION_SEND)
+                    intent.type = "text/plain"
+                    intent.putExtra(EXTRA_SUBJECT, humanName)
+                    intent.putExtra(EXTRA_TEXT, getDebtShareString.execute(debtList = allDebts, name = humanName!!, currency = currency!!, sum = overallSum, getAddSumInShareText.execute()))
+                    startActivity(createChooser(intent, humanName))
+                } else {
+                    var rootFolder = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString())
+                    rootFolder = File(rootFolder, "DebtBookFiles")
+                    val sheetTitles = arrayOf(getString(R.string.date), "${getString(R.string.sum)} ($currency)", getString(R.string.comment))
+                    val excelFile = ExportDebtDataInExcelUseCase().execute(debtList = allDebts, sheetName = "${humanName}_debts", rootFolder = rootFolder, sheetTitles = sheetTitles)
+                    if (excelFile.exists())
+                        Toast.makeText(requireContext(), R.string.excel_folder_toast_hint, Toast.LENGTH_SHORT).show()
+                    val intent = Intent(ACTION_SEND)
+                    val uriPath: Uri = FileProvider.getUriForFile(requireContext(), "${requireContext().packageName}.provider", excelFile)
+                    intent.addFlags(FLAG_GRANT_READ_URI_PERMISSION)
+                    intent.setDataAndType(uriPath, "application/vnd.ms-excel");
+                    intent.putExtra(EXTRA_STREAM, uriPath)
+                    startActivity(createChooser(intent, humanName))
+                }
+            }
+            builder.show()
         }
 
         val addDebtButton: FloatingActionButton = view.findViewById(R.id.addDebtButton)
         addDebtButton.setOnClickListener{
             if (idHuman != null) {
-                buttonClickListener?.addNewDebtFragment(idHuman = idHuman!!, currency = currency!!, name = name!!)
+                buttonClickListener?.addNewDebtFragment(idHuman = idHuman!!, currency = currency!!, name = humanName!!)
             }
         }
 

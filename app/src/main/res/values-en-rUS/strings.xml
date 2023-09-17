@@ -4,6 +4,7 @@
     <string name="sum">Sum</string>
     <string name="comment">Comment</string>
     <string name="year">y.</string>
+    <string name="date">Date</string>
     <string name="youmustentername">You didn\'t enter all the information</string>
     <string name="deletedebt">Delete this debt</string>
     <string name="editdebt">Edit this debt</string>
@@ -48,4 +49,10 @@
     <string name="app_theme">App Theme</string>
     <string name="rate_app">Rate app</string>
     <string name="write_email_to_developer">Write email to developer</string>
+    <string name="main_recycler_view_hint">Tap for more information</string>
+    <string name="details_recycler_view_hint">Tap for more features</string>
+    <string name="excel_folder_toast_hint">File saved in Storage/Documents/DebtBookFiles</string>
+    <string name="share_debt_in">Share debt in</string>
+    <string name="text_format">Text format</string>
+    <string name="excel_format">Excel format</string>
 </resources>
