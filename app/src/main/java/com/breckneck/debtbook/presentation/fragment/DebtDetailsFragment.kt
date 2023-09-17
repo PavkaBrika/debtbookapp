@@ -46,6 +46,8 @@ class DebtDetailsFragment: Fragment() {
         fun editDebt(debtDomain: DebtDomain, currency: String, name: String)
 
         fun deleteHuman()
+
+        fun onBackDebtsButtonClick()
     }
 
     var buttonClickListener: OnButtonClickListener? = null
@@ -194,6 +196,11 @@ class DebtDetailsFragment: Fragment() {
             })
             builder.setNegativeButton(R.string.No, null)
             builder.show()
+        }
+
+        val backButton: ImageView = view.findViewById(R.id.backButton)
+        backButton.setOnClickListener {
+            buttonClickListener?.onBackDebtsButtonClick()
         }
 
         val shareHumanButton: ImageView = view.findViewById(R.id.shareHumanButton)

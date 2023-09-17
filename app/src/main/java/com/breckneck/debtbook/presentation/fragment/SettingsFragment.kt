@@ -5,8 +5,6 @@ import android.content.Intent
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.transition.TransitionInflater
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -16,26 +14,18 @@ import android.widget.*
 import android.widget.CompoundButton.OnCheckedChangeListener
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SwitchCompat
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.breckneck.debtbook.BuildConfig
 import com.breckneck.debtbook.R
-import com.breckneck.debtbook.presentation.viewmodel.MainFragmentViewModel
 import com.breckneck.deptbook.domain.usecase.Settings.*
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
 import com.google.android.material.appbar.CollapsingToolbarLayout
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.play.core.review.ReviewManagerFactory
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsFragment: Fragment() {
 
     interface OnButtonClickListener {
-        fun onBackButtonClick()
+        fun onBackSettingsButtonClick()
 
         fun onSettingsFragmentOpen()
 
@@ -72,6 +62,11 @@ class SettingsFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_settings, container, false)
+
+        val backButton: ImageView = view.findViewById(R.id.backButton)
+        backButton.setOnClickListener {
+            buttonClickListener?.onBackSettingsButtonClick()
+        }
 
         buttonClickListener.onSettingsFragmentOpen()
 
@@ -220,7 +215,7 @@ class SettingsFragment: Fragment() {
 
         val setSettingsButton: FloatingActionButton = view.findViewById(R.id.setSettingsButton)
         setSettingsButton.setOnClickListener {
-            buttonClickListener.onBackButtonClick()
+            buttonClickListener.onBackSettingsButtonClick()
         }
 
         return view
@@ -229,7 +224,7 @@ class SettingsFragment: Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
-                buttonClickListener.onBackButtonClick()
+                buttonClickListener.onBackSettingsButtonClick()
             }
         }
         return super.onOptionsItemSelected(item)

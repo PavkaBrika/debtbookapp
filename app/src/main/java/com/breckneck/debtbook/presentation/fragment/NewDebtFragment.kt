@@ -50,6 +50,7 @@ class NewDebtFragment: Fragment() {
     interface OnButtonClickListener{
         fun DebtDetailsNewHuman(currency: String, name: String)
         fun DebtDetailsExistHuman(idHuman: Int, currency: String, name: String)
+        fun onBackNewDebtButtonClick()
     }
 
     lateinit var buttonClickListener: OnButtonClickListener
@@ -81,6 +82,11 @@ class NewDebtFragment: Fragment() {
     @SuppressLint("Range")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_addnewhuman, container, false)
+
+        val backButton: ImageView = view.findViewById(R.id.backButton)
+        backButton.setOnClickListener {
+            buttonClickListener.onBackNewDebtButtonClick()
+        }
 
         val idHuman = arguments?.getInt("idHuman", -1)
         val idDebt = arguments?.getInt("idDebt", -1)
