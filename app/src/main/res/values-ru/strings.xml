@@ -52,4 +52,8 @@
     <string name="write_email_to_developer">Написать разработчикам</string>
     <string name="main_recycler_view_hint">Коснитесь для дополнительной информации</string>
     <string name="details_recycler_view_hint">Коснитесь для дополнительных функций</string>
+    <string name="excel_folder_toast_hint">Файл сохранен в Storage/Documents/DebtBookFiles</string>
+    <string name="share_debt_in">Поделить долгом в</string>
+    <string name="text_format">Текстовом формате</string>
+    <string name="excel_format">Excel формате</string>
 </resources>
