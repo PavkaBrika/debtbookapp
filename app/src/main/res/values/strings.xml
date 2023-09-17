@@ -66,4 +66,7 @@
     <string name="main_recycler_view_hint">Tap for more information</string>
     <string name="details_recycler_view_hint">Tap for more features</string>
     <string name="excel_folder_toast_hint">File saved in Storage/Documents/DebtBookFiles</string>
+    <string name="share_debt_in">Share debt in</string>
+    <string name="text_format">Text format</string>
+    <string name="excel_format">Excel format</string>
 </resources>

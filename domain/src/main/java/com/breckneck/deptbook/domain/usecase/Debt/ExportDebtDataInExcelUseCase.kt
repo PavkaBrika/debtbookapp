@@ -49,24 +49,25 @@ class ExportDebtDataInExcelUseCase {
                         else
                             cell.setCellValue(jsonObject.get(value).asString)
                     } catch (e: java.lang.NullPointerException) {
-                        e.stackTrace
+                        e.printStackTrace()
                         cell.setCellValue("")
                     }
                 }
             }
         }
 
-        //try
-//        var rootFolder = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString())
-//        val fileName = "${humanName}_debts.xls"
-        var filePath = File(rootFolder, "${sheetName}.xls")
-        if (!filePath.exists())
-            filePath.mkdirs()
-        if (!filePath.exists()) {
-            filePath.createNewFile()
-        } else {
-            filePath.delete()
-            filePath.createNewFile()
+        val filePath = File(rootFolder, "${sheetName}.xls")
+        try {
+            if (!filePath.exists())
+                filePath.mkdirs()
+            if (!filePath.exists()) {
+                filePath.createNewFile()
+            } else {
+                filePath.delete()
+                filePath.createNewFile()
+            }
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
         }
 
         val file = filePath

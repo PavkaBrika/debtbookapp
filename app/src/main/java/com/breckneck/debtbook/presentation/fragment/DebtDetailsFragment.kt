@@ -3,7 +3,10 @@ package com.breckneck.debtbook.presentation.fragment
 import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
+import android.content.Intent
+import android.content.Intent.*
 import android.graphics.Typeface
+import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.transition.TransitionInflater
@@ -13,7 +16,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
@@ -25,15 +30,11 @@ import com.breckneck.deptbook.domain.usecase.Human.*
 import com.breckneck.deptbook.domain.usecase.Settings.GetAddSumInShareText
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.gson.Gson
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
-import org.apache.poi.hssf.usermodel.HSSFWorkbook
-import org.apache.poi.ss.usermodel.Cell
 import org.koin.android.ext.android.inject
 import java.io.File
-import java.io.FileOutputStream
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 
@@ -197,15 +198,32 @@ class DebtDetailsFragment: Fragment() {
 
         val shareHumanButton: ImageView = view.findViewById(R.id.shareHumanButton)
         shareHumanButton.setOnClickListener {
-//            val intent = Intent(ACTION_SEND)
-//            intent.type = "text/plain"
-//            intent.putExtra(EXTRA_SUBJECT, name)
-//            intent.putExtra(EXTRA_TEXT, getDebtShareString.execute(debtList = allDebts, name = name!!, currency = currency!!, sum = overallSum, getAddSumInShareText.execute()))
-//            startActivity(Intent.createChooser(intent, name))
-            var rootFolder = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString())
-            rootFolder = File(rootFolder, "DebtBookFiles")
-            val sheetTitles = arrayOf(getString(R.string.date), "${getString(R.string.sum)} ($currency)", getString(R.string.comment))
-            ExportDebtDataInExcelUseCase().execute(debtList = allDebts, sheetName = "${humanName}_debts", rootFolder = rootFolder, sheetTitles = sheetTitles)
+            val actions = arrayOf(getString(R.string.text_format), getString(R.string.excel_format))
+            val builder = AlertDialog.Builder(requireContext())
+            builder.setTitle(R.string.share_debt_in)
+            builder.setItems(actions) {dialog, which ->
+                if (actions[which] == getString(R.string.text_format)) {
+                    val intent = Intent(ACTION_SEND)
+                    intent.type = "text/plain"
+                    intent.putExtra(EXTRA_SUBJECT, humanName)
+                    intent.putExtra(EXTRA_TEXT, getDebtShareString.execute(debtList = allDebts, name = humanName!!, currency = currency!!, sum = overallSum, getAddSumInShareText.execute()))
+                    startActivity(createChooser(intent, humanName))
+                } else {
+                    var rootFolder = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString())
+                    rootFolder = File(rootFolder, "DebtBookFiles")
+                    val sheetTitles = arrayOf(getString(R.string.date), "${getString(R.string.sum)} ($currency)", getString(R.string.comment))
+                    val excelFile = ExportDebtDataInExcelUseCase().execute(debtList = allDebts, sheetName = "${humanName}_debts", rootFolder = rootFolder, sheetTitles = sheetTitles)
+                    if (excelFile.exists())
+                        Toast.makeText(requireContext(), R.string.excel_folder_toast_hint, Toast.LENGTH_SHORT).show()
+                    val intent = Intent(ACTION_SEND)
+                    val uriPath: Uri = FileProvider.getUriForFile(requireContext(), "${requireContext().packageName}.provider", excelFile)
+                    intent.addFlags(FLAG_GRANT_READ_URI_PERMISSION)
+                    intent.setDataAndType(uriPath, "application/vnd.ms-excel");
+                    intent.putExtra(EXTRA_STREAM, uriPath)
+                    startActivity(createChooser(intent, humanName))
+                }
+            }
+            builder.show()
         }
 
         val addDebtButton: FloatingActionButton = view.findViewById(R.id.addDebtButton)
