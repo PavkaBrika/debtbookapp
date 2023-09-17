@@ -3,10 +3,9 @@ package com.breckneck.debtbook.presentation.fragment
 import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
-import android.content.Intent
-import android.content.Intent.*
 import android.graphics.Typeface
 import android.os.Bundle
+import android.os.Environment
 import android.transition.TransitionInflater
 import android.util.Log
 import android.view.LayoutInflater
@@ -21,18 +20,20 @@ import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.adapter.DebtAdapter
 import com.breckneck.deptbook.domain.model.DebtDomain
-import com.breckneck.deptbook.domain.usecase.Debt.DeleteDebtUseCase
-import com.breckneck.deptbook.domain.usecase.Debt.DeleteDebtsByHumanIdUseCase
-import com.breckneck.deptbook.domain.usecase.Debt.GetAllDebtsUseCase
-import com.breckneck.deptbook.domain.usecase.Debt.GetDebtShareString
+import com.breckneck.deptbook.domain.usecase.Debt.*
 import com.breckneck.deptbook.domain.usecase.Human.*
 import com.breckneck.deptbook.domain.usecase.Settings.GetAddSumInShareText
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.gson.Gson
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
+import org.apache.poi.hssf.usermodel.HSSFWorkbook
+import org.apache.poi.ss.usermodel.Cell
 import org.koin.android.ext.android.inject
+import java.io.File
+import java.io.FileOutputStream
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 
@@ -60,6 +61,7 @@ class DebtDetailsFragment: Fragment() {
     }
 
     lateinit var allDebts: List<DebtDomain>
+    lateinit var humanName: String
     var overallSum: Double = 0.0;
 
     val getLastHumanId: GetLastHumanIdUseCase by inject()
@@ -87,10 +89,10 @@ class DebtDetailsFragment: Fragment() {
         var idHuman = arguments?.getInt("idHuman", 0)
         val newHuman = arguments?.getBoolean("newHuman", false)
         val currency = arguments?.getString("currency")
-        val name = arguments?.getString("name")
+        val humanName = arguments?.getString("name")
 
         val collaps: CollapsingToolbarLayout = view.findViewById(R.id.collaps)
-        collaps.title = name
+        collaps.title = humanName
         collaps.apply {
             setCollapsedTitleTypeface(Typeface.DEFAULT_BOLD)
             setExpandedTitleTypeface(Typeface.DEFAULT_BOLD)
@@ -118,7 +120,7 @@ class DebtDetailsFragment: Fragment() {
                                 Log.e("TAG", "Debts load success")
                             },{})
                     } else { //EDIT DEBT
-                        buttonClickListener?.editDebt(debtDomain = debtDomain, currency = currency!!, name = name!!)
+                        buttonClickListener?.editDebt(debtDomain = debtDomain, currency = currency!!, name = humanName!!)
                     }
                 }
                 builder.show()
@@ -195,17 +197,21 @@ class DebtDetailsFragment: Fragment() {
 
         val shareHumanButton: ImageView = view.findViewById(R.id.shareHumanButton)
         shareHumanButton.setOnClickListener {
-            val intent = Intent(ACTION_SEND)
-            intent.type = "text/plain"
-            intent.putExtra(EXTRA_SUBJECT, name)
-            intent.putExtra(EXTRA_TEXT, getDebtShareString.execute(debtList = allDebts, name = name!!, currency = currency!!, sum = overallSum, getAddSumInShareText.execute()))
-            startActivity(Intent.createChooser(intent, name))
+//            val intent = Intent(ACTION_SEND)
+//            intent.type = "text/plain"
+//            intent.putExtra(EXTRA_SUBJECT, name)
+//            intent.putExtra(EXTRA_TEXT, getDebtShareString.execute(debtList = allDebts, name = name!!, currency = currency!!, sum = overallSum, getAddSumInShareText.execute()))
+//            startActivity(Intent.createChooser(intent, name))
+            var rootFolder = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString())
+            rootFolder = File(rootFolder, "DebtBookFiles")
+            val sheetTitles = arrayOf(getString(R.string.date), "${getString(R.string.sum)} ($currency)", getString(R.string.comment))
+            ExportDebtDataInExcelUseCase().execute(debtList = allDebts, sheetName = "${humanName}_debts", rootFolder = rootFolder, sheetTitles = sheetTitles)
         }
 
         val addDebtButton: FloatingActionButton = view.findViewById(R.id.addDebtButton)
         addDebtButton.setOnClickListener{
             if (idHuman != null) {
-                buttonClickListener?.addNewDebtFragment(idHuman = idHuman!!, currency = currency!!, name = name!!)
+                buttonClickListener?.addNewDebtFragment(idHuman = idHuman!!, currency = currency!!, name = humanName!!)
             }
         }
 

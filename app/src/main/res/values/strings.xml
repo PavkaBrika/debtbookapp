@@ -4,6 +4,7 @@
     <string name="sum">Sum</string>
     <string name="comment">Comment</string>
     <string name="year">y.</string>
+    <string name="date">Date</string>
     <string name="usd" translatable="false">&#127482;&#127480; USD</string>
     <string name="eur" translatable="false">&#127466;&#127482; EUR</string>
     <string name="rub" translatable="false">&#127479;&#127482; RUB</string>
@@ -64,4 +65,5 @@
     <string name="write_email_to_developer">Write email to developer</string>
     <string name="main_recycler_view_hint">Tap for more information</string>
     <string name="details_recycler_view_hint">Tap for more features</string>
+    <string name="excel_folder_toast_hint">File saved in Storage/Documents/DebtBookFiles</string>
 </resources>

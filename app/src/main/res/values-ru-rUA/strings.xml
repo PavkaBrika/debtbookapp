@@ -5,6 +5,7 @@
     <string name="sum">Сумма</string>
     <string name="comment">Комментарий</string>
     <string name="year">г.</string>
+    <string name="date">Дата</string>
     <string name="youmustentername">Вы ввели не всю информацию</string>
     <string name="deletedebt">Погасить этот долг</string>
     <string name="editdebt">Изменить этот долг</string>
