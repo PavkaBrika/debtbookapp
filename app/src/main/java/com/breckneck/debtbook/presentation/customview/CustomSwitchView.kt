@@ -2,6 +2,7 @@ package com.breckneck.debtbook.presentation.customview
 
 import android.content.Context
 import android.graphics.*
+import android.os.Parcelable
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
@@ -116,6 +117,7 @@ class CustomSwitchView(context: Context, attrs: AttributeSet) : View(context, at
         drawStateRect(canvas = canvas)
         drawText(canvas = canvas)
         invalidate()
+        requestLayout()
     }
 
     private fun drawBodyRect(canvas: Canvas) {
@@ -126,10 +128,15 @@ class CustomSwitchView(context: Context, attrs: AttributeSet) : View(context, at
     }
 
     private fun drawStateRect(canvas: Canvas) {
-        if (isEnabled)
+        if (isEnabled) {
             stateRectPaint.color = enabledBackgroundColor
-        else
+            stateRect.right = bodyRect.right / 2
+            stateRect.left = 0
+        } else {
             stateRectPaint.color = disabledBackgroundColor
+            stateRect.right = bodyRect.right
+            stateRect.left = bodyRect.right / 2
+        }
         canvas.drawRoundRect(RectF(stateRect), 15F, 15F, stateRectPaint)
         invalidate()
         requestLayout()
@@ -151,16 +158,34 @@ class CustomSwitchView(context: Context, attrs: AttributeSet) : View(context, at
             (bodyRect.right - bodyRect.right / 4).toFloat(), stateRect.bottom + offsetY, disabledTextPaint)
     }
 
-//    override fun onTouchEvent(event: MotionEvent?): Boolean {
-//        super.onTouchEvent(event!!)
-//        if (checkClickInStateRect(event.x, event.y)) {
-//
-//            return true
-//        }
-//        return false
-//    }
-//
+    override fun onSaveInstanceState(): Parcelable? {
+        return super.onSaveInstanceState()
+    }
+
+    fun isChecked(): Boolean {
+        return isEnabled
+    }
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        if (event!!.action == MotionEvent.ACTION_DOWN) {
+            if (event.x > bodyRect.centerX()) {
+                isEnabled = false
+                invalidate()
+                requestLayout()
+                return true
+            } else {
+                isEnabled = true
+                invalidate()
+                requestLayout()
+                return true
+            }
+        }
+        return super.onTouchEvent(event)
+    }
+
 //    private fun checkClickInStateRect(clickX: Float, clickY: Float): Boolean {
-//        if (clickX > stateRect.centerX() - stateRect.)
+//        if (clickX > bodyRect.centerX()) {
+//            ret
+//        }
 //    }
 }

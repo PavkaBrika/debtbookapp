@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.adapter.ContactsAdapter
+import com.breckneck.debtbook.presentation.customview.CustomSwitchView
 import com.breckneck.deptbook.domain.usecase.Debt.*
 import com.breckneck.deptbook.domain.usecase.Human.AddSumUseCase
 import com.breckneck.deptbook.domain.usecase.Human.GetLastHumanIdUseCase
@@ -34,7 +35,6 @@ import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import io.ghyeok.stickyswitch.widget.StickySwitch
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -130,15 +130,16 @@ class NewDebtFragment: Fragment() {
             }
         }
 
-        val stickySwitch: StickySwitch = view.findViewById(R.id.sticky_switch)
-        stickySwitch.onSelectedChangeListener = object : StickySwitch.OnSelectedChangeListener{
-            override fun onSelectedChange(direction: StickySwitch.Direction, text: String) {
-                if (direction == StickySwitch.Direction.LEFT)
-                    stickySwitch.switchColor = 0xFF59CB72.toInt()
-                else
-                    stickySwitch.switchColor = 0xFFE25D56.toInt()
-            }
-        }
+        val customSwitch: CustomSwitchView = view.findViewById(R.id.customSwitch)
+//        val stickySwitch: StickySwitch = view.findViewById(R.id.sticky_switch)
+//        stickySwitch.onSelectedChangeListener = object : StickySwitch.OnSelectedChangeListener{
+//            override fun onSelectedChange(direction: StickySwitch.Direction, text: String) {
+//                if (direction == StickySwitch.Direction.LEFT)
+//                    stickySwitch.switchColor = 0xFF59CB72.toInt()
+//                else
+//                    stickySwitch.switchColor = 0xFFE25D56.toInt()
+//            }
+//        }
 
         debtSumEditText.addTextChangedListener { object: TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -203,7 +204,7 @@ class NewDebtFragment: Fragment() {
             val info = infoEditText.text.toString()
             if (idHuman == null) { //if add debt in new human
                 if ((!checkEditTextIsEmpty.execute(name)) && (!checkEditTextIsEmpty.execute(sum))) { //user check if user is not bad
-                    if (stickySwitch.getDirection() == StickySwitch.Direction.RIGHT)
+                    if (!customSwitch.isChecked())
                         sum = (sum.toDouble() * (-1.0)).toString()
                     if (sum.toDouble() != 0.0) {
                         Single.just(name)
@@ -232,7 +233,7 @@ class NewDebtFragment: Fragment() {
                 }
             } else if (idDebt == -1) { //if add debt in existing human
                 if (!checkEditTextIsEmpty.execute(sum)) { // user check if user not bad
-                    if (stickySwitch.getDirection() == StickySwitch.Direction.RIGHT)
+                    if (!customSwitch.isChecked())
                         sum = (sum.toDouble() * (-1.0)).toString()
                     if (sum.toDouble() != 0.0) {
                         Single.just(sum)
@@ -259,7 +260,7 @@ class NewDebtFragment: Fragment() {
                 }
             } else if ((idDebt != null) && (idDebt != -1)) { //if edit debt in existing human
                 if (!checkEditTextIsEmpty.execute(sum)) { // user check if user not bad
-                    if (stickySwitch.getDirection() == StickySwitch.Direction.RIGHT)
+                    if (!customSwitch.isChecked())
                         sum = (sum.toDouble() * (-1.0)).toString()
                     if (sum.toDouble() != 0.0) {
                         Single.just(sum)

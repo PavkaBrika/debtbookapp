@@ -70,24 +70,38 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <io.ghyeok.stickyswitch.widget.StickySwitch
-                    android:id="@+id/sticky_switch"
-                    android:layout_width="175dp"
-                    android:layout_height="90dp"
+<!--                <io.ghyeok.stickyswitch.widget.StickySwitch-->
+<!--                    android:id="@+id/sticky_switch"-->
+<!--                    android:layout_width="175dp"-->
+<!--                    android:layout_height="90dp"-->
+<!--                    android:layout_gravity="center"-->
+<!--                    android:layout_marginTop="16dp"-->
+<!--                    app:ss_animationDuration="400"-->
+<!--                    app:ss_iconPadding="10dp"-->
+<!--                    app:ss_iconSize="40dp"-->
+<!--                    app:ss_leftIcon="@drawable/ic_baseline_add_24"-->
+<!--                    app:ss_leftText="@string/give"-->
+<!--                    app:ss_rightIcon="@drawable/ic_baseline_remove_24"-->
+<!--                    app:ss_rightText="@string/take"-->
+<!--                    app:ss_selectedTextSize="17sp"-->
+<!--                    app:ss_switchColor="@color/green"-->
+<!--                    app:ss_textSize="14sp"-->
+<!--                    app:ss_animationType="curved"-->
+<!--                    style="@style/switchStyle"/>-->
+                <com.breckneck.debtbook.presentation.customview.CustomSwitchView
+                    android:id="@+id/customSwitch"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
                     android:layout_gravity="center"
-                    android:layout_marginTop="16dp"
-                    app:ss_animationDuration="400"
-                    app:ss_iconPadding="10dp"
-                    app:ss_iconSize="40dp"
-                    app:ss_leftIcon="@drawable/ic_baseline_add_24"
-                    app:ss_leftText="@string/give"
-                    app:ss_rightIcon="@drawable/ic_baseline_remove_24"
-                    app:ss_rightText="@string/take"
-                    app:ss_selectedTextSize="17sp"
-                    app:ss_switchColor="@color/green"
-                    app:ss_textSize="14sp"
-                    app:ss_animationType="curved"
-                    style="@style/switchStyle"/>
+                    android:layout_marginTop="48dp"
+                    android:layout_marginBottom="16dp"
+                    app:enabledText="@string/give"
+                    app:disabledText="@string/take"
+                    app:enabledBackgroundColor="#59cb72"
+                    app:disabledBackgroundColor="#e25d56"
+                    app:enabled="true"
+                     />
+
 
                 <LinearLayout
                     android:layout_width="match_parent"

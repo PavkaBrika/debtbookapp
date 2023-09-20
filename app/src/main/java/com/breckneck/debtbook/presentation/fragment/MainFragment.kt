@@ -109,7 +109,7 @@ class MainFragment : Fragment() {
 
         buttonClickListener?.getDebtQuantity()
 
-        vm.resultHumanList.observe(requireActivity()) {
+        vm.resultHumanList.observe(viewLifecycleOwner) {
             if (it.isNotEmpty()) {
                 mainRecyclerViewHintTextView.visibility = View.VISIBLE
                 noDebtsTextView.visibility = View.INVISIBLE
@@ -124,7 +124,7 @@ class MainFragment : Fragment() {
 
         val overallPositiveSumTextView: TextView = view.findViewById(R.id.overallPositiveSumTextView)
         val overallNegativeSumTextView: TextView = view.findViewById(R.id.overallNegativeSumTextView)
-        vm.resultPos.observe(requireActivity()) {
+        vm.resultPos.observe(viewLifecycleOwner) {
             overallPositiveSumTextView.text = it
             if (it == "") {
                 overallPositiveSumTextView.visibility = View.GONE
@@ -134,7 +134,7 @@ class MainFragment : Fragment() {
             }
         }
 
-        vm.resultNeg.observe(requireActivity()) {
+        vm.resultNeg.observe(viewLifecycleOwner) {
             overallNegativeSumTextView.text = it
             if (it == "") {
                 overallNegativeSumTextView.textSize = 0F
