@@ -146,14 +146,12 @@ class CustomSwitchView(context: Context, attrs: AttributeSet) : View(context, at
         enabledTextPaint.color = enabledTextColor
         enabledTextPaint.textAlign = Paint.Align.CENTER
         enabledTextPaint.textSize = height * 0.5F
-        enabledTextPaint.typeface = Typeface.DEFAULT_BOLD
         val offsetY = (enabledTextPaint.descent() + enabledTextPaint.ascent())
         canvas.drawText(enabledText,
             (bodyRect.right / 4).toFloat(), stateRect.bottom + offsetY, enabledTextPaint)
         disabledTextPaint.color = disabledTextColor
         disabledTextPaint.textAlign = Paint.Align.CENTER
         disabledTextPaint.textSize = height * 0.5F
-        disabledTextPaint.typeface = Typeface.DEFAULT_BOLD
         canvas.drawText(disabledText,
             (bodyRect.right - bodyRect.right / 4).toFloat(), stateRect.bottom + offsetY, disabledTextPaint)
     }
@@ -182,10 +180,4 @@ class CustomSwitchView(context: Context, attrs: AttributeSet) : View(context, at
         }
         return super.onTouchEvent(event)
     }
-
-//    private fun checkClickInStateRect(clickX: Float, clickY: Float): Boolean {
-//        if (clickX > bodyRect.centerX()) {
-//            ret
-//        }
-//    }
 }
