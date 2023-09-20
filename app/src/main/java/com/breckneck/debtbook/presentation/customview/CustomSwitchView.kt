@@ -2,6 +2,7 @@ package com.breckneck.debtbook.presentation.customview
 
 import android.content.Context
 import android.graphics.*
+import android.os.Bundle
 import android.os.Parcelable
 import android.util.AttributeSet
 import android.view.MotionEvent
@@ -157,7 +158,20 @@ class CustomSwitchView(context: Context, attrs: AttributeSet) : View(context, at
     }
 
     override fun onSaveInstanceState(): Parcelable? {
-        return super.onSaveInstanceState()
+        val bundle = Bundle()
+        bundle.putParcelable("superState", super.onSaveInstanceState())
+        bundle.putBoolean("isEnabled", isEnabled)
+        super.onSaveInstanceState()
+        return bundle
+    }
+
+    override fun onRestoreInstanceState(state: Parcelable?) {
+        var viewState = state
+        if (viewState is Bundle) {
+            isEnabled = viewState.getBoolean("isEnabled")
+            viewState = viewState.getParcelable("superState")
+        }
+        super.onRestoreInstanceState(viewState)
     }
 
     fun isChecked(): Boolean {
