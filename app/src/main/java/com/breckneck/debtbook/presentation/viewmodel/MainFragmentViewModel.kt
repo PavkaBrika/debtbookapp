@@ -42,76 +42,83 @@ class MainFragmentViewModel(
 
     @SuppressLint("CheckResult")
     fun getAllHumans() {
-        Single.just("1")
-            .map {
-                return@map getAllHumansUseCase.execute()
+        Single.create {
+            it.onSuccess(getAllHumansUseCase.execute())
             }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 resultHumanList.value = it
                 Log.e("TAG", "humans loaded in VM")
-            }, {})
+            }, {
+                Log.e("TAG", it.stackTrace.toString())
+            })
 
     }
 
     @SuppressLint("CheckResult")
     fun getPositiveHumans() {
-        Single.just("1")
-            .map {
-                return@map getPositiveHumansUseCase.execute()
+        Single.create {
+            it.onSuccess(getPositiveHumansUseCase.execute())
             }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 resultHumanList.value = it
                 Log.e("TAG", "humans loaded in VM")
-            }, {})
+            }, {
+                Log.e("TAG", it.stackTrace.toString())
+            })
 
     }
 
+    @SuppressLint("CheckResult")
     fun getNegativeHumans() {
-        Single.just("1")
-            .map {
-                return@map getNegativeHumansUseCase.execute()
+        Single.create {
+                it.onSuccess(getNegativeHumansUseCase.execute())
             }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 resultHumanList.value = it
                 Log.e("TAG", "humans loaded in VM")
-            }, {})
-
+            }, {
+                Log.e("TAG", it.stackTrace.toString())
+            })
     }
 
+    @SuppressLint("CheckResult")
     fun getPositiveSum() {
-        Single.just("1")
-            .map {
-                return@map getAllDebtsSumUseCase.execute(
-                    "positive",
-                    getFirstMainCurrency.execute(),
-                    getSecondMainCurrency.execute())
+        Single.create {
+            it.onSuccess(getAllDebtsSumUseCase.execute(
+                "positive",
+                getFirstMainCurrency.execute(),
+                getSecondMainCurrency.execute()))
             }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 resultPos.value = it
-            },{})
+            },{
+                Log.e("TAG", it.stackTrace.toString())
+            })
     }
 
+    @SuppressLint("CheckResult")
     fun getNegativeSum() {
-        Single.just("1")
-            .map {
-                return@map getAllDebtsSumUseCase.execute(
-                    "negative",
-                    getFirstMainCurrency.execute(),
-                    getSecondMainCurrency.execute())
-            }
+        Single.create {
+           it.onSuccess(getAllDebtsSumUseCase.execute(
+               "negative",
+               getFirstMainCurrency.execute(),
+               getSecondMainCurrency.execute()))
+        }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 resultNeg.value = it
-            },{})
+            },{
+                Log.e("TAG", it.stackTrace.toString())
+            })
     }
 
     fun setFilterDialogShown(shown: Boolean) {
