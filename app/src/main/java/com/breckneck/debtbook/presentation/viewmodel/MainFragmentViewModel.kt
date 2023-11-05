@@ -1,11 +1,9 @@
 package com.breckneck.debtbook.presentation.viewmodel
 
-import android.annotation.SuppressLint
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.breckneck.deptbook.domain.model.HumanDomain
-import com.breckneck.deptbook.domain.usecase.Debt.GetDebtQuantity
 import com.breckneck.deptbook.domain.usecase.Human.GetAllDebtsSumUseCase
 import com.breckneck.deptbook.domain.usecase.Human.GetAllHumansUseCase
 import com.breckneck.deptbook.domain.usecase.Human.GetNegativeHumansUseCase
@@ -14,6 +12,7 @@ import com.breckneck.deptbook.domain.usecase.Settings.GetFirstMainCurrency
 import com.breckneck.deptbook.domain.usecase.Settings.GetSecondMainCurrency
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 
 class MainFragmentViewModel(
@@ -30,6 +29,7 @@ class MainFragmentViewModel(
     var resultHumanList = MutableLiveData<List<HumanDomain>>()
     var resultIsFilterDialogShown = MutableLiveData<Boolean>()
     var resultHumansFilter = MutableLiveData<Int>()
+    private val disposeBag = CompositeDisposable()
 
     init {
         Log.e("TAG", "MainFragment VM created")
@@ -37,14 +37,14 @@ class MainFragmentViewModel(
 
     override fun onCleared() {
         Log.e("TAG", "MainFragment VM cleared")
+        disposeBag.clear()
         super.onCleared()
     }
 
-    @SuppressLint("CheckResult")
     fun getAllHumans() {
-        Single.create {
+        val result = Single.create {
             it.onSuccess(getAllHumansUseCase.execute())
-            }
+        }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
@@ -53,14 +53,13 @@ class MainFragmentViewModel(
             }, {
                 Log.e("TAG", it.stackTrace.toString())
             })
-
+        disposeBag.add(result)
     }
 
-    @SuppressLint("CheckResult")
     fun getPositiveHumans() {
-        Single.create {
+        val result = Single.create {
             it.onSuccess(getPositiveHumansUseCase.execute())
-            }
+        }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
@@ -69,14 +68,13 @@ class MainFragmentViewModel(
             }, {
                 Log.e("TAG", it.stackTrace.toString())
             })
-
+        disposeBag.add(result)
     }
 
-    @SuppressLint("CheckResult")
     fun getNegativeHumans() {
-        Single.create {
-                it.onSuccess(getNegativeHumansUseCase.execute())
-            }
+        val result = Single.create {
+            it.onSuccess(getNegativeHumansUseCase.execute())
+        }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
@@ -85,40 +83,47 @@ class MainFragmentViewModel(
             }, {
                 Log.e("TAG", it.stackTrace.toString())
             })
+        disposeBag.add(result)
     }
 
-    @SuppressLint("CheckResult")
     fun getPositiveSum() {
-        Single.create {
-            it.onSuccess(getAllDebtsSumUseCase.execute(
-                "positive",
-                getFirstMainCurrency.execute(),
-                getSecondMainCurrency.execute()))
-            }
+        val result = Single.create {
+            it.onSuccess(
+                getAllDebtsSumUseCase.execute(
+                    "positive",
+                    getFirstMainCurrency.execute(),
+                    getSecondMainCurrency.execute()
+                )
+            )
+        }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 resultPos.value = it
-            },{
+            }, {
                 Log.e("TAG", it.stackTrace.toString())
             })
+        disposeBag.add(result)
     }
 
-    @SuppressLint("CheckResult")
     fun getNegativeSum() {
-        Single.create {
-           it.onSuccess(getAllDebtsSumUseCase.execute(
-               "negative",
-               getFirstMainCurrency.execute(),
-               getSecondMainCurrency.execute()))
+        val result = Single.create {
+            it.onSuccess(
+                getAllDebtsSumUseCase.execute(
+                    "negative",
+                    getFirstMainCurrency.execute(),
+                    getSecondMainCurrency.execute()
+                )
+            )
         }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 resultNeg.value = it
-            },{
+            }, {
                 Log.e("TAG", it.stackTrace.toString())
             })
+        disposeBag.add(result)
     }
 
     fun setFilterDialogShown(shown: Boolean) {
