@@ -311,7 +311,12 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
                 refreshAdCounter.execute()
             }
     }
-//DebtDetailsFragment interfaces
+
+    override fun onBackNewDebtButtonClick() {
+        supportFragmentManager.popBackStackImmediate()
+    }
+
+    //DebtDetailsFragment interfaces
     override fun addNewDebtFragment(idHuman: Int, currency: String, name: String) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
@@ -364,8 +369,12 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
             }
     }
 
+    override fun onBackDebtsButtonClick() {
+        supportFragmentManager.popBackStackImmediate()
+    }
+
     //settings interface
-    override fun onBackButtonClick() {
+    override fun onBackSettingsButtonClick() {
         supportFragmentManager.popBackStackImmediate()
     }
 

@@ -22,11 +22,10 @@ import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.koin.android.ext.android.inject
 
-
 class SettingsFragment: Fragment() {
 
     interface OnButtonClickListener {
-        fun onBackButtonClick()
+        fun onBackSettingsButtonClick()
 
         fun onSettingsFragmentOpen()
 
@@ -63,6 +62,11 @@ class SettingsFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_settings, container, false)
+
+        val backButton: ImageView = view.findViewById(R.id.backButton)
+        backButton.setOnClickListener {
+            buttonClickListener?.onBackSettingsButtonClick()
+        }
 
         buttonClickListener.onSettingsFragmentOpen()
 
@@ -211,7 +215,7 @@ class SettingsFragment: Fragment() {
 
         val setSettingsButton: FloatingActionButton = view.findViewById(R.id.setSettingsButton)
         setSettingsButton.setOnClickListener {
-            buttonClickListener.onBackButtonClick()
+            buttonClickListener.onBackSettingsButtonClick()
         }
 
         return view
@@ -220,7 +224,7 @@ class SettingsFragment: Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
-                buttonClickListener.onBackButtonClick()
+                buttonClickListener.onBackSettingsButtonClick()
             }
         }
         return super.onOptionsItemSelected(item)

@@ -10,13 +10,14 @@ import com.breckneck.debtbook.R
 import com.breckneck.deptbook.domain.usecase.Debt.GetDebtQuantity
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import ru.rustore.sdk.core.tasks.OnCompleteListener
 import ru.vk.store.sdk.review.RuStoreReviewManager
 import ru.vk.store.sdk.review.RuStoreReviewManagerFactory
 import ru.vk.store.sdk.review.model.ReviewInfo
 
-class MainActivityViewModel(private val getDebtQuantity: GetDebtQuantity): ViewModel() {
+class MainActivityViewModel(private val getDebtQuantity: GetDebtQuantity) : ViewModel() {
 
     var resultIsAppRateDialogShow = MutableLiveData<Boolean>()
     var resultIsAppReviewDialogShow = MutableLiveData<Boolean>()
@@ -30,6 +31,8 @@ class MainActivityViewModel(private val getDebtQuantity: GetDebtQuantity): ViewM
     private var reviewInfo: ReviewInfo? = null
     private var isInAppReviewInitCalled = false
 
+    private val disposeBag = CompositeDisposable()
+
     init {
         Log.e("TAG", "Main Activity View Model Started")
         resultIsInAppReviewTimerEnds.value = false
@@ -37,19 +40,22 @@ class MainActivityViewModel(private val getDebtQuantity: GetDebtQuantity): ViewM
 
     override fun onCleared() {
         super.onCleared()
+        disposeBag.clear()
         Log.e("TAG", "Main Activity View Model cleared")
     }
 
     fun getDebtQuantity() {
-        Single.just("1")
-            .map {
-                return@map getDebtQuantity.execute()
-            }
+        val result = Single.create {
+            it.onSuccess(getDebtQuantity.execute())
+        }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 resultDebtQuantity.value = it
-            }, {})
+            }, {
+                Log.e("TAG", it.stackTrace.toString())
+            })
+        disposeBag.add(result)
     }
 
     fun setAppRateDialogShown(shown: Boolean) {
@@ -92,7 +98,7 @@ class MainActivityViewModel(private val getDebtQuantity: GetDebtQuantity): ViewM
 
     fun startInAppReviewWithTimer() {
         if (!resultIsInAppReviewTimerEnds.value!!) {
-            object: CountDownTimer(10000, 1000) {
+            object : CountDownTimer(10000, 1000) {
                 override fun onTick(p0: Long) {
 
                 }

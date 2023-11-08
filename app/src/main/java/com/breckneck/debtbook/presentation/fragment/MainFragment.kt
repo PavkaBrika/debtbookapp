@@ -1,13 +1,9 @@
 package com.breckneck.debtbook.presentation.fragment
 
 import android.content.Context
-import android.content.Intent
 import android.graphics.Typeface
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.view.*
 import android.widget.*
@@ -15,23 +11,15 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
-import com.breckneck.debtbook.BuildConfig
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.adapter.HumanAdapter
 import com.breckneck.debtbook.presentation.viewmodel.MainFragmentViewModel
 import com.breckneck.deptbook.domain.model.HumanDomain
-import com.breckneck.deptbook.domain.usecase.Settings.GetAppIsRated
-import com.breckneck.deptbook.domain.usecase.Settings.GetDebtQuantityForAppRateDialogShow
-import com.breckneck.deptbook.domain.usecase.Settings.SetAppIsRated
-import com.breckneck.deptbook.domain.usecase.Settings.SetDebtQuantityForAppRateDialogShow
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import ru.vk.store.sdk.review.RuStoreReviewManagerFactory
-import ru.vk.store.sdk.review.model.ReviewInfo
 
 private const val ALL_HUMANS_FILTER = 1
 private const val POSITIVE_HUMANS_FILTER = 2
@@ -121,7 +109,7 @@ class MainFragment : Fragment() {
 
         buttonClickListener?.getDebtQuantity()
 
-        vm.resultHumanList.observe(requireActivity()) {
+        vm.resultHumanList.observe(viewLifecycleOwner) {
             if (it.isNotEmpty()) {
                 mainRecyclerViewHintTextView.visibility = View.VISIBLE
                 noDebtsTextView.visibility = View.INVISIBLE
@@ -136,7 +124,7 @@ class MainFragment : Fragment() {
 
         val overallPositiveSumTextView: TextView = view.findViewById(R.id.overallPositiveSumTextView)
         val overallNegativeSumTextView: TextView = view.findViewById(R.id.overallNegativeSumTextView)
-        vm.resultPos.observe(requireActivity()) {
+        vm.resultPos.observe(viewLifecycleOwner) {
             overallPositiveSumTextView.text = it
             if (it == "") {
                 overallPositiveSumTextView.visibility = View.GONE
@@ -146,7 +134,7 @@ class MainFragment : Fragment() {
             }
         }
 
-        vm.resultNeg.observe(requireActivity()) {
+        vm.resultNeg.observe(viewLifecycleOwner) {
             overallNegativeSumTextView.text = it
             if (it == "") {
                 overallNegativeSumTextView.textSize = 0F
