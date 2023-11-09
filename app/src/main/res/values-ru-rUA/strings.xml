@@ -56,4 +56,5 @@
     <string name="share_debt_in">Поделить долгом в</string>
     <string name="text_format">Текстовом формате</string>
     <string name="excel_format">Excel формате</string>
+    <string name="error">Что-то пошло не так...</string>
 </resources>

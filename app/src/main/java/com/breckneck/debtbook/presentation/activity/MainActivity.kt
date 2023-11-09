@@ -559,7 +559,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
                 val reviewInfo = task.result
                 val flow = reviewManager.launchReviewFlow(this, reviewInfo)
             } else {
-                Toast.makeText(applicationContext, "REVIEW ERROR", Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, R.string.error, Toast.LENGTH_SHORT).show()
                 vm.setAppReviewFromSettings(false)
             }
 

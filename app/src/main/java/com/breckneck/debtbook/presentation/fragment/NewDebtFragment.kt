@@ -35,17 +35,25 @@ import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import io.ghyeok.stickyswitch.widget.StickySwitch
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.BackpressureStrategy
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import org.koin.android.ext.android.inject
 import java.text.DecimalFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
 class NewDebtFragment: Fragment() {
 
     val decimalFormat = DecimalFormat("#.##")
+
+    val disposeBag = CompositeDisposable()
 
     interface OnButtonClickListener{
         fun DebtDetailsNewHuman(currency: String, name: String)
@@ -207,23 +215,23 @@ class NewDebtFragment: Fragment() {
                     if (!customSwitch.isChecked())
                         sum = (sum.toDouble() * (-1.0)).toString()
                     if (sum.toDouble() != 0.0) {
-                        Single.just(name)
-                            .map {
-                                setHumanUseCase.execute(name = name, sumDebt = sum.toDouble(), currency = currency!!)
-                                val lastId = getLastHumanIdUseCase.exectute()
-                                if (checkEditTextIsEmpty.execute(info))
-                                    setDebtUseCase.execute(sum = sum.toDouble(), idHuman = lastId, info = null, date = date)
-                                else
-                                    setDebtUseCase.execute(sum = sum.toDouble(), idHuman = lastId, info = info, date = date)
-                                Log.e("TAG", "Human id = $lastId set success")
+                         val saveNewHumanDebt = Completable.create {
+                             setHumanUseCase.execute(name = name, sumDebt = sum.toDouble(), currency = currency!!)
+                             val lastId = getLastHumanIdUseCase.exectute()
+                             if (checkEditTextIsEmpty.execute(info))
+                                 setDebtUseCase.execute(sum = sum.toDouble(), idHuman = lastId, info = null, date = date)
+                             else
+                                 setDebtUseCase.execute(sum = sum.toDouble(), idHuman = lastId, info = info, date = date)
+                             Log.e("TAG", "Human id = $lastId set success")
                             }
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe({
-                                buttonClickListener.DebtDetailsNewHuman(currency = currency!!, name = name)
-                            }, {
-
-                            })
+                             .subscribeOn(Schedulers.io())
+                             .observeOn(AndroidSchedulers.mainThread())
+                             .subscribe({
+                                 buttonClickListener.DebtDetailsNewHuman(currency = currency!!, name = name)
+                             }, {
+                                showErrorToast(it)
+                             })
+                        disposeBag.add(saveNewHumanDebt)
                     }
                     else {
                         Toast.makeText(view.context, R.string.zerodebt, Toast.LENGTH_SHORT).show()
@@ -236,22 +244,22 @@ class NewDebtFragment: Fragment() {
                     if (!customSwitch.isChecked())
                         sum = (sum.toDouble() * (-1.0)).toString()
                     if (sum.toDouble() != 0.0) {
-                        Single.just(sum)
-                            .map {
-                                if (checkEditTextIsEmpty.execute(info))
-                                    setDebtUseCase.execute(sum = sum.toDouble(), idHuman = idHuman, info = null, date = date)
-                                else
-                                    setDebtUseCase.execute(sum = sum.toDouble(), idHuman = idHuman, info = info, date = date)
-                                addSumUseCase.execute(humanId = idHuman, sum = sum.toDouble())
-                                Log.e("TAG", "New Debt in humanid = $idHuman set success")
-                            }
+                        val saveExistHumanDebt = Completable.create {
+                            if (checkEditTextIsEmpty.execute(info))
+                                setDebtUseCase.execute(sum = sum.toDouble(), idHuman = idHuman, info = null, date = date)
+                            else
+                                setDebtUseCase.execute(sum = sum.toDouble(), idHuman = idHuman, info = info, date = date)
+                            addSumUseCase.execute(humanId = idHuman, sum = sum.toDouble())
+                            Log.e("TAG", "New Debt in humanid = $idHuman set success")
+                        }
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe({
                                 buttonClickListener.DebtDetailsExistHuman(idHuman = idHuman, currency = currency!!, name = name)
                             }, {
-
+                                showErrorToast(it)
                             })
+                        disposeBag.add(saveExistHumanDebt)
                     } else {
                         Toast.makeText(view.context, R.string.zerodebt, Toast.LENGTH_SHORT).show()
                     }
@@ -263,24 +271,24 @@ class NewDebtFragment: Fragment() {
                     if (!customSwitch.isChecked())
                         sum = (sum.toDouble() * (-1.0)).toString()
                     if (sum.toDouble() != 0.0) {
-                        Single.just(sum)
-                            .map {
-                                val pastSum = arguments?.getDouble("sum")
-                                val currentSum = updateCurrentSumUseCase.execute(sum.toDouble(), pastSum!!)
-                                if (checkEditTextIsEmpty.execute(info))
-                                    editDebtUseCase.execute(id = idDebt,sum = sum.toDouble(), idHuman = idHuman, info = null, date = date)
-                                else
-                                    editDebtUseCase.execute(id = idDebt ,sum = sum.toDouble(), idHuman = idHuman, info = info, date = date)
-                                addSumUseCase.execute(humanId = idHuman, sum = currentSum)
-                                Log.e("TAG", "New Debt in humanid = $idHuman set success")
-                            }
+                        val editDebt = Completable.create {
+                            val pastSum = arguments?.getDouble("sum")
+                            val currentSum = updateCurrentSumUseCase.execute(sum.toDouble(), pastSum!!)
+                            if (checkEditTextIsEmpty.execute(info))
+                                editDebtUseCase.execute(id = idDebt,sum = sum.toDouble(), idHuman = idHuman, info = null, date = date)
+                            else
+                                editDebtUseCase.execute(id = idDebt ,sum = sum.toDouble(), idHuman = idHuman, info = info, date = date)
+                            addSumUseCase.execute(humanId = idHuman, sum = currentSum)
+                            Log.e("TAG", "New Debt in humanid = $idHuman set success")
+                        }
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe({
                                 buttonClickListener.DebtDetailsExistHuman(idHuman = idHuman, currency = currency!!, name = name)
                             }, {
-
+                                showErrorToast(it)
                             })
+                        disposeBag.add(editDebt)
                         } else {
                             Toast.makeText(view.context, R.string.zerodebt, Toast.LENGTH_SHORT).show()
                         }
@@ -319,41 +327,45 @@ class NewDebtFragment: Fragment() {
             val contactsAdapter = ContactsAdapter(contactsList = contactNameList, contactClickListener = onContactClickListener)
             contactsRecyclerView.adapter = contactsAdapter
             val contactsSearchView = bottomSheetDialog.findViewById<SearchView>(R.id.contactsSearchView)
-            contactsSearchView?.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
-                override fun onQueryTextSubmit(p0: String?): Boolean {
-                    TODO("Not yet implemented")
-                }
 
-                override fun onQueryTextChange(query: String?): Boolean {
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        if (query!!.isNotEmpty()) {
-                            val disposable = Single.just(query)
-                                .map {
-                                    val queryContactsList = ArrayList<String>()
-                                    for (contact in contactNameList) {
-                                        if (contact.lowercase().contains(it.lowercase())) {
-                                            queryContactsList.add(contact)
-                                        }
-                                    }
-                                    Collections.sort(queryContactsList, object : Comparator<String> {
-                                        override fun compare(p0: String?, p1: String?): Int {
-                                            return p0!!.compareTo(p1!!)
-                                        }
-                                    })
-                                    return@map queryContactsList
-                                }
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe({
-                                    contactsAdapter.replaceAll(it)
-                                }, {})
-                        } else {
-                            contactsAdapter.replaceAll(contactNameList)
+            val searchContactsFlowable = Flowable.create<String>({ emmiter ->
+                contactsSearchView?.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
+                    override fun onQueryTextSubmit(p0: String?): Boolean {
+                        TODO("Not yet implemented")
+                    }
+
+                    override fun onQueryTextChange(p0: String?): Boolean {
+                        if (!emmiter.isCancelled) {
+                            emmiter.onNext(p0!!)
                         }
-                    }, 500)
-                    return true
+                        return true
+                    }
+                })
+            }, BackpressureStrategy.DROP)
+                .debounce(500, TimeUnit.MILLISECONDS)
+                .map {
+                    val queryContactsList = ArrayList<String>()
+                    for (contact in contactNameList) {
+                        if (contact.lowercase().contains(it.lowercase())) {
+                            queryContactsList.add(contact)
+                        }
+                    }
+                    Collections.sort(queryContactsList, object : Comparator<String> {
+                        override fun compare(p0: String?, p1: String?): Int {
+                            return p0!!.compareTo(p1!!)
+                        }
+                    })
+                    return@map queryContactsList
                 }
-            })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    contactsAdapter.replaceAll(it)
+                }, {
+                    showErrorToast(it)
+                })
+            disposeBag.add(searchContactsFlowable)
+
             bottomSheetDialog.show()
         }
 
@@ -361,7 +373,7 @@ class NewDebtFragment: Fragment() {
             if (permission) {
                 showContacts()
             } else {
-                Toast.makeText(requireContext(), "No permission", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), R.string.no_permission, Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -375,6 +387,22 @@ class NewDebtFragment: Fragment() {
         }
         return view
     }
+
+    private fun showErrorToast(throwable: Throwable) {
+        Toast.makeText(requireContext(), R.string.error, Toast.LENGTH_SHORT).show()
+        throwable.printStackTrace()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        disposeBag.clear()
+    }
+}
+
+sealed class DebtState {
+    object HumanDebt: DebtState()
+    object ExistHumanDebt: DebtState()
+    object EditDebt: DebtState()
 }
 
 
