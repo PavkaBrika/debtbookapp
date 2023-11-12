@@ -6,8 +6,6 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Typeface
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.provider.ContactsContract
 import android.text.Editable
 import android.text.TextWatcher
@@ -35,12 +33,10 @@ import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import io.ghyeok.stickyswitch.widget.StickySwitch
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.BackpressureStrategy
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Flowable
-import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import org.koin.android.ext.android.inject
@@ -52,7 +48,6 @@ import kotlin.collections.ArrayList
 class NewDebtFragment: Fragment() {
 
     val decimalFormat = DecimalFormat("#.##")
-
     val disposeBag = CompositeDisposable()
 
     interface OnButtonClickListener{
@@ -210,90 +205,94 @@ class NewDebtFragment: Fragment() {
             var sum = debtSumEditText.text.toString()
             date = debtDateTextView.text.toString()
             val info = infoEditText.text.toString()
-            if (idHuman == null) { //if add debt in new human
-                if ((!checkEditTextIsEmpty.execute(name)) && (!checkEditTextIsEmpty.execute(sum))) { //user check if user is not bad
-                    if (!customSwitch.isChecked())
-                        sum = (sum.toDouble() * (-1.0)).toString()
-                    if (sum.toDouble() != 0.0) {
-                         val saveNewHumanDebt = Completable.create {
-                             setHumanUseCase.execute(name = name, sumDebt = sum.toDouble(), currency = currency!!)
-                             val lastId = getLastHumanIdUseCase.exectute()
-                             if (checkEditTextIsEmpty.execute(info))
-                                 setDebtUseCase.execute(sum = sum.toDouble(), idHuman = lastId, info = null, date = date)
-                             else
-                                 setDebtUseCase.execute(sum = sum.toDouble(), idHuman = lastId, info = info, date = date)
-                             Log.e("TAG", "Human id = $lastId set success")
+            when (getDebtState(idHuman = idHuman, idDebt = idDebt)) {
+                DebtState.NewHumanDebt -> {
+                    if ((!checkEditTextIsEmpty.execute(name)) && (!checkEditTextIsEmpty.execute(sum))) { //user check if user is not bad
+                        if (!customSwitch.isChecked())
+                            sum = (sum.toDouble() * (-1.0)).toString()
+                        if (sum.toDouble() != 0.0) {
+                            val saveNewHumanDebt = Completable.create {
+                                setHumanUseCase.execute(name = name, sumDebt = sum.toDouble(), currency = currency!!)
+                                val lastId = getLastHumanIdUseCase.exectute()
+                                if (checkEditTextIsEmpty.execute(info))
+                                    setDebtUseCase.execute(sum = sum.toDouble(), idHuman = lastId, info = null, date = date)
+                                else
+                                    setDebtUseCase.execute(sum = sum.toDouble(), idHuman = lastId, info = info, date = date)
+                                Log.e("TAG", "Human id = $lastId set success")
                             }
-                             .subscribeOn(Schedulers.io())
-                             .observeOn(AndroidSchedulers.mainThread())
-                             .subscribe({
-                                 buttonClickListener.DebtDetailsNewHuman(currency = currency!!, name = name)
-                             }, {
-                                showErrorToast(it)
-                             })
-                        disposeBag.add(saveNewHumanDebt)
-                    }
-                    else {
-                        Toast.makeText(view.context, R.string.zerodebt, Toast.LENGTH_SHORT).show()
-                    }
-                } else { //user check if user is bad
-                    Toast.makeText(view.context, R.string.youmustentername, Toast.LENGTH_SHORT).show()
-                }
-            } else if (idDebt == -1) { //if add debt in existing human
-                if (!checkEditTextIsEmpty.execute(sum)) { // user check if user not bad
-                    if (!customSwitch.isChecked())
-                        sum = (sum.toDouble() * (-1.0)).toString()
-                    if (sum.toDouble() != 0.0) {
-                        val saveExistHumanDebt = Completable.create {
-                            if (checkEditTextIsEmpty.execute(info))
-                                setDebtUseCase.execute(sum = sum.toDouble(), idHuman = idHuman, info = null, date = date)
-                            else
-                                setDebtUseCase.execute(sum = sum.toDouble(), idHuman = idHuman, info = info, date = date)
-                            addSumUseCase.execute(humanId = idHuman, sum = sum.toDouble())
-                            Log.e("TAG", "New Debt in humanid = $idHuman set success")
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe({
+                                    buttonClickListener.DebtDetailsNewHuman(currency = currency!!, name = name)
+                                }, {
+                                    showErrorToast(it)
+                                })
+                            disposeBag.add(saveNewHumanDebt)
                         }
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe({
-                                buttonClickListener.DebtDetailsExistHuman(idHuman = idHuman, currency = currency!!, name = name)
-                            }, {
-                                showErrorToast(it)
-                            })
-                        disposeBag.add(saveExistHumanDebt)
-                    } else {
-                        Toast.makeText(view.context, R.string.zerodebt, Toast.LENGTH_SHORT).show()
-                    }
-                } else { //if user is bad
-                    Toast.makeText(view.context, R.string.youmustentername, Toast.LENGTH_SHORT).show()
-                }
-            } else if ((idDebt != null) && (idDebt != -1)) { //if edit debt in existing human
-                if (!checkEditTextIsEmpty.execute(sum)) { // user check if user not bad
-                    if (!customSwitch.isChecked())
-                        sum = (sum.toDouble() * (-1.0)).toString()
-                    if (sum.toDouble() != 0.0) {
-                        val editDebt = Completable.create {
-                            val pastSum = arguments?.getDouble("sum")
-                            val currentSum = updateCurrentSumUseCase.execute(sum.toDouble(), pastSum!!)
-                            if (checkEditTextIsEmpty.execute(info))
-                                editDebtUseCase.execute(id = idDebt,sum = sum.toDouble(), idHuman = idHuman, info = null, date = date)
-                            else
-                                editDebtUseCase.execute(id = idDebt ,sum = sum.toDouble(), idHuman = idHuman, info = info, date = date)
-                            addSumUseCase.execute(humanId = idHuman, sum = currentSum)
-                            Log.e("TAG", "New Debt in humanid = $idHuman set success")
+                        else {
+                            Toast.makeText(view.context, R.string.zerodebt, Toast.LENGTH_SHORT).show()
                         }
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe({
-                                buttonClickListener.DebtDetailsExistHuman(idHuman = idHuman, currency = currency!!, name = name)
-                            }, {
-                                showErrorToast(it)
-                            })
-                        disposeBag.add(editDebt)
+                    } else { //user check if user is bad
+                        Toast.makeText(view.context, R.string.youmustentername, Toast.LENGTH_SHORT).show()
+                    }
+                }
+                DebtState.ExistHumanDebt -> {
+                    if (!checkEditTextIsEmpty.execute(sum)) { // user check if user not bad
+                        if (!customSwitch.isChecked())
+                            sum = (sum.toDouble() * (-1.0)).toString()
+                        if (sum.toDouble() != 0.0) {
+                            val saveExistHumanDebt = Completable.create {
+                                if (checkEditTextIsEmpty.execute(info))
+                                    setDebtUseCase.execute(sum = sum.toDouble(), idHuman = idHuman!!, info = null, date = date)
+                                else
+                                    setDebtUseCase.execute(sum = sum.toDouble(), idHuman = idHuman!!, info = info, date = date)
+                                addSumUseCase.execute(humanId = idHuman, sum = sum.toDouble())
+                                Log.e("TAG", "New Debt in humanid = $idHuman set success")
+                            }
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe({
+                                    buttonClickListener.DebtDetailsExistHuman(idHuman = idHuman!!, currency = currency!!, name = name)
+                                }, {
+                                    showErrorToast(it)
+                                })
+                            disposeBag.add(saveExistHumanDebt)
                         } else {
                             Toast.makeText(view.context, R.string.zerodebt, Toast.LENGTH_SHORT).show()
                         }
                     } else { //if user is bad
-                    Toast.makeText(view.context, R.string.youmustentername, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(view.context, R.string.youmustentername, Toast.LENGTH_SHORT).show()
+                    }
+                }
+                DebtState.EditDebt -> {
+                    if (!checkEditTextIsEmpty.execute(sum)) { // user check if user not bad
+                        if (!customSwitch.isChecked())
+                            sum = (sum.toDouble() * (-1.0)).toString()
+                        if (sum.toDouble() != 0.0) {
+                            val editDebt = Completable.create {
+                                val pastSum = arguments?.getDouble("sum")
+                                val currentSum = updateCurrentSumUseCase.execute(sum.toDouble(), pastSum!!)
+                                if (checkEditTextIsEmpty.execute(info))
+                                    editDebtUseCase.execute(id = idDebt!!,sum = sum.toDouble(), idHuman = idHuman!!, info = null, date = date)
+                                else
+                                    editDebtUseCase.execute(id = idDebt!! ,sum = sum.toDouble(), idHuman = idHuman!!, info = info, date = date)
+                                addSumUseCase.execute(humanId = idHuman, sum = currentSum)
+                                Log.e("TAG", "New Debt in humanid = $idHuman set success")
+                            }
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe({
+                                    buttonClickListener.DebtDetailsExistHuman(idHuman = idHuman!!, currency = currency!!, name = name)
+                                }, {
+                                    showErrorToast(it)
+                                })
+                            disposeBag.add(editDebt)
+                        } else {
+                            Toast.makeText(view.context, R.string.zerodebt, Toast.LENGTH_SHORT).show()
+                        }
+                    } else { //if user is bad
+                        Toast.makeText(view.context, R.string.youmustentername, Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }
@@ -388,6 +387,14 @@ class NewDebtFragment: Fragment() {
         return view
     }
 
+    private fun getDebtState(idHuman: Int?, idDebt: Int?): DebtState {
+        if (idHuman == null)
+            return DebtState.NewHumanDebt
+        if (idDebt == -1)
+            return DebtState.ExistHumanDebt
+        return DebtState.EditDebt
+    }
+
     private fun showErrorToast(throwable: Throwable) {
         Toast.makeText(requireContext(), R.string.error, Toast.LENGTH_SHORT).show()
         throwable.printStackTrace()
@@ -397,12 +404,15 @@ class NewDebtFragment: Fragment() {
         super.onDestroyView()
         disposeBag.clear()
     }
+
+    sealed class DebtState {
+        object NewHumanDebt: DebtState()
+        object ExistHumanDebt: DebtState()
+        object EditDebt: DebtState()
+    }
 }
 
-sealed class DebtState {
-    object HumanDebt: DebtState()
-    object ExistHumanDebt: DebtState()
-    object EditDebt: DebtState()
-}
+
+
 
 
