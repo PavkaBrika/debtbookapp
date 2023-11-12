@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.adapter.HumanAdapter
+import com.breckneck.debtbook.presentation.util.HumanFilters
 import com.breckneck.debtbook.presentation.viewmodel.MainFragmentViewModel
 import com.breckneck.deptbook.domain.model.HumanDomain
 import com.google.android.material.appbar.CollapsingToolbarLayout
@@ -92,12 +93,12 @@ class MainFragment : Fragment() {
         }
 
         vm.apply {
-            when (vm.resultHumansFilter.value) {
-                POSITIVE_HUMANS_FILTER -> {
+            when (vm.resultHumanFilters.value) {
+                HumanFilters.PositiveHumans -> {
                     getPositiveHumans()
                     filterButton.setColorFilter(ContextCompat.getColor(view.context, R.color.green))
                 }
-                NEGATIVE_HUMANS_FILTER -> {
+                HumanFilters.NegativeHumans -> {
                     getNegativeHumans()
                     filterButton.setColorFilter(ContextCompat.getColor(view.context, R.color.red))
                 }
@@ -153,7 +154,7 @@ class MainFragment : Fragment() {
         vm.setFilterDialogShown(true)
         bottomSheetDialogFilter.findViewById<Button>(R.id.showAllButton)!!.setOnClickListener {
             vm.getAllHumans()
-            vm.setHumansFilter(ALL_HUMANS_FILTER)
+            vm.setHumansFilter(HumanFilters.AllHumans)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 if (resources.configuration.isNightModeActive)
                     filterButton.setColorFilter(ContextCompat.getColor(requireContext(), R.color.white))
@@ -167,13 +168,13 @@ class MainFragment : Fragment() {
         bottomSheetDialogFilter.findViewById<Button>(R.id.showPositiveButton)!!.setOnClickListener {
             filterButton.setColorFilter(ContextCompat.getColor(requireContext(), R.color.green))
             vm.getPositiveHumans()
-            vm.setHumansFilter(POSITIVE_HUMANS_FILTER)
+            vm.setHumansFilter(HumanFilters.PositiveHumans)
             bottomSheetDialogFilter.cancel()
         }
         bottomSheetDialogFilter.findViewById<Button>(R.id.showNegativeButton)!!.setOnClickListener {
             filterButton.setColorFilter(ContextCompat.getColor(requireContext(), R.color.red))
             vm.getNegativeHumans()
-            vm.setHumansFilter(NEGATIVE_HUMANS_FILTER)
+            vm.setHumansFilter(HumanFilters.NegativeHumans)
             bottomSheetDialogFilter.cancel()
         }
 

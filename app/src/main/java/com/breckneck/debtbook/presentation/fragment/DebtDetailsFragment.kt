@@ -64,7 +64,6 @@ class DebtDetailsFragment: Fragment() {
     }
 
     lateinit var allDebts: List<DebtDomain>
-    lateinit var humanName: String
     var overallSum: Double = 0.0;
 
     val getLastHumanId: GetLastHumanIdUseCase by inject()

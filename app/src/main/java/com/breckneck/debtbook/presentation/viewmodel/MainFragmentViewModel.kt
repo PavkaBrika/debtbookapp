@@ -3,6 +3,7 @@ package com.breckneck.debtbook.presentation.viewmodel
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.breckneck.debtbook.presentation.util.HumanFilters
 import com.breckneck.deptbook.domain.model.HumanDomain
 import com.breckneck.deptbook.domain.usecase.Human.GetAllDebtsSumUseCase
 import com.breckneck.deptbook.domain.usecase.Human.GetAllHumansUseCase
@@ -28,7 +29,7 @@ class MainFragmentViewModel(
     var resultNeg = MutableLiveData<String>()
     var resultHumanList = MutableLiveData<List<HumanDomain>>()
     var resultIsFilterDialogShown = MutableLiveData<Boolean>()
-    var resultHumansFilter = MutableLiveData<Int>()
+    var resultHumanFilters = MutableLiveData<HumanFilters>()
     private val disposeBag = CompositeDisposable()
 
     init {
@@ -130,7 +131,7 @@ class MainFragmentViewModel(
         resultIsFilterDialogShown.value = shown
     }
 
-    fun setHumansFilter(filter: Int) {
-        resultHumansFilter.value = filter
+    fun setHumansFilter(humanFilters: HumanFilters) {
+        resultHumanFilters.value = humanFilters
     }
 }
