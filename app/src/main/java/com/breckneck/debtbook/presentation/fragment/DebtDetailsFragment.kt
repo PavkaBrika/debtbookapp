@@ -31,7 +31,9 @@ import com.breckneck.deptbook.domain.usecase.Settings.GetAddSumInShareText
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import org.koin.android.ext.android.inject
 import java.io.File
@@ -64,7 +66,8 @@ class DebtDetailsFragment: Fragment() {
     }
 
     lateinit var allDebts: List<DebtDomain>
-    var overallSum: Double = 0.0;
+    var overallSum: Double = 0.0
+    val disposeBag = CompositeDisposable()
 
     val getLastHumanId: GetLastHumanIdUseCase by inject()
     val addSumUseCase: AddSumUseCase by inject()
@@ -106,14 +109,13 @@ class DebtDetailsFragment: Fragment() {
                 val builder = AlertDialog.Builder(view.context)
                 builder.setItems(actions) {dialog, which ->
                     if (actions[which] == getString(R.string.deletedebt)) { //DELETE DEBT
-                        Single.just(actions)
-                            .map {
-                                deleteDebt.execute(debtDomain)
-                                addSumUseCase.execute(humanId = debtDomain.idHuman, sum = (debtDomain.sum * (-1.0)))
-                                setOverallSumText(sum = getHumanSumDebt.execute(idHuman!!), currency = currency!!, view = view)
-                                Log.e("TAG", "Debt delete success")
-                                return@map getAllDebts.execute(id = idHuman!!)
-                            }
+                        val deleteDebtSingle = Single.create {
+                            deleteDebt.execute(debtDomain)
+                            addSumUseCase.execute(humanId = debtDomain.idHuman, sum = (debtDomain.sum * (-1.0)))
+                            setOverallSumText(sum = getHumanSumDebt.execute(idHuman!!), currency = currency!!, view = view)
+                            Log.e("TAG", "Debt delete success")
+                            it.onSuccess(getAllDebts.execute(id = idHuman!!))
+                        }
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe({
@@ -130,14 +132,13 @@ class DebtDetailsFragment: Fragment() {
             }
         }
 
-        Single.just("1")
-            .map {
-                if (newHuman == true) {
-                    idHuman = getLastHumanId.exectute()
-                }
-                Log.e("TAG", "Open Debt Details of Human id = $idHuman")
-                return@map getAllDebts.execute(id = idHuman!!)
+        val getDebtsSingle = Single.create {
+            if (newHuman == true) {
+                idHuman = getLastHumanId.exectute()
             }
+            Log.e("TAG", "Open Debt Details of Human id = $idHuman")
+            it.onSuccess(getAllDebts.execute(id = idHuman!!))
+        }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
@@ -154,7 +155,7 @@ class DebtDetailsFragment: Fragment() {
 
             })
 
-        var overallSumTextView: TextView = view.findViewById(R.id.overallSumTextView)
+        val overallSumTextView: TextView = view.findViewById(R.id.overallSumTextView)
         Single.just(overallSumTextView)
             .map {
                 if (newHuman == true) {
