@@ -70,4 +70,7 @@
     <string name="text_format">Text format</string>
     <string name="excel_format">Excel format</string>
     <string name="error">Something went wrong…</string>
+    <string name="order_debt_sum">By debt sum</string>
+    <string name="order_by_date">By date</string>
+    <string name="order">Order</string>
 </resources>

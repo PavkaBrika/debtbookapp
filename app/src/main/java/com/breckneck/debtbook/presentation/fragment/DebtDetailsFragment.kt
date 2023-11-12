@@ -203,12 +203,26 @@ class DebtDetailsFragment: Fragment() {
             buttonClickListener?.onBackDebtsButtonClick()
         }
 
+        val orderButton: ImageView = view.findViewById(R.id.orderButton)
+        orderButton.setOnClickListener {
+            val actions = arrayOf( getString(R.string.order_debt_sum), getString(R.string.order_by_date) )
+            val builder = AlertDialog.Builder(requireContext())
+                .setTitle(R.string.order)
+                .setItems(actions) {dialog, which ->
+                    when (actions[which]) {
+                        getString(R.string.order_debt_sum) -> {
+
+                        }
+                    }
+                }
+        }
+
         val shareHumanButton: ImageView = view.findViewById(R.id.shareHumanButton)
         shareHumanButton.setOnClickListener {
             val actions = arrayOf(getString(R.string.text_format), getString(R.string.excel_format))
-            val builder = AlertDialog.Builder(requireContext())
-            builder.setTitle(R.string.share_debt_in)
-            builder.setItems(actions) {dialog, which ->
+            AlertDialog.Builder(requireContext())
+                .setTitle(R.string.share_debt_in)
+                .setItems(actions) {dialog, which ->
                 if (actions[which] == getString(R.string.text_format)) {
                     val intent = Intent(ACTION_SEND)
                     intent.type = "text/plain"
@@ -230,7 +244,7 @@ class DebtDetailsFragment: Fragment() {
                     startActivity(createChooser(intent, humanName))
                 }
             }
-            builder.show()
+                .show()
         }
 
         val addDebtButton: FloatingActionButton = view.findViewById(R.id.addDebtButton)
