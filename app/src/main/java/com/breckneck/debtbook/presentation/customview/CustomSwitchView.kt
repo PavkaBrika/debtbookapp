@@ -20,8 +20,8 @@ class CustomSwitchView(context: Context, attrs: AttributeSet) : View(context, at
     private val DEFAULT_ENABLED_BACKGROUND_COLOR = Color.parseColor("#4dba34")
     private val DEFAULT_DISABLED_BACKGROUND_COLOR = Color.parseColor("#b04c4c")
     private val DEFAULT_TEXT_COLOR = Color.parseColor("#ffffff")
-    private val DEFAULT_ENABLED_TEXT_COLOR = Color.parseColor("#ffffff")
-    private val DEFAULT_DISABLED_TEXT_COLOR = Color.parseColor("#ffffff")
+    private val DEFAULT_ENABLED_TEXT_COLOR = Color.parseColor("#000000")
+    private val DEFAULT_DISABLED_TEXT_COLOR = Color.parseColor("#000000")
     private val DEFAULT_ENABLED_TEXT = "Enabled"
     private val DEFAULT_DISABLED_TEXT = "Disabled"
     private val DEFAULT_ENABLED = true
@@ -29,7 +29,7 @@ class CustomSwitchView(context: Context, attrs: AttributeSet) : View(context, at
     private var backgroundColor = Color.GRAY
     private var enabledBackgroundColor = Color.GREEN
     private var disabledBackgroundColor = Color.RED
-    private var textColor = Color.WHITE
+    private var textColor = Color.BLACK
     private var enabledTextColor = Color.RED
     private var disabledTextColor = Color.GREEN
     private var enabledText = "Enabled"
@@ -131,15 +131,11 @@ class CustomSwitchView(context: Context, attrs: AttributeSet) : View(context, at
     }
 
     private fun drawStateRect(canvas: Canvas) {
-//        if (isEnabled) {
-//            stateRectPaint.color = enabledBackgroundColor
-//            stateRect.right = bodyRect.right / 2
-//            stateRect.left = 0
-//        } else {
-//            stateRectPaint.color = disabledBackgroundColor
-//            stateRect.right = bodyRect.right
-//            stateRect.left = bodyRect.right / 2
-//        }
+        if (isEnabled) {
+            stateRectPaint.color = enabledBackgroundColor
+        } else {
+            stateRectPaint.color = disabledBackgroundColor
+        }
         canvas.drawRoundRect(RectF(stateRect), 15F, 15F, stateRectPaint)
         invalidate()
         requestLayout()
