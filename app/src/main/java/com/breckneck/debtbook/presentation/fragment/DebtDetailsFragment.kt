@@ -32,6 +32,7 @@ import com.breckneck.deptbook.domain.usecase.Settings.GetAddSumInShareText
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -134,11 +135,10 @@ class DebtDetailsFragment: Fragment() {
             builder.setMessage(R.string.payoffMessage)
             builder.setPositiveButton(R.string.yes, object: DialogInterface.OnClickListener {
                 override fun onClick(p0: DialogInterface?, p1: Int) {
-                    val deleteHumanSingle = Single.create {
-                        it.onSuccess {
-                            deleteHuman.execute(id = vm.humanId.value!!)
-                            deleteDebtsByHumanId.execute(id = vm.humanId.value!!)
-                        }
+                    val deleteHumanCompletable = Completable.create {
+                        deleteHuman.execute(id = vm.humanId.value!!)
+                        deleteDebtsByHumanId.execute(id = vm.humanId.value!!)
+                        it.onComplete()
                     }
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -147,7 +147,7 @@ class DebtDetailsFragment: Fragment() {
                         },{
                             it.printStackTrace()
                         })
-                    disposeBag.add(deleteHumanSingle)
+                    disposeBag.add(deleteHumanCompletable)
                     buttonClickListener?.deleteHuman()
                 }
             })
@@ -161,16 +161,17 @@ class DebtDetailsFragment: Fragment() {
                 val builder = AlertDialog.Builder(view.context)
                 builder.setItems(actions) {dialog, which ->
                     if (actions[which] == getString(R.string.deletedebt)) { //DELETE DEBT
-                        val deleteDebtSingle = Single.create {
+                        val deleteDebtSingle = Completable.create {
                             deleteDebt.execute(debtDomain)
                             addSumUseCase.execute(humanId = vm.humanId.value!!, sum = (debtDomain.sum * (-1.0)))
                             vm.getOverallSum()
                             Log.e("TAG", "Debt delete success")
-                            it.onSuccess(vm.getAllDebts())
+                            it.onComplete()
                         }
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe({
+                                vm.getAllDebts()
                                 Log.e("TAG", "Debts load success")
                             },{
                                 it.printStackTrace()
