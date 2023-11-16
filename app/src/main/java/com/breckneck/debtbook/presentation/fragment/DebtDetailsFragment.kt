@@ -123,6 +123,7 @@ class DebtDetailsFragment: Fragment() {
                                 recyclerView.adapter = adapter
                                 Log.e("TAG", "Debts load success")
                             },{})
+                        disposeBag.add(deleteDebtSingle)
                     } else { //EDIT DEBT
                         buttonClickListener?.editDebt(debtDomain = debtDomain, currency = currency!!, name = humanName!!)
                     }
@@ -152,24 +153,26 @@ class DebtDetailsFragment: Fragment() {
                 }
                 Log.e("TAG", "Debts load success")
             }, {
-
+                it.printStackTrace()
             })
+        disposeBag.add(getDebtsSingle)
 
         val overallSumTextView: TextView = view.findViewById(R.id.overallSumTextView)
-        Single.just(overallSumTextView)
-            .map {
-                if (newHuman == true) {
-                    idHuman = getLastHumanId.exectute()
-                }
-                return@map getHumanSumDebt.execute(idHuman!!)
+        val setOverallSumTextSingle = Single.create {
+            if (newHuman == true) {
+                idHuman = getLastHumanId.exectute()
             }
+            it.onSuccess(getHumanSumDebt.execute(idHuman!!))
+        }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 setOverallSumText(sum = it, currency = currency!!, view = view)
                 overallSum = it
             }, {
+                it.printStackTrace()
             })
+        disposeBag.add(setOverallSumTextSingle)
 
         val deleteHumanButton: ImageView = view.findViewById(R.id.deleteHumanButton)
         deleteHumanButton.setOnClickListener {
@@ -178,19 +181,23 @@ class DebtDetailsFragment: Fragment() {
             builder.setMessage(R.string.payoffMessage)
             builder.setPositiveButton(R.string.yes, object: DialogInterface.OnClickListener {
                 override fun onClick(p0: DialogInterface?, p1: Int) {
-                    Single.just(deleteHumanButton)
-                        .map {
-                            if (newHuman == true) {
-                                idHuman = getLastHumanId.exectute()
-                            }
+                    val deleteHumanSingle = Single.create {
+                        if (newHuman == true) {
+                            idHuman = getLastHumanId.exectute()
+                        }
+                        it.onSuccess {
                             deleteHuman.execute(id = idHuman!!)
                             deleteDebtsByHumanId.execute(id = idHuman!!)
                         }
+                    }
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({
                             Log.e("TAG", "Human with id = $idHuman deleted")
-                        },{})
+                        },{
+                            it.printStackTrace()
+                        })
+                    disposeBag.add(deleteHumanSingle)
                     buttonClickListener?.deleteHuman()
                 }
             })
