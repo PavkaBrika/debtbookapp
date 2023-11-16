@@ -1,5 +1,6 @@
 package com.breckneck.debtbook.di
 
+import com.breckneck.debtbook.presentation.viewmodel.DebtDetailsViewModel
 import com.breckneck.debtbook.presentation.viewmodel.MainActivityViewModel
 import com.breckneck.debtbook.presentation.viewmodel.MainFragmentViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -21,5 +22,9 @@ val appModule = module {
 
     viewModel<MainActivityViewModel> {
         MainActivityViewModel(getDebtQuantity = get())
+    }
+
+    viewModel<DebtDetailsViewModel> {
+        DebtDetailsViewModel(getAllDebtsUseCase = get(), getLastHumanIdUseCase = get(), getHumanSumDebtUseCase = get())
     }
 }

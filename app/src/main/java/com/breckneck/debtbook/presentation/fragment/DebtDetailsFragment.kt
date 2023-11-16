@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.adapter.DebtAdapter
+import com.breckneck.debtbook.presentation.viewmodel.DebtDetailsViewModel
 import com.breckneck.deptbook.domain.model.DebtDomain
 import com.breckneck.deptbook.domain.usecase.Debt.*
 import com.breckneck.deptbook.domain.usecase.Human.*
@@ -31,11 +32,11 @@ import com.breckneck.deptbook.domain.usecase.Settings.GetAddSumInShareText
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
@@ -65,16 +66,15 @@ class DebtDetailsFragment: Fragment() {
         enterTransition = inflater.inflateTransition(R.transition.slide_right)
     }
 
-    lateinit var allDebts: List<DebtDomain>
     var overallSum: Double = 0.0
     val disposeBag = CompositeDisposable()
 
-    val getLastHumanId: GetLastHumanIdUseCase by inject()
+    private val vm by viewModel<DebtDetailsViewModel>()
+
     val addSumUseCase: AddSumUseCase by inject()
     val getHumanSumDebt: GetHumanSumDebtUseCase by inject()
     val deleteHuman: DeleteHumanUseCase by inject()
 
-    val getAllDebts: GetAllDebtsUseCase by inject()
     val deleteDebt: DeleteDebtUseCase by inject()
     val deleteDebtsByHumanId: DeleteDebtsByHumanIdUseCase by inject()
     val getDebtShareString: GetDebtShareString by inject()
@@ -91,7 +91,7 @@ class DebtDetailsFragment: Fragment() {
 
         val debtRecyclerViewHintTextView: TextView = view.findViewById(R.id.debtRecyclerViewHintTextView)
 
-        var idHuman = arguments?.getInt("idHuman", 0)
+        var humanId = arguments?.getInt("idHuman", 0)
         val newHuman = arguments?.getBoolean("newHuman", false)
         val currency = arguments?.getString("currency")
         val humanName = arguments?.getString("name")
@@ -103,75 +103,29 @@ class DebtDetailsFragment: Fragment() {
             setExpandedTitleTypeface(Typeface.DEFAULT_BOLD)
         }
 
-        val actions = arrayOf(getString(R.string.deletedebt), getString(R.string.editdebt))
-        debtClickListener = object : DebtAdapter.OnDebtClickListener{ //ALERT DIALOG
-            override fun onDebtClick(debtDomain: DebtDomain, position: Int) {
-                val builder = AlertDialog.Builder(view.context)
-                builder.setItems(actions) {dialog, which ->
-                    if (actions[which] == getString(R.string.deletedebt)) { //DELETE DEBT
-                        val deleteDebtSingle = Single.create {
-                            deleteDebt.execute(debtDomain)
-                            addSumUseCase.execute(humanId = debtDomain.idHuman, sum = (debtDomain.sum * (-1.0)))
-                            setOverallSumText(sum = getHumanSumDebt.execute(idHuman!!), currency = currency!!, view = view)
-                            Log.e("TAG", "Debt delete success")
-                            it.onSuccess(getAllDebts.execute(id = idHuman!!))
-                        }
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe({
-                                val adapter = DebtAdapter(it, debtClickListener, currency!!)
-                                recyclerView.adapter = adapter
-                                Log.e("TAG", "Debts load success")
-                            },{})
-                        disposeBag.add(deleteDebtSingle)
-                    } else { //EDIT DEBT
-                        buttonClickListener?.editDebt(debtDomain = debtDomain, currency = currency!!, name = humanName!!)
-                    }
-                }
-                builder.show()
-                Log.e("TAG", "Click on debt with id = ${debtDomain.id}")
+        vm.apply {
+            if (newHuman == true) {
+                getLastHumanId()
+            } else {
+                this.humanId.value = humanId
+            }
+            getAllDebts()
+            getOverallSum()
+        }
+
+        vm.debtList.observe(viewLifecycleOwner) {
+            val adapter = DebtAdapter(it, debtClickListener, currency!!)
+            recyclerView.adapter = adapter
+            if (it.isNotEmpty()) {
+                debtRecyclerViewHintTextView.visibility = View.VISIBLE
+            } else {
+                debtRecyclerViewHintTextView.visibility = View.INVISIBLE
             }
         }
 
-        val getDebtsSingle = Single.create {
-            if (newHuman == true) {
-                idHuman = getLastHumanId.exectute()
-            }
-            Log.e("TAG", "Open Debt Details of Human id = $idHuman")
-            it.onSuccess(getAllDebts.execute(id = idHuman!!))
+        vm.overallSum.observe(viewLifecycleOwner) {
+            setOverallSumText(sum = it, currency = currency!!, view = view)
         }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                val adapter = DebtAdapter(it, debtClickListener, currency!!)
-                recyclerView.adapter = adapter
-                allDebts = it
-                if (allDebts.isNotEmpty()) {
-                    debtRecyclerViewHintTextView.visibility = View.VISIBLE
-                } else {
-                    debtRecyclerViewHintTextView.visibility = View.INVISIBLE
-                }
-                Log.e("TAG", "Debts load success")
-            }, {
-                it.printStackTrace()
-            })
-        disposeBag.add(getDebtsSingle)
-
-        val setOverallSumTextSingle = Single.create {
-            if (newHuman == true) {
-                idHuman = getLastHumanId.exectute()
-            }
-            it.onSuccess(getHumanSumDebt.execute(idHuman!!))
-        }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                setOverallSumText(sum = it, currency = currency!!, view = view)
-                overallSum = it
-            }, {
-                it.printStackTrace()
-            })
-        disposeBag.add(setOverallSumTextSingle)
 
         val deleteHumanButton: ImageView = view.findViewById(R.id.deleteHumanButton)
         deleteHumanButton.setOnClickListener {
@@ -181,18 +135,15 @@ class DebtDetailsFragment: Fragment() {
             builder.setPositiveButton(R.string.yes, object: DialogInterface.OnClickListener {
                 override fun onClick(p0: DialogInterface?, p1: Int) {
                     val deleteHumanSingle = Single.create {
-                        if (newHuman == true) {
-                            idHuman = getLastHumanId.exectute()
-                        }
                         it.onSuccess {
-                            deleteHuman.execute(id = idHuman!!)
-                            deleteDebtsByHumanId.execute(id = idHuman!!)
+                            deleteHuman.execute(id = vm.humanId.value!!)
+                            deleteDebtsByHumanId.execute(id = vm.humanId.value!!)
                         }
                     }
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({
-                            Log.e("TAG", "Human with id = $idHuman deleted")
+                            Log.e("TAG", "Human with id = ${vm.humanId.value} deleted")
                         },{
                             it.printStackTrace()
                         })
@@ -204,15 +155,40 @@ class DebtDetailsFragment: Fragment() {
             builder.show()
         }
 
-        val backButton: ImageView = view.findViewById(R.id.backButton)
-        backButton.setOnClickListener {
-            buttonClickListener?.onBackDebtsButtonClick()
+        val actions = arrayOf(getString(R.string.deletedebt), getString(R.string.editdebt))
+        debtClickListener = object : DebtAdapter.OnDebtClickListener{ //ALERT DIALOG
+            override fun onDebtClick(debtDomain: DebtDomain, position: Int) {
+                val builder = AlertDialog.Builder(view.context)
+                builder.setItems(actions) {dialog, which ->
+                    if (actions[which] == getString(R.string.deletedebt)) { //DELETE DEBT
+                        val deleteDebtSingle = Single.create {
+                            deleteDebt.execute(debtDomain)
+                            addSumUseCase.execute(humanId = vm.humanId.value!!, sum = (debtDomain.sum * (-1.0)))
+                            vm.getOverallSum()
+                            Log.e("TAG", "Debt delete success")
+                            it.onSuccess(vm.getAllDebts())
+                        }
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe({
+                                Log.e("TAG", "Debts load success")
+                            },{
+                                it.printStackTrace()
+                            })
+                        disposeBag.add(deleteDebtSingle)
+                    } else { //EDIT DEBT
+                        buttonClickListener?.editDebt(debtDomain = debtDomain, currency = currency!!, name = humanName!!)
+                    }
+                }
+                builder.show()
+                Log.e("TAG", "Click on debt with id = ${debtDomain.id}")
+            }
         }
 
         val orderButton: ImageView = view.findViewById(R.id.orderButton)
         orderButton.setOnClickListener {
             val actions = arrayOf( getString(R.string.order_debt_sum), getString(R.string.order_by_date) )
-            val builder = AlertDialog.Builder(requireContext())
+            AlertDialog.Builder(requireContext())
                 .setTitle(R.string.order)
                 .setItems(actions) {dialog, which ->
                     when (actions[which]) {
@@ -221,6 +197,7 @@ class DebtDetailsFragment: Fragment() {
                         }
                     }
                 }
+                .show()
         }
 
         val shareHumanButton: ImageView = view.findViewById(R.id.shareHumanButton)
@@ -233,13 +210,13 @@ class DebtDetailsFragment: Fragment() {
                     val intent = Intent(ACTION_SEND)
                     intent.type = "text/plain"
                     intent.putExtra(EXTRA_SUBJECT, humanName)
-                    intent.putExtra(EXTRA_TEXT, getDebtShareString.execute(debtList = allDebts, name = humanName!!, currency = currency!!, sum = overallSum, getAddSumInShareText.execute()))
+                    intent.putExtra(EXTRA_TEXT, getDebtShareString.execute(debtList = vm.debtList.value!!, name = humanName!!, currency = currency!!, sum = vm.overallSum.value!!, getAddSumInShareText.execute()))
                     startActivity(createChooser(intent, humanName))
                 } else {
                     var rootFolder = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString())
                     rootFolder = File(rootFolder, "DebtBookFiles")
                     val sheetTitles = arrayOf(getString(R.string.date), "${getString(R.string.sum)} ($currency)", getString(R.string.comment))
-                    val excelFile = ExportDebtDataInExcelUseCase().execute(debtList = allDebts, sheetName = "${humanName}_debts", rootFolder = rootFolder, sheetTitles = sheetTitles)
+                    val excelFile = ExportDebtDataInExcelUseCase().execute(debtList = vm.debtList.value!!, sheetName = "${humanName}_debts", rootFolder = rootFolder, sheetTitles = sheetTitles)
                     if (excelFile.exists())
                         Toast.makeText(requireContext(), R.string.excel_folder_toast_hint, Toast.LENGTH_SHORT).show()
                     val intent = Intent(ACTION_SEND)
@@ -255,9 +232,14 @@ class DebtDetailsFragment: Fragment() {
 
         val addDebtButton: FloatingActionButton = view.findViewById(R.id.addDebtButton)
         addDebtButton.setOnClickListener{
-            if (idHuman != null) {
-                buttonClickListener?.addNewDebtFragment(idHuman = idHuman!!, currency = currency!!, name = humanName!!)
+            if (vm.humanId.value != null) {
+                buttonClickListener?.addNewDebtFragment(idHuman = vm.humanId.value!!, currency = currency!!, name = humanName!!)
             }
+        }
+
+        val backButton: ImageView = view.findViewById(R.id.backButton)
+        backButton.setOnClickListener {
+            buttonClickListener?.onBackDebtsButtonClick()
         }
 
         return view
