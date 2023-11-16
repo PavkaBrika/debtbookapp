@@ -157,7 +157,6 @@ class DebtDetailsFragment: Fragment() {
             })
         disposeBag.add(getDebtsSingle)
 
-        val overallSumTextView: TextView = view.findViewById(R.id.overallSumTextView)
         val setOverallSumTextSingle = Single.create {
             if (newHuman == true) {
                 idHuman = getLastHumanId.exectute()
@@ -281,5 +280,10 @@ class DebtDetailsFragment: Fragment() {
             overallSumTextView.setTextColor(ContextCompat.getColor(view.context, R.color.darkgray))
             overallSumTextView.text = "${decimalFormat.format(sum)} $currency"
         }
+    }
+
+    override fun onDestroyView() {
+        disposeBag.clear()
+        super.onDestroyView()
     }
 }
