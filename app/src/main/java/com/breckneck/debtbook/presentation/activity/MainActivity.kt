@@ -551,21 +551,6 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         lowRateBottomSheetDialog.show()
     }
 
-    private fun showInAppReview() {
-        val reviewManager = ReviewManagerFactory.create(applicationContext)
-        val requestReviewFlow = reviewManager.requestReviewFlow()
-        requestReviewFlow.addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                val reviewInfo = task.result
-                val flow = reviewManager.launchReviewFlow(this, reviewInfo)
-            } else {
-                Toast.makeText(applicationContext, R.string.error, Toast.LENGTH_SHORT).show()
-                vm.setAppReviewFromSettings(false)
-            }
-
-        }
-    }
-
     override fun onSettingsFragmentOpen() {
         vm.initInAppReview(this)
     }

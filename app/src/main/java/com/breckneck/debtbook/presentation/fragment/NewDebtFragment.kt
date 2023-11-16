@@ -218,6 +218,7 @@ class NewDebtFragment: Fragment() {
                                     setDebtUseCase.execute(sum = sum.toDouble(), idHuman = lastId, info = null, date = date)
                                 else
                                     setDebtUseCase.execute(sum = sum.toDouble(), idHuman = lastId, info = info, date = date)
+                                it.onComplete()
                                 Log.e("TAG", "Human id = $lastId set success")
                             }
                                 .subscribeOn(Schedulers.io())
@@ -247,6 +248,7 @@ class NewDebtFragment: Fragment() {
                                 else
                                     setDebtUseCase.execute(sum = sum.toDouble(), idHuman = idHuman!!, info = info, date = date)
                                 addSumUseCase.execute(humanId = idHuman, sum = sum.toDouble())
+                                it.onComplete()
                                 Log.e("TAG", "New Debt in humanid = $idHuman set success")
                             }
                                 .subscribeOn(Schedulers.io())
@@ -278,6 +280,7 @@ class NewDebtFragment: Fragment() {
                                     editDebtUseCase.execute(id = idDebt!! ,sum = sum.toDouble(), idHuman = idHuman!!, info = info, date = date)
                                 addSumUseCase.execute(humanId = idHuman, sum = currentSum)
                                 Log.e("TAG", "New Debt in humanid = $idHuman set success")
+                                it.onComplete()
                             }
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
