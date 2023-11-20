@@ -33,7 +33,6 @@ import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Completable
-import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import org.koin.android.ext.android.inject
@@ -67,17 +66,10 @@ class DebtDetailsFragment: Fragment() {
         enterTransition = inflater.inflateTransition(R.transition.slide_right)
     }
 
-    var overallSum: Double = 0.0
     val disposeBag = CompositeDisposable()
 
     private val vm by viewModel<DebtDetailsViewModel>()
 
-    val addSumUseCase: AddSumUseCase by inject()
-    val getHumanSumDebt: GetHumanSumDebtUseCase by inject()
-    val deleteHuman: DeleteHumanUseCase by inject()
-
-    val deleteDebt: DeleteDebtUseCase by inject()
-    val deleteDebtsByHumanId: DeleteDebtsByHumanIdUseCase by inject()
     val getDebtShareString: GetDebtShareString by inject()
     val getAddSumInShareText: GetAddSumInShareText by inject()
 
@@ -135,19 +127,7 @@ class DebtDetailsFragment: Fragment() {
             builder.setMessage(R.string.payoffMessage)
             builder.setPositiveButton(R.string.yes, object: DialogInterface.OnClickListener {
                 override fun onClick(p0: DialogInterface?, p1: Int) {
-                    val deleteHumanCompletable = Completable.create {
-                        deleteHuman.execute(id = vm.humanId.value!!)
-                        deleteDebtsByHumanId.execute(id = vm.humanId.value!!)
-                        it.onComplete()
-                    }
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({
-                            Log.e("TAG", "Human with id = ${vm.humanId.value} deleted")
-                        },{
-                            it.printStackTrace()
-                        })
-                    disposeBag.add(deleteHumanCompletable)
+                    vm.deleteHuman()
                     buttonClickListener?.deleteHuman()
                 }
             })
@@ -161,22 +141,7 @@ class DebtDetailsFragment: Fragment() {
                 val builder = AlertDialog.Builder(view.context)
                 builder.setItems(actions) {dialog, which ->
                     if (actions[which] == getString(R.string.deletedebt)) { //DELETE DEBT
-                        val deleteDebtSingle = Completable.create {
-                            deleteDebt.execute(debtDomain)
-                            addSumUseCase.execute(humanId = vm.humanId.value!!, sum = (debtDomain.sum * (-1.0)))
-                            vm.getOverallSum()
-                            Log.e("TAG", "Debt delete success")
-                            it.onComplete()
-                        }
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe({
-                                vm.getAllDebts()
-                                Log.e("TAG", "Debts load success")
-                            },{
-                                it.printStackTrace()
-                            })
-                        disposeBag.add(deleteDebtSingle)
+                        vm.deleteDebt(debtDomain = debtDomain)
                     } else { //EDIT DEBT
                         buttonClickListener?.editDebt(debtDomain = debtDomain, currency = currency!!, name = humanName!!)
                     }
