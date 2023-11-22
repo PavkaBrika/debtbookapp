@@ -16,7 +16,6 @@ val appModule = module {
             getNegativeHumansUseCase = get(),
             getFirstMainCurrency = get(),
             getSecondMainCurrency = get(),
-
         )
     }
 
@@ -25,6 +24,16 @@ val appModule = module {
     }
 
     viewModel<DebtDetailsViewModel> {
-        DebtDetailsViewModel(getAllDebtsUseCase = get(), getLastHumanIdUseCase = get(), getHumanSumDebtUseCase = get())
+        DebtDetailsViewModel(
+            getAllDebtsUseCase = get(),
+            getLastHumanIdUseCase = get(),
+            getHumanSumDebtUseCase = get(),
+            deleteHumanUseCase = get(),
+            deleteDebtsByHumanIdUseCase = get(),
+            deleteDebtUseCase = get(),
+            addSumUseCase = get(),
+            getDebtOrder = get(),
+            setDebtOrder = get()
+        )
     }
 }

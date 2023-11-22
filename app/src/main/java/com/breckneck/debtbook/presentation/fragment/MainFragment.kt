@@ -22,10 +22,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-private const val ALL_HUMANS_FILTER = 1
-private const val POSITIVE_HUMANS_FILTER = 2
-private const val NEGATIVE_HUMANS_FILTER = 3
-
 class MainFragment : Fragment() {
     private val vm by viewModel<MainFragmentViewModel>()
 
@@ -93,7 +89,7 @@ class MainFragment : Fragment() {
         }
 
         vm.apply {
-            when (vm.resultHumanFilters.value) {
+            when (vm.resultHumanFilters.value!!) {
                 HumanFilters.PositiveHumans -> {
                     getPositiveHumans()
                     filterButton.setColorFilter(ContextCompat.getColor(view.context, R.color.green))
@@ -102,7 +98,7 @@ class MainFragment : Fragment() {
                     getNegativeHumans()
                     filterButton.setColorFilter(ContextCompat.getColor(view.context, R.color.red))
                 }
-                else -> getAllHumans()
+                HumanFilters.AllHumans -> getAllHumans()
             }
             getNegativeSum()
             getPositiveSum()

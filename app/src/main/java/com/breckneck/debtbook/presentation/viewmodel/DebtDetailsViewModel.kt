@@ -13,6 +13,8 @@ import com.breckneck.deptbook.domain.usecase.Human.AddSumUseCase
 import com.breckneck.deptbook.domain.usecase.Human.DeleteHumanUseCase
 import com.breckneck.deptbook.domain.usecase.Human.GetHumanSumDebtUseCase
 import com.breckneck.deptbook.domain.usecase.Human.GetLastHumanIdUseCase
+import com.breckneck.deptbook.domain.usecase.Settings.GetDebtOrder
+import com.breckneck.deptbook.domain.usecase.Settings.SetDebtOrder
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
@@ -26,13 +28,17 @@ class DebtDetailsViewModel(
     private val deleteHumanUseCase: DeleteHumanUseCase,
     private val deleteDebtsByHumanIdUseCase: DeleteDebtsByHumanIdUseCase,
     private val deleteDebtUseCase: DeleteDebtUseCase,
-    private val addSumUseCase: AddSumUseCase
+    private val addSumUseCase: AddSumUseCase,
+    private val getDebtOrder: GetDebtOrder,
+    private val setDebtOrder: SetDebtOrder
 ): ViewModel() {
 
 
     val debtList = MutableLiveData<List<DebtDomain>>()
     val humanId = MutableLiveData<Int>()
     val overallSum = MutableLiveData<Double>()
+    val isOrderDialogShown = MutableLiveData<Boolean>()
+    val debtOrder = MutableLiveData<Pair<Int, Boolean>>()
     private val disposeBag = CompositeDisposable()
 
     init {
@@ -43,6 +49,10 @@ class DebtDetailsViewModel(
         super.onCleared()
         disposeBag.clear()
         Log.e("TAG", "Debt Fragment View Model cleared")
+    }
+
+    fun getDebtOrder() {
+        getDebtOrder.
     }
 
     fun getAllDebts() {

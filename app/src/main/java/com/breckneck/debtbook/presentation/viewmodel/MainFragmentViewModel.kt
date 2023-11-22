@@ -34,6 +34,7 @@ class MainFragmentViewModel(
 
     init {
         Log.e("TAG", "MainFragment VM created")
+        resultHumanFilters.value = HumanFilters.AllHumans
     }
 
     override fun onCleared() {

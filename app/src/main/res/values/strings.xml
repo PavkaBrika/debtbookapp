@@ -73,4 +73,8 @@
     <string name="order_debt_sum">By debt sum</string>
     <string name="order_by_date">By date</string>
     <string name="order">Order</string>
+    <string name="order_by">Order by</string>
+    <string name="remember_choice">Remember choice</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
 </resources>

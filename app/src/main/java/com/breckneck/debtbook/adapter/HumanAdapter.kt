@@ -23,7 +23,6 @@ class HumanAdapter(
         fun onHumanClick(humanDomain: HumanDomain, position: Int)
     }
 
-
     class HumanViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val name: TextView = itemView.findViewById(R.id.name)
         val debt: TextView = itemView.findViewById(R.id.debt)

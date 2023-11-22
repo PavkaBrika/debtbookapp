@@ -14,7 +14,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.CheckBox
 import android.widget.ImageView
+import android.widget.RadioGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -29,7 +32,10 @@ import com.breckneck.deptbook.domain.model.DebtDomain
 import com.breckneck.deptbook.domain.usecase.Debt.*
 import com.breckneck.deptbook.domain.usecase.Human.*
 import com.breckneck.deptbook.domain.usecase.Settings.GetAddSumInShareText
+import com.breckneck.deptbook.domain.usecase.Settings.GetDebtOrder
+import com.breckneck.deptbook.domain.usecase.Settings.SetDebtOrder
 import com.google.android.material.appbar.CollapsingToolbarLayout
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Completable
@@ -84,7 +90,7 @@ class DebtDetailsFragment: Fragment() {
 
         val debtRecyclerViewHintTextView: TextView = view.findViewById(R.id.debtRecyclerViewHintTextView)
 
-        var humanId = arguments?.getInt("idHuman", 0)
+        val humanId = arguments?.getInt("idHuman", 0)
         val newHuman = arguments?.getBoolean("newHuman", false)
         val currency = arguments?.getString("currency")
         val humanName = arguments?.getString("name")
@@ -104,6 +110,8 @@ class DebtDetailsFragment: Fragment() {
             }
             getAllDebts()
             getOverallSum()
+            if ((isOrderDialogShown.value != null) && (isOrderDialogShown.value == true))
+                showOrderDialog()
         }
 
         vm.debtList.observe(viewLifecycleOwner) {
@@ -153,17 +161,7 @@ class DebtDetailsFragment: Fragment() {
 
         val orderButton: ImageView = view.findViewById(R.id.orderButton)
         orderButton.setOnClickListener {
-            val actions = arrayOf( getString(R.string.order_debt_sum), getString(R.string.order_by_date) )
-            AlertDialog.Builder(requireContext())
-                .setTitle(R.string.order)
-                .setItems(actions) {dialog, which ->
-                    when (actions[which]) {
-                        getString(R.string.order_debt_sum) -> {
-
-                        }
-                    }
-                }
-                .show()
+            showOrderDialog()
         }
 
         val shareHumanButton: ImageView = view.findViewById(R.id.shareHumanButton)
@@ -228,6 +226,30 @@ class DebtDetailsFragment: Fragment() {
             overallSumTextView.setTextColor(ContextCompat.getColor(view.context, R.color.darkgray))
             overallSumTextView.text = "${decimalFormat.format(sum)} $currency"
         }
+    }
+
+    private fun showOrderDialog() {
+        val orderDialog = BottomSheetDialog(requireContext())
+        orderDialog.setContentView(R.layout.dialog_order_settings)
+        val rememberChoiceCheckBox = orderDialog.findViewById<CheckBox>(R.id.rememberChoiceCheckBox)
+        orderDialog.findViewById<Button>(R.id.confirmButton)!!.setOnClickListener {
+            when (orderDialog.findViewById<RadioGroup>(R.id.orderRadioGroup)!!.checkedRadioButtonId) {
+                R.id.orderDateRadioButton -> {
+                    if (rememberChoiceCheckBox!!.isChecked) {
+
+                    }
+
+                }
+                R.id.orderSumRadioButton -> {
+
+                }
+            }
+        }
+        orderDialog.findViewById<Button>(R.id.cancelButton)!!.setOnClickListener {
+            orderDialog.dismiss()
+        }
+        orderDialog.show()
+        vm.isOrderDialogShown.value = true
     }
 
     override fun onDestroyView() {

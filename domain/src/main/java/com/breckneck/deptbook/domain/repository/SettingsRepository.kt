@@ -1,5 +1,7 @@
 package com.breckneck.deptbook.domain.repository
 
+import com.breckneck.deptbook.domain.util.DebtOrderAttribute
+
 interface SettingsRepository {
 
     fun setFirstMainCurrency(currency: String)
@@ -29,4 +31,8 @@ interface SettingsRepository {
     fun setDebtQuantityForAppRateDialogShow(quantity: Int)
 
     fun getDebtQuantityForAppRateDialogShow(): Int
+
+    fun setDebtOrder(order: Pair<DebtOrderAttribute, Boolean>)
+
+    fun getDebtOrder(): Pair<DebtOrderAttribute, Boolean>
 }

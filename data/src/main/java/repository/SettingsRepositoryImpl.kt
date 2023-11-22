@@ -2,6 +2,8 @@ package repository
 
 import com.breckneck.deptbook.data.storage.SettingsStorage
 import com.breckneck.deptbook.domain.repository.SettingsRepository
+import com.breckneck.deptbook.domain.util.DebtOrderAttribute
+import util.*
 
 class SettingsRepositoryImpl(private val settingsStorage: SettingsStorage): SettingsRepository {
 
@@ -59,5 +61,24 @@ class SettingsRepositoryImpl(private val settingsStorage: SettingsStorage): Sett
 
     override fun getDebtQuantityForAppRateDialogShow(): Int {
         return settingsStorage.getDebtQuantityForAppRateDialogShow()
+    }
+
+    override fun setDebtOrder(order: Pair<DebtOrderAttribute, Boolean>) {
+        val debtAttribute: Int
+        when (order.first) {
+            DebtOrderAttribute.Date -> debtAttribute = ORDER_BY_DATE
+            DebtOrderAttribute.Sum -> debtAttribute = ORDER_BY_SUM
+        }
+        settingsStorage.setDebtOrder(Pair(debtAttribute, order.second))
+    }
+
+    override fun getDebtOrder(): Pair<DebtOrderAttribute, Boolean> {
+        var debtAttribute: DebtOrderAttribute = DebtOrderAttribute.Date
+        val debtOrder = settingsStorage.getDebtOrder()
+        when (debtOrder.first) {
+            ORDER_BY_DATE -> debtAttribute = DebtOrderAttribute.Date
+            ORDER_BY_SUM -> debtAttribute = DebtOrderAttribute.Sum
+        }
+        return Pair(debtAttribute, debtOrder.second)
     }
 }
