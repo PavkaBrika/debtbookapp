@@ -71,6 +71,16 @@
         <item name="cornerRadius">24dp</item>
         <item name="textAllCaps">false</item>
         <item name="android:textColor">@color/black</item>
+        <item name="android:foreground">?android:attr/selectableItemBackground</item>
+    </style>
+
+    <style name="ButtonsColorOutline">
+        <item name="android:backgroundTint">@android:color/transparent</item>
+        <item name="cornerRadius">24dp</item>
+        <item name="textAllCaps">false</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="strokeColor">@color/gray</item>
+        <item name="strokeWidth">2dp</item>
     </style>
 
     <style name="appBarLayoutStyle">
@@ -96,8 +106,10 @@
         <item name="cornerSizeTopLeft">28dp</item>
     </style>
     
-    <style name="SwitchTheme">
+    <style name="SwitchTheme"> //switch in settings
         <item name="colorControlActivated">@color/green</item>
         <item name="colorSwitchThumbNormal">@color/gray</item>
     </style>
+
+
 </resources>
