@@ -6,6 +6,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.Intent.*
 import android.graphics.Typeface
+import android.media.Image
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -17,9 +18,11 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.ImageView
+import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
@@ -34,6 +37,7 @@ import com.breckneck.deptbook.domain.usecase.Human.*
 import com.breckneck.deptbook.domain.usecase.Settings.GetAddSumInShareText
 import com.breckneck.deptbook.domain.usecase.Settings.GetDebtOrder
 import com.breckneck.deptbook.domain.usecase.Settings.SetDebtOrder
+import com.breckneck.deptbook.domain.util.DebtOrderAttribute
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -46,6 +50,9 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
+
+const val ROTATE_IMAGE_VIEW_BY_INCREASE = 180f
+const val ROTATE_IMAGE_VIEW_BY_DECREASE = 0f
 
 class DebtDetailsFragment: Fragment() {
 
@@ -108,6 +115,7 @@ class DebtDetailsFragment: Fragment() {
             } else {
                 this.humanId.value = humanId
             }
+            getDebtOrder()
             getAllDebts()
             getOverallSum()
             if ((isOrderDialogShown.value != null) && (isOrderDialogShown.value == true))
@@ -122,6 +130,10 @@ class DebtDetailsFragment: Fragment() {
             } else {
                 debtRecyclerViewHintTextView.visibility = View.INVISIBLE
             }
+        }
+
+        vm.debtOrder.observe(viewLifecycleOwner) {
+            vm.sortDebts()
         }
 
         vm.overallSum.observe(viewLifecycleOwner) {
@@ -231,22 +243,58 @@ class DebtDetailsFragment: Fragment() {
     private fun showOrderDialog() {
         val orderDialog = BottomSheetDialog(requireContext())
         orderDialog.setContentView(R.layout.dialog_order_settings)
+
+        var sortByIncrease = vm.debtOrder.value!!.second
+        val sortImageView = orderDialog.findViewById<ImageView>(R.id.sortButton)
+        if (sortByIncrease)
+            sortImageView!!.rotationY = ROTATE_IMAGE_VIEW_BY_INCREASE
+        else
+            sortImageView!!.rotationY = ROTATE_IMAGE_VIEW_BY_DECREASE
+
+        var orderAttribute = vm.debtOrder.value!!.first
+        val orderDateRadioButton = orderDialog.findViewById<RadioButton>(R.id.orderDateRadioButton)
+        val orderSumRadioButton = orderDialog.findViewById<RadioButton>(R.id.orderSumRadioButton)
+        when (orderAttribute) {
+            DebtOrderAttribute.Date ->
+                orderDateRadioButton!!.isChecked = true
+            DebtOrderAttribute.Sum ->
+                orderSumRadioButton!!.isChecked = true
+        }
+
+        orderDialog.findViewById<CardView>(R.id.sortButtonCard)!!.setOnClickListener {
+            if (sortImageView.rotationY == ROTATE_IMAGE_VIEW_BY_INCREASE) {
+                sortImageView.rotationY = ROTATE_IMAGE_VIEW_BY_DECREASE
+                sortByIncrease = false
+            } else if (sortImageView.rotationY == ROTATE_IMAGE_VIEW_BY_DECREASE) {
+                sortImageView.rotationY = ROTATE_IMAGE_VIEW_BY_INCREASE
+                sortByIncrease = true
+            }
+        }
+
         val rememberChoiceCheckBox = orderDialog.findViewById<CheckBox>(R.id.rememberChoiceCheckBox)
         orderDialog.findViewById<Button>(R.id.confirmButton)!!.setOnClickListener {
             when (orderDialog.findViewById<RadioGroup>(R.id.orderRadioGroup)!!.checkedRadioButtonId) {
                 R.id.orderDateRadioButton -> {
-                    if (rememberChoiceCheckBox!!.isChecked) {
-
-                    }
-
+                    orderAttribute = DebtOrderAttribute.Date
                 }
                 R.id.orderSumRadioButton -> {
-
+                    orderAttribute = DebtOrderAttribute.Sum
                 }
             }
+            val order = Pair(orderAttribute, sortByIncrease)
+            if (order != vm.debtOrder.value) {
+                if (rememberChoiceCheckBox!!.isChecked) {
+                    vm.saveDebtOrder(Pair(orderAttribute, sortByIncrease))
+                }
+                vm.debtOrder.value = Pair(orderAttribute, sortByIncrease)
+            }
+            orderDialog.dismiss()
         }
         orderDialog.findViewById<Button>(R.id.cancelButton)!!.setOnClickListener {
             orderDialog.dismiss()
+        }
+        orderDialog.setOnDismissListener {
+            vm.isOrderDialogShown.value = false
         }
         orderDialog.show()
         vm.isOrderDialogShown.value = true

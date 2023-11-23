@@ -1,20 +1,20 @@
 package com.breckneck.debtbook.presentation.viewmodel
 
 import android.util.Log
-import android.view.View
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.breckneck.debtbook.adapter.DebtAdapter
 import com.breckneck.deptbook.domain.model.DebtDomain
 import com.breckneck.deptbook.domain.usecase.Debt.DeleteDebtUseCase
 import com.breckneck.deptbook.domain.usecase.Debt.DeleteDebtsByHumanIdUseCase
 import com.breckneck.deptbook.domain.usecase.Debt.GetAllDebtsUseCase
+import com.breckneck.deptbook.domain.usecase.Debt.SortDebts
 import com.breckneck.deptbook.domain.usecase.Human.AddSumUseCase
 import com.breckneck.deptbook.domain.usecase.Human.DeleteHumanUseCase
 import com.breckneck.deptbook.domain.usecase.Human.GetHumanSumDebtUseCase
 import com.breckneck.deptbook.domain.usecase.Human.GetLastHumanIdUseCase
 import com.breckneck.deptbook.domain.usecase.Settings.GetDebtOrder
 import com.breckneck.deptbook.domain.usecase.Settings.SetDebtOrder
+import com.breckneck.deptbook.domain.util.DebtOrderAttribute
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
@@ -33,13 +33,13 @@ class DebtDetailsViewModel(
     private val setDebtOrder: SetDebtOrder
 ): ViewModel() {
 
-
     val debtList = MutableLiveData<List<DebtDomain>>()
     val humanId = MutableLiveData<Int>()
     val overallSum = MutableLiveData<Double>()
     val isOrderDialogShown = MutableLiveData<Boolean>()
-    val debtOrder = MutableLiveData<Pair<Int, Boolean>>()
+    val debtOrder = MutableLiveData<Pair<DebtOrderAttribute, Boolean>>()
     private val disposeBag = CompositeDisposable()
+    private val sortDebtsUseCase by lazy { SortDebts() }
 
     init {
         Log.e("TAG", "Debt Fragment View Model Started")
@@ -52,7 +52,11 @@ class DebtDetailsViewModel(
     }
 
     fun getDebtOrder() {
-        getDebtOrder.
+        debtOrder.value = getDebtOrder.execute()
+    }
+
+    fun saveDebtOrder(order: Pair<DebtOrderAttribute, Boolean>) {
+        setDebtOrder.execute(order = order)
     }
 
     fun getAllDebts() {
@@ -64,11 +68,17 @@ class DebtDetailsViewModel(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 debtList.value = it
+                sortDebts()
                 Log.e("TAG", "Debts load success")
             }, {
                 it.printStackTrace()
             })
         disposeBag.add(getDebtsSingle)
+    }
+
+    fun sortDebts() {
+        if (debtList.value != null)
+            debtList.value = sortDebtsUseCase.execute(debtList = debtList.value!!, order = debtOrder.value!!)
     }
 
     fun getLastHumanId() {

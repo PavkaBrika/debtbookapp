@@ -5,7 +5,7 @@ import com.breckneck.deptbook.domain.util.DebtOrderAttribute
 
 class SetDebtOrder(private val settingsRepository: SettingsRepository) {
 
-    fun execute(attribute: DebtOrderAttribute, byIncrease: Boolean) {
-        settingsRepository.setDebtOrder(Pair(attribute, byIncrease))
+    fun execute(order: Pair<DebtOrderAttribute, Boolean>) {
+        settingsRepository.setDebtOrder(order = order)
     }
 }
