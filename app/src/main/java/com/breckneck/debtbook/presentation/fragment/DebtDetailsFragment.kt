@@ -283,10 +283,10 @@ class DebtDetailsFragment: Fragment() {
             }
             val order = Pair(orderAttribute, sortByIncrease)
             if (order != vm.debtOrder.value) {
-                if (rememberChoiceCheckBox!!.isChecked) {
-                    vm.saveDebtOrder(Pair(orderAttribute, sortByIncrease))
-                }
                 vm.debtOrder.value = Pair(orderAttribute, sortByIncrease)
+            }
+            if (rememberChoiceCheckBox!!.isChecked) {
+                vm.saveDebtOrder(Pair(orderAttribute, sortByIncrease))
             }
             orderDialog.dismiss()
         }
