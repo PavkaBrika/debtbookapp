@@ -30,4 +30,7 @@ interface SettingsStorage {
 
     fun getDebtQuantityForAppRateDialogShow(): Int
 
+    fun setDebtOrder(order: Pair<Int, Boolean>)
+
+    fun getDebtOrder(): Pair<Int, Boolean>
 }

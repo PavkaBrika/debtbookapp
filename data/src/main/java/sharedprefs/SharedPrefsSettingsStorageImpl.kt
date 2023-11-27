@@ -2,6 +2,7 @@ package sharedprefs
 
 import android.content.Context
 import com.breckneck.deptbook.data.storage.SettingsStorage
+import util.ORDER_BY_DATE
 
 private const val SHARED_PREFS_SETTINGS = "shared_prefs_settings"
 private const val MAIN_CURRENCY_FIRST = "main_currency_first" // currency that shown statistics in main fragment
@@ -11,6 +12,8 @@ private const val SUM_IN_SHARE_TEXT = "sum_in_share_text" // enable sum for each
 private const val APP_RATE = "app_rate"
 private const val APP_THEME = "app_theme"
 private const val DEBTS_QUANTITY_FOR_APP_RATE_DIALOG_SHOW = "debts_quantity_for_app_rate_dialog_show"
+private const val DEBT_ORDER_ATTRIBUTE = "debt_order_attribute"
+private const val DEBT_ORDER_BY_INCREASE = "debt_order_by_increase"
 
 class SharedPrefsSettingsStorageImpl(val context: Context): SettingsStorage {
 
@@ -70,5 +73,19 @@ class SharedPrefsSettingsStorageImpl(val context: Context): SettingsStorage {
 
     override fun getDebtQuantityForAppRateDialogShow(): Int {
         return sharedPreferences.getInt(DEBTS_QUANTITY_FOR_APP_RATE_DIALOG_SHOW, 15)
+    }
+
+    override fun setDebtOrder(order: Pair<Int, Boolean>) {
+        sharedPreferences.edit()
+            .putInt(DEBT_ORDER_ATTRIBUTE, order.first)
+            .putBoolean(DEBT_ORDER_BY_INCREASE, order.second)
+            .apply()
+    }
+
+    override fun getDebtOrder(): Pair<Int, Boolean> {
+        return Pair(
+            sharedPreferences.getInt(DEBT_ORDER_ATTRIBUTE, ORDER_BY_DATE),
+            sharedPreferences.getBoolean(DEBT_ORDER_BY_INCREASE, true)
+        )
     }
 }

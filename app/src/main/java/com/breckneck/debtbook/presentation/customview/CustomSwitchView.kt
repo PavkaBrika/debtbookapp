@@ -1,15 +1,18 @@
 package com.breckneck.debtbook.presentation.customview
 
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.*
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.AttributeSet
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import com.breckneck.debtbook.R
 
-class CustomSwitchView(context: Context, attrs: AttributeSet) : View(context, attrs) {
+class CustomSwitchView(context: Context, attrs: AttributeSet) : View(context, attrs), ValueAnimator.AnimatorUpdateListener {
 
     private val DEFAULT_WIDTH = 300
     private val DEFAULT_HEIGHT = 50
@@ -17,8 +20,8 @@ class CustomSwitchView(context: Context, attrs: AttributeSet) : View(context, at
     private val DEFAULT_ENABLED_BACKGROUND_COLOR = Color.parseColor("#4dba34")
     private val DEFAULT_DISABLED_BACKGROUND_COLOR = Color.parseColor("#b04c4c")
     private val DEFAULT_TEXT_COLOR = Color.parseColor("#ffffff")
-    private val DEFAULT_ENABLED_TEXT_COLOR = Color.parseColor("#ffffff")
-    private val DEFAULT_DISABLED_TEXT_COLOR = Color.parseColor("#ffffff")
+    private val DEFAULT_ENABLED_TEXT_COLOR = Color.parseColor("#000000")
+    private val DEFAULT_DISABLED_TEXT_COLOR = Color.parseColor("#000000")
     private val DEFAULT_ENABLED_TEXT = "Enabled"
     private val DEFAULT_DISABLED_TEXT = "Disabled"
     private val DEFAULT_ENABLED = true
@@ -26,7 +29,7 @@ class CustomSwitchView(context: Context, attrs: AttributeSet) : View(context, at
     private var backgroundColor = Color.GRAY
     private var enabledBackgroundColor = Color.GREEN
     private var disabledBackgroundColor = Color.RED
-    private var textColor = Color.WHITE
+    private var textColor = Color.BLACK
     private var enabledTextColor = Color.RED
     private var disabledTextColor = Color.GREEN
     private var enabledText = "Enabled"
@@ -42,7 +45,6 @@ class CustomSwitchView(context: Context, attrs: AttributeSet) : View(context, at
     //TEXT PAINT
     private val enabledTextPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val disabledTextPaint = Paint(Paint.ANTI_ALIAS_FLAG)
-
 
     init {
         if (attrs != null) {
@@ -131,12 +133,8 @@ class CustomSwitchView(context: Context, attrs: AttributeSet) : View(context, at
     private fun drawStateRect(canvas: Canvas) {
         if (isEnabled) {
             stateRectPaint.color = enabledBackgroundColor
-            stateRect.right = bodyRect.right / 2
-            stateRect.left = 0
         } else {
             stateRectPaint.color = disabledBackgroundColor
-            stateRect.right = bodyRect.right
-            stateRect.left = bodyRect.right / 2
         }
         canvas.drawRoundRect(RectF(stateRect), 15F, 15F, stateRectPaint)
         invalidate()
@@ -179,19 +177,50 @@ class CustomSwitchView(context: Context, attrs: AttributeSet) : View(context, at
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
-        if (event!!.action == MotionEvent.ACTION_DOWN) {
-            if (event.x > bodyRect.centerX()) {
-                isEnabled = false
-                invalidate()
-                requestLayout()
-                return true
-            } else {
-                isEnabled = true
-                invalidate()
-                requestLayout()
-                return true
+        val action = event!!.action
+        when (action) {
+            MotionEvent.ACTION_DOWN -> {
+                if (event.x > bodyRect.centerX()) {
+                    if (isEnabled)
+                        startAnim()
+                    isEnabled = false
+                    invalidate()
+                    requestLayout()
+                    return true
+                } else {
+                    if (!isEnabled)
+                        startAnim()
+                    isEnabled = true
+                    invalidate()
+                    requestLayout()
+                    return true
+                }
             }
         }
         return super.onTouchEvent(event)
+    }
+
+    private fun startAnim() {
+        val valueAnimator: ValueAnimator
+        if (isEnabled)
+            valueAnimator = ValueAnimator.ofInt(0, bodyRect.right)
+        else
+            valueAnimator = ValueAnimator.ofInt(bodyRect.right, 0)
+        valueAnimator.duration = 500
+        valueAnimator.addUpdateListener(this)
+        valueAnimator.start()
+    }
+
+    override fun onAnimationUpdate(animation: ValueAnimator) {
+        val value = animation.animatedValue as Int
+        if (isEnabled) {
+            stateRectPaint.color = enabledBackgroundColor
+            stateRect.right = value + bodyRect.right / 2
+            stateRect.left = value / 2
+        } else {
+            stateRectPaint.color = disabledBackgroundColor
+            stateRect.right = bodyRect.right / 2 + value
+            stateRect.left = value / 2
+        }
     }
 }

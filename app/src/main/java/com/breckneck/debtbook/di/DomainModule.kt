@@ -149,4 +149,12 @@ val domainModule = module {
     factory<GetDebtQuantityForAppRateDialogShow> {
         GetDebtQuantityForAppRateDialogShow(settingsRepository = get())
     }
+
+    factory<SetDebtOrder> {
+        SetDebtOrder(settingsRepository = get())
+    }
+
+    factory<GetDebtOrder> {
+        GetDebtOrder(settingsRepository = get())
+    }
 }

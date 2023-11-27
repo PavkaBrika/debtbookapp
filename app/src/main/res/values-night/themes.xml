@@ -86,4 +86,30 @@
         <item name="cornerSizeTopRight">28dp</item>
         <item name="cornerSizeTopLeft">28dp</item>
     </style>
+
+    <style name="ButtonsColor">
+        <item name="android:tint">@color/black</item>
+        <item name="android:backgroundTint">@color/gray</item>
+        <item name="cornerRadius">24dp</item>
+        <item name="textAllCaps">false</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:foreground">?android:attr/selectableItemBackground</item>
+    </style>
+
+    <style name="ButtonsColorOutline">
+        <item name="android:backgroundTint">@android:color/transparent</item>
+        <item name="cornerRadius">24dp</item>
+        <item name="textAllCaps">false</item>
+        <item name="android:textColor">@color/gray</item>
+        <item name="strokeColor">@color/gray</item>
+        <item name="strokeWidth">2dp</item>
+        <item name="android:foreground">?android:attr/selectableItemBackground</item>
+    </style>
+
+    <style name="Divider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">@color/gray</item>
+        <item name="android:backgroundTint">@color/gray</item>
+    </style>
 </resources>
