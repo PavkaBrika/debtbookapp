@@ -3,6 +3,7 @@ package repository
 import com.breckneck.deptbook.data.storage.SettingsStorage
 import com.breckneck.deptbook.domain.repository.SettingsRepository
 import com.breckneck.deptbook.domain.util.DebtOrderAttribute
+import com.breckneck.deptbook.domain.util.HumanOrderAttribute
 import util.*
 
 class SettingsRepositoryImpl(private val settingsStorage: SettingsStorage): SettingsRepository {
@@ -66,8 +67,8 @@ class SettingsRepositoryImpl(private val settingsStorage: SettingsStorage): Sett
     override fun setDebtOrder(order: Pair<DebtOrderAttribute, Boolean>) {
         val debtAttribute: Int
         when (order.first) {
-            DebtOrderAttribute.Date -> debtAttribute = ORDER_BY_DATE
-            DebtOrderAttribute.Sum -> debtAttribute = ORDER_BY_SUM
+            DebtOrderAttribute.Date -> debtAttribute = ORDER_DEBT_BY_DATE
+            DebtOrderAttribute.Sum -> debtAttribute = ORDER_DEBT_BY_SUM
         }
         settingsStorage.setDebtOrder(Pair(debtAttribute, order.second))
     }
@@ -76,9 +77,28 @@ class SettingsRepositoryImpl(private val settingsStorage: SettingsStorage): Sett
         var debtAttribute: DebtOrderAttribute = DebtOrderAttribute.Date
         val debtOrder = settingsStorage.getDebtOrder()
         when (debtOrder.first) {
-            ORDER_BY_DATE -> debtAttribute = DebtOrderAttribute.Date
-            ORDER_BY_SUM -> debtAttribute = DebtOrderAttribute.Sum
+            ORDER_DEBT_BY_DATE -> debtAttribute = DebtOrderAttribute.Date
+            ORDER_DEBT_BY_SUM -> debtAttribute = DebtOrderAttribute.Sum
         }
         return Pair(debtAttribute, debtOrder.second)
+    }
+
+    override fun setHumanOrder(order: Pair<HumanOrderAttribute, Boolean>) {
+        val humanAttribute: Int
+        when (order.first) {
+            HumanOrderAttribute.Date -> humanAttribute = ORDER_HUMAN_BY_DATE
+            HumanOrderAttribute.Sum -> humanAttribute = ORDER_HUMAN_BY_SUM
+        }
+        settingsStorage.setHumanOrder(Pair(humanAttribute, order.second))
+    }
+
+    override fun getHumanOrder(): Pair<HumanOrderAttribute, Boolean> {
+        var humanAttribute: HumanOrderAttribute = HumanOrderAttribute.Date
+        val humanOrder = settingsStorage.getHumanOrder()
+        when (humanOrder.first) {
+            ORDER_HUMAN_BY_DATE -> humanAttribute = HumanOrderAttribute.Date
+            ORDER_HUMAN_BY_SUM -> humanAttribute = HumanOrderAttribute.Sum
+        }
+        return Pair(humanAttribute, humanOrder.second)
     }
 }

@@ -2,7 +2,8 @@ package sharedprefs
 
 import android.content.Context
 import com.breckneck.deptbook.data.storage.SettingsStorage
-import util.ORDER_BY_DATE
+import util.ORDER_DEBT_BY_DATE
+import util.ORDER_HUMAN_BY_DATE
 
 private const val SHARED_PREFS_SETTINGS = "shared_prefs_settings"
 private const val MAIN_CURRENCY_FIRST = "main_currency_first" // currency that shown statistics in main fragment
@@ -14,6 +15,9 @@ private const val APP_THEME = "app_theme"
 private const val DEBTS_QUANTITY_FOR_APP_RATE_DIALOG_SHOW = "debts_quantity_for_app_rate_dialog_show"
 private const val DEBT_ORDER_ATTRIBUTE = "debt_order_attribute"
 private const val DEBT_ORDER_BY_INCREASE = "debt_order_by_increase"
+private const val HUMAN_ORDER_ATTRIBUTE = "human_order_attribute"
+private const val HUMAN_ORDER_BY_INCREASE = "human_order_by_increase"
+
 
 class SharedPrefsSettingsStorageImpl(val context: Context): SettingsStorage {
 
@@ -84,8 +88,22 @@ class SharedPrefsSettingsStorageImpl(val context: Context): SettingsStorage {
 
     override fun getDebtOrder(): Pair<Int, Boolean> {
         return Pair(
-            sharedPreferences.getInt(DEBT_ORDER_ATTRIBUTE, ORDER_BY_DATE),
+            sharedPreferences.getInt(DEBT_ORDER_ATTRIBUTE, ORDER_DEBT_BY_DATE),
             sharedPreferences.getBoolean(DEBT_ORDER_BY_INCREASE, true)
+        )
+    }
+
+    override fun setHumanOrder(order: Pair<Int, Boolean>) {
+        sharedPreferences.edit()
+            .putInt(HUMAN_ORDER_ATTRIBUTE, order.first)
+            .putBoolean(HUMAN_ORDER_BY_INCREASE, order.second)
+            .apply()
+    }
+
+    override fun getHumanOrder(): Pair<Int, Boolean> {
+        return Pair(
+            sharedPreferences.getInt(HUMAN_ORDER_ATTRIBUTE, ORDER_HUMAN_BY_DATE),
+            sharedPreferences.getBoolean(HUMAN_ORDER_BY_INCREASE, true)
         )
     }
 }

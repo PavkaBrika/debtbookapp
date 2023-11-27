@@ -1,6 +1,7 @@
 package com.breckneck.deptbook.domain.repository
 
 import com.breckneck.deptbook.domain.util.DebtOrderAttribute
+import com.breckneck.deptbook.domain.util.HumanOrderAttribute
 
 interface SettingsRepository {
 
@@ -35,4 +36,8 @@ interface SettingsRepository {
     fun setDebtOrder(order: Pair<DebtOrderAttribute, Boolean>)
 
     fun getDebtOrder(): Pair<DebtOrderAttribute, Boolean>
+
+    fun setHumanOrder(order: Pair<HumanOrderAttribute, Boolean>)
+
+    fun getHumanOrder(): Pair<HumanOrderAttribute, Boolean>
 }
