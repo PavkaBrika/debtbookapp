@@ -84,7 +84,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="4dp"
                 android:text="@string/later"
-                style="@style/ButtonsColor"/>
+                style="@style/ButtonsColorOutline"/>
 
             <Button
                 android:id="@+id/buttonOk"

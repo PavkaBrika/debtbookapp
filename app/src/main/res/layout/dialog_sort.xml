@@ -56,7 +56,7 @@
                 android:id="@+id/orderDateRadioButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:buttonTint="@color/green"
+                style="@style/defaultRadioButtons"
                 android:checked="true"
                 android:text="@string/order_by_date" />
 
@@ -64,7 +64,7 @@
                 android:id="@+id/orderSumRadioButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:buttonTint="@color/green"
+                style="@style/defaultRadioButtons"
                 android:text="@string/order_debt_sum" />
 
         </RadioGroup>
@@ -78,15 +78,15 @@
             android:id="@+id/rememberChoiceCheckBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:buttonTint="@color/green"
             android:layout_marginHorizontal="8dp"
-            android:text="@string/remember_choice" />
-
-        <View
-            style="@style/Divider"
-            android:layout_marginVertical="8dp" />
+            android:text="@string/remember_choice"
+            style="@style/defaultRadioButtons"/>
 
     </LinearLayout>
+
+    <View
+        style="@style/Divider"
+        android:layout_marginVertical="8dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -97,7 +97,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingBottom="16dp"
-            android:paddingTop="16dp"
+            android:paddingTop="8dp"
             android:text="@string/filter"
             android:textSize="24sp" />
 
@@ -111,7 +111,7 @@
                 android:id="@+id/showAllHumansRadioButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:buttonTint="@color/gray"
+                style="@style/defaultRadioButtons"
                 android:checked="true"
                 android:text="@string/show_all"
                 android:textAlignment="textStart" />
