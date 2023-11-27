@@ -89,38 +89,53 @@ class MainFragment : Fragment() {
         }
 
         vm.apply {
-            when (vm.resultHumanFilters.value!!) {
-                HumanFilters.PositiveHumans -> {
-                    getPositiveHumans()
-                    filterButton.setColorFilter(ContextCompat.getColor(view.context, R.color.green))
-                }
-                HumanFilters.NegativeHumans -> {
-                    getNegativeHumans()
-                    filterButton.setColorFilter(ContextCompat.getColor(view.context, R.color.red))
-                }
-                HumanFilters.AllHumans -> getAllHumans()
-            }
             getNegativeSum()
             getPositiveSum()
+
+            resultHumanFilters.observe(viewLifecycleOwner) {
+                when (it) {
+                    HumanFilters.AllHumans -> {
+                        getAllHumans()
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                            if (resources.configuration.isNightModeActive)
+                                filterButton.setColorFilter(ContextCompat.getColor(requireContext(), R.color.white))
+                            else
+                                filterButton.setColorFilter(ContextCompat.getColor(requireContext(), R.color.black))
+                        } else {
+                            filterButton.setColorFilter(ContextCompat.getColor(requireContext(), R.color.black))
+                        }
+                    }
+                    HumanFilters.NegativeHumans -> {
+                        getNegativeHumans()
+                        filterButton.setColorFilter(ContextCompat.getColor(view.context, R.color.red))
+                    }
+                    HumanFilters.PositiveHumans -> {
+                        getPositiveHumans()
+                        filterButton.setColorFilter(ContextCompat.getColor(view.context, R.color.green))
+                    }
+                }
+            }
+
+            resultHumanList.observe(viewLifecycleOwner) {
+                if (it.isNotEmpty()) {
+                    mainRecyclerViewHintTextView.visibility = View.VISIBLE
+                    noDebtsTextView.visibility = View.INVISIBLE
+                } else {
+                    mainRecyclerViewHintTextView.visibility = View.INVISIBLE
+                    noDebtsTextView.visibility = View.VISIBLE
+                }
+                val adapter = HumanAdapter(it, humanClickListener)
+                recyclerView.adapter = adapter
+                Log.e("TAG", "adapter link success")
+            }
         }
 
         buttonClickListener?.getDebtQuantity()
 
-        vm.resultHumanList.observe(viewLifecycleOwner) {
-            if (it.isNotEmpty()) {
-                mainRecyclerViewHintTextView.visibility = View.VISIBLE
-                noDebtsTextView.visibility = View.INVISIBLE
-            } else {
-                mainRecyclerViewHintTextView.visibility = View.INVISIBLE
-                noDebtsTextView.visibility = View.VISIBLE
-            }
-            val adapter = HumanAdapter(it, humanClickListener)
-            recyclerView.adapter = adapter
-            Log.e("TAG", "adapter link success")
-        }
+
 
         val overallPositiveSumTextView: TextView = view.findViewById(R.id.overallPositiveSumTextView)
-        val overallNegativeSumTextView: TextView = view.findViewById(R.id.overallNegativeSumTextView)
+
         vm.resultPos.observe(viewLifecycleOwner) {
             overallPositiveSumTextView.text = it
             if (it == "") {
@@ -131,6 +146,7 @@ class MainFragment : Fragment() {
             }
         }
 
+        val overallNegativeSumTextView: TextView = view.findViewById(R.id.overallNegativeSumTextView)
         vm.resultNeg.observe(viewLifecycleOwner) {
             overallNegativeSumTextView.text = it
             if (it == "") {
@@ -145,36 +161,38 @@ class MainFragment : Fragment() {
 
     fun showHumanFilterDialog() {
         val bottomSheetDialogFilter = BottomSheetDialog(requireContext())
-        bottomSheetDialogFilter.setContentView(R.layout.dialog_filter)
+        bottomSheetDialogFilter.setContentView(R.layout.dialog_sort)
         bottomSheetDialogFilter.behavior.state = BottomSheetBehavior.STATE_EXPANDED
         vm.setFilterDialogShown(true)
-        bottomSheetDialogFilter.findViewById<Button>(R.id.showAllButton)!!.setOnClickListener {
-            vm.getAllHumans()
-            vm.setHumansFilter(HumanFilters.AllHumans)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                if (resources.configuration.isNightModeActive)
-                    filterButton.setColorFilter(ContextCompat.getColor(requireContext(), R.color.white))
-                else
-                    filterButton.setColorFilter(ContextCompat.getColor(requireContext(), R.color.black))
-            } else {
-                filterButton.setColorFilter(ContextCompat.getColor(requireContext(), R.color.black))
-            }
-            bottomSheetDialogFilter.cancel()
-        }
-        bottomSheetDialogFilter.findViewById<Button>(R.id.showPositiveButton)!!.setOnClickListener {
-            filterButton.setColorFilter(ContextCompat.getColor(requireContext(), R.color.green))
-            vm.getPositiveHumans()
-            vm.setHumansFilter(HumanFilters.PositiveHumans)
-            bottomSheetDialogFilter.cancel()
-        }
-        bottomSheetDialogFilter.findViewById<Button>(R.id.showNegativeButton)!!.setOnClickListener {
-            filterButton.setColorFilter(ContextCompat.getColor(requireContext(), R.color.red))
-            vm.getNegativeHumans()
-            vm.setHumansFilter(HumanFilters.NegativeHumans)
-            bottomSheetDialogFilter.cancel()
+        var humansFilter: HumanFilters = vm.resultHumanFilters.value!!
+
+        when (vm.resultHumanFilters.value!!) {
+            HumanFilters.AllHumans -> bottomSheetDialogFilter.findViewById<RadioButton>(R.id.showAllHumansRadioButton)!!.isChecked = true
+            HumanFilters.NegativeHumans -> bottomSheetDialogFilter.findViewById<RadioButton>(R.id.showNegativeHumansRadioButton)!!.isChecked = true
+            HumanFilters.PositiveHumans -> bottomSheetDialogFilter.findViewById<RadioButton>(R.id.showPositiveHumansRadioButton)!!.isChecked = true
         }
 
-        bottomSheetDialogFilter.setOnCancelListener {
+        bottomSheetDialogFilter.findViewById<Button>(R.id.confirmButton)!!.setOnClickListener {
+            when (bottomSheetDialogFilter.findViewById<RadioGroup>(R.id.filterRadioGroup)!!.checkedRadioButtonId) {
+                R.id.showAllHumansRadioButton -> {
+                    humansFilter = HumanFilters.AllHumans
+                }
+                R.id.showPositiveHumansRadioButton -> {
+                    humansFilter = HumanFilters.PositiveHumans
+                }
+                R.id.showNegativeHumansRadioButton -> {
+                    humansFilter = HumanFilters.NegativeHumans
+                }
+            }
+            if (vm.resultHumanFilters.value!! != humansFilter)
+                vm.setHumansFilter(humansFilter)
+            bottomSheetDialogFilter.dismiss()
+        }
+
+        bottomSheetDialogFilter.findViewById<Button>(R.id.cancelButton)!!.setOnClickListener {
+            bottomSheetDialogFilter.dismiss()
+        }
+        bottomSheetDialogFilter.setOnDismissListener {
             vm.setFilterDialogShown(false)
         }
 
