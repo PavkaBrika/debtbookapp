@@ -86,7 +86,8 @@ class MainActivityViewModel(private val getDebtQuantity: GetDebtQuantity) : View
         requestReviewFlow.addOnCompleteListener(object : OnCompleteListener<ReviewInfo> {
             override fun onFailure(throwable: Throwable) {
                 Log.e("TAG", "In app review error $throwable")
-//                Toast.makeText(context, "${context.getText(R.string.review_error_toast)} $throwable", Toast.LENGTH_SHORT).show()
+                if (throwable.toString().contains("Application is not verified yet"))
+                    Toast.makeText(context, "${context.getText(R.string.error_code)} 100", Toast.LENGTH_SHORT).show()
             }
 
             override fun onSuccess(result: ReviewInfo) {

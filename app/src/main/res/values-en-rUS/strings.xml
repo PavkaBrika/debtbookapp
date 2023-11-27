@@ -62,4 +62,5 @@
     <string name="remember_choice">Remember choice</string>
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
+    <string name="error_code">Error code:</string>
 </resources>

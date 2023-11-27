@@ -86,7 +86,6 @@ class SettingsFragment: Fragment() {
         val firstCurrencySpinner: Spinner = view.findViewById(R.id.firstCurrencySpinner)
         firstCurrencySpinner.adapter = spinnerAdapter
         var firstMainCurrency = getFirstMainCurrency.execute()
-//        var firstMainCurrency = "USD"
         firstCurrencySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                 firstMainCurrency = p0?.getItemAtPosition(p2).toString().substring(p0?.getItemAtPosition(p2).toString().lastIndexOf(" ") + 1)
@@ -102,7 +101,6 @@ class SettingsFragment: Fragment() {
         }
 
         var secondMainCurrency = getSecondMainCurrency.execute()
-//        var secondMainCurrency = "USD"
         val secondCurrencySpinner: Spinner = view.findViewById(R.id.secondCurrencySpinner)
         secondCurrencySpinner.adapter = spinnerAdapter
         secondCurrencySpinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
@@ -122,7 +120,6 @@ class SettingsFragment: Fragment() {
         val defaultCurrencySpinner: Spinner = view.findViewById(R.id.defaultCurrencySpinner)
         defaultCurrencySpinner.adapter = spinnerAdapter
         var defaultCurrency = getDefaultCurrency.execute()
-//        var defaultCurrency = "USD"
         defaultCurrencySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                 defaultCurrency = p0?.getItemAtPosition(p2).toString().substring(p0?.getItemAtPosition(p2).toString().lastIndexOf(" ") + 1)
@@ -147,7 +144,6 @@ class SettingsFragment: Fragment() {
         }
 
         var addSumShareText = getAddSumInShareText.execute()
-//        var addSumShareText = true
         val addSumShareInTextSwitch: SwitchCompat = view.findViewById(R.id.balanceShareTextSwitch)
         addSumShareInTextSwitch.isChecked = addSumShareText
         addSumShareInTextSwitch.setOnCheckedChangeListener(object : OnCheckedChangeListener {

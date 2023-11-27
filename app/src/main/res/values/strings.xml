@@ -69,8 +69,8 @@
     <string name="share_debt_in">Share debt in</string>
     <string name="text_format">Text format</string>
     <string name="excel_format">Excel format</string>
-    <string name="review_error_toast">Sorry, something went wrong. Try later.\nError message:</string>
     <string name="error">Something went wrong…</string>
+    <string name="error_code">Error code:</string>
     <string name="order_debt_sum">Debt sum</string>
     <string name="order_by_date">Date</string>
     <string name="order_by">Order by</string>
