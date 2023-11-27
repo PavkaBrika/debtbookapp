@@ -26,6 +26,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.adapter.DebtAdapter
@@ -34,6 +35,7 @@ import com.breckneck.deptbook.domain.model.DebtDomain
 import com.breckneck.deptbook.domain.usecase.Debt.*
 import com.breckneck.deptbook.domain.usecase.Settings.GetAddSumInShareText
 import com.breckneck.deptbook.domain.util.DebtOrderAttribute
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -43,6 +45,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
+import java.util.Collections
 
 const val ROTATE_IMAGE_VIEW_BY_INCREASE = 180f
 const val ROTATE_IMAGE_VIEW_BY_DECREASE = 0f
@@ -95,6 +98,7 @@ class DebtDetailsFragment: Fragment() {
         val currency = arguments?.getString("currency")
         val humanName = arguments?.getString("name")
 
+        val appBarLayout: AppBarLayout = view.findViewById(R.id.app_bar)
         val collaps: CollapsingToolbarLayout = view.findViewById(R.id.collaps)
         collaps.title = humanName
         collaps.apply {
@@ -116,13 +120,40 @@ class DebtDetailsFragment: Fragment() {
                 showOrderDialog()
 
             debtList.observe(viewLifecycleOwner) {
-                val adapter = DebtAdapter(it, debtClickListener, currency!!)
+                val list: MutableList<DebtDomain> = it.toMutableList()
+                val adapter = DebtAdapter(list, debtClickListener, currency!!)
                 recyclerView.adapter = adapter
-                if (it.isNotEmpty()) {
+                if (list.isNotEmpty()) {
                     debtRecyclerViewHintTextView.visibility = View.VISIBLE
                 } else {
                     debtRecyclerViewHintTextView.visibility = View.INVISIBLE
                 }
+
+                val itemTouchListener = ItemTouchHelper(object :
+                    ItemTouchHelper.SimpleCallback(ItemTouchHelper.DOWN or ItemTouchHelper.UP, 0) {
+                    override fun onMove(
+                        recyclerView: RecyclerView,
+                        viewHolder: RecyclerView.ViewHolder,
+                        target: RecyclerView.ViewHolder
+                    ): Boolean {
+                        val initial = viewHolder.adapterPosition
+                        val final = target.adapterPosition
+                        Collections.swap(list, initial, final)
+                        adapter.notifyItemMoved(initial, final)
+                        return false
+                    }
+
+                    override fun isLongPressDragEnabled(): Boolean {
+                        return true
+                    }
+
+                    override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+
+                    }
+
+                })
+
+                itemTouchListener.attachToRecyclerView(recyclerView)
             }
 
             debtOrder.observe(viewLifecycleOwner) {

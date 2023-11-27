@@ -134,15 +134,6 @@ class NewDebtFragment: Fragment() {
         }
 
         val customSwitch: CustomSwitchView = view.findViewById(R.id.customSwitch)
-//        val stickySwitch: StickySwitch = view.findViewById(R.id.sticky_switch)
-//        stickySwitch.onSelectedChangeListener = object : StickySwitch.OnSelectedChangeListener{
-//            override fun onSelectedChange(direction: StickySwitch.Direction, text: String) {
-//                if (direction == StickySwitch.Direction.LEFT)
-//                    stickySwitch.switchColor = 0xFF59CB72.toInt()
-//                else
-//                    stickySwitch.switchColor = 0xFFE25D56.toInt()
-//            }
-//        }
 
         debtSumEditText.addTextChangedListener { object: TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
