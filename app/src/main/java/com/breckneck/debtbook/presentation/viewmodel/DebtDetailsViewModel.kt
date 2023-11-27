@@ -81,7 +81,7 @@ class DebtDetailsViewModel(
             debtList.value = sortDebtsUseCase.execute(debtList = debtList.value!!, order = debtOrder.value!!)
     }
 
-    fun getLastHumanId() {
+    fun getAllInfoAboutNewHuman() {
         val getLastHumanIdSingle = Single.create {
             it.onSuccess(getLastHumanIdUseCase.exectute())
         }
@@ -89,6 +89,10 @@ class DebtDetailsViewModel(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 humanId.value = it
+                getDebtOrder()
+                getAllDebts()
+                getOverallSum()
+
             }, {
                 it.printStackTrace()
             })

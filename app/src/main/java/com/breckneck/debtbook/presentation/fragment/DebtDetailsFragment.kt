@@ -6,7 +6,6 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.Intent.*
 import android.graphics.Typeface
-import android.media.Image
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -33,18 +32,12 @@ import com.breckneck.debtbook.adapter.DebtAdapter
 import com.breckneck.debtbook.presentation.viewmodel.DebtDetailsViewModel
 import com.breckneck.deptbook.domain.model.DebtDomain
 import com.breckneck.deptbook.domain.usecase.Debt.*
-import com.breckneck.deptbook.domain.usecase.Human.*
 import com.breckneck.deptbook.domain.usecase.Settings.GetAddSumInShareText
-import com.breckneck.deptbook.domain.usecase.Settings.GetDebtOrder
-import com.breckneck.deptbook.domain.usecase.Settings.SetDebtOrder
 import com.breckneck.deptbook.domain.util.DebtOrderAttribute
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.schedulers.Schedulers
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
@@ -111,33 +104,34 @@ class DebtDetailsFragment: Fragment() {
 
         vm.apply {
             if (newHuman == true) {
-                getLastHumanId()
+                getAllInfoAboutNewHuman()
             } else {
                 this.humanId.value = humanId
+                getDebtOrder()
+                getAllDebts()
+                getOverallSum()
             }
-            getDebtOrder()
-            getAllDebts()
-            getOverallSum()
+
             if ((isOrderDialogShown.value != null) && (isOrderDialogShown.value == true))
                 showOrderDialog()
-        }
 
-        vm.debtList.observe(viewLifecycleOwner) {
-            val adapter = DebtAdapter(it, debtClickListener, currency!!)
-            recyclerView.adapter = adapter
-            if (it.isNotEmpty()) {
-                debtRecyclerViewHintTextView.visibility = View.VISIBLE
-            } else {
-                debtRecyclerViewHintTextView.visibility = View.INVISIBLE
+            debtList.observe(viewLifecycleOwner) {
+                val adapter = DebtAdapter(it, debtClickListener, currency!!)
+                recyclerView.adapter = adapter
+                if (it.isNotEmpty()) {
+                    debtRecyclerViewHintTextView.visibility = View.VISIBLE
+                } else {
+                    debtRecyclerViewHintTextView.visibility = View.INVISIBLE
+                }
             }
-        }
 
-        vm.debtOrder.observe(viewLifecycleOwner) {
-            vm.sortDebts()
-        }
+            debtOrder.observe(viewLifecycleOwner) {
+                sortDebts()
+            }
 
-        vm.overallSum.observe(viewLifecycleOwner) {
-            setOverallSumText(sum = it, currency = currency!!, view = view)
+            overallSum.observe(viewLifecycleOwner) {
+                setOverallSumText(sum = it, currency = currency!!, view = view)
+            }
         }
 
         val deleteHumanButton: ImageView = view.findViewById(R.id.deleteHumanButton)
