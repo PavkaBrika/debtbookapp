@@ -72,6 +72,7 @@
     <string name="error">Something went wrong…</string>
     <string name="order_debt_sum">Debt sum</string>
     <string name="order_by_date">Date</string>
+    <string name="order_by_last_debt_date">Last debt date</string>
     <string name="order_by">Order by</string>
     <string name="remember_choice">Remember choice</string>
     <string name="confirm">Confirm</string>

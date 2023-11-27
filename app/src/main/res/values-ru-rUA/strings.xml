@@ -63,4 +63,5 @@
     <string name="remember_choice">Запомнить выбор</string>
     <string name="confirm">Подтвердить</string>
     <string name="cancel">Отмена</string>
+    <string name="order_by_last_debt_date">По дате последнего долга</string>
 </resources>
