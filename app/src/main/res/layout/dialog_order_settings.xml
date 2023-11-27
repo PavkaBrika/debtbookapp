@@ -64,11 +64,9 @@
 
     </RadioGroup>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginVertical="8dp"
-        android:theme="@style/searchViewStyle" />
+    <View
+        style="@style/Divider"
+        android:layout_marginVertical="8dp" />
 
     <CheckBox
         android:id="@+id/rememberChoiceCheckBox"

@@ -81,6 +81,7 @@
         <item name="android:textColor">@color/black</item>
         <item name="strokeColor">@color/gray</item>
         <item name="strokeWidth">2dp</item>
+        <item name="android:foreground">?android:attr/selectableItemBackground</item>
     </style>
 
     <style name="appBarLayoutStyle">
@@ -110,6 +111,14 @@
         <item name="colorControlActivated">@color/green</item>
         <item name="colorSwitchThumbNormal">@color/gray</item>
     </style>
+
+    <style name="Divider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">@color/gray</item>
+        <item name="android:backgroundTint">@color/gray</item>
+    </style>
+
 
 
 </resources>
