@@ -57,4 +57,10 @@
     <string name="text_format">Текстовом формате</string>
     <string name="excel_format">Excel формате</string>
     <string name="error">Что-то пошло не так...</string>
+    <string name="order_debt_sum">По сумме долга</string>
+    <string name="order_by_date">По дате</string>
+    <string name="order_by">Сортировка</string>
+    <string name="remember_choice">Запомнить выбор</string>
+    <string name="confirm">Подтвердить</string>
+    <string name="cancel">Отмена</string>
 </resources>

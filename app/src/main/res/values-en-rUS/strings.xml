@@ -56,4 +56,10 @@
     <string name="text_format">Text format</string>
     <string name="excel_format">Excel format</string>
     <string name="error">Something went wrong…</string>
+    <string name="order_debt_sum">Debt sum</string>
+    <string name="order_by_date">Date</string>
+    <string name="order_by">Order by</string>
+    <string name="remember_choice">Remember choice</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
 </resources>
