@@ -37,6 +37,7 @@ class DebtDetailsViewModel(
     val humanId = MutableLiveData<Int>()
     val overallSum = MutableLiveData<Double>()
     val isOrderDialogShown = MutableLiveData<Boolean>()
+    val isShareDialogShown = MutableLiveData<Boolean>()
     val debtOrder = MutableLiveData<Pair<DebtOrderAttribute, Boolean>>()
     private val disposeBag = CompositeDisposable()
     private val sortDebtsUseCase by lazy { SortDebts() }

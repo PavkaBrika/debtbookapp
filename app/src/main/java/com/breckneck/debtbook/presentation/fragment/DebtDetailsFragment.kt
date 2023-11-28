@@ -120,6 +120,9 @@ class DebtDetailsFragment: Fragment() {
             if ((isOrderDialogShown.value != null) && (isOrderDialogShown.value == true))
                 showOrderDialog()
 
+            if ((isShareDialogShown.value != null) && (isShareDialogShown.value == true))
+                showShareDialog(humanName, currency)
+
             debtList.observe(viewLifecycleOwner) {
                 val list: MutableList<DebtDomain> = it.toMutableList()
                 val adapter = DebtAdapter(list, debtClickListener, currency!!)
@@ -204,39 +207,13 @@ class DebtDetailsFragment: Fragment() {
 
         val shareHumanButton: ImageView = view.findViewById(R.id.shareHumanButton)
         shareHumanButton.setOnClickListener {
-            val actions = arrayOf(getString(R.string.text_format), getString(R.string.excel_format))
-            AlertDialog.Builder(requireContext())
-                .setTitle(R.string.share_debt_in)
-                .setItems(actions) {dialog, which ->
-                if (actions[which] == getString(R.string.text_format)) {
-                    val intent = Intent(ACTION_SEND)
-                    intent.type = "text/plain"
-                    intent.putExtra(EXTRA_SUBJECT, humanName)
-                    intent.putExtra(EXTRA_TEXT, getDebtShareString.execute(debtList = vm.debtList.value!!, name = humanName!!, currency = currency!!, sum = vm.overallSum.value!!, getAddSumInShareText.execute()))
-                    startActivity(createChooser(intent, humanName))
-                } else {
-                    var rootFolder = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString())
-                    rootFolder = File(rootFolder, "DebtBookFiles")
-                    val sheetTitles = arrayOf(getString(R.string.date), "${getString(R.string.sum)} ($currency)", getString(R.string.comment))
-                    val excelFile = ExportDebtDataInExcelUseCase().execute(debtList = vm.debtList.value!!, sheetName = "${humanName}_debts", rootFolder = rootFolder, sheetTitles = sheetTitles)
-                    if (excelFile.exists())
-                        Toast.makeText(requireContext(), R.string.excel_folder_toast_hint, Toast.LENGTH_SHORT).show()
-                    val intent = Intent(ACTION_SEND)
-                    val uriPath: Uri = FileProvider.getUriForFile(requireContext(), "${requireContext().packageName}.provider", excelFile)
-                    intent.addFlags(FLAG_GRANT_READ_URI_PERMISSION)
-                    intent.setDataAndType(uriPath, "application/vnd.ms-excel");
-                    intent.putExtra(EXTRA_STREAM, uriPath)
-                    startActivity(createChooser(intent, humanName))
-                }
-            }
-                .show()
+            showShareDialog(humanName, currency)
         }
 
         val addDebtButton: FloatingActionButton = view.findViewById(R.id.addDebtButton)
         addDebtButton.setOnClickListener{
-            if (vm.humanId.value != null) {
+            if (vm.humanId.value != null)
                 buttonClickListener?.addNewDebtFragment(idHuman = vm.humanId.value!!, currency = currency!!, name = humanName!!)
-            }
         }
 
         val backButton: ImageView = view.findViewById(R.id.backButton)
@@ -264,6 +241,45 @@ class DebtDetailsFragment: Fragment() {
             overallSumTextView.setTextColor(ContextCompat.getColor(view.context, R.color.darkgray))
             overallSumTextView.text = "${decimalFormat.format(sum)} $currency"
         }
+    }
+
+    private fun showShareDialog(humanName: String?, currency: String?) {
+        val dialog = BottomSheetDialog(requireContext())
+        dialog.setContentView(R.layout.dialog_share)
+        vm.isShareDialogShown.value = true
+
+        dialog.findViewById<Button>(R.id.textShareButton)!!.setOnClickListener {
+            val intent = Intent(ACTION_SEND)
+            intent.type = "text/plain"
+            intent.putExtra(EXTRA_SUBJECT, humanName)
+            intent.putExtra(EXTRA_TEXT, getDebtShareString.execute(debtList = vm.debtList.value!!, name = humanName!!, currency = currency!!, sum = vm.overallSum.value!!, getAddSumInShareText.execute()))
+            startActivity(createChooser(intent, humanName))
+        }
+
+        dialog.findViewById<Button>(R.id.excelShareButton)!!.setOnClickListener {
+            var rootFolder = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString())
+            rootFolder = File(rootFolder, "DebtBookFiles")
+            val sheetTitles = arrayOf(getString(R.string.date), "${getString(R.string.sum)} ($currency)", getString(R.string.comment))
+            val excelFile = ExportDebtDataInExcelUseCase().execute(debtList = vm.debtList.value!!, sheetName = "${humanName}_debts", rootFolder = rootFolder, sheetTitles = sheetTitles)
+            if (excelFile.exists())
+                Toast.makeText(requireContext(), R.string.excel_folder_toast_hint, Toast.LENGTH_SHORT).show()
+            val intent = Intent(ACTION_SEND)
+            val uriPath: Uri = FileProvider.getUriForFile(requireContext(), "${requireContext().packageName}.provider", excelFile)
+            intent.addFlags(FLAG_GRANT_READ_URI_PERMISSION)
+            intent.setDataAndType(uriPath, "application/vnd.ms-excel");
+            intent.putExtra(EXTRA_STREAM, uriPath)
+            startActivity(createChooser(intent, humanName))
+        }
+
+        dialog.findViewById<Button>(R.id.cancelButton)!!.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.setOnDismissListener {
+            vm.isShareDialogShown.value = false
+        }
+
+        dialog.show()
     }
 
     private fun showOrderDialog() {
