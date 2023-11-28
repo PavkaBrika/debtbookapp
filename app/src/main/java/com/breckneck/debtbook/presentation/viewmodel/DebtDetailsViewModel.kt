@@ -37,6 +37,7 @@ class DebtDetailsViewModel(
     val humanId = MutableLiveData<Int>()
     val overallSum = MutableLiveData<Double>()
     val isOrderDialogShown by lazy { MutableLiveData<Boolean>() }
+    val isHumanDeleteDialogShown by lazy { MutableLiveData<Boolean>() }
     val isShareDialogShown by lazy { MutableLiveData<Boolean>() }
     val isDebtExtrasDialogShown by lazy { MutableLiveData<Boolean>() }
     val extraDebt by lazy { MutableLiveData<DebtDomain>() }

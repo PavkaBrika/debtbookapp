@@ -84,7 +84,6 @@ class DebtDetailsFragment: Fragment() {
 
     val getDebtShareString: GetDebtShareString by inject()
     val getAddSumInShareText: GetAddSumInShareText by inject()
-    val formatDebtSum = FormatDebtSum()
 
     lateinit var debtClickListener: DebtAdapter.OnDebtClickListener
     lateinit var overallSumTextView: TextView
@@ -102,7 +101,6 @@ class DebtDetailsFragment: Fragment() {
         val currency = arguments?.getString("currency")
         val humanName = arguments?.getString("name")
 
-        val appBarLayout: AppBarLayout = view.findViewById(R.id.app_bar)
         val collaps: CollapsingToolbarLayout = view.findViewById(R.id.collaps)
         collaps.title = humanName
         collaps.apply {
@@ -122,6 +120,9 @@ class DebtDetailsFragment: Fragment() {
 
             if ((isOrderDialogShown.value != null) && (isOrderDialogShown.value == true))
                 showOrderDialog()
+
+            if ((isHumanDeleteDialogShown.value != null) && (isHumanDeleteDialogShown.value == true))
+                showDeleteHumanDialog()
 
             if ((isShareDialogShown.value != null) && (isShareDialogShown.value == true))
                 showShareDialog(humanName, currency)
@@ -177,17 +178,7 @@ class DebtDetailsFragment: Fragment() {
 
         val deleteHumanButton: ImageView = view.findViewById(R.id.deleteHumanButton)
         deleteHumanButton.setOnClickListener {
-            val builder = AlertDialog.Builder(view.context)
-            builder.setTitle(R.string.payoffTitle)
-            builder.setMessage(R.string.payoffMessage)
-            builder.setPositiveButton(R.string.yes, object: DialogInterface.OnClickListener {
-                override fun onClick(p0: DialogInterface?, p1: Int) {
-                    vm.deleteHuman()
-                    buttonClickListener?.deleteHuman()
-                }
-            })
-            builder.setNegativeButton(R.string.No, null)
-            builder.show()
+            showDeleteHumanDialog()
         }
 
         debtClickListener = object : DebtAdapter.OnDebtClickListener{ //ALERT DIALOG
@@ -240,9 +231,32 @@ class DebtDetailsFragment: Fragment() {
         }
     }
 
+    private fun showDeleteHumanDialog() {
+        val dialog = BottomSheetDialog(requireContext())
+        dialog.setContentView(R.layout.dialog_delete_human)
+        vm.isHumanDeleteDialogShown.value = true
+
+        dialog.findViewById<Button>(R.id.okButton)!!.setOnClickListener {
+            vm.deleteHuman()
+            buttonClickListener?.deleteHuman()
+            dialog.dismiss()
+        }
+
+        dialog.findViewById<Button>(R.id.cancelButton)!!.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.setOnDismissListener {
+            vm.isHumanDeleteDialogShown.value = false
+        }
+
+        dialog.show()
+    }
+
     private fun showDebtExtras(debtDomain: DebtDomain, currency: String, name: String) {
         val dialog = BottomSheetDialog(requireContext())
         dialog.setContentView(R.layout.dialog_debt_extra_functions)
+        val formatDebtSum = FormatDebtSum()
 
         vm.isDebtExtrasDialogShown.value = true
         vm.extraDebt.value = debtDomain

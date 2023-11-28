@@ -387,6 +387,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
     }
 
     override fun deleteHuman() {
+        startClickVibration()
         val fragmentManager = supportFragmentManager
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.frameLayout, MainFragment()).commit()
