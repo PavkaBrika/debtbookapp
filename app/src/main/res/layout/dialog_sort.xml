@@ -37,7 +37,7 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <ImageView
-                    android:id="@+id/sortButton"
+                    android:id="@+id/sortImageView"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:rotation="-90"
@@ -59,14 +59,6 @@
                 style="@style/defaultRadioButtons"
                 android:checked="true"
                 android:text="@string/order_by_date" />
-
-            <RadioButton
-                android:id="@+id/orderDebtDateRadioButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                style="@style/defaultRadioButtons"
-                android:checked="true"
-                android:text="@string/order_by_last_debt_date" />
 
             <RadioButton
                 android:id="@+id/orderSumRadioButton"

@@ -92,7 +92,6 @@ class DebtDetailsViewModel(
                 getDebtOrder()
                 getAllDebts()
                 getOverallSum()
-
             }, {
                 it.printStackTrace()
             })

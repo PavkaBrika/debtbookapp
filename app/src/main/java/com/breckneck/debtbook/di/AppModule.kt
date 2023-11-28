@@ -16,6 +16,8 @@ val appModule = module {
             getNegativeHumansUseCase = get(),
             getFirstMainCurrency = get(),
             getSecondMainCurrency = get(),
+            getHumanOrder = get(),
+            setHumanOrder = get()
         )
     }
 

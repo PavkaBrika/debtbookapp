@@ -35,6 +35,8 @@ import com.breckneck.deptbook.domain.model.DebtDomain
 import com.breckneck.deptbook.domain.usecase.Debt.*
 import com.breckneck.deptbook.domain.usecase.Settings.GetAddSumInShareText
 import com.breckneck.deptbook.domain.util.DebtOrderAttribute
+import com.breckneck.deptbook.domain.util.ROTATE_DEBT_IMAGE_VIEW_BY_DECREASE
+import com.breckneck.deptbook.domain.util.ROTATE_DEBT_IMAGE_VIEW_BY_INCREASE
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -47,8 +49,7 @@ import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.Collections
 
-const val ROTATE_IMAGE_VIEW_BY_INCREASE = 180f
-const val ROTATE_IMAGE_VIEW_BY_DECREASE = 0f
+
 
 class DebtDetailsFragment: Fragment() {
 
@@ -270,11 +271,11 @@ class DebtDetailsFragment: Fragment() {
         orderDialog.setContentView(R.layout.dialog_order_settings)
 
         var sortByIncrease = vm.debtOrder.value!!.second
-        val sortImageView = orderDialog.findViewById<ImageView>(R.id.sortButton)
+        val sortImageView = orderDialog.findViewById<ImageView>(R.id.sortImageView)
         if (sortByIncrease)
-            sortImageView!!.rotationY = ROTATE_IMAGE_VIEW_BY_INCREASE
+            sortImageView!!.rotationY = ROTATE_DEBT_IMAGE_VIEW_BY_INCREASE
         else
-            sortImageView!!.rotationY = ROTATE_IMAGE_VIEW_BY_DECREASE
+            sortImageView!!.rotationY = ROTATE_DEBT_IMAGE_VIEW_BY_DECREASE
 
         var orderAttribute = vm.debtOrder.value!!.first
         val orderDateRadioButton = orderDialog.findViewById<RadioButton>(R.id.orderDateRadioButton)
@@ -287,11 +288,11 @@ class DebtDetailsFragment: Fragment() {
         }
 
         orderDialog.findViewById<CardView>(R.id.sortButtonCard)!!.setOnClickListener {
-            if (sortImageView.rotationY == ROTATE_IMAGE_VIEW_BY_INCREASE) {
-                sortImageView.rotationY = ROTATE_IMAGE_VIEW_BY_DECREASE
+            if (sortImageView.rotationY == ROTATE_DEBT_IMAGE_VIEW_BY_INCREASE) {
+                sortImageView.rotationY = ROTATE_DEBT_IMAGE_VIEW_BY_DECREASE
                 sortByIncrease = false
-            } else if (sortImageView.rotationY == ROTATE_IMAGE_VIEW_BY_DECREASE) {
-                sortImageView.rotationY = ROTATE_IMAGE_VIEW_BY_INCREASE
+            } else if (sortImageView.rotationY == ROTATE_DEBT_IMAGE_VIEW_BY_DECREASE) {
+                sortImageView.rotationY = ROTATE_DEBT_IMAGE_VIEW_BY_INCREASE
                 sortByIncrease = true
             }
         }

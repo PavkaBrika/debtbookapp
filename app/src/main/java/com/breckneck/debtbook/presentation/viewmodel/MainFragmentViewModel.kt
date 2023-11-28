@@ -3,14 +3,14 @@ package com.breckneck.debtbook.presentation.viewmodel
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.breckneck.debtbook.presentation.util.HumanFilters
+import com.breckneck.deptbook.domain.util.HumanFilters
 import com.breckneck.deptbook.domain.model.HumanDomain
-import com.breckneck.deptbook.domain.usecase.Human.GetAllDebtsSumUseCase
-import com.breckneck.deptbook.domain.usecase.Human.GetAllHumansUseCase
-import com.breckneck.deptbook.domain.usecase.Human.GetNegativeHumansUseCase
-import com.breckneck.deptbook.domain.usecase.Human.GetPositiveHumansUseCase
+import com.breckneck.deptbook.domain.usecase.Human.*
 import com.breckneck.deptbook.domain.usecase.Settings.GetFirstMainCurrency
+import com.breckneck.deptbook.domain.usecase.Settings.GetHumanOrder
 import com.breckneck.deptbook.domain.usecase.Settings.GetSecondMainCurrency
+import com.breckneck.deptbook.domain.usecase.Settings.SetHumanOrder
+import com.breckneck.deptbook.domain.util.HumanOrderAttribute
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -22,14 +22,18 @@ class MainFragmentViewModel(
     private val getPositiveHumansUseCase: GetPositiveHumansUseCase,
     private val getNegativeHumansUseCase: GetNegativeHumansUseCase,
     private val getFirstMainCurrency: GetFirstMainCurrency,
-    private val getSecondMainCurrency: GetSecondMainCurrency
+    private val getSecondMainCurrency: GetSecondMainCurrency,
+    private val getHumanOrder: GetHumanOrder,
+    private val setHumanOrder: SetHumanOrder
 ) : ViewModel() {
 
     var resultPos = MutableLiveData<String>()
     var resultNeg = MutableLiveData<String>()
     var resultHumanList = MutableLiveData<List<HumanDomain>>()
-    var resultIsFilterDialogShown = MutableLiveData<Boolean>()
+    var resultIsSortDialogShown = MutableLiveData<Boolean>()
     var resultHumanFilters = MutableLiveData<HumanFilters>()
+    var resultHumanOrder = MutableLiveData<Pair<HumanOrderAttribute, Boolean>>()
+    private val sortHumans = SortHumans()
     private val disposeBag = CompositeDisposable()
 
     init {
@@ -43,6 +47,19 @@ class MainFragmentViewModel(
         super.onCleared()
     }
 
+    fun sortHumans() {
+        if (resultHumanList.value != null)
+            resultHumanList.value = sortHumans.execute(resultHumanList.value!!, resultHumanOrder.value!!)
+    }
+
+    fun getHumanOrder() {
+        resultHumanOrder.value = getHumanOrder.execute()
+    }
+
+    fun setHumanOrder(order: Pair<HumanOrderAttribute, Boolean>) {
+        setHumanOrder.execute(order = order)
+    }
+
     fun getAllHumans() {
         val result = Single.create {
             it.onSuccess(getAllHumansUseCase.execute())
@@ -51,6 +68,7 @@ class MainFragmentViewModel(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 resultHumanList.value = it
+                sortHumans()
                 Log.e("TAG", "humans loaded in VM")
             }, {
                 Log.e("TAG", it.stackTrace.toString())
@@ -126,13 +144,5 @@ class MainFragmentViewModel(
                 Log.e("TAG", it.stackTrace.toString())
             })
         disposeBag.add(result)
-    }
-
-    fun setFilterDialogShown(shown: Boolean) {
-        resultIsFilterDialogShown.value = shown
-    }
-
-    fun setHumansFilter(humanFilters: HumanFilters) {
-        resultHumanFilters.value = humanFilters
     }
 }

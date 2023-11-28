@@ -1,0 +1,7 @@
+package com.breckneck.deptbook.domain.util
+
+const val ROTATE_DEBT_IMAGE_VIEW_BY_INCREASE = 180f
+const val ROTATE_DEBT_IMAGE_VIEW_BY_DECREASE = 0f
+
+const val ROTATE_HUMAN_IMAGE_VIEW_BY_INCREASE = 180f
+const val ROTATE_HUMAN_IMAGE_VIEW_BY_DECREASE = 0f

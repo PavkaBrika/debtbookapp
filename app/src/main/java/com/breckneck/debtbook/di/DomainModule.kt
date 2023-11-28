@@ -157,4 +157,12 @@ val domainModule = module {
     factory<GetDebtOrder> {
         GetDebtOrder(settingsRepository = get())
     }
+
+    factory<SetHumanOrder> {
+        SetHumanOrder(settingsRepository = get())
+    }
+
+    factory<GetHumanOrder> {
+        GetHumanOrder(settingsRepository = get())
+    }
 }
