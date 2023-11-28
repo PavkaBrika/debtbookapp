@@ -3,9 +3,10 @@ package com.breckneck.debtbook.presentation.fragment
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.content.Context
+import android.content.Context.VIBRATOR_SERVICE
 import android.content.pm.PackageManager
 import android.graphics.Typeface
-import android.os.Bundle
+import android.os.*
 import android.provider.ContactsContract
 import android.text.Editable
 import android.text.TextWatcher
@@ -23,6 +24,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.adapter.ContactsAdapter
+import com.breckneck.debtbook.presentation.activity.MainActivity
 import com.breckneck.debtbook.presentation.customview.CustomSwitchView
 import com.breckneck.deptbook.domain.usecase.Debt.*
 import com.breckneck.deptbook.domain.usecase.Human.AddSumUseCase
@@ -54,6 +56,7 @@ class NewDebtFragment: Fragment() {
         fun DebtDetailsNewHuman(currency: String, name: String)
         fun DebtDetailsExistHuman(idHuman: Int, currency: String, name: String)
         fun onBackNewDebtButtonClick()
+        fun onSetButtonClick()
     }
 
     lateinit var buttonClickListener: OnButtonClickListener
@@ -126,6 +129,7 @@ class NewDebtFragment: Fragment() {
                 currencySpinner.setSelection(i)
         currencySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                buttonClickListener.onSetButtonClick()
                 currency = p0?.getItemAtPosition(p2).toString().substring(p0?.getItemAtPosition(p2).toString().lastIndexOf(" ") + 1)
             }
 
@@ -134,15 +138,6 @@ class NewDebtFragment: Fragment() {
         }
 
         val customSwitch: CustomSwitchView = view.findViewById(R.id.customSwitch)
-//        val stickySwitch: StickySwitch = view.findViewById(R.id.sticky_switch)
-//        stickySwitch.onSelectedChangeListener = object : StickySwitch.OnSelectedChangeListener{
-//            override fun onSelectedChange(direction: StickySwitch.Direction, text: String) {
-//                if (direction == StickySwitch.Direction.LEFT)
-//                    stickySwitch.switchColor = 0xFF59CB72.toInt()
-//                else
-//                    stickySwitch.switchColor = 0xFFE25D56.toInt()
-//            }
-//        }
 
         debtSumEditText.addTextChangedListener { object: TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -201,6 +196,7 @@ class NewDebtFragment: Fragment() {
 
         val setButton : FloatingActionButton = view.findViewById(R.id.setSettingsButton)
         setButton.setOnClickListener{
+            buttonClickListener.onSetButtonClick()
             val name = humanNameEditText.text.toString()
             var sum = debtSumEditText.text.toString()
             date = debtDateTextView.text.toString()

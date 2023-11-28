@@ -43,6 +43,10 @@
         <item name="android:tint">@color/black</item>
     </style>
 
+    <style name="defaultRadioButtons">
+        <item name="android:buttonTint">@color/black</item>
+    </style>
+
     <style name="fabTheme">
         <item name="android:backgroundTint">@color/lightgray</item>
         <item name="borderWidth">0dp</item>

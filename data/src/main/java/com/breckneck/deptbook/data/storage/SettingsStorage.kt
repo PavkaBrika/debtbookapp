@@ -33,4 +33,8 @@ interface SettingsStorage {
     fun setDebtOrder(order: Pair<Int, Boolean>)
 
     fun getDebtOrder(): Pair<Int, Boolean>
+
+    fun setHumanOrder(order: Pair<Int, Boolean>)
+
+    fun getHumanOrder(): Pair<Int, Boolean>
 }

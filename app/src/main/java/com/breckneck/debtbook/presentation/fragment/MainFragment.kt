@@ -7,15 +7,16 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.*
+import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.adapter.HumanAdapter
-import com.breckneck.debtbook.presentation.util.HumanFilters
 import com.breckneck.debtbook.presentation.viewmodel.MainFragmentViewModel
 import com.breckneck.deptbook.domain.model.HumanDomain
+import com.breckneck.deptbook.domain.util.*
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -35,6 +36,8 @@ class MainFragment : Fragment() {
         fun onSettingsButtonClick()
 
         fun getDebtQuantity()
+
+        fun onChangeOrderButtonClick()
     }
 
     var buttonClickListener: OnButtonClickListener? = null
@@ -51,8 +54,8 @@ class MainFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_main, container, false)
 
-        if (vm.resultIsFilterDialogShown.value == true)
-            showHumanFilterDialog()
+        if (vm.resultIsSortDialogShown.value == true)
+            showHumanSortDialog()
 
         val collaps: CollapsingToolbarLayout = view.findViewById(R.id.collaps)
         collaps.apply {
@@ -85,42 +88,53 @@ class MainFragment : Fragment() {
 
         filterButton = view.findViewById(R.id.filterHumanButton)
         filterButton.setOnClickListener {
-            showHumanFilterDialog()
+            showHumanSortDialog()
         }
 
         vm.apply {
-            when (vm.resultHumanFilters.value!!) {
-                HumanFilters.PositiveHumans -> {
-                    getPositiveHumans()
-                    filterButton.setColorFilter(ContextCompat.getColor(view.context, R.color.green))
-                }
-                HumanFilters.NegativeHumans -> {
-                    getNegativeHumans()
-                    filterButton.setColorFilter(ContextCompat.getColor(view.context, R.color.red))
-                }
-                HumanFilters.AllHumans -> getAllHumans()
-            }
             getNegativeSum()
             getPositiveSum()
+            getHumanOrder()
+
+            resultHumanFilters.observe(viewLifecycleOwner) {
+                when (it) {
+                    HumanFilters.AllHumans -> {
+                        getAllHumans()
+                    }
+                    HumanFilters.NegativeHumans -> {
+                        getNegativeHumans()
+                    }
+                    HumanFilters.PositiveHumans -> {
+                        getPositiveHumans()
+                    }
+                }
+                changeSortButtonColor(it)
+            }
+
+            resultHumanList.observe(viewLifecycleOwner) {
+                if (it.isNotEmpty()) {
+                    mainRecyclerViewHintTextView.visibility = View.VISIBLE
+                    noDebtsTextView.visibility = View.INVISIBLE
+                } else {
+                    mainRecyclerViewHintTextView.visibility = View.INVISIBLE
+                    noDebtsTextView.visibility = View.VISIBLE
+                }
+                val adapter = HumanAdapter(it, humanClickListener)
+                recyclerView.adapter = adapter
+                Log.e("TAG", "adapter link success")
+            }
+
+            resultHumanOrder.observe(viewLifecycleOwner) {
+                sortHumans()
+            }
         }
 
         buttonClickListener?.getDebtQuantity()
 
-        vm.resultHumanList.observe(viewLifecycleOwner) {
-            if (it.isNotEmpty()) {
-                mainRecyclerViewHintTextView.visibility = View.VISIBLE
-                noDebtsTextView.visibility = View.INVISIBLE
-            } else {
-                mainRecyclerViewHintTextView.visibility = View.INVISIBLE
-                noDebtsTextView.visibility = View.VISIBLE
-            }
-            val adapter = HumanAdapter(it, humanClickListener)
-            recyclerView.adapter = adapter
-            Log.e("TAG", "adapter link success")
-        }
+
 
         val overallPositiveSumTextView: TextView = view.findViewById(R.id.overallPositiveSumTextView)
-        val overallNegativeSumTextView: TextView = view.findViewById(R.id.overallNegativeSumTextView)
+
         vm.resultPos.observe(viewLifecycleOwner) {
             overallPositiveSumTextView.text = it
             if (it == "") {
@@ -131,6 +145,7 @@ class MainFragment : Fragment() {
             }
         }
 
+        val overallNegativeSumTextView: TextView = view.findViewById(R.id.overallNegativeSumTextView)
         vm.resultNeg.observe(viewLifecycleOwner) {
             overallNegativeSumTextView.text = it
             if (it == "") {
@@ -140,44 +155,112 @@ class MainFragment : Fragment() {
                 overallNegativeSumTextView.text = it
             }
         }
+
         return view
     }
 
-    fun showHumanFilterDialog() {
+    fun showHumanSortDialog() {
         val bottomSheetDialogFilter = BottomSheetDialog(requireContext())
-        bottomSheetDialogFilter.setContentView(R.layout.dialog_filter)
+        bottomSheetDialogFilter.setContentView(R.layout.dialog_sort)
         bottomSheetDialogFilter.behavior.state = BottomSheetBehavior.STATE_EXPANDED
-        vm.setFilterDialogShown(true)
-        bottomSheetDialogFilter.findViewById<Button>(R.id.showAllButton)!!.setOnClickListener {
-            vm.getAllHumans()
-            vm.setHumansFilter(HumanFilters.AllHumans)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                if (resources.configuration.isNightModeActive)
-                    filterButton.setColorFilter(ContextCompat.getColor(requireContext(), R.color.white))
-                else
-                    filterButton.setColorFilter(ContextCompat.getColor(requireContext(), R.color.black))
+        vm.resultIsSortDialogShown.value = true
+
+        var sortHumansAttribute = vm.resultHumanOrder.value!!.first
+        when (sortHumansAttribute) {
+            HumanOrderAttribute.Date ->
+                bottomSheetDialogFilter.findViewById<RadioButton>(R.id.orderDateRadioButton)!!.isChecked = true
+            HumanOrderAttribute.Sum ->
+                bottomSheetDialogFilter.findViewById<RadioButton>(R.id.orderSumRadioButton)!!.isChecked = true
+        }
+
+        var sortByIncrease = vm.resultHumanOrder.value!!.second
+        val sortImageView = bottomSheetDialogFilter.findViewById<ImageView>(R.id.sortImageView)
+        if (sortByIncrease)
+            sortImageView!!.rotationY = ROTATE_HUMAN_IMAGE_VIEW_BY_INCREASE
+        else
+            sortImageView!!.rotationY = ROTATE_HUMAN_IMAGE_VIEW_BY_DECREASE
+
+        bottomSheetDialogFilter.findViewById<CardView>(R.id.sortButtonCard)!!.setOnClickListener {
+            buttonClickListener!!.onChangeOrderButtonClick()
+            if (sortImageView.rotationY == ROTATE_HUMAN_IMAGE_VIEW_BY_INCREASE) {
+                sortImageView.rotationY = ROTATE_HUMAN_IMAGE_VIEW_BY_DECREASE
+                sortByIncrease = false
             } else {
-                filterButton.setColorFilter(ContextCompat.getColor(requireContext(), R.color.black))
+                sortImageView.rotationY = ROTATE_HUMAN_IMAGE_VIEW_BY_INCREASE
+                sortByIncrease = true
             }
-            bottomSheetDialogFilter.cancel()
-        }
-        bottomSheetDialogFilter.findViewById<Button>(R.id.showPositiveButton)!!.setOnClickListener {
-            filterButton.setColorFilter(ContextCompat.getColor(requireContext(), R.color.green))
-            vm.getPositiveHumans()
-            vm.setHumansFilter(HumanFilters.PositiveHumans)
-            bottomSheetDialogFilter.cancel()
-        }
-        bottomSheetDialogFilter.findViewById<Button>(R.id.showNegativeButton)!!.setOnClickListener {
-            filterButton.setColorFilter(ContextCompat.getColor(requireContext(), R.color.red))
-            vm.getNegativeHumans()
-            vm.setHumansFilter(HumanFilters.NegativeHumans)
-            bottomSheetDialogFilter.cancel()
         }
 
-        bottomSheetDialogFilter.setOnCancelListener {
-            vm.setFilterDialogShown(false)
+        var humansFilter: HumanFilters = vm.resultHumanFilters.value!!
+
+        when (vm.resultHumanFilters.value!!) {
+            HumanFilters.AllHumans -> bottomSheetDialogFilter.findViewById<RadioButton>(R.id.showAllHumansRadioButton)!!.isChecked = true
+            HumanFilters.NegativeHumans -> bottomSheetDialogFilter.findViewById<RadioButton>(R.id.showNegativeHumansRadioButton)!!.isChecked = true
+            HumanFilters.PositiveHumans -> bottomSheetDialogFilter.findViewById<RadioButton>(R.id.showPositiveHumansRadioButton)!!.isChecked = true
         }
 
+        bottomSheetDialogFilter.findViewById<Button>(R.id.confirmButton)!!.setOnClickListener {
+            when (bottomSheetDialogFilter.findViewById<RadioGroup>(R.id.filterRadioGroup)!!.checkedRadioButtonId) {
+                R.id.showAllHumansRadioButton -> {
+                    humansFilter = HumanFilters.AllHumans
+                }
+                R.id.showPositiveHumansRadioButton -> {
+                    humansFilter = HumanFilters.PositiveHumans
+                }
+                R.id.showNegativeHumansRadioButton -> {
+                    humansFilter = HumanFilters.NegativeHumans
+                }
+            }
+
+            when (bottomSheetDialogFilter.findViewById<RadioGroup>(R.id.orderRadioGroup)!!.checkedRadioButtonId) {
+                R.id.orderDateRadioButton -> {
+                    sortHumansAttribute = HumanOrderAttribute.Date
+                }
+                R.id.orderSumRadioButton -> {
+                    sortHumansAttribute = HumanOrderAttribute.Sum
+                }
+            }
+
+            if (vm.resultHumanOrder.value!! != Pair(sortHumansAttribute, sortByIncrease))
+                vm.resultHumanOrder.value = Pair(sortHumansAttribute, sortByIncrease)
+
+            if (bottomSheetDialogFilter.findViewById<CheckBox>(R.id.rememberChoiceCheckBox)!!.isChecked)
+                vm.setHumanOrder(order = Pair(sortHumansAttribute, sortByIncrease))
+
+            if (vm.resultHumanFilters.value!! != humansFilter)
+                vm.resultHumanFilters.value = humansFilter
+            bottomSheetDialogFilter.dismiss()
+        }
+
+        bottomSheetDialogFilter.findViewById<Button>(R.id.cancelButton)!!.setOnClickListener {
+            bottomSheetDialogFilter.dismiss()
+        }
+        bottomSheetDialogFilter.setOnDismissListener {
+            vm.resultIsSortDialogShown.value = false
+        }
         bottomSheetDialogFilter.show()
+    }
+
+    fun changeSortButtonColor(humansFilter: HumanFilters) {
+        if (view != null) {
+            when (humansFilter) {
+                HumanFilters.AllHumans -> {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                        if (resources.configuration.isNightModeActive)
+                            filterButton.setColorFilter(ContextCompat.getColor(requireContext(), R.color.white))
+                        else
+                            filterButton.setColorFilter(ContextCompat.getColor(requireContext(), R.color.black))
+                    } else {
+                        filterButton.setColorFilter(ContextCompat.getColor(requireContext(), R.color.black))
+                    }
+                }
+                HumanFilters.NegativeHumans -> {
+                    filterButton.setColorFilter(ContextCompat.getColor(view!!.context, R.color.red))
+                }
+                HumanFilters.PositiveHumans -> {
+                    filterButton.setColorFilter(ContextCompat.getColor(view!!.context, R.color.green))
+                }
+            }
+        }
     }
 }

@@ -26,6 +26,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.adapter.DebtAdapter
@@ -34,6 +35,9 @@ import com.breckneck.deptbook.domain.model.DebtDomain
 import com.breckneck.deptbook.domain.usecase.Debt.*
 import com.breckneck.deptbook.domain.usecase.Settings.GetAddSumInShareText
 import com.breckneck.deptbook.domain.util.DebtOrderAttribute
+import com.breckneck.deptbook.domain.util.ROTATE_DEBT_IMAGE_VIEW_BY_DECREASE
+import com.breckneck.deptbook.domain.util.ROTATE_DEBT_IMAGE_VIEW_BY_INCREASE
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -43,9 +47,9 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
+import java.util.Collections
 
-const val ROTATE_IMAGE_VIEW_BY_INCREASE = 180f
-const val ROTATE_IMAGE_VIEW_BY_DECREASE = 0f
+
 
 class DebtDetailsFragment: Fragment() {
 
@@ -57,6 +61,8 @@ class DebtDetailsFragment: Fragment() {
         fun deleteHuman()
 
         fun onBackDebtsButtonClick()
+
+        fun onChangeOrderButtonClick()
     }
 
     var buttonClickListener: OnButtonClickListener? = null
@@ -115,14 +121,50 @@ class DebtDetailsFragment: Fragment() {
             if ((isOrderDialogShown.value != null) && (isOrderDialogShown.value == true))
                 showOrderDialog()
 
+            if ((isHumanDeleteDialogShown.value != null) && (isHumanDeleteDialogShown.value == true))
+                showDeleteHumanDialog()
+
+            if ((isShareDialogShown.value != null) && (isShareDialogShown.value == true))
+                showShareDialog(humanName, currency)
+
+            if ((isDebtExtrasDialogShown.value != null) && (isDebtExtrasDialogShown.value == true))
+                showDebtExtras(vm.extraDebt.value!!, currency = currency!!, name = humanName!!)
+
             debtList.observe(viewLifecycleOwner) {
-                val adapter = DebtAdapter(it, debtClickListener, currency!!)
+                val list: MutableList<DebtDomain> = it.toMutableList()
+                val adapter = DebtAdapter(list, debtClickListener, currency!!)
                 recyclerView.adapter = adapter
-                if (it.isNotEmpty()) {
+                if (list.isNotEmpty()) {
                     debtRecyclerViewHintTextView.visibility = View.VISIBLE
                 } else {
                     debtRecyclerViewHintTextView.visibility = View.INVISIBLE
                 }
+
+                val itemTouchListener = ItemTouchHelper(object :
+                    ItemTouchHelper.SimpleCallback(ItemTouchHelper.DOWN or ItemTouchHelper.UP, 0) {
+                    override fun onMove(
+                        recyclerView: RecyclerView,
+                        viewHolder: RecyclerView.ViewHolder,
+                        target: RecyclerView.ViewHolder
+                    ): Boolean {
+                        val initial = viewHolder.adapterPosition
+                        val final = target.adapterPosition
+                        Collections.swap(list, initial, final)
+                        adapter.notifyItemMoved(initial, final)
+                        return false
+                    }
+
+                    override fun isLongPressDragEnabled(): Boolean {
+                        return true
+                    }
+
+                    override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+
+                    }
+
+                })
+
+                itemTouchListener.attachToRecyclerView(recyclerView)
             }
 
             debtOrder.observe(viewLifecycleOwner) {
@@ -136,31 +178,12 @@ class DebtDetailsFragment: Fragment() {
 
         val deleteHumanButton: ImageView = view.findViewById(R.id.deleteHumanButton)
         deleteHumanButton.setOnClickListener {
-            val builder = AlertDialog.Builder(view.context)
-            builder.setTitle(R.string.payoffTitle)
-            builder.setMessage(R.string.payoffMessage)
-            builder.setPositiveButton(R.string.yes, object: DialogInterface.OnClickListener {
-                override fun onClick(p0: DialogInterface?, p1: Int) {
-                    vm.deleteHuman()
-                    buttonClickListener?.deleteHuman()
-                }
-            })
-            builder.setNegativeButton(R.string.No, null)
-            builder.show()
+            showDeleteHumanDialog()
         }
 
-        val actions = arrayOf(getString(R.string.deletedebt), getString(R.string.editdebt))
         debtClickListener = object : DebtAdapter.OnDebtClickListener{ //ALERT DIALOG
             override fun onDebtClick(debtDomain: DebtDomain, position: Int) {
-                val builder = AlertDialog.Builder(view.context)
-                builder.setItems(actions) {dialog, which ->
-                    if (actions[which] == getString(R.string.deletedebt)) { //DELETE DEBT
-                        vm.deleteDebt(debtDomain = debtDomain)
-                    } else { //EDIT DEBT
-                        buttonClickListener?.editDebt(debtDomain = debtDomain, currency = currency!!, name = humanName!!)
-                    }
-                }
-                builder.show()
+                showDebtExtras(debtDomain = debtDomain, currency = currency!!, name = humanName!!)
                 Log.e("TAG", "Click on debt with id = ${debtDomain.id}")
             }
         }
@@ -172,39 +195,13 @@ class DebtDetailsFragment: Fragment() {
 
         val shareHumanButton: ImageView = view.findViewById(R.id.shareHumanButton)
         shareHumanButton.setOnClickListener {
-            val actions = arrayOf(getString(R.string.text_format), getString(R.string.excel_format))
-            AlertDialog.Builder(requireContext())
-                .setTitle(R.string.share_debt_in)
-                .setItems(actions) {dialog, which ->
-                if (actions[which] == getString(R.string.text_format)) {
-                    val intent = Intent(ACTION_SEND)
-                    intent.type = "text/plain"
-                    intent.putExtra(EXTRA_SUBJECT, humanName)
-                    intent.putExtra(EXTRA_TEXT, getDebtShareString.execute(debtList = vm.debtList.value!!, name = humanName!!, currency = currency!!, sum = vm.overallSum.value!!, getAddSumInShareText.execute()))
-                    startActivity(createChooser(intent, humanName))
-                } else {
-                    var rootFolder = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString())
-                    rootFolder = File(rootFolder, "DebtBookFiles")
-                    val sheetTitles = arrayOf(getString(R.string.date), "${getString(R.string.sum)} ($currency)", getString(R.string.comment))
-                    val excelFile = ExportDebtDataInExcelUseCase().execute(debtList = vm.debtList.value!!, sheetName = "${humanName}_debts", rootFolder = rootFolder, sheetTitles = sheetTitles)
-                    if (excelFile.exists())
-                        Toast.makeText(requireContext(), R.string.excel_folder_toast_hint, Toast.LENGTH_SHORT).show()
-                    val intent = Intent(ACTION_SEND)
-                    val uriPath: Uri = FileProvider.getUriForFile(requireContext(), "${requireContext().packageName}.provider", excelFile)
-                    intent.addFlags(FLAG_GRANT_READ_URI_PERMISSION)
-                    intent.setDataAndType(uriPath, "application/vnd.ms-excel");
-                    intent.putExtra(EXTRA_STREAM, uriPath)
-                    startActivity(createChooser(intent, humanName))
-                }
-            }
-                .show()
+            showShareDialog(humanName, currency)
         }
 
         val addDebtButton: FloatingActionButton = view.findViewById(R.id.addDebtButton)
         addDebtButton.setOnClickListener{
-            if (vm.humanId.value != null) {
+            if (vm.humanId.value != null)
                 buttonClickListener?.addNewDebtFragment(idHuman = vm.humanId.value!!, currency = currency!!, name = humanName!!)
-            }
         }
 
         val backButton: ImageView = view.findViewById(R.id.backButton)
@@ -234,16 +231,108 @@ class DebtDetailsFragment: Fragment() {
         }
     }
 
+    private fun showDeleteHumanDialog() {
+        val dialog = BottomSheetDialog(requireContext())
+        dialog.setContentView(R.layout.dialog_delete_human)
+        vm.isHumanDeleteDialogShown.value = true
+
+        dialog.findViewById<Button>(R.id.okButton)!!.setOnClickListener {
+            vm.deleteHuman()
+            buttonClickListener?.deleteHuman()
+            dialog.dismiss()
+        }
+
+        dialog.findViewById<Button>(R.id.cancelButton)!!.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.setOnDismissListener {
+            vm.isHumanDeleteDialogShown.value = false
+        }
+
+        dialog.show()
+    }
+
+    private fun showDebtExtras(debtDomain: DebtDomain, currency: String, name: String) {
+        val dialog = BottomSheetDialog(requireContext())
+        dialog.setContentView(R.layout.dialog_debt_extra_functions)
+        val formatDebtSum = FormatDebtSum()
+
+        vm.isDebtExtrasDialogShown.value = true
+        vm.extraDebt.value = debtDomain
+
+        dialog.findViewById<TextView>(R.id.debtExtrasTitle)!!.text = "${debtDomain.date} : ${formatDebtSum.execute(debtDomain.sum)} $currency"
+
+        dialog.findViewById<Button>(R.id.deleteButton)!!.setOnClickListener {
+            vm.deleteDebt(debtDomain = debtDomain)
+            dialog.dismiss()
+        }
+
+        dialog.findViewById<Button>(R.id.editButton)!!.setOnClickListener {
+            buttonClickListener?.editDebt(debtDomain = debtDomain, currency = currency, name = name)
+            dialog.dismiss()
+        }
+
+        dialog.findViewById<Button>(R.id.cancelButton)!!.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.setOnDismissListener {
+            vm.isDebtExtrasDialogShown.value = false
+        }
+
+        dialog.show()
+    }
+
+    private fun showShareDialog(humanName: String?, currency: String?) {
+        val dialog = BottomSheetDialog(requireContext())
+        dialog.setContentView(R.layout.dialog_share)
+        vm.isShareDialogShown.value = true
+
+        dialog.findViewById<Button>(R.id.deleteButton)!!.setOnClickListener {
+            val intent = Intent(ACTION_SEND)
+            intent.type = "text/plain"
+            intent.putExtra(EXTRA_SUBJECT, humanName)
+            intent.putExtra(EXTRA_TEXT, getDebtShareString.execute(debtList = vm.debtList.value!!, name = humanName!!, currency = currency!!, sum = vm.overallSum.value!!, getAddSumInShareText.execute()))
+            startActivity(createChooser(intent, humanName))
+        }
+
+        dialog.findViewById<Button>(R.id.editButton)!!.setOnClickListener {
+            var rootFolder = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString())
+            rootFolder = File(rootFolder, "DebtBookFiles")
+            val sheetTitles = arrayOf(getString(R.string.date), "${getString(R.string.sum)} ($currency)", getString(R.string.comment))
+            val excelFile = ExportDebtDataInExcelUseCase().execute(debtList = vm.debtList.value!!, sheetName = "${humanName}_debts", rootFolder = rootFolder, sheetTitles = sheetTitles)
+            if (excelFile.exists())
+                Toast.makeText(requireContext(), R.string.excel_folder_toast_hint, Toast.LENGTH_SHORT).show()
+            val intent = Intent(ACTION_SEND)
+            val uriPath: Uri = FileProvider.getUriForFile(requireContext(), "${requireContext().packageName}.provider", excelFile)
+            intent.addFlags(FLAG_GRANT_READ_URI_PERMISSION)
+            intent.setDataAndType(uriPath, "application/vnd.ms-excel");
+            intent.putExtra(EXTRA_STREAM, uriPath)
+            startActivity(createChooser(intent, humanName))
+        }
+
+        dialog.findViewById<Button>(R.id.cancelButton)!!.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.setOnDismissListener {
+            vm.isShareDialogShown.value = false
+        }
+
+        dialog.show()
+    }
+
     private fun showOrderDialog() {
         val orderDialog = BottomSheetDialog(requireContext())
         orderDialog.setContentView(R.layout.dialog_order_settings)
 
         var sortByIncrease = vm.debtOrder.value!!.second
-        val sortImageView = orderDialog.findViewById<ImageView>(R.id.sortButton)
+        val sortImageView = orderDialog.findViewById<ImageView>(R.id.sortImageView)
         if (sortByIncrease)
-            sortImageView!!.rotationY = ROTATE_IMAGE_VIEW_BY_INCREASE
+            sortImageView!!.rotationY = ROTATE_DEBT_IMAGE_VIEW_BY_INCREASE
         else
-            sortImageView!!.rotationY = ROTATE_IMAGE_VIEW_BY_DECREASE
+            sortImageView!!.rotationY = ROTATE_DEBT_IMAGE_VIEW_BY_DECREASE
 
         var orderAttribute = vm.debtOrder.value!!.first
         val orderDateRadioButton = orderDialog.findViewById<RadioButton>(R.id.orderDateRadioButton)
@@ -256,11 +345,12 @@ class DebtDetailsFragment: Fragment() {
         }
 
         orderDialog.findViewById<CardView>(R.id.sortButtonCard)!!.setOnClickListener {
-            if (sortImageView.rotationY == ROTATE_IMAGE_VIEW_BY_INCREASE) {
-                sortImageView.rotationY = ROTATE_IMAGE_VIEW_BY_DECREASE
+            buttonClickListener!!.onChangeOrderButtonClick()
+            if (sortImageView.rotationY == ROTATE_DEBT_IMAGE_VIEW_BY_INCREASE) {
+                sortImageView.rotationY = ROTATE_DEBT_IMAGE_VIEW_BY_DECREASE
                 sortByIncrease = false
-            } else if (sortImageView.rotationY == ROTATE_IMAGE_VIEW_BY_DECREASE) {
-                sortImageView.rotationY = ROTATE_IMAGE_VIEW_BY_INCREASE
+            } else if (sortImageView.rotationY == ROTATE_DEBT_IMAGE_VIEW_BY_DECREASE) {
+                sortImageView.rotationY = ROTATE_DEBT_IMAGE_VIEW_BY_INCREASE
                 sortByIncrease = true
             }
         }

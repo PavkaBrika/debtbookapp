@@ -1,4 +1,4 @@
-package com.breckneck.debtbook.presentation.util
+package com.breckneck.deptbook.domain.util
 
 sealed class HumanFilters {
     object AllHumans: HumanFilters()

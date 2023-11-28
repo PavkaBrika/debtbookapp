@@ -53,7 +53,7 @@
     <string name="main_recycler_view_hint">Коснитесь для дополнительной информации</string>
     <string name="details_recycler_view_hint">Коснитесь для дополнительных функций</string>
     <string name="excel_folder_toast_hint">Файл сохранен в Storage/Documents/DebtBookFiles</string>
-    <string name="share_debt_in">Поделить долгом в</string>
+    <string name="share_debt_in">Поделиться долгом в</string>
     <string name="text_format">Текстовом формате</string>
     <string name="excel_format">Excel формате</string>
     <string name="error">Что-то пошло не так...</string>
@@ -64,4 +64,5 @@
     <string name="confirm">Подтвердить</string>
     <string name="cancel">Отмена</string>
     <string name="error_code">Код ошибки:</string>
+    <string name="order_by_last_debt_date">По дате последнего долга</string>
 </resources>
