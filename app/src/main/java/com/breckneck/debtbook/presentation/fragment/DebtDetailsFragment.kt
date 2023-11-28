@@ -61,6 +61,8 @@ class DebtDetailsFragment: Fragment() {
         fun deleteHuman()
 
         fun onBackDebtsButtonClick()
+
+        fun onChangeOrderButtonClick()
     }
 
     var buttonClickListener: OnButtonClickListener? = null
@@ -304,6 +306,7 @@ class DebtDetailsFragment: Fragment() {
         }
 
         orderDialog.findViewById<CardView>(R.id.sortButtonCard)!!.setOnClickListener {
+            buttonClickListener!!.onChangeOrderButtonClick()
             if (sortImageView.rotationY == ROTATE_DEBT_IMAGE_VIEW_BY_INCREASE) {
                 sortImageView.rotationY = ROTATE_DEBT_IMAGE_VIEW_BY_DECREASE
                 sortByIncrease = false

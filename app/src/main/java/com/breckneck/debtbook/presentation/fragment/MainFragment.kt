@@ -36,6 +36,8 @@ class MainFragment : Fragment() {
         fun onSettingsButtonClick()
 
         fun getDebtQuantity()
+
+        fun onChangeOrderButtonClick()
     }
 
     var buttonClickListener: OnButtonClickListener? = null
@@ -179,6 +181,7 @@ class MainFragment : Fragment() {
             sortImageView!!.rotationY = ROTATE_HUMAN_IMAGE_VIEW_BY_DECREASE
 
         bottomSheetDialogFilter.findViewById<CardView>(R.id.sortButtonCard)!!.setOnClickListener {
+            buttonClickListener!!.onChangeOrderButtonClick()
             if (sortImageView.rotationY == ROTATE_HUMAN_IMAGE_VIEW_BY_INCREASE) {
                 sortImageView.rotationY = ROTATE_HUMAN_IMAGE_VIEW_BY_DECREASE
                 sortByIncrease = false

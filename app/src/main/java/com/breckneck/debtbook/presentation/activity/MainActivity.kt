@@ -337,6 +337,10 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
     }
 
     //DebtDetailsFragment interfaces
+    override fun onChangeOrderButtonClick() {
+        startVibration()
+    }
+
     override fun addNewDebtFragment(idHuman: Int, currency: String, name: String) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
