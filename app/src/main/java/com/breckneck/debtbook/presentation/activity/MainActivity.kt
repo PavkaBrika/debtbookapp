@@ -1,8 +1,9 @@
 package com.breckneck.debtbook.presentation.activity
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Bundle
+import android.os.*
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -27,6 +28,7 @@ import com.breckneck.deptbook.domain.usecase.Ad.AddClickUseCase
 import com.breckneck.deptbook.domain.usecase.Ad.GetClicksUseCase
 import com.breckneck.deptbook.domain.usecase.Ad.SetClicksUseCase
 import com.breckneck.deptbook.domain.usecase.Settings.*
+import com.breckneck.deptbook.domain.util.DEBT_QUANTITY_FOR_LAST_SHOW_APP_RATE_DIALOG
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.play.core.review.ReviewManagerFactory
@@ -42,12 +44,11 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.math.roundToInt
 
-private const val DEBT_QUANTITY_FOR_LAST_SHOW_APP_RATE_DIALOG = 35
-
 class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, NewDebtFragment.OnButtonClickListener, DebtDetailsFragment.OnButtonClickListener, SettingsFragment.OnButtonClickListener {
 
     private var interstitialAd: InterstitialAd? = null
     private var interstitialAdLoader: InterstitialAdLoader? = null
+    var vib: Vibrator? = null
 
     private val vm by viewModel<MainActivityViewModel>()
 
@@ -57,7 +58,6 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
     lateinit var addClickToAdCounter: AddClickUseCase
     lateinit var refreshAdCounter: SetClicksUseCase
 
-    private val setAppIsRated: SetAppIsRated by inject()
     private val getAppIsRated: GetAppIsRated by inject()
     private val getDebtQuantityForAppRateDialogShow: GetDebtQuantityForAppRateDialogShow by inject()
     private val setDebtQuantityForAppRateDialogShow: SetDebtQuantityForAppRateDialogShow by inject()
@@ -65,6 +65,15 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val vibratorManager =
+                getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+            vib = vibratorManager.defaultVibrator
+        } else {
+            @Suppress("DEPRECATION")
+            vib = getSystemService(VIBRATOR_SERVICE) as Vibrator
+        }
 
         if (savedInstanceState == null) {
             val fragmentManager = supportFragmentManager
@@ -214,6 +223,12 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         destroyInterstitialAd()
     }
 
+    private fun startVibration() {
+        if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) && (vib != null)) {
+            vib!!.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.EFFECT_TICK))
+        }
+    }
+
     private fun destroyInterstitialAd() {
         interstitialAd?.setAdEventListener(null)
         interstitialAd = null
@@ -275,6 +290,10 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
     }
 
     //NewDebtFragment interfaces
+    override fun onSetButtonClick() {
+        startVibration()
+    }
+
     override fun DebtDetailsNewHuman(currency: String, name: String) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)

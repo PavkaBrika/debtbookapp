@@ -51,7 +51,7 @@
             android:id="@+id/orderDateRadioButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:buttonTint="@color/green"
+            style="@style/defaultRadioButtons"
             android:checked="true"
             android:text="@string/order_by_date" />
 
@@ -59,7 +59,7 @@
             android:id="@+id/orderSumRadioButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:buttonTint="@color/green"
+            style="@style/defaultRadioButtons"
             android:text="@string/order_debt_sum" />
 
     </RadioGroup>
@@ -72,7 +72,7 @@
         android:id="@+id/rememberChoiceCheckBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:buttonTint="@color/green"
+        style="@style/defaultRadioButtons"
         android:text="@string/remember_choice" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
