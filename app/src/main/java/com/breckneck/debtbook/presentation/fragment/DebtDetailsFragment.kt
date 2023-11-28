@@ -139,32 +139,6 @@ class DebtDetailsFragment: Fragment() {
                 } else {
                     debtRecyclerViewHintTextView.visibility = View.INVISIBLE
                 }
-
-                val itemTouchListener = ItemTouchHelper(object :
-                    ItemTouchHelper.SimpleCallback(ItemTouchHelper.DOWN or ItemTouchHelper.UP, 0) {
-                    override fun onMove(
-                        recyclerView: RecyclerView,
-                        viewHolder: RecyclerView.ViewHolder,
-                        target: RecyclerView.ViewHolder
-                    ): Boolean {
-                        val initial = viewHolder.adapterPosition
-                        val final = target.adapterPosition
-                        Collections.swap(list, initial, final)
-                        adapter.notifyItemMoved(initial, final)
-                        return false
-                    }
-
-                    override fun isLongPressDragEnabled(): Boolean {
-                        return true
-                    }
-
-                    override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-
-                    }
-
-                })
-
-                itemTouchListener.attachToRecyclerView(recyclerView)
             }
 
             debtOrder.observe(viewLifecycleOwner) {
