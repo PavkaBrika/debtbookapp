@@ -36,8 +36,10 @@ class DebtDetailsViewModel(
     val debtList = MutableLiveData<List<DebtDomain>>()
     val humanId = MutableLiveData<Int>()
     val overallSum = MutableLiveData<Double>()
-    val isOrderDialogShown = MutableLiveData<Boolean>()
-    val isShareDialogShown = MutableLiveData<Boolean>()
+    val isOrderDialogShown by lazy { MutableLiveData<Boolean>() }
+    val isShareDialogShown by lazy { MutableLiveData<Boolean>() }
+    val isDebtExtrasDialogShown by lazy { MutableLiveData<Boolean>() }
+    val extraDebt by lazy { MutableLiveData<DebtDomain>() }
     val debtOrder = MutableLiveData<Pair<DebtOrderAttribute, Boolean>>()
     private val disposeBag = CompositeDisposable()
     private val sortDebtsUseCase by lazy { SortDebts() }

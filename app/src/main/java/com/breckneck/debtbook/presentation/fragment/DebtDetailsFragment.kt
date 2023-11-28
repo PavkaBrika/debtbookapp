@@ -84,6 +84,7 @@ class DebtDetailsFragment: Fragment() {
 
     val getDebtShareString: GetDebtShareString by inject()
     val getAddSumInShareText: GetAddSumInShareText by inject()
+    val formatDebtSum = FormatDebtSum()
 
     lateinit var debtClickListener: DebtAdapter.OnDebtClickListener
     lateinit var overallSumTextView: TextView
@@ -124,6 +125,9 @@ class DebtDetailsFragment: Fragment() {
 
             if ((isShareDialogShown.value != null) && (isShareDialogShown.value == true))
                 showShareDialog(humanName, currency)
+
+            if ((isDebtExtrasDialogShown.value != null) && (isDebtExtrasDialogShown.value == true))
+                showDebtExtras(vm.extraDebt.value!!, currency = currency!!, name = humanName!!)
 
             debtList.observe(viewLifecycleOwner) {
                 val list: MutableList<DebtDomain> = it.toMutableList()
@@ -186,18 +190,9 @@ class DebtDetailsFragment: Fragment() {
             builder.show()
         }
 
-        val actions = arrayOf(getString(R.string.deletedebt), getString(R.string.editdebt))
         debtClickListener = object : DebtAdapter.OnDebtClickListener{ //ALERT DIALOG
             override fun onDebtClick(debtDomain: DebtDomain, position: Int) {
-                val builder = AlertDialog.Builder(view.context)
-                builder.setItems(actions) {dialog, which ->
-                    if (actions[which] == getString(R.string.deletedebt)) { //DELETE DEBT
-                        vm.deleteDebt(debtDomain = debtDomain)
-                    } else { //EDIT DEBT
-                        buttonClickListener?.editDebt(debtDomain = debtDomain, currency = currency!!, name = humanName!!)
-                    }
-                }
-                builder.show()
+                showDebtExtras(debtDomain = debtDomain, currency = currency!!, name = humanName!!)
                 Log.e("TAG", "Click on debt with id = ${debtDomain.id}")
             }
         }
@@ -245,12 +240,42 @@ class DebtDetailsFragment: Fragment() {
         }
     }
 
+    private fun showDebtExtras(debtDomain: DebtDomain, currency: String, name: String) {
+        val dialog = BottomSheetDialog(requireContext())
+        dialog.setContentView(R.layout.dialog_debt_extra_functions)
+
+        vm.isDebtExtrasDialogShown.value = true
+        vm.extraDebt.value = debtDomain
+
+        dialog.findViewById<TextView>(R.id.debtExtrasTitle)!!.text = "${debtDomain.date} : ${formatDebtSum.execute(debtDomain.sum)} $currency"
+
+        dialog.findViewById<Button>(R.id.deleteButton)!!.setOnClickListener {
+            vm.deleteDebt(debtDomain = debtDomain)
+            dialog.dismiss()
+        }
+
+        dialog.findViewById<Button>(R.id.editButton)!!.setOnClickListener {
+            buttonClickListener?.editDebt(debtDomain = debtDomain, currency = currency, name = name)
+            dialog.dismiss()
+        }
+
+        dialog.findViewById<Button>(R.id.cancelButton)!!.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.setOnDismissListener {
+            vm.isDebtExtrasDialogShown.value = false
+        }
+
+        dialog.show()
+    }
+
     private fun showShareDialog(humanName: String?, currency: String?) {
         val dialog = BottomSheetDialog(requireContext())
         dialog.setContentView(R.layout.dialog_share)
         vm.isShareDialogShown.value = true
 
-        dialog.findViewById<Button>(R.id.textShareButton)!!.setOnClickListener {
+        dialog.findViewById<Button>(R.id.deleteButton)!!.setOnClickListener {
             val intent = Intent(ACTION_SEND)
             intent.type = "text/plain"
             intent.putExtra(EXTRA_SUBJECT, humanName)
@@ -258,7 +283,7 @@ class DebtDetailsFragment: Fragment() {
             startActivity(createChooser(intent, humanName))
         }
 
-        dialog.findViewById<Button>(R.id.excelShareButton)!!.setOnClickListener {
+        dialog.findViewById<Button>(R.id.editButton)!!.setOnClickListener {
             var rootFolder = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString())
             rootFolder = File(rootFolder, "DebtBookFiles")
             val sheetTitles = arrayOf(getString(R.string.date), "${getString(R.string.sum)} ($currency)", getString(R.string.comment))

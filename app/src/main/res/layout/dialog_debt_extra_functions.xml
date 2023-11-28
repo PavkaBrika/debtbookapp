@@ -6,10 +6,10 @@
     android:padding="24dp">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/debtExtrasTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/share_debt_in"
+        android:text="Debt info"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,17 +21,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="@string/text_format"
+        android:text="@string/deletedebt"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/debtExtrasTitle" />
 
     <Button
         android:id="@+id/editButton"
         style="@style/ButtonsColor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/excel_format"
+        android:text="@string/editdebt"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/deleteButton" />

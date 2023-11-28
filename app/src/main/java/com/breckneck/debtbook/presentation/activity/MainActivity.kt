@@ -31,7 +31,6 @@ import com.breckneck.deptbook.domain.usecase.Settings.*
 import com.breckneck.deptbook.domain.util.DEBT_QUANTITY_FOR_LAST_SHOW_APP_RATE_DIALOG
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.play.core.review.ReviewManagerFactory
 import com.yandex.mobile.ads.banner.BannerAdSize
 import com.yandex.mobile.ads.banner.BannerAdEventListener
 import com.yandex.mobile.ads.banner.BannerAdView
@@ -223,9 +222,15 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         destroyInterstitialAd()
     }
 
-    private fun startVibration() {
+    private fun startTickVibration() {
         if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) && (vib != null)) {
             vib!!.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.EFFECT_TICK))
+        }
+    }
+
+    private fun startClickVibration() {
+        if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) && (vib != null)) {
+            vib!!.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.EFFECT_CLICK))
         }
     }
 
@@ -291,7 +296,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
 
     //NewDebtFragment interfaces
     override fun onSetButtonClick() {
-        startVibration()
+        startTickVibration()
     }
 
     override fun DebtDetailsNewHuman(currency: String, name: String) {
@@ -338,7 +343,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
 
     //DebtDetailsFragment interfaces
     override fun onChangeOrderButtonClick() {
-        startVibration()
+        startTickVibration()
     }
 
     override fun addNewDebtFragment(idHuman: Int, currency: String, name: String) {
