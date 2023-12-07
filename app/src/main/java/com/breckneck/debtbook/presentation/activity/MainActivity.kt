@@ -41,6 +41,7 @@ import com.yandex.mobile.ads.interstitial.InterstitialAdLoadListener
 import com.yandex.mobile.ads.interstitial.InterstitialAdLoader
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.lang.IllegalArgumentException
 import kotlin.math.roundToInt
 
 class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, NewDebtFragment.OnButtonClickListener, DebtDetailsFragment.OnButtonClickListener, SettingsFragment.OnButtonClickListener {
@@ -223,14 +224,22 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
     }
 
     private fun startTickVibration() {
-        if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) && (vib != null)) {
-            vib!!.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.EFFECT_TICK))
+        try {
+            if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) && (vib != null)) {
+                vib!!.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.EFFECT_TICK))
+            }
+        } catch (e: IllegalArgumentException) {
+            e.printStackTrace()
         }
     }
 
     private fun startClickVibration() {
-        if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) && (vib != null)) {
-            vib!!.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.EFFECT_CLICK))
+        try {
+            if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) && (vib != null)) {
+                vib!!.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.EFFECT_CLICK))
+            }
+        } catch (e: IllegalArgumentException) {
+            e.printStackTrace()
         }
     }
 
