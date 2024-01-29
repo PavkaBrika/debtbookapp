@@ -35,6 +35,7 @@ import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.textfield.TextInputLayout
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.BackpressureStrategy
 import io.reactivex.rxjava3.core.Completable
@@ -194,6 +195,9 @@ class NewDebtFragment: Fragment() {
             humanNameEditText.setText(nameArgs)
         }
 
+
+        val humanNameTextInput: TextInputLayout = view.findViewById(R.id.humanNameTextInput)
+        val debtSumTextInput: TextInputLayout = view.findViewById(R.id.debtSumTextInput)
         val setButton : FloatingActionButton = view.findViewById(R.id.setSettingsButton)
         setButton.setOnClickListener{
             buttonClickListener.onSetButtonClick()
@@ -227,10 +231,17 @@ class NewDebtFragment: Fragment() {
                             disposeBag.add(saveNewHumanDebt)
                         }
                         else {
-                            Toast.makeText(view.context, R.string.zerodebt, Toast.LENGTH_SHORT).show()
+                            debtSumTextInput.error = getString(R.string.zerodebt)
                         }
                     } else { //user check if user is bad
-                        Toast.makeText(view.context, R.string.youmustentername, Toast.LENGTH_SHORT).show()
+                        if (checkEditTextIsEmpty.execute(name))
+                            humanNameTextInput.error = getString(R.string.youmustentername)
+                        else
+                            humanNameTextInput.error = ""
+                        if (checkEditTextIsEmpty.execute(sum))
+                            debtSumTextInput.error = getString(R.string.youmustentername)
+                        else
+                            debtSumTextInput.error = ""
                     }
                 }
                 DebtState.ExistHumanDebt -> {
@@ -256,10 +267,11 @@ class NewDebtFragment: Fragment() {
                                 })
                             disposeBag.add(saveExistHumanDebt)
                         } else {
-                            Toast.makeText(view.context, R.string.zerodebt, Toast.LENGTH_SHORT).show()
+                            debtSumTextInput.error = getString(R.string.zerodebt)
                         }
                     } else { //if user is bad
-                        Toast.makeText(view.context, R.string.youmustentername, Toast.LENGTH_SHORT).show()
+                        if (checkEditTextIsEmpty.execute(sum))
+                            debtSumTextInput.error = getString(R.string.youmustentername)
                     }
                 }
                 DebtState.EditDebt -> {
@@ -287,10 +299,11 @@ class NewDebtFragment: Fragment() {
                                 })
                             disposeBag.add(editDebt)
                         } else {
-                            Toast.makeText(view.context, R.string.zerodebt, Toast.LENGTH_SHORT).show()
+                            debtSumTextInput.error = getString(R.string.zerodebt)
                         }
                     } else { //if user is bad
-                        Toast.makeText(view.context, R.string.youmustentername, Toast.LENGTH_SHORT).show()
+                        if (checkEditTextIsEmpty.execute(sum))
+                            debtSumTextInput.error = getString(R.string.youmustentername)
                     }
                 }
             }
