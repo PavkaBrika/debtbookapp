@@ -67,4 +67,5 @@
     <string name="application">Anmeldung</string>
     <string name="info">Infos</string>
     <string name="support">Unterstützung</string>
+    <string name="something_went_wrong">Etwas ist schief gelaufen</string>
 </resources>

@@ -68,4 +68,5 @@
     <string name="application">Приложение</string>
     <string name="info">Информация</string>
     <string name="support">Поддежка</string>
+    <string name="something_went_wrong">Что-то пошло не так</string>
 </resources>
