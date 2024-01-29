@@ -43,6 +43,7 @@ import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import org.koin.android.ext.android.inject
+import java.lang.NullPointerException
 import java.text.DecimalFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -319,11 +320,16 @@ class NewDebtFragment: Fragment() {
                 }
                 contacts.close()
             }
-            Collections.sort(contactNameList, object : Comparator<String> {
-                override fun compare(p0: String?, p1: String?): Int {
-                    return p0!!.compareTo(p1!!)
-                }
-            })
+            try {
+                Collections.sort(contactNameList, object : Comparator<String> {
+                    override fun compare(p0: String?, p1: String?): Int {
+                        return p0!!.compareTo(p1!!)
+                    }
+                })
+            } catch (e: NullPointerException) {
+                e.printStackTrace()
+                Toast.makeText(requireActivity(), getString(R.string.something_went_wrong), Toast.LENGTH_SHORT).show()
+            }
             val bottomSheetDialog = BottomSheetDialog(requireContext(), R.style.DialogStyle)
             bottomSheetDialog.setContentView(R.layout.dialog_contacts)
             bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED

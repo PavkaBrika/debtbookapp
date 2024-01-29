@@ -66,4 +66,5 @@
     <string name="application">Application</string>
     <string name="info">Info</string>
     <string name="support">Support</string>
+    <string name="something_went_wrong">Something went wrong</string>
 </resources>
