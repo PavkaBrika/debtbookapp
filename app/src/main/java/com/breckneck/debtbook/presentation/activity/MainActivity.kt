@@ -2,6 +2,7 @@ package com.breckneck.debtbook.presentation.activity
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.*
 import android.text.Editable
@@ -42,6 +43,7 @@ import com.yandex.mobile.ads.interstitial.InterstitialAdLoader
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.lang.IllegalArgumentException
+import java.util.Locale
 import kotlin.math.roundToInt
 
 class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, NewDebtFragment.OnButtonClickListener, DebtDetailsFragment.OnButtonClickListener, SettingsFragment.OnButtonClickListener {

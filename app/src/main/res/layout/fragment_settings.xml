@@ -76,15 +76,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="8dp"
-                    app:strokeWidth="1dp"
-                    app:strokeColor="@color/black"
-                    app:cardCornerRadius="10dp">
+                    style="@style/CardViewStyle">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:layout_margin="8dp">
+                        android:layout_marginHorizontal="8dp"
+                        android:layout_marginVertical="16dp">
 
                         <TextView
                             android:layout_width="match_parent"
@@ -267,6 +266,13 @@
                             android:text="@string/detailed_share_text_hint"
                             android:textColor="@android:color/darker_gray" />
 
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginHorizontal="16dp"
+                            android:background="@color/gray" />
+
                         <LinearLayout
                             android:id="@+id/appThemeLayout"
                             android:layout_width="match_parent"
@@ -303,14 +309,13 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="8dp"
                     android:layout_marginTop="16dp"
-                    app:strokeWidth="1dp"
-                    app:strokeColor="@color/black"
-                    app:cardCornerRadius="10dp">
+                    style="@style/CardViewStyle">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
+                        android:layout_marginHorizontal="8dp"
+                        android:layout_marginVertical="16dp"
                         android:orientation="vertical">
 
                         <TextView
@@ -375,14 +380,13 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="8dp"
                     android:layout_marginTop="16dp"
-                    app:strokeWidth="1dp"
-                    app:strokeColor="@color/black"
-                    app:cardCornerRadius="10dp">
+                    style="@style/CardViewStyle">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
+                        android:layout_marginHorizontal="8dp"
+                        android:layout_marginVertical="16dp"
                         android:orientation="vertical" >
 
                         <TextView
