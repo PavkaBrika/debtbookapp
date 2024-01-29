@@ -73,7 +73,6 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
                 getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
             vib = vibratorManager.defaultVibrator
         } else {
-            @Suppress("DEPRECATION")
             vib = getSystemService(VIBRATOR_SERVICE) as Vibrator
         }
 
