@@ -18,7 +18,7 @@
     <string name="No">Non</string>
     <string name="newdebt">Ajouter une nouvelle dette</string>
     <string name="editdebtcollaps">Editer la dette</string>
-    <string name="debts">Schulden</string>
+    <string name="debts">Dette</string>
     <string name="nodebts">Il n\'y a pas encore de dettes. Cliquez sur le bouton ci-dessous pour ajouter.</string>
     <string name="show_all">Afficher toutes les dettes</string>
     <string name="show_positive">Montrer des dettes positives</string>
