@@ -63,4 +63,7 @@
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
     <string name="order_by_last_debt_date">Last debt date</string>
+    <string name="application">Application</string>
+    <string name="info">Info</string>
+    <string name="support">Support</string>
 </resources>

@@ -33,7 +33,7 @@ class HumanAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HumanViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.human_list, parent, false)
+        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_human, parent, false)
         return  HumanViewHolder(itemView)
     }
 

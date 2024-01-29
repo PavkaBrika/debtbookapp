@@ -64,4 +64,7 @@
     <string name="confirm">Подтвердить</string>
     <string name="cancel">Отмена</string>
     <string name="order_by_last_debt_date">По дате последнего долга</string>
+    <string name="application">Приложение</string>
+    <string name="info">Информация</string>
+    <string name="support">Поддежка</string>
 </resources>
