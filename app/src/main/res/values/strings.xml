@@ -78,4 +78,7 @@
     <string name="remember_choice">Remember choice</string>
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
+    <string name="application">Application</string>
+    <string name="info">Info</string>
+    <string name="support">Support</string>
 </resources>

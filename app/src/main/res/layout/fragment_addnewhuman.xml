@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/appBarLayoutStyle"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    style="@style/appBarLayoutStyle">
+    android:orientation="vertical">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -12,21 +12,21 @@
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar"
+            style="@style/appBarLayoutStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fitsSystemWindows="true"
-            style="@style/appBarLayoutStyle">
+            android:fitsSystemWindows="true">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:id="@+id/collapsNewDebt"
+                style="@style/collapsContentScrim"
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
                 android:fitsSystemWindows="true"
-                style="@style/collapsContentScrim"
                 app:expandedTitleGravity="center_vertical"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
-                app:title="@string/newdebt"
                 app:maxLines="3"
+                app:title="@string/newdebt"
                 app:titleEnabled="true">
 
                 <androidx.appcompat.widget.Toolbar
@@ -42,9 +42,9 @@
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_marginEnd="16dp"
-                        android:src="@drawable/baseline_arrow_back_24"
                         android:background="@android:color/transparent"
-                        android:foreground="?android:attr/selectableItemBackground" />
+                        android:foreground="?android:attr/selectableItemBackground"
+                        android:src="@drawable/baseline_arrow_back_24" />
 
                 </androidx.appcompat.widget.Toolbar>
 
@@ -53,9 +53,9 @@
         </com.google.android.material.appbar.AppBarLayout>
 
         <TextView
+            style="@style/collapsLines"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            style="@style/collapsLines"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
         <androidx.core.widget.NestedScrollView
@@ -70,149 +70,157 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-<!--                <io.ghyeok.stickyswitch.widget.StickySwitch-->
-<!--                    android:id="@+id/sticky_switch"-->
-<!--                    android:layout_width="175dp"-->
-<!--                    android:layout_height="90dp"-->
-<!--                    android:layout_gravity="center"-->
-<!--                    android:layout_marginTop="16dp"-->
-<!--                    app:ss_animationDuration="400"-->
-<!--                    app:ss_iconPadding="10dp"-->
-<!--                    app:ss_iconSize="40dp"-->
-<!--                    app:ss_leftIcon="@drawable/ic_baseline_add_24"-->
-<!--                    app:ss_leftText="@string/give"-->
-<!--                    app:ss_rightIcon="@drawable/ic_baseline_remove_24"-->
-<!--                    app:ss_rightText="@string/take"-->
-<!--                    app:ss_selectedTextSize="17sp"-->
-<!--                    app:ss_switchColor="@color/green"-->
-<!--                    app:ss_textSize="14sp"-->
-<!--                    app:ss_animationType="curved"-->
-<!--                    style="@style/switchStyle"/>-->
                 <com.breckneck.debtbook.presentation.customview.CustomSwitchView
                     android:id="@+id/customSwitch"
                     android:layout_width="275dp"
                     android:layout_height="50dp"
                     android:layout_gravity="center"
                     android:layout_marginTop="48dp"
-                    android:layout_marginBottom="16dp"
-                    app:enabledText="@string/give"
-                    app:disabledText="@string/take"
-                    app:enabledBackgroundColor="#59cb72"
+                    android:layout_marginBottom="20dp"
                     app:disabledBackgroundColor="#e25d56"
+                    app:disabledText="@string/take"
                     app:enabled="true"
-                     />
-
+                    app:enabledBackgroundColor="#59cb72"
+                    app:enabledText="@string/give" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginRight="8dp">
+                    android:layout_marginHorizontal="8dp"
+                    android:orientation="horizontal">
 
-                    <EditText
-                        android:id="@+id/humanNameEditText"
-                        style="@style/addNewHumanEditText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/humanNameTextInput"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_marginEnd="4dp"
-                        android:hint="@string/name"
                         android:layout_weight="20"
-                        android:maxLines="1"
-                        android:maxLength="20" />
+                        android:hint="@string/name"
+                        app:boxStrokeColor="@color/black"
+                        app:endIconMode="clear_text"
+                        app:errorEnabled="true"
+                        app:hintTextColor="@color/black">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/humanNameEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:maxLength="20"
+                            android:maxLines="1" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
 
                     <ImageView
                         android:id="@+id/contactsImageView"
+                        style="@style/imageViewButton"
                         android:layout_width="40dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
                         android:layout_marginStart="4dp"
-                        android:src="@drawable/outline_contacts_24"
+                        android:layout_marginBottom="20dp"
+                        android:layout_weight="1"
                         android:foreground="?android:attr/selectableItemBackground"
-                        style="@style/imageViewButton" />
-
+                        android:src="@drawable/outline_contacts_24" />
 
                 </LinearLayout>
 
-
-
                 <TextView
+                    style="@style/addNewHumanLines"
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    style="@style/addNewHumanLines" />
+                    android:layout_height="1dp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
                     android:orientation="horizontal">
 
-                    <EditText
-                        android:id="@+id/debtSumEditText"
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/debtSumTextInput"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
                         android:layout_weight="1"
                         android:hint="@string/sum"
-                        style="@style/addNewHumanEditText"
-                        android:maxLines="1"
-                        android:maxLength="10"
-                        android:inputType="numberDecimal" />
+                        app:boxStrokeColor="@color/black"
+                        app:endIconMode="clear_text"
+                        app:errorEnabled="true"
+                        app:hintTextColor="@color/black">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/debtSumEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="numberDecimal"
+                            android:maxLength="10"
+                            android:maxLines="1" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
 
                     <TextView
+                        style="@style/addNewHumanLines"
                         android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        style="@style/addNewHumanLines"/>
+                        android:layout_height="match_parent" />
 
                     <Spinner
                         android:id="@+id/debtCurrencySpinner"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
-                        android:layout_marginTop="8dp"
-                        android:textAlignment="center"
-                        android:fadeScrollbars="false"/>
+                        android:fadeScrollbars="false"
+                        android:textAlignment="center" />
 
                     <TextView
                         android:id="@+id/debtCurrencyTextView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
                         android:layout_weight="2"
+                        android:gravity="center"
                         android:text="CUR"
                         android:textSize="28sp"
-                        android:layout_gravity="center_vertical"
-                        android:gravity="center"
-                        android:visibility="gone"/>
+                        android:visibility="gone" />
 
                 </LinearLayout>
 
                 <TextView
+                    style="@style/addNewHumanLines"
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    style="@style/addNewHumanLines" />
+                    android:layout_height="1dp" />
 
                 <TextView
                     android:id="@+id/debtDateTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="4dp"
+                    android:foreground="?android:attr/selectableItemBackground"
                     android:text="date"
                     android:textAlignment="center"
-                    android:textSize="26sp"
-                    android:foreground="?android:attr/selectableItemBackground"/>
+                    android:textSize="26sp" />
 
                 <TextView
+                    style="@style/addNewHumanLines"
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    style="@style/addNewHumanLines" />
+                    android:layout_height="1dp" />
 
-                <EditText
-                    android:id="@+id/debtInfoEditText"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/debtInfoTextInput"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="0dp"
                     android:layout_margin="8dp"
+                    android:layout_weight="1"
                     android:hint="@string/comment"
-                    style="@style/addNewHumanEditText"
-                    />
+                    app:boxStrokeColor="@color/black"
+                    app:endIconMode="clear_text"
+                    app:errorEnabled="false"
+                    app:hintTextColor="@color/black">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/debtInfoEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </com.google.android.material.textfield.TextInputLayout>
 
             </LinearLayout>
 
@@ -220,18 +228,16 @@
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/setSettingsButton"
+            style="@style/fabTheme"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/fabTheme"
             android:layout_margin="24dp"
+            android:src="@drawable/ic_baseline_check_24"
             app:layout_anchor="@id/app_bar"
-            app:layout_anchorGravity="bottom|end"
-            android:src="@drawable/ic_baseline_check_24" />
+            app:layout_anchorGravity="bottom|end" />
 
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-
 
 
 </RelativeLayout>

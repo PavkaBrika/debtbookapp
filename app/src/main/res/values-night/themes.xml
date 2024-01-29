@@ -116,4 +116,10 @@
         <item name="android:background">@color/gray</item>
         <item name="android:backgroundTint">@color/gray</item>
     </style>
+
+    <style name="CardViewStyle">
+        <item name="cardBackgroundColor">@color/lighter_black</item>
+        <item name="android:backgroundTint">@color/lighter_black</item>
+        <item name="cardCornerRadius">10dp</item>
+    </style>
 </resources>

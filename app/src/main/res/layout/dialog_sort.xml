@@ -4,148 +4,162 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="24dp">
+    android:padding="16dp">
 
-    <LinearLayout
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" >
+        app:cardBackgroundColor="@color/darker_white"
+        style="@style/CardViewStyle">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp">
+            android:orientation="vertical"
+            android:layout_margin="8dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/order_by"
+                    android:textSize="24sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/sortButtonCard"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/sortButtonCard"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:theme="@style/ButtonsColor"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ImageView
+                        android:id="@+id/sortImageView"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:rotation="-90"
+                        android:src="@drawable/baseline_sort_24" />
+                </androidx.cardview.widget.CardView>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <RadioGroup
+                android:id="@+id/orderRadioGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp">
+
+                <RadioButton
+                    android:id="@+id/orderDateRadioButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/defaultRadioButtons"
+                    android:checked="true"
+                    android:text="@string/order_by_date" />
+
+                <RadioButton
+                    android:id="@+id/orderSumRadioButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/defaultRadioButtons"
+                    android:text="@string/order_debt_sum" />
+
+            </RadioGroup>
+
+            <View
+                style="@style/Divider"
+                android:layout_marginHorizontal="8dp"
+                android:layout_marginVertical="8dp" />
+
+            <CheckBox
+                android:id="@+id/rememberChoiceCheckBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:text="@string/remember_choice"
+                style="@style/defaultRadioButtons"/>
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        style="@style/CardViewStyle" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_margin="8dp">
 
             <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/order_by"
-                android:textSize="24sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/sortButtonCard"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/sortButtonCard"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:foreground="?android:attr/selectableItemBackground"
-                android:theme="@style/ButtonsColor"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                android:paddingBottom="16dp"
+                android:paddingTop="8dp"
+                android:text="@string/filter"
+                android:textSize="24sp" />
 
-                <ImageView
-                    android:id="@+id/sortImageView"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:rotation="-90"
-                    android:src="@drawable/baseline_sort_24" />
-            </androidx.cardview.widget.CardView>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <RadioGroup
-            android:id="@+id/orderRadioGroup"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="8dp">
-
-            <RadioButton
-                android:id="@+id/orderDateRadioButton"
+            <RadioGroup
+                android:id="@+id/filterRadioGroup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                style="@style/defaultRadioButtons"
-                android:checked="true"
-                android:text="@string/order_by_date" />
+                android:layout_marginHorizontal="8dp">
 
-            <RadioButton
-                android:id="@+id/orderSumRadioButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                style="@style/defaultRadioButtons"
-                android:text="@string/order_debt_sum" />
+                <RadioButton
+                    android:id="@+id/showAllHumansRadioButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/defaultRadioButtons"
+                    android:checked="true"
+                    android:text="@string/show_all"
+                    android:textAlignment="textStart" />
 
-        </RadioGroup>
+                <RadioButton
+                    android:id="@+id/showPositiveHumansRadioButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="@color/green"
+                    android:text="@string/show_positive"
+                    android:textAlignment="textStart" />
 
-        <View
-            style="@style/Divider"
-            android:layout_marginHorizontal="8dp"
-            android:layout_marginVertical="8dp" />
+                <RadioButton
+                    android:id="@+id/showNegativeHumansRadioButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="@color/red"
+                    android:text="@string/show_negative"
+                    android:textAlignment="textStart" />
 
-        <CheckBox
-            android:id="@+id/rememberChoiceCheckBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="8dp"
-            android:text="@string/remember_choice"
-            style="@style/defaultRadioButtons"/>
+            </RadioGroup>
 
-    </LinearLayout>
+        </LinearLayout>
 
-    <View
-        style="@style/Divider"
-        android:layout_marginVertical="8dp" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingBottom="16dp"
-            android:paddingTop="8dp"
-            android:text="@string/filter"
-            android:textSize="24sp" />
-
-        <RadioGroup
-            android:id="@+id/filterRadioGroup"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="8dp">
-
-            <RadioButton
-                android:id="@+id/showAllHumansRadioButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                style="@style/defaultRadioButtons"
-                android:checked="true"
-                android:text="@string/show_all"
-                android:textAlignment="textStart" />
-
-            <RadioButton
-                android:id="@+id/showPositiveHumansRadioButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:buttonTint="@color/green"
-                android:text="@string/show_positive"
-                android:textAlignment="textStart" />
-
-            <RadioButton
-                android:id="@+id/showNegativeHumansRadioButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:buttonTint="@color/red"
-                android:text="@string/show_negative"
-                android:textAlignment="textStart" />
-
-        </RadioGroup>
-
-    </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp">
 
         <Button
             android:id="@+id/confirmButton"
             style="@style/ButtonsColor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="8dp"
             android:text="@string/confirm"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -156,7 +170,6 @@
             style="@style/ButtonsColorOutline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="8dp"
             android:layout_marginEnd="8dp"
             android:text="@string/cancel"
             app:layout_constraintBottom_toBottomOf="parent"
