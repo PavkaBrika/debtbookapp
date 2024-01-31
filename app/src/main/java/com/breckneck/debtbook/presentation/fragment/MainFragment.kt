@@ -131,29 +131,26 @@ class MainFragment : Fragment() {
 
         val overallPositiveSumTextView: TextView =
             view.findViewById(R.id.overallPositiveSumTextView)
+        val overallNegativeSumTextView: TextView =
+            view.findViewById(R.id.overallNegativeSumTextView)
 
-        vm.positiveSum.observe(viewLifecycleOwner) {
-            overallPositiveSumTextView.text = it
-            if (it == "") {
+        vm.mainSums.observe(viewLifecycleOwner) {
+            overallPositiveSumTextView.text = it.first
+            if (it.first == "") {
                 overallPositiveSumTextView.visibility = View.GONE
             } else {
                 overallPositiveSumTextView.visibility = View.VISIBLE
-                overallPositiveSumTextView.text = it
+                overallPositiveSumTextView.text = it.first
             }
-        }
 
-        val overallNegativeSumTextView: TextView =
-            view.findViewById(R.id.overallNegativeSumTextView)
-        vm.negativeSum.observe(viewLifecycleOwner) {
-            overallNegativeSumTextView.text = it
-            if (it == "") {
+            overallNegativeSumTextView.text = it.second
+            if (it.second == "") {
                 overallNegativeSumTextView.textSize = 0F
             } else {
                 overallNegativeSumTextView.visibility = View.VISIBLE
-                overallNegativeSumTextView.text = it
+                overallNegativeSumTextView.text = it.second
             }
         }
-
         return view
     }
 

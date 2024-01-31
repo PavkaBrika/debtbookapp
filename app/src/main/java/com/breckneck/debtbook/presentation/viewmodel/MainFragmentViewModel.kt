@@ -28,12 +28,9 @@ class MainFragmentViewModel(
     private val setHumanOrder: SetHumanOrder
 ) : ViewModel() {
 
-    private val _positiveSum = MutableLiveData<String>()
-    val positiveSum: LiveData<String>
-        get() = _positiveSum
-    private val _negativeSum = MutableLiveData<String>()
-    val negativeSum: LiveData<String>
-        get() = _negativeSum
+    private val _mainSums = MutableLiveData<Pair<String, String>>()
+    val mainSums: LiveData<Pair<String, String>>
+        get() = _mainSums
     private val _humanList = MutableLiveData<List<HumanDomain>>()
     val humanList: LiveData<List<HumanDomain>>
         get() = _humanList
@@ -51,8 +48,7 @@ class MainFragmentViewModel(
 
     init {
         Log.e("TAG", "MainFragment VM created")
-        getNegativeSum()
-        getPositiveSum()
+        getMainSums()
         getHumanOrder()
     }
 
@@ -95,11 +91,10 @@ class MainFragmentViewModel(
         disposeBag.add(result)
     }
 
-    fun getPositiveSum() {
+    fun getMainSums() {
         val result = Single.create {
             it.onSuccess(
                 getAllDebtsSumUseCase.execute(
-                    "positive",
                     getFirstMainCurrency.execute(),
                     getSecondMainCurrency.execute()
                 )
@@ -108,27 +103,7 @@ class MainFragmentViewModel(
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                _positiveSum.value = it
-            }, {
-                Log.e("TAG", it.stackTrace.toString())
-            })
-        disposeBag.add(result)
-    }
-
-    fun getNegativeSum() {
-        val result = Single.create {
-            it.onSuccess(
-                getAllDebtsSumUseCase.execute(
-                    "negative",
-                    getFirstMainCurrency.execute(),
-                    getSecondMainCurrency.execute()
-                )
-            )
-        }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                _negativeSum.value = it
+                _mainSums.value = it
             }, {
                 Log.e("TAG", it.stackTrace.toString())
             })

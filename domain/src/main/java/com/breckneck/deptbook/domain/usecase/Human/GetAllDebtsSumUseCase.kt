@@ -10,7 +10,7 @@ class GetAllDebtsSumUseCase(val humanRepository: HumanRepository) {
     val decimalFormat = DecimalFormat("###,###,###.##")
     val customSymbol: DecimalFormatSymbols = DecimalFormatSymbols()
 
-    fun execute(sign: String, firstCurrency: String, secondCurrency: String): String {
+    fun execute(firstCurrency: String, secondCurrency: String): Pair<String, String> {
         customSymbol.groupingSeparator = ' '
         decimalFormat.decimalFormatSymbols = customSymbol
         val debtsInFirstCurrency = humanRepository.getAllDebtsSum(currency = firstCurrency)
@@ -63,9 +63,6 @@ class GetAllDebtsSumUseCase(val humanRepository: HumanRepository) {
                 else
                     negativeText = "$negativeText\n-${decimalFormat.format(negativeNumbers)} $secondCurrency"
         }
-        if (sign == "positive")
-            return positiveText
-        else
-            return negativeText
+        return Pair(positiveText, negativeText)
     }
 }
