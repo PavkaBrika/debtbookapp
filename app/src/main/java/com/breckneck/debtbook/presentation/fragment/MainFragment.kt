@@ -107,7 +107,7 @@ class MainFragment : Fragment() {
 
         vm.humanFilter.observe(viewLifecycleOwner) {
             vm.getHumans()
-            changeSortButtonColor(it)
+            changeFilterButtonColor(it)
         }
 
         vm.humanList.observe(viewLifecycleOwner) {
@@ -174,17 +174,17 @@ class MainFragment : Fragment() {
         var sortByIncrease = vm.humanOrder.value!!.second
         val sortImageView = bottomSheetDialogFilter.findViewById<ImageView>(R.id.sortImageView)
         if (sortByIncrease)
-            sortImageView!!.rotationY = ROTATE_HUMAN_IMAGE_VIEW_BY_INCREASE
+            sortImageView!!.rotationY = ROTATE_DEGREE_HUMAN_IMAGE_VIEW_BY_INCREASE
         else
-            sortImageView!!.rotationY = ROTATE_HUMAN_IMAGE_VIEW_BY_DECREASE
+            sortImageView!!.rotationY = ROTATE_DEGREE_HUMAN_IMAGE_VIEW_BY_DECREASE
 
         bottomSheetDialogFilter.findViewById<CardView>(R.id.sortButtonCard)!!.setOnClickListener {
             buttonClickListener!!.onChangeOrderButtonClick()
-            if (sortImageView.rotationY == ROTATE_HUMAN_IMAGE_VIEW_BY_INCREASE) {
-                sortImageView.rotationY = ROTATE_HUMAN_IMAGE_VIEW_BY_DECREASE
+            if (sortImageView.rotationY == ROTATE_DEGREE_HUMAN_IMAGE_VIEW_BY_INCREASE) {
+                sortImageView.rotationY = ROTATE_DEGREE_HUMAN_IMAGE_VIEW_BY_DECREASE
                 sortByIncrease = false
             } else {
-                sortImageView.rotationY = ROTATE_HUMAN_IMAGE_VIEW_BY_INCREASE
+                sortImageView.rotationY = ROTATE_DEGREE_HUMAN_IMAGE_VIEW_BY_INCREASE
                 sortByIncrease = true
             }
         }
@@ -228,7 +228,7 @@ class MainFragment : Fragment() {
             }
 
             if (vm.humanOrder.value!! != Pair(sortHumansAttribute, sortByIncrease))
-                vm.onSetHumanOrder(Pair(sortHumansAttribute, sortByIncrease))
+                vm.onSetHumanOrder(order = Pair(sortHumansAttribute, sortByIncrease))
 
             if (bottomSheetDialogFilter.findViewById<CheckBox>(R.id.rememberChoiceCheckBox)!!.isChecked)
                 vm.setHumanOrder(order = Pair(sortHumansAttribute, sortByIncrease))
@@ -250,7 +250,7 @@ class MainFragment : Fragment() {
         bottomSheetDialogFilter.show()
     }
 
-    fun changeSortButtonColor(humansFilter: HumanFilter) {
+    private fun changeFilterButtonColor(humansFilter: HumanFilter) {
         if (view != null) {
             when (humansFilter) {
                 HumanFilter.AllHumans -> {

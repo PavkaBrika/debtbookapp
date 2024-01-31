@@ -43,7 +43,7 @@ class MainFragmentViewModel(
     private val _humanOrder = MutableLiveData<Pair<HumanOrderAttribute, Boolean>>()
     val humanOrder: LiveData<Pair<HumanOrderAttribute, Boolean>>
         get() = _humanOrder
-    private val sortHumans = SortHumans()
+    private val sortHumans by lazy { SortHumans() }
     private val disposeBag = CompositeDisposable()
 
     init {
@@ -63,7 +63,7 @@ class MainFragmentViewModel(
             _humanList.value = sortHumans.execute(humanList.value!!, _humanOrder.value!!)
     }
 
-    fun getHumanOrder() {
+    private fun getHumanOrder() {
         _humanOrder.value = getHumanOrder.execute()
     }
 
@@ -91,7 +91,7 @@ class MainFragmentViewModel(
         disposeBag.add(result)
     }
 
-    fun getMainSums() {
+    private fun getMainSums() {
         val result = Single.create {
             it.onSuccess(
                 getAllDebtsSumUseCase.execute(
