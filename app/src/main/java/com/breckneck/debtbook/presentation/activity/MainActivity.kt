@@ -52,6 +52,10 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
     private var interstitialAdLoader: InterstitialAdLoader? = null
     var vib: Vibrator? = null
 
+    private val TAG = "MainActivity"
+    private val AppodealBannerTAG = "MainActivity"
+    private val AppodealInterstitialTAG = "MainActivity"
+
     private val vm by viewModel<MainActivityViewModel>()
 
     lateinit var sharedPrefsAdStorage: SharedPrefsAdStorageImpl
@@ -135,7 +139,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
             setAdSize(BannerAdSize.stickySize(applicationContext, adWidth))
             setBannerAdEventListener(object : BannerAdEventListener {
                 override fun onAdLoaded() {
-                    Log.e("TAG", "BANNER LOADED")
+                    Log.e(AppodealBannerTAG, "BANNER LOADED")
                     if (isDestroyed) {
                         bannerAd.destroy()
                         return
@@ -143,23 +147,23 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
                 }
 
                 override fun onAdFailedToLoad(p0: AdRequestError) {
-                    Log.e("TAG", "BANNER LOAD FAILED")
+                    Log.e(AppodealBannerTAG, "BANNER LOAD FAILED")
                 }
 
                 override fun onAdClicked() {
-                    Log.e("TAG", "BANNER CLICKED")
+                    Log.e(AppodealBannerTAG, "BANNER CLICKED")
                 }
 
                 override fun onLeftApplication() {
-                    Log.e("TAG", "BANNER LEFT")
+                    Log.e(AppodealBannerTAG, "BANNER LEFT")
                 }
 
                 override fun onReturnedToApplication() {
-                    Log.e("TAG", "BANNER RETURN")
+                    Log.e(AppodealBannerTAG, "BANNER RETURN")
                 }
 
                 override fun onImpression(p0: ImpressionData?) {
-                    Log.e("TAG", "BANNER IMPRESSION")
+                    Log.e(AppodealBannerTAG, "BANNER IMPRESSION")
                 }
 
             })
@@ -170,12 +174,12 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         interstitialAdLoader = InterstitialAdLoader(applicationContext).apply {
             setAdLoadListener(object: InterstitialAdLoadListener {
                 override fun onAdLoaded(interstitialAd: InterstitialAd) {
-                    Log.e("TAG", "Interstitial ad load success")
+                    Log.e(AppodealInterstitialTAG, "Interstitial ad load success")
                     this@MainActivity.interstitialAd = interstitialAd
                 }
 
                 override fun onAdFailedToLoad(p0: AdRequestError) {
-                    Log.e("TAG", "Interstitial ad load failed")
+                    Log.e(AppodealInterstitialTAG, "Interstitial ad load failed")
                 }
             })
         }
@@ -191,26 +195,26 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         interstitialAd?.apply {
             setAdEventListener(object: InterstitialAdEventListener {
                 override fun onAdShown() {
-                    Log.e("TAG", "Interstitial ad shown")
+                    Log.e(AppodealInterstitialTAG, "Interstitial ad shown")
                 }
 
                 override fun onAdFailedToShow(p0: AdError) {
-                    Log.e("TAG", "Interstitial ad failed to show")
+                    Log.e(AppodealInterstitialTAG, "Interstitial ad failed to show")
                 }
 
                 override fun onAdDismissed() {
-                    Log.e("TAG", "Interstitial ad dismissed")
+                    Log.e(AppodealInterstitialTAG, "Interstitial ad dismissed")
                     interstitialAd?.setAdEventListener(null)
                     interstitialAd = null
                     loadInterstitialAd()
                 }
 
                 override fun onAdClicked() {
-                    Log.e("TAG", "Interstitial ad clicked")
+                    Log.e(AppodealInterstitialTAG, "Interstitial ad clicked")
                 }
 
                 override fun onAdImpression(p0: ImpressionData?) {
-                    Log.e("TAG", "Interstitial ad impression")
+                    Log.e(AppodealInterstitialTAG, "Interstitial ad impression")
                 }
             })
             show(this@MainActivity)
@@ -237,7 +241,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
     private fun startClickVibration() {
         try {
             if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) && (vib != null)) {
-                vib!!.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.EFFECT_CLICK))
+                vib!!.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.EFFECT_TICK))
             }
         } catch (e: IllegalArgumentException) {
             e.printStackTrace()

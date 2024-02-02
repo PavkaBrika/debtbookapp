@@ -47,6 +47,8 @@ import java.text.DecimalFormatSymbols
 
 class DebtDetailsFragment: Fragment() {
 
+    private val TAG = "DebtDetailsFragment"
+
     interface OnButtonClickListener{
         fun addNewDebtFragment(idHuman: Int, currency: String, name: String)
 
@@ -152,7 +154,7 @@ class DebtDetailsFragment: Fragment() {
         debtClickListener = object : DebtAdapter.OnDebtClickListener{ //ALERT DIALOG
             override fun onDebtClick(debtDomain: DebtDomain, position: Int) {
                 showDebtSettings(debtDomain = debtDomain, currency = currency!!, name = humanName!!)
-                Log.e("TAG", "Click on debt with id = ${debtDomain.id}")
+                Log.e(TAG, "Click on debt with id = ${debtDomain.id}")
             }
         }
 

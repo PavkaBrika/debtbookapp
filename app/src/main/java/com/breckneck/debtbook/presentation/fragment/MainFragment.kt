@@ -24,6 +24,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainFragment : Fragment() {
+
+    private val TAG = "MainFragment"
+
     private val vm by viewModel<MainFragmentViewModel>()
 
     lateinit var filterButton: ImageView
@@ -48,7 +51,7 @@ class MainFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.e("TAG", "Activity created")
+        Log.e(TAG, "MainFragmentad created")
     }
 
     override fun onCreateView(
@@ -91,7 +94,7 @@ class MainFragment : Fragment() {
                     currency = humanDomain.currency,
                     name = humanDomain.name
                 )
-                Log.e("TAG", "Click on human with id = ${humanDomain.id}")
+                Log.e(TAG, "Click on human with id = ${humanDomain.id}")
             }
         }
 
@@ -120,7 +123,7 @@ class MainFragment : Fragment() {
             }
             val adapter = HumanAdapter(it, humanClickListener)
             recyclerView.adapter = adapter
-            Log.e("TAG", "adapter link success")
+            Log.e(TAG, "adapter link success")
         }
 
         vm.humanOrder.observe(viewLifecycleOwner) {

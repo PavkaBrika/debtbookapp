@@ -34,6 +34,8 @@ class DebtDetailsViewModel(
     private val setDebtOrder: SetDebtOrder
 ): ViewModel() {
 
+    private val TAG = "DebtDetailsViewModel"
+
     private val _debtList = MutableLiveData<List<DebtDomain>>()
     val debtList: LiveData<List<DebtDomain>>
         get() = _debtList
@@ -65,13 +67,13 @@ class DebtDetailsViewModel(
     private val sortDebtsUseCase by lazy { SortDebts() }
 
     init {
-        Log.e("TAG", "Debt Fragment View Model Started")
+        Log.e(TAG, "Debt Fragment View Model Started")
     }
 
     override fun onCleared() {
         super.onCleared()
         disposeBag.clear()
-        Log.e("TAG", "Debt Fragment View Model cleared")
+        Log.e(TAG, "Debt Fragment View Model cleared")
     }
 
     fun getDebtOrder() {
@@ -84,7 +86,7 @@ class DebtDetailsViewModel(
 
     fun getAllDebts() {
         val getDebtsSingle = Single.create {
-            Log.e("TAG", "Open Debt Details of Human id = $humanId")
+            Log.e(TAG, "Open Debt Details of Human id = $humanId")
             it.onSuccess(getAllDebtsUseCase.execute(id = humanId.value!!))
         }
             .subscribeOn(Schedulers.io())
@@ -92,7 +94,7 @@ class DebtDetailsViewModel(
             .subscribe({
                 _debtList.value = it
                 sortDebts()
-                Log.e("TAG", "Debts load success")
+                Log.e(TAG, "Debts load success")
             }, {
                 it.printStackTrace()
             })
@@ -144,7 +146,7 @@ class DebtDetailsViewModel(
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                Log.e("TAG", "Human with id = ${_humanId.value} deleted")
+                Log.e(TAG, "Human with id = ${_humanId.value} deleted")
             },{
                 it.printStackTrace()
             })
@@ -156,14 +158,14 @@ class DebtDetailsViewModel(
             deleteDebtUseCase.execute(debtDomain)
             addSumUseCase.execute(humanId = _humanId.value!!, sum = (debtDomain.sum * (-1.0)))
             getOverallSum()
-            Log.e("TAG", "Debt delete success")
+            Log.e(TAG, "Debt delete success")
             it.onComplete()
         }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 getAllDebts()
-                Log.e("TAG", "Debts load success")
+                Log.e(TAG, "Debts load success")
             },{
                 it.printStackTrace()
             })

@@ -51,6 +51,8 @@ import kotlin.collections.ArrayList
 
 class NewDebtFragment: Fragment() {
 
+    private val TAG = "NewDebtFragment"
+
     val decimalFormat = DecimalFormat("#.##")
     val disposeBag = CompositeDisposable()
 
@@ -221,7 +223,7 @@ class NewDebtFragment: Fragment() {
                                     else
                                         setDebtUseCase.execute(sum = sum.toDouble(), idHuman = lastId, info = info, date = date)
                                     it.onComplete()
-                                    Log.e("TAG", "Human id = $lastId set success")
+                                    Log.e(TAG, "Human id = $lastId set success")
                                 }
                                     .subscribeOn(Schedulers.io())
                                     .observeOn(AndroidSchedulers.mainThread())
@@ -258,7 +260,7 @@ class NewDebtFragment: Fragment() {
                                         setDebtUseCase.execute(sum = sum.toDouble(), idHuman = idHuman!!, info = info, date = date)
                                     addSumUseCase.execute(humanId = idHuman, sum = sum.toDouble())
                                     it.onComplete()
-                                    Log.e("TAG", "New Debt in humanid = $idHuman set success")
+                                    Log.e(TAG, "New Debt in humanid = $idHuman set success")
                                 }
                                     .subscribeOn(Schedulers.io())
                                     .observeOn(AndroidSchedulers.mainThread())
@@ -289,7 +291,7 @@ class NewDebtFragment: Fragment() {
                                     else
                                         editDebtUseCase.execute(id = idDebt!! ,sum = sum.toDouble(), idHuman = idHuman!!, info = info, date = date)
                                     addSumUseCase.execute(humanId = idHuman, sum = currentSum)
-                                    Log.e("TAG", "New Debt in humanid = $idHuman set success")
+                                    Log.e(TAG, "New Debt in humanid = $idHuman set success")
                                     it.onComplete()
                                 }
                                     .subscribeOn(Schedulers.io())

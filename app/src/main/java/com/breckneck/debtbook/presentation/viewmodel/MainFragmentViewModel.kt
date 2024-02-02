@@ -28,6 +28,8 @@ class MainFragmentViewModel(
     private val setHumanOrder: SetHumanOrder
 ) : ViewModel() {
 
+    private val TAG = "MainFragmentViewModel"
+
     private val _mainSums = MutableLiveData<Pair<String, String>>()
     val mainSums: LiveData<Pair<String, String>>
         get() = _mainSums
@@ -47,13 +49,13 @@ class MainFragmentViewModel(
     private val disposeBag = CompositeDisposable()
 
     init {
-        Log.e("TAG", "MainFragment VM created")
+        Log.e(TAG, "MainFragment VM created")
         getMainSums()
         getHumanOrder()
     }
 
     override fun onCleared() {
-        Log.e("TAG", "MainFragment VM cleared")
+        Log.e(TAG, "MainFragment VM cleared")
         disposeBag.clear()
         super.onCleared()
     }
@@ -84,9 +86,9 @@ class MainFragmentViewModel(
             .subscribe({
                 _humanList.value = it
                 sortHumans()
-                Log.e("TAG", "humans loaded in VM")
+                Log.e(TAG, "humans loaded in VM")
             }, {
-                Log.e("TAG", it.stackTrace.toString())
+                Log.e(TAG, it.stackTrace.toString())
             })
         disposeBag.add(result)
     }
@@ -105,7 +107,7 @@ class MainFragmentViewModel(
             .subscribe({
                 _mainSums.value = it
             }, {
-                Log.e("TAG", it.stackTrace.toString())
+                Log.e(TAG, it.stackTrace.toString())
             })
         disposeBag.add(result)
     }
