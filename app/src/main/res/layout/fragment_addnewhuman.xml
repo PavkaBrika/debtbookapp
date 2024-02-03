@@ -162,24 +162,19 @@
                         android:layout_width="1dp"
                         android:layout_height="match_parent" />
 
-                    <Spinner
-                        android:id="@+id/debtCurrencySpinner"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        android:fadeScrollbars="false"
-                        android:textAlignment="center" />
-
                     <TextView
                         android:id="@+id/debtCurrencyTextView"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_gravity="center_vertical"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
                         android:layout_weight="2"
                         android:gravity="center"
                         android:text="CUR"
-                        android:textSize="28sp"
-                        android:visibility="gone" />
+                        android:textSize="20sp"
+                        android:visibility="visible" />
 
                 </LinearLayout>
 

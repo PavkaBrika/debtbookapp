@@ -83,7 +83,6 @@ class NewDebtFragment: Fragment() {
     private val setDebtUseCase: SetDebtUseCase by inject()
     private val getCurrentDateUseCase: GetCurrentDateUseCase by inject()
     private val setDateUseCase: SetDateUseCase by inject()
-    private val checkEditTextIsEmpty: CheckEditTextIsEmpty by inject()
     private val editDebtUseCase: EditDebtUseCase by inject()
     private val updateCurrentSumUseCase: UpdateCurrentSumUseCase by inject()
     private val getDefaultCurrency: GetDefaultCurrency by inject()
@@ -111,7 +110,6 @@ class NewDebtFragment: Fragment() {
         val infoEditText: EditText = view.findViewById(R.id.debtInfoEditText)
         val debtDateTextView: TextView = view.findViewById(R.id.debtDateTextView)
         val debtSumEditText : EditText = view.findViewById(R.id.debtSumEditText)
-        val currencySpinner: Spinner = view.findViewById(R.id.debtCurrencySpinner)
         val currencyTextView: TextView = view.findViewById(R.id.debtCurrencyTextView)
         val collapsed: CollapsingToolbarLayout = view.findViewById(R.id.collapsNewDebt)
 
@@ -120,14 +118,20 @@ class NewDebtFragment: Fragment() {
             setExpandedTitleTypeface(Typeface.DEFAULT_BOLD)
         }
 
-        val currencyNames = arrayOf(getString(R.string.usd), getString(R.string.eur), getString(R.string.rub),
+        val currencyNames = listOf(getString(R.string.usd), getString(R.string.eur), getString(R.string.rub),
             getString(R.string.byn), getString(R.string.uah), getString(R.string.kzt),
             getString(R.string.jpy), getString(R.string.gpb), getString(R.string.aud),
             getString(R.string.cad), getString(R.string.chf), getString(R.string.cny),
             getString(R.string.sek), getString(R.string.mxn))
-        val adapter = ArrayAdapter(view.context, android.R.layout.simple_spinner_dropdown_item, currencyNames)
-        currencySpinner.adapter = adapter
-        val defaultCurrency = getDefaultCurrency.execute()
+
+        if (currency == null) { //EXIST HUMAN DEBT DEBT LAYOUT CHANGES
+            currency = getDefaultCurrency.execute()
+        }
+        for (i in currencyNames.indices) {
+            if (currencyNames[i].contains(currency))
+                currencyTextView.text = currencyNames[i]
+        }
+
         for (i in currencyNames.indices)
             if (currencyNames[i].contains(defaultCurrency))
                 currencySpinner.setSelection(i)
@@ -177,19 +181,11 @@ class NewDebtFragment: Fragment() {
                 calendar.get(Calendar.DAY_OF_MONTH)).show()
         }
 
-        if (currency != null) { //EXIST HUMAN DEBT DEBT LAYOUT CHANGES
-            currencyTextView.visibility = View.VISIBLE
-            currencySpinner.visibility = View.GONE
-            currencyTextView.text = currency
-            if (sumArgs != 0.0) { //EXIST HUMAN EDIT DEBT LAYOUT CHANGES
-                debtSumEditText.setText(decimalFormat.format(sumArgs))
-                debtDateTextView.text = dateArgs
-                infoEditText.setText(infoArgs)
-                collapsed.title = getString(R.string.editdebtcollaps)
-            }
-        } else {
-            currencyTextView.visibility = View.GONE
-            currencySpinner.visibility = View.VISIBLE
+        if (sumArgs != 0.0) { //EXIST HUMAN EDIT DEBT LAYOUT CHANGES
+            debtSumEditText.setText(decimalFormat.format(sumArgs))
+            debtDateTextView.text = dateArgs
+            infoEditText.setText(infoArgs)
+            collapsed.title = getString(R.string.editdebtcollaps)
         }
 
         if (idHuman != null) {
@@ -211,14 +207,14 @@ class NewDebtFragment: Fragment() {
             try {
                 when (getDebtState(idHuman = idHuman, idDebt = idDebt)) {
                     DebtState.NewHumanDebt -> {
-                        if ((!checkEditTextIsEmpty.execute(name)) && (!checkEditTextIsEmpty.execute(sum))) { //user check if user is not bad
+                        if ((name.trim().isNotEmpty()) && (sum.trim().isNotEmpty())) { //user check if user is not bad
                             if (!customSwitch.isChecked())
                                 sum = (sum.toDouble() * (-1.0)).toString()
                             if (sum.toDouble() != 0.0) {
                                 val saveNewHumanDebt = Completable.create {
                                     setHumanUseCase.execute(name = name, sumDebt = sum.toDouble(), currency = currency!!)
                                     val lastId = getLastHumanIdUseCase.exectute()
-                                    if (checkEditTextIsEmpty.execute(info))
+                                    if (info.trim().isEmpty())
                                         setDebtUseCase.execute(sum = sum.toDouble(), idHuman = lastId, info = null, date = date)
                                     else
                                         setDebtUseCase.execute(sum = sum.toDouble(), idHuman = lastId, info = info, date = date)
@@ -238,23 +234,23 @@ class NewDebtFragment: Fragment() {
                                 debtSumTextInput.error = getString(R.string.zerodebt)
                             }
                         } else { //user check if user is bad
-                            if (checkEditTextIsEmpty.execute(name))
+                            if (name.trim().isEmpty())
                                 humanNameTextInput.error = getString(R.string.youmustentername)
                             else
                                 humanNameTextInput.error = ""
-                            if (checkEditTextIsEmpty.execute(sum))
+                            if (sum.trim().isEmpty())
                                 debtSumTextInput.error = getString(R.string.youmustentername)
                             else
                                 debtSumTextInput.error = ""
                         }
                     }
                     DebtState.ExistHumanDebt -> {
-                        if (!checkEditTextIsEmpty.execute(sum)) { // user check if user not bad
+                        if (sum.trim().isNotEmpty()) { // user check if user not bad
                             if (!customSwitch.isChecked())
                                 sum = (sum.toDouble() * (-1.0)).toString()
                             if (sum.toDouble() != 0.0) {
                                 val saveExistHumanDebt = Completable.create {
-                                    if (checkEditTextIsEmpty.execute(info))
+                                    if (info.trim().isEmpty())
                                         setDebtUseCase.execute(sum = sum.toDouble(), idHuman = idHuman!!, info = null, date = date)
                                     else
                                         setDebtUseCase.execute(sum = sum.toDouble(), idHuman = idHuman!!, info = info, date = date)
@@ -274,19 +270,19 @@ class NewDebtFragment: Fragment() {
                                 debtSumTextInput.error = getString(R.string.zerodebt)
                             }
                         } else { //if user is bad
-                            if (checkEditTextIsEmpty.execute(sum))
+                            if (sum.trim().isEmpty())
                                 debtSumTextInput.error = getString(R.string.youmustentername)
                         }
                     }
                     DebtState.EditDebt -> {
-                        if (!checkEditTextIsEmpty.execute(sum)) { // user check if user not bad
+                        if (sum.trim().isNotEmpty()) { // user check if user not bad
                             if (!customSwitch.isChecked())
                                 sum = (sum.toDouble() * (-1.0)).toString()
                             if (sum.toDouble() != 0.0) {
                                 val editDebt = Completable.create {
                                     val pastSum = arguments?.getDouble("sum")
                                     val currentSum = updateCurrentSumUseCase.execute(sum.toDouble(), pastSum!!)
-                                    if (checkEditTextIsEmpty.execute(info))
+                                    if (info.trim().isEmpty())
                                         editDebtUseCase.execute(id = idDebt!!,sum = sum.toDouble(), idHuman = idHuman!!, info = null, date = date)
                                     else
                                         editDebtUseCase.execute(id = idDebt!! ,sum = sum.toDouble(), idHuman = idHuman!!, info = info, date = date)
@@ -306,7 +302,7 @@ class NewDebtFragment: Fragment() {
                                 debtSumTextInput.error = getString(R.string.zerodebt)
                             }
                         } else { //if user is bad
-                            if (checkEditTextIsEmpty.execute(sum))
+                            if (sum.trim().isEmpty())
                                 debtSumTextInput.error = getString(R.string.youmustentername)
                         }
                     }

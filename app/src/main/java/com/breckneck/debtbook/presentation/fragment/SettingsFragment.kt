@@ -115,7 +115,6 @@ class SettingsFragment : Fragment() {
                         )
                     }
                 }
-
         }
 
         val secondCurrencyTextView: TextView = view.findViewById(R.id.secondCurrencyTextView)
