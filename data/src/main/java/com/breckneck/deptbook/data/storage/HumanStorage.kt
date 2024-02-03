@@ -21,4 +21,6 @@ interface HumanStorage  {
     fun getHumanSumDebtUseCase(humanId: Int): Double
 
     fun deleteHumanById(id: Int)
+
+    fun updateHuman(human: Human)
 }

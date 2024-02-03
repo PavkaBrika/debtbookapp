@@ -21,6 +21,8 @@ import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainFragment : Fragment() {
@@ -30,6 +32,7 @@ class MainFragment : Fragment() {
     private val vm by viewModel<MainFragmentViewModel>()
 
     lateinit var filterButton: ImageView
+    lateinit var humanAdapter: HumanAdapter
 
     interface OnButtonClickListener {
         fun onHumanClick(idHuman: Int, currency: String, name: String)
@@ -98,7 +101,7 @@ class MainFragment : Fragment() {
             }
 
             override fun onHumanLongClick(humanDomain: HumanDomain, position: Int) {
-                openChangeDebtNameDialog()
+                openChangeDebtNameDialog(humanDomain = humanDomain, position = position)
             }
         }
 
@@ -125,8 +128,8 @@ class MainFragment : Fragment() {
                 mainRecyclerViewHintTextView.visibility = View.INVISIBLE
                 noDebtsTextView.visibility = View.VISIBLE
             }
-            val adapter = HumanAdapter(it, humanClickListener)
-            recyclerView.adapter = adapter
+            humanAdapter = HumanAdapter(it, humanClickListener)
+            recyclerView.adapter = humanAdapter
             Log.e(TAG, "adapter link success")
         }
 
@@ -302,10 +305,44 @@ class MainFragment : Fragment() {
         }
     }
 
-    private fun openChangeDebtNameDialog() {
+    private fun openChangeDebtNameDialog(humanDomain: HumanDomain, position: Int) {
         val dialog = BottomSheetDialog(requireActivity())
         dialog.setContentView(R.layout.dialog_change_debt_name)
+        val humanNameTextInput: TextInputLayout = dialog.findViewById(R.id.humanNameTextInput)!!
+        val humanNameEditText: TextInputEditText = dialog.findViewById(R.id.humanNameEditText)!!
+        humanNameEditText.setText(humanDomain.name)
+        dialog.findViewById<Button>(R.id.confirmButton)!!.setOnClickListener {
+            val changedName = humanNameEditText.text.toString().trim()
+            if (changedName.isEmpty())
+                humanNameTextInput.error = getString(R.string.youmustentername)
+            else {
+                if (changedName == humanDomain.name)
+                    dialog.dismiss()
+                else {
+                    humanDomain.name = changedName
+                    changeDebtName(humanDomain = humanDomain, position = position)
+                    dialog.dismiss()
+                }
+            }
+        }
+
+        dialog.findViewById<Button>(R.id.cancelButton)!!.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.setOnDismissListener {
+            vm.onChangeDebtNameDialogClose()
+        }
+        dialog.setOnCancelListener {
+            vm.onChangeDebtNameDialogClose()
+        }
+
         dialog.show()
 
+    }
+
+    private fun changeDebtName(humanDomain: HumanDomain, position: Int) {
+        humanAdapter.updateHuman(humanDomain = humanDomain, position = position)
+        vm.updateHuman(human = humanDomain)
     }
 }

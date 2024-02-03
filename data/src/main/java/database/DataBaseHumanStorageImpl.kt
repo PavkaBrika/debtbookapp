@@ -56,5 +56,7 @@ class DataBaseHumanStorageImpl(context: Context) : HumanStorage {
         db.appDao().deleteHumanById(id = id)
     }
 
-
+    override fun updateHuman(human: Human) {
+        db.appDao().updateHuman(human = human)
+    }
 }

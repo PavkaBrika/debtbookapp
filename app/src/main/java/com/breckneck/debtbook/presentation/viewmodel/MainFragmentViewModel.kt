@@ -13,6 +13,7 @@ import com.breckneck.deptbook.domain.usecase.Settings.GetSecondMainCurrency
 import com.breckneck.deptbook.domain.usecase.Settings.SetHumanOrder
 import com.breckneck.deptbook.domain.util.HumanOrderAttribute
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -25,7 +26,8 @@ class MainFragmentViewModel(
     private val getFirstMainCurrency: GetFirstMainCurrency,
     private val getSecondMainCurrency: GetSecondMainCurrency,
     private val getHumanOrder: GetHumanOrder,
-    private val setHumanOrder: SetHumanOrder
+    private val setHumanOrder: SetHumanOrder,
+    private val updateHuman: UpdateHuman
 ) : ViewModel() {
 
     private val TAG = "MainFragmentViewModel"
@@ -45,6 +47,15 @@ class MainFragmentViewModel(
     private val _humanOrder = MutableLiveData<Pair<HumanOrderAttribute, Boolean>>()
     val humanOrder: LiveData<Pair<HumanOrderAttribute, Boolean>>
         get() = _humanOrder
+    private val _isChangeDebtNameDialogOpened = MutableLiveData<Boolean>()
+    val isChangeDebtNameDialogOpened: LiveData<Boolean>
+        get() = _isChangeDebtNameDialogOpened
+    private val _changedHuman = MutableLiveData<HumanDomain>()
+    val changedHuman: LiveData<HumanDomain>
+        get() = _changedHuman
+    private val _changedHumanPosition = MutableLiveData<Int>()
+    val changedHumanPosition: LiveData<Int>
+        get() = _changedHumanPosition
     private val sortHumans by lazy { SortHumans() }
     private val disposeBag = CompositeDisposable()
 
@@ -93,6 +104,21 @@ class MainFragmentViewModel(
         disposeBag.add(result)
     }
 
+    fun updateHuman(human: HumanDomain) {
+        val result = Completable.create {
+            updateHuman.execute(humanDomain = human)
+            it.onComplete()
+        }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                Log.e(TAG, "human updated")
+            }, {
+                Log.e(TAG, it.stackTrace.toString())
+            })
+        disposeBag.add(result)
+    }
+
     private fun getMainSums() {
         val result = Single.create {
             it.onSuccess(
@@ -126,5 +152,15 @@ class MainFragmentViewModel(
 
     fun onSetHumanFilter(filter: HumanFilter) {
         _humanFilter.value = filter
+    }
+
+    fun onChangeDebtNameDialogOpen(humanDomain: HumanDomain, position: Int) {
+        _isChangeDebtNameDialogOpened.value = true
+        _changedHuman.value = humanDomain
+        _changedHumanPosition.value = position
+    }
+
+    fun onChangeDebtNameDialogClose() {
+        _isChangeDebtNameDialogOpened.value = false
     }
 }

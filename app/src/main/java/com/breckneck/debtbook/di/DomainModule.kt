@@ -42,6 +42,10 @@ val domainModule = module {
         SetHumanUseCase(humanRepository = get())
     }
 
+    factory<UpdateHuman> {
+        UpdateHuman(humanRepository = get())
+    }
+
     //DEBT
 
     factory<GetAllDebtsSumUseCase> {

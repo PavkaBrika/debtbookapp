@@ -22,4 +22,7 @@ interface HumanRepository {
 
     fun deleteHuman(id: Int)
 
+    fun updateHuman(human: HumanDomain)
+
+
 }

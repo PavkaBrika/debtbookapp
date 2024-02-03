@@ -18,7 +18,8 @@ val appModule = module {
             getFirstMainCurrency = get(),
             getSecondMainCurrency = get(),
             getHumanOrder = get(),
-            setHumanOrder = get()
+            setHumanOrder = get(),
+            updateHuman = get()
         )
     }
 
