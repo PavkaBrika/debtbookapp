@@ -31,6 +31,7 @@ import com.breckneck.deptbook.domain.usecase.Settings.*
 import com.breckneck.deptbook.domain.util.DEBT_QUANTITY_FOR_LAST_SHOW_APP_RATE_DIALOG
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.textfield.TextInputEditText
 import com.yandex.mobile.ads.banner.BannerAdSize
 import com.yandex.mobile.ads.banner.BannerAdEventListener
 import com.yandex.mobile.ads.banner.BannerAdView
@@ -436,7 +437,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         vm.setAppReviewFromSettings(isFromSettings)
         vm.setAppRateDialogShown(shown = true)
 
-        rateAppBottomSheetDialog.findViewById<Button>(R.id.buttonOk)!!.setOnClickListener {
+        rateAppBottomSheetDialog.findViewById<Button>(R.id.confirmButton)!!.setOnClickListener {
             when (vm.resultAppRate.value) {
                 1, 2, 3 -> {
                     showLowAppRateDialog(fromSettings = isFromSettings)
@@ -453,7 +454,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
             }
         }
 
-        rateAppBottomSheetDialog.findViewById<Button>(R.id.buttonCancel)!!.setOnClickListener {
+        rateAppBottomSheetDialog.findViewById<Button>(R.id.cancelButton)!!.setOnClickListener {
             rateAppBottomSheetDialog.cancel()
         }
 
@@ -548,7 +549,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         lowRateBottomSheetDialog.setCanceledOnTouchOutside(false)
         lowRateBottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
         vm.setAppReviewDialogShown(true)
-        val reviewEditText: EditText = lowRateBottomSheetDialog.findViewById(R.id.reviewEditText)!!
+        val reviewEditText: TextInputEditText = lowRateBottomSheetDialog.findViewById(R.id.reviewEditText)!!
         val sendReviewButton: Button = lowRateBottomSheetDialog.findViewById(R.id.buttonOk)!!
         val cancelButton: Button = lowRateBottomSheetDialog.findViewById(R.id.buttonCancel)!!
         sendReviewButton.setOnClickListener {
@@ -557,6 +558,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
             intent.putExtra(Intent.EXTRA_SUBJECT, "${getString(R.string.email_subject)} ${BuildConfig.VERSION_NAME}")
             intent.putExtra(Intent.EXTRA_TEXT, reviewEditText.text.toString())
             startActivity(intent)
+            lowRateBottomSheetDialog.dismiss()
         }
 
         if (vm.resultAppReviewText.value?.isEmpty() == false) {

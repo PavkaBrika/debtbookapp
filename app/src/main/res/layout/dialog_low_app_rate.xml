@@ -25,9 +25,10 @@
         app:errorEnabled="true">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/humanNameEditText"
+            android:id="@+id/reviewEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="top"
             android:minLines="3" />
 
     </com.google.android.material.textfield.TextInputLayout>

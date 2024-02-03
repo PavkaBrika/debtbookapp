@@ -66,6 +66,11 @@ class MainFragment : Fragment() {
 
         if (vm.isSortDialogOpened.value == true)
             showHumanSortDialog()
+        if (vm.isChangeDebtNameDialogOpened.value == true)
+            openChangeDebtNameDialog(
+                humanDomain = vm.changedHuman.value!!,
+                position = vm.changedHumanPosition.value!!
+            )
 
         val collaps: CollapsingToolbarLayout = view.findViewById(R.id.collaps)
         collaps.apply {
@@ -308,6 +313,7 @@ class MainFragment : Fragment() {
     private fun openChangeDebtNameDialog(humanDomain: HumanDomain, position: Int) {
         val dialog = BottomSheetDialog(requireActivity())
         dialog.setContentView(R.layout.dialog_change_debt_name)
+        vm.onChangeDebtNameDialogOpen(humanDomain = humanDomain, position = position)
         val humanNameTextInput: TextInputLayout = dialog.findViewById(R.id.humanNameTextInput)!!
         val humanNameEditText: TextInputEditText = dialog.findViewById(R.id.humanNameEditText)!!
         humanNameEditText.setText(humanDomain.name)
