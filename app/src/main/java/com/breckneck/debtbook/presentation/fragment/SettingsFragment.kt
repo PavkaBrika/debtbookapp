@@ -58,9 +58,17 @@ class SettingsFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_settings, container, false)
 
+        if (vm.isSettingsDialogOpened.value == true)
+            showSettingsDialog(
+                settingTitle = vm.settingsDialogTitle.value!!,
+                settingsList = vm.settingsList.value!!,
+                selectedSetting = vm.selectedSetting.value!!,
+                onSettingsClickListener = vm.onSettingsClickListener.value!!
+            )
+
         val backButton: ImageView = view.findViewById(R.id.backButton)
         backButton.setOnClickListener {
-            buttonClickListener?.onBackSettingsButtonClick()
+            buttonClickListener.onBackSettingsButtonClick()
         }
 
         buttonClickListener.onSettingsFragmentOpen()
@@ -91,6 +99,12 @@ class SettingsFragment : Fragment() {
                                 vm.setFirstMainCurrency(currency = setting.substring(setting.lastIndexOf(" ") + 1))
                             }
                         }
+                        vm.onSettingsDialogOpen(
+                            settingsTitle = getString(R.string.first_main_currency),
+                            settingsList = currencyNames,
+                            selectedSetting = i,
+                            onSettingsClickListener = onSettingClickListener
+                        )
                         showSettingsDialog(
                             settingTitle = getString(R.string.first_main_currency),
                             settingsList = currencyNames,
@@ -114,6 +128,12 @@ class SettingsFragment : Fragment() {
                                 vm.setSecondMainCurrency(currency = setting.substring(setting.lastIndexOf(" ") + 1))
                             }
                         }
+                        vm.onSettingsDialogOpen(
+                            settingsTitle = getString(R.string.second_main_currency),
+                            settingsList = currencyNames,
+                            selectedSetting = i,
+                            onSettingsClickListener = onSettingClickListener
+                        )
                         showSettingsDialog(
                             settingTitle = getString(R.string.second_main_currency),
                             settingsList = currencyNames,
@@ -136,6 +156,12 @@ class SettingsFragment : Fragment() {
                                 vm.setDefaultCurrency(currency = setting.substring(setting.lastIndexOf(" ") + 1))
                             }
                         }
+                        vm.onSettingsDialogOpen(
+                            settingsTitle = getString(R.string.second_main_currency),
+                            settingsList = currencyNames,
+                            selectedSetting = i,
+                            onSettingsClickListener = onSettingClickListener
+                        )
                         showSettingsDialog(
                             settingTitle = getString(R.string.second_main_currency),
                             settingsList = currencyNames,
@@ -178,6 +204,7 @@ class SettingsFragment : Fragment() {
                         val onSettingClickListener = object : SettingsAdapter.OnClickListener {
                             override fun onClick(setting: String, position: Int) {
                                 when (setting) {
+                                    //TODO FIX CRASH AFTER ORIENTATION CHANGING
                                     getString(R.string.dark_theme) -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
                                     getString(R.string.light_theme) -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
                                     getString(R.string.system_theme) -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
@@ -185,6 +212,12 @@ class SettingsFragment : Fragment() {
                                 vm.setAppTheme(theme = setting)
                             }
                         }
+                        vm.onSettingsDialogOpen(
+                            settingsTitle = getString(R.string.app_theme),
+                            settingsList = appThemes,
+                            selectedSetting = i,
+                            onSettingsClickListener = onSettingClickListener
+                        )
                         showSettingsDialog(
                             settingTitle = getString(R.string.app_theme),
                             settingsList = appThemes,
@@ -246,6 +279,13 @@ class SettingsFragment : Fragment() {
             override fun onSelect() {
                 dialog.dismiss()
             }
+        }
+
+        dialog.setOnDismissListener {
+            vm.onDialogClose()
+        }
+        dialog.setOnCancelListener {
+            vm.onDialogClose()
         }
 
         settingsRecyclerView.adapter = SettingsAdapter(

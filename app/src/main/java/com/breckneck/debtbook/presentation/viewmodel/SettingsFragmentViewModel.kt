@@ -3,6 +3,7 @@ package com.breckneck.debtbook.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.breckneck.debtbook.adapter.SettingsAdapter
 import com.breckneck.deptbook.domain.usecase.Settings.GetAddSumInShareText
 import com.breckneck.deptbook.domain.usecase.Settings.GetAppTheme
 import com.breckneck.deptbook.domain.usecase.Settings.GetDefaultCurrency
@@ -45,7 +46,21 @@ class SettingsFragmentViewModel(
     private val _appTheme = MutableLiveData<String>()
     val appTheme: LiveData<String>
         get() = _appTheme
-
+    private val _isSettingsDialogOpened = MutableLiveData<Boolean>()
+    val isSettingsDialogOpened: LiveData<Boolean>
+        get() = _isSettingsDialogOpened
+    private val _settingsDialogTitle = MutableLiveData<String>()
+    val settingsDialogTitle: LiveData<String>
+        get() = _settingsDialogTitle
+    private val _settingsList = MutableLiveData<List<String>>()
+    val settingsList: LiveData<List<String>>
+        get() = _settingsList
+    private val _selectedSetting = MutableLiveData<Int>()
+    val selectedSetting: LiveData<Int>
+        get() = _selectedSetting
+    private val _onSettingsClickListener = MutableLiveData<SettingsAdapter.OnClickListener>()
+    val onSettingsClickListener: LiveData<SettingsAdapter.OnClickListener>
+        get() = _onSettingsClickListener
 
     init {
         getFirstMainCurrency()
@@ -98,6 +113,23 @@ class SettingsFragmentViewModel(
     fun setSumInShareText(value: Boolean) {
         setAddSumInShareText.execute(value)
         _addSumInShareText.value = value
+    }
+
+    fun onSettingsDialogOpen(
+        settingsTitle: String,
+        settingsList: List<String>,
+        selectedSetting: Int,
+        onSettingsClickListener: SettingsAdapter.OnClickListener
+    ) {
+        _isSettingsDialogOpened.value = true
+        _settingsDialogTitle.value = settingsTitle
+        _settingsList.value = settingsList
+        _selectedSetting.value = selectedSetting
+        _onSettingsClickListener.value = onSettingsClickListener
+    }
+
+    fun onDialogClose() {
+        _isSettingsDialogOpened.value = false
     }
 
 }

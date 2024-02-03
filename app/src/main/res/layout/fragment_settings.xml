@@ -88,6 +88,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="8dp"
                             android:text="@string/application"
+                            android:textStyle="bold"
                             android:textAlignment="center"
                             android:textSize="28sp" />
 
@@ -323,6 +324,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="8dp"
                             android:text="@string/support"
+                            android:textStyle="bold"
                             android:textAlignment="center"
                             android:textSize="28sp" />
 
@@ -396,6 +398,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="8dp"
                             android:text="@string/info"
+                            android:textStyle="bold"
                             android:textAlignment="center"
                             android:textSize="28sp" />
 

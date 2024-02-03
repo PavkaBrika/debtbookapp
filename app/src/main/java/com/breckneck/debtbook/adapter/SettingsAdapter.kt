@@ -41,8 +41,8 @@ class SettingsAdapter(
             holder.settingRadioButton.isChecked = true
 
         holder.itemView.setOnClickListener {
-            settingsClickListener.onClick(setting = setting, position = position)
             settingsSelectListener.onSelect()
+            settingsClickListener.onClick(setting = setting, position = position)
         }
     }
 
