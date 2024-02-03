@@ -10,8 +10,11 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.CompoundButton
 import android.widget.CompoundButton.OnCheckedChangeListener
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SwitchCompat
 import androidx.fragment.app.Fragment
@@ -20,7 +23,6 @@ import com.breckneck.debtbook.BuildConfig
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.adapter.SettingsAdapter
 import com.breckneck.debtbook.presentation.viewmodel.SettingsFragmentViewModel
-import com.breckneck.deptbook.domain.usecase.Settings.*
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -242,6 +244,12 @@ class SettingsFragment : Fragment() {
                 "${getString(R.string.email_subject)} ${BuildConfig.VERSION_NAME}"
             )
             startActivity(intent)
+        }
+
+        val privacyPolicyLayout: LinearLayout = view.findViewById(R.id.privacyPolicyLayout)
+        privacyPolicyLayout.setOnClickListener {
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://simpledebtbook-privacy-policy.ucoz.net/"))
+            startActivity(browserIntent)
         }
 
         val appVersionTextView: TextView = view.findViewById(R.id.appVersionTextView)
