@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/appBarLayoutStyle"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    style="@style/appBarLayoutStyle"
     android:orientation="vertical">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -12,10 +12,10 @@
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar"
+            style="@style/appBarLayoutStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fitsSystemWindows="true"
-            style="@style/appBarLayoutStyle">
+            android:fitsSystemWindows="true">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:id="@+id/collapsSettings"
@@ -35,7 +35,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     android:fitsSystemWindows="true"
-                    app:layout_collapseMode="pin" >
+                    app:layout_collapseMode="pin">
 
                     <ImageView
                         android:id="@+id/backButton"
@@ -43,9 +43,9 @@
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_marginEnd="16dp"
-                        android:src="@drawable/baseline_arrow_back_24"
                         android:background="@android:color/transparent"
-                        android:foreground="?android:attr/selectableItemBackground" />
+                        android:foreground="?android:attr/selectableItemBackground"
+                        android:src="@drawable/baseline_arrow_back_24" />
 
                 </androidx.appcompat.widget.Toolbar>
 
@@ -62,7 +62,6 @@
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="1dp"
             android:scrollbars="vertical"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
@@ -73,36 +72,35 @@
                 android:orientation="vertical">
 
                 <com.google.android.material.card.MaterialCardView
+                    style="@style/CardViewStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="8dp"
-                    style="@style/CardViewStyle">
+                    android:layout_marginHorizontal="8dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginHorizontal="8dp"
-                        android:layout_marginVertical="16dp">
+                        android:layout_marginVertical="16dp"
+                        android:orientation="vertical">
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
                             android:text="@string/application"
                             android:textAlignment="center"
-                            android:textSize="28sp"
-                            android:layout_marginBottom="8dp" />
+                            android:textSize="28sp" />
 
                         <LinearLayout
                             android:id="@+id/firstCurrencyLayout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:paddingTop="8dp"
-                            android:paddingBottom="8dp"
                             android:background="?android:attr/selectableItemBackground"
                             android:clickable="true"
                             android:focusable="true"
-                            android:orientation="horizontal">
+                            android:orientation="horizontal"
+                            android:paddingHorizontal="12dp"
+                            android:paddingVertical="12dp">
 
                             <TextView
                                 android:layout_width="match_parent"
@@ -113,16 +111,15 @@
                                 android:textSize="16sp"
                                 app:autoSizeTextType="uniform"
                                 app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toStartOf="@+id/firstCurrencySpinner"
+                                app:layout_constraintEnd_toStartOf="@+id/firstCurrencyTextView"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
 
-                            <Spinner
-                                android:id="@+id/firstCurrencySpinner"
+                            <TextView
+                                android:id="@+id/firstCurrencyTextView"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="4"
-                                android:fadeScrollbars="false"
                                 android:textAlignment="center"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
@@ -134,11 +131,12 @@
                             android:id="@+id/secondCurrencyLayout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:paddingVertical="8dp"
                             android:background="?android:attr/selectableItemBackground"
                             android:clickable="true"
                             android:focusable="true"
-                            android:orientation="horizontal">
+                            android:orientation="horizontal"
+                            android:paddingHorizontal="12dp"
+                            android:paddingVertical="12dp">
 
                             <TextView
                                 android:layout_width="match_parent"
@@ -149,12 +147,11 @@
                                 android:textSize="16sp"
                                 app:autoSizeTextType="uniform" />
 
-                            <Spinner
-                                android:id="@+id/secondCurrencySpinner"
+                            <TextView
+                                android:id="@+id/secondCurrencyTextView"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="4"
-                                android:fadeScrollbars="false"
                                 android:textAlignment="center" />
 
                         </LinearLayout>
@@ -163,26 +160,28 @@
                             android:id="@+id/mainCurrenciesHint"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
+                            android:paddingHorizontal="12dp"
+                            android:paddingVertical="8dp"
                             android:text="@string/main_currencies_hint"
                             android:textColor="@android:color/darker_gray" />
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
-                            android:layout_marginTop="8dp"
                             android:layout_marginHorizontal="16dp"
+                            android:layout_marginVertical="8dp"
                             android:background="@color/gray" />
 
                         <LinearLayout
                             android:id="@+id/defaultCurrencyLayout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:paddingVertical="8dp"
                             android:background="?android:attr/selectableItemBackground"
                             android:clickable="true"
                             android:focusable="true"
-                            android:orientation="horizontal">
+                            android:orientation="horizontal"
+                            android:paddingHorizontal="12dp"
+                            android:paddingVertical="8dp">
 
                             <TextView
                                 android:layout_width="match_parent"
@@ -193,12 +192,11 @@
                                 android:textSize="16sp"
                                 app:autoSizeTextType="uniform" />
 
-                            <Spinner
-                                android:id="@+id/defaultCurrencySpinner"
+                            <TextView
+                                android:id="@+id/defaultCurrencyTextView"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="4"
-                                android:fadeScrollbars="false"
                                 android:textAlignment="center" />
 
                         </LinearLayout>
@@ -207,26 +205,28 @@
                             android:id="@+id/mainCurrencyHint"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
+                            android:paddingHorizontal="12dp"
+                            android:paddingVertical="8dp"
                             android:text="@string/default_currencies_hint"
                             android:textColor="@android:color/darker_gray" />
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
-                            android:layout_marginTop="8dp"
                             android:layout_marginHorizontal="16dp"
+                            android:layout_marginVertical="8dp"
                             android:background="@color/gray" />
 
                         <LinearLayout
                             android:id="@+id/addSumShareTextLayout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:paddingVertical="8dp"
                             android:background="?android:attr/selectableItemBackground"
                             android:clickable="true"
                             android:focusable="true"
-                            android:orientation="horizontal">
+                            android:orientation="horizontal"
+                            android:paddingHorizontal="12dp"
+                            android:paddingVertical="8dp">
 
                             <TextView
                                 android:layout_width="match_parent"
@@ -263,25 +263,27 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
+                            android:paddingHorizontal="12dp"
                             android:text="@string/detailed_share_text_hint"
                             android:textColor="@android:color/darker_gray" />
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
-                            android:layout_marginTop="8dp"
                             android:layout_marginHorizontal="16dp"
+                            android:layout_marginVertical="8dp"
                             android:background="@color/gray" />
 
                         <LinearLayout
                             android:id="@+id/appThemeLayout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:paddingVertical="12dp"
                             android:background="?android:attr/selectableItemBackground"
                             android:clickable="true"
                             android:focusable="true"
-                            android:orientation="horizontal">
+                            android:orientation="horizontal"
+                            android:paddingHorizontal="12dp"
+                            android:paddingVertical="12dp">
 
                             <TextView
                                 android:layout_width="match_parent"
@@ -291,12 +293,11 @@
                                 android:text="@string/app_theme"
                                 android:textSize="16sp" />
 
-                            <Spinner
-                                android:id="@+id/appThemeSpinner"
+                            <TextView
+                                android:id="@+id/appThemeTextView"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="4"
-                                android:fadeScrollbars="false"
                                 android:textAlignment="center" />
 
                         </LinearLayout>
@@ -305,11 +306,10 @@
                 </com.google.android.material.card.MaterialCardView>
 
                 <com.google.android.material.card.MaterialCardView
+                    style="@style/CardViewStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="8dp"
-                    android:layout_marginTop="16dp"
-                    style="@style/CardViewStyle">
+                    android:layout_marginTop="16dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -321,20 +321,21 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
                             android:text="@string/support"
                             android:textAlignment="center"
-                            android:textSize="28sp"
-                            android:layout_marginBottom="8dp" />
+                            android:textSize="28sp" />
 
                         <LinearLayout
                             android:id="@+id/rateAppLayout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:paddingVertical="12dp"
                             android:background="?android:attr/selectableItemBackground"
                             android:clickable="true"
                             android:focusable="true"
-                            android:orientation="horizontal">
+                            android:orientation="horizontal"
+                            android:paddingHorizontal="12dp"
+                            android:paddingVertical="12dp">
 
                             <TextView
                                 android:layout_width="match_parent"
@@ -350,17 +351,19 @@
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
                             android:layout_marginHorizontal="16dp"
+                            android:layout_marginVertical="8dp"
                             android:background="@color/gray" />
 
                         <LinearLayout
                             android:id="@+id/writeEmailLayout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:paddingVertical="12dp"
                             android:background="?android:attr/selectableItemBackground"
                             android:clickable="true"
                             android:focusable="true"
-                            android:orientation="horizontal">
+                            android:orientation="horizontal"
+                            android:paddingHorizontal="12dp"
+                            android:paddingVertical="12dp">
 
                             <TextView
                                 android:layout_width="match_parent"
@@ -376,32 +379,32 @@
                 </com.google.android.material.card.MaterialCardView>
 
                 <com.google.android.material.card.MaterialCardView
+                    style="@style/CardViewStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="8dp"
-                    android:layout_marginTop="16dp"
-                    style="@style/CardViewStyle">
+                    android:layout_marginTop="16dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="8dp"
                         android:layout_marginVertical="16dp"
-                        android:orientation="vertical" >
+                        android:orientation="vertical">
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
                             android:text="@string/info"
                             android:textAlignment="center"
-                            android:textSize="28sp"
-                            android:layout_marginBottom="8dp" />
+                            android:textSize="28sp" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:paddingVertical="12dp"
-                            android:orientation="horizontal">
+                            android:orientation="horizontal"
+                            android:paddingHorizontal="12dp"
+                            android:paddingVertical="12dp">
 
                             <TextView
                                 android:id="@+id/appVersionTextView"
@@ -415,6 +418,10 @@
                     </LinearLayout>
 
                 </com.google.android.material.card.MaterialCardView>
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="16dp" />
 
             </LinearLayout>
 

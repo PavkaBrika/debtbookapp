@@ -15,14 +15,18 @@ import android.widget.CompoundButton.OnCheckedChangeListener
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SwitchCompat
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.BuildConfig
 import com.breckneck.debtbook.R
+import com.breckneck.debtbook.adapter.SettingsAdapter
+import com.breckneck.debtbook.presentation.viewmodel.SettingsFragmentViewModel
 import com.breckneck.deptbook.domain.usecase.Settings.*
 import com.google.android.material.appbar.CollapsingToolbarLayout
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SettingsFragment: Fragment() {
+class SettingsFragment : Fragment() {
 
     interface OnButtonClickListener {
         fun onBackSettingsButtonClick()
@@ -34,6 +38,8 @@ class SettingsFragment: Fragment() {
 
     lateinit var buttonClickListener: OnButtonClickListener
 
+    private val vm by viewModel<SettingsFragmentViewModel>()
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         buttonClickListener = context as OnButtonClickListener
@@ -44,17 +50,6 @@ class SettingsFragment: Fragment() {
         val inflater = TransitionInflater.from(requireContext())
         enterTransition = inflater.inflateTransition(R.transition.slide_up)
     }
-
-    private val setFirstMainCurrency: SetFirstMainCurrency by inject()
-    private val getFirstMainCurrency: GetFirstMainCurrency by inject()
-    private val setSecondMainCurrency: SetSecondMainCurrency by inject()
-    private val getSecondMainCurrency: GetSecondMainCurrency by inject()
-    private val setDefaultCurrency: SetDefaultCurrency by inject()
-    private val getDefaultCurrency: GetDefaultCurrency by inject()
-    private val setAddSumInShareText: SetAddSumInShareText by inject()
-    private val getAddSumInShareText: GetAddSumInShareText by inject()
-    private val getAppTheme: GetAppTheme by inject()
-    private val setAppTheme: SetAppTheme by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -76,125 +71,128 @@ class SettingsFragment: Fragment() {
             setExpandedTitleTypeface(Typeface.DEFAULT_BOLD)
         }
 
-        val currencyNames = arrayOf(getString(R.string.usd), getString(R.string.eur), getString(R.string.rub),
+        val currencyNames = listOf(
+            getString(R.string.usd), getString(R.string.eur), getString(R.string.rub),
             getString(R.string.byn), getString(R.string.uah), getString(R.string.kzt),
             getString(R.string.jpy), getString(R.string.gpb), getString(R.string.aud),
             getString(R.string.cad), getString(R.string.chf), getString(R.string.cny),
-            getString(R.string.sek), getString(R.string.mxn))
-        val spinnerAdapter = ArrayAdapter(view.context, android.R.layout.simple_spinner_dropdown_item, currencyNames)
+            getString(R.string.sek), getString(R.string.mxn)
+        )
 
-        val firstCurrencySpinner: Spinner = view.findViewById(R.id.firstCurrencySpinner)
-        firstCurrencySpinner.adapter = spinnerAdapter
-        var firstMainCurrency = getFirstMainCurrency.execute()
-//        var firstMainCurrency = "USD"
-        firstCurrencySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
-            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                firstMainCurrency = p0?.getItemAtPosition(p2).toString().substring(p0?.getItemAtPosition(p2).toString().lastIndexOf(" ") + 1)
-                setFirstMainCurrency.execute(currency = firstMainCurrency)
-            }
+        val firstCurrencyTextView: TextView = view.findViewById(R.id.firstCurrencyTextView)
+        vm.firstMainCurrency.observe(viewLifecycleOwner) { currency ->
+            for (i in currencyNames.indices)
+                if (currencyNames[i].contains(currency)) {
+                    firstCurrencyTextView.text = currencyNames[i]
+                    val firstCurrencyLayout: LinearLayout = view.findViewById(R.id.firstCurrencyLayout)
+                    firstCurrencyLayout.setOnClickListener {
+                        val onSettingClickListener = object : SettingsAdapter.OnClickListener {
+                            override fun onClick(setting: String, position: Int) {
+                                vm.setFirstMainCurrency(currency = setting.substring(setting.lastIndexOf(" ") + 1))
+                            }
+                        }
+                        showSettingsDialog(
+                            settingTitle = getString(R.string.first_main_currency),
+                            settingsList = currencyNames,
+                            selectedSetting = i,
+                            onSettingsClickListener = onSettingClickListener
+                        )
+                    }
+                }
 
-            override fun onNothingSelected(p0: AdapterView<*>?) {
-            }
-        }
-        val firstCurrencyLayout: LinearLayout = view.findViewById(R.id.firstCurrencyLayout)
-        firstCurrencyLayout.setOnClickListener {
-            firstCurrencySpinner.performClick()
-        }
-
-        var secondMainCurrency = getSecondMainCurrency.execute()
-//        var secondMainCurrency = "USD"
-        val secondCurrencySpinner: Spinner = view.findViewById(R.id.secondCurrencySpinner)
-        secondCurrencySpinner.adapter = spinnerAdapter
-        secondCurrencySpinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                secondMainCurrency = p0?.getItemAtPosition(p2).toString().substring(p0?.getItemAtPosition(p2).toString().lastIndexOf(" ") + 1)
-                setSecondMainCurrency.execute(currency = secondMainCurrency)
-            }
-
-            override fun onNothingSelected(p0: AdapterView<*>?) {
-            }
-        }
-        val secondCurrencyLayout: LinearLayout = view.findViewById(R.id.secondCurrencyLayout)
-        secondCurrencyLayout.setOnClickListener {
-            secondCurrencySpinner.performClick()
         }
 
-        val defaultCurrencySpinner: Spinner = view.findViewById(R.id.defaultCurrencySpinner)
-        defaultCurrencySpinner.adapter = spinnerAdapter
-        var defaultCurrency = getDefaultCurrency.execute()
-//        var defaultCurrency = "USD"
-        defaultCurrencySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
-            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                defaultCurrency = p0?.getItemAtPosition(p2).toString().substring(p0?.getItemAtPosition(p2).toString().lastIndexOf(" ") + 1)
-                setDefaultCurrency.execute(currency = defaultCurrency)
-            }
-
-            override fun onNothingSelected(p0: AdapterView<*>?) {
-            }
-        }
-        val defaultCurrencyLayout: LinearLayout = view.findViewById(R.id.defaultCurrencyLayout)
-        defaultCurrencyLayout.setOnClickListener {
-            defaultCurrencySpinner.performClick()
-        }
-
-        for (i in currencyNames.indices) {
-            if (currencyNames[i].contains(firstMainCurrency))
-                firstCurrencySpinner.setSelection(i)
-            else if (currencyNames[i].contains(secondMainCurrency))
-                secondCurrencySpinner.setSelection(i)
-            else if (currencyNames[i].contains(defaultCurrency))
-                defaultCurrencySpinner.setSelection(i)
+        val secondCurrencyTextView: TextView = view.findViewById(R.id.secondCurrencyTextView)
+        vm.secondMainCurrency.observe(viewLifecycleOwner) { currency ->
+            for (i in currencyNames.indices)
+                if (currencyNames[i].contains(currency)) {
+                    secondCurrencyTextView.text = currencyNames[i]
+                    val secondCurrencyLayout: LinearLayout = view.findViewById(R.id.secondCurrencyLayout)
+                    secondCurrencyLayout.setOnClickListener {
+                        val onSettingClickListener = object : SettingsAdapter.OnClickListener {
+                            override fun onClick(setting: String, position: Int) {
+                                vm.setSecondMainCurrency(currency = setting.substring(setting.lastIndexOf(" ") + 1))
+                            }
+                        }
+                        showSettingsDialog(
+                            settingTitle = getString(R.string.second_main_currency),
+                            settingsList = currencyNames,
+                            selectedSetting = i,
+                            onSettingsClickListener = onSettingClickListener
+                        )
+                    }
+                }
         }
 
-        var addSumShareText = getAddSumInShareText.execute()
-//        var addSumShareText = true
+        val defaultCurrencyTextView: TextView = view.findViewById(R.id.defaultCurrencyTextView)
+        vm.defaultCurrency.observe(viewLifecycleOwner) { currency ->
+            for (i in currencyNames.indices)
+                if (currencyNames[i].contains(currency)) {
+                    defaultCurrencyTextView.text = currencyNames[i]
+                    val defaultCurrencyLayout: LinearLayout = view.findViewById(R.id.defaultCurrencyLayout)
+                    defaultCurrencyLayout.setOnClickListener {
+                        val onSettingClickListener = object : SettingsAdapter.OnClickListener {
+                            override fun onClick(setting: String, position: Int) {
+                                vm.setDefaultCurrency(currency = setting.substring(setting.lastIndexOf(" ") + 1))
+                            }
+                        }
+                        showSettingsDialog(
+                            settingTitle = getString(R.string.second_main_currency),
+                            settingsList = currencyNames,
+                            selectedSetting = i,
+                            onSettingsClickListener = onSettingClickListener
+                        )
+                    }
+                }
+        }
+
         val addSumShareInTextSwitch: SwitchCompat = view.findViewById(R.id.balanceShareTextSwitch)
-        addSumShareInTextSwitch.isChecked = addSumShareText
+        vm.addSumInShareText.observe(viewLifecycleOwner) {
+            addSumShareInTextSwitch.isChecked = it
+        }
+
         addSumShareInTextSwitch.setOnCheckedChangeListener(object : OnCheckedChangeListener {
-
             override fun onCheckedChanged(p0: CompoundButton?, p1: Boolean) {
-                addSumShareText = p1
-                setAddSumInShareText.execute(addSumInShareText = addSumShareText)
+                vm.setSumInShareText(value = p1)
             }
-
         })
+
         val addSumShareTextLayout: LinearLayout = view.findViewById(R.id.addSumShareTextLayout)
         addSumShareTextLayout.setOnClickListener {
             addSumShareInTextSwitch.performClick()
         }
 
-        val appThemes = arrayOf(getString(R.string.system_theme), getString(R.string.light_theme), getString(R.string.dark_theme))
-        val themeSpinnerAdapter = ArrayAdapter(view.context, android.R.layout.simple_spinner_dropdown_item, appThemes)
-        val appThemeSpinner: Spinner = view.findViewById(R.id.appThemeSpinner)
-        appThemeSpinner.adapter = themeSpinnerAdapter
-        var theme = getAppTheme.execute()
+        val appThemes = listOf(
+            getString(R.string.system_theme),
+            getString(R.string.light_theme),
+            getString(R.string.dark_theme)
+        )
 
-        for (i in appThemes.indices) {
-            if (theme.contains(appThemes[i]))
-                appThemeSpinner.setSelection(i)
-        }
-
-        appThemeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                theme = p0?.getItemAtPosition(p2).toString()
-                setAppTheme.execute(theme = theme)
-                if (theme.equals(getString(R.string.dark_theme)))
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                else if (theme.equals(getString(R.string.light_theme)))
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                else if (theme.equals(getString(R.string.system_theme)))
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-            }
-
-            override fun onNothingSelected(p0: AdapterView<*>?) {
-                TODO("Not yet implemented")
-            }
-
-        }
-
-        val appThemeLayout: LinearLayout = view.findViewById(R.id.appThemeLayout)
-        appThemeLayout.setOnClickListener {
-            appThemeSpinner.performClick()
+        val appThemeTextView: TextView = view.findViewById(R.id.appThemeTextView)
+        vm.appTheme.observe(viewLifecycleOwner) { theme ->
+            appThemeTextView.text = theme
+            for (i in appThemes.indices)
+                if (appThemes[i].contains(theme)) {
+                    val appThemeLayout: LinearLayout = view.findViewById(R.id.appThemeLayout)
+                    appThemeLayout.setOnClickListener {
+                        val onSettingClickListener = object : SettingsAdapter.OnClickListener {
+                            override fun onClick(setting: String, position: Int) {
+                                when (setting) {
+                                    getString(R.string.dark_theme) -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                                    getString(R.string.light_theme) -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                                    getString(R.string.system_theme) -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                                }
+                                vm.setAppTheme(theme = setting)
+                            }
+                        }
+                        showSettingsDialog(
+                            settingTitle = getString(R.string.app_theme),
+                            settingsList = appThemes,
+                            selectedSetting = i,
+                            onSettingsClickListener = onSettingClickListener
+                        )
+                    }
+                }
         }
 
         val rateAppLayout: LinearLayout = view.findViewById(R.id.rateAppLayout)
@@ -206,7 +204,10 @@ class SettingsFragment: Fragment() {
         writeEmailLayout.setOnClickListener {
             val intent = Intent(Intent.ACTION_SENDTO)
             intent.data = Uri.parse("mailto:pavlikbrichkin@yandex.ru")
-            intent.putExtra(Intent.EXTRA_SUBJECT, "${getString(R.string.email_subject)} ${BuildConfig.VERSION_NAME}")
+            intent.putExtra(
+                Intent.EXTRA_SUBJECT,
+                "${getString(R.string.email_subject)} ${BuildConfig.VERSION_NAME}"
+            )
             startActivity(intent)
         }
 
@@ -228,5 +229,31 @@ class SettingsFragment: Fragment() {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun showSettingsDialog(
+        settingTitle: String,
+        settingsList: List<String>,
+        selectedSetting: Int,
+        onSettingsClickListener: SettingsAdapter.OnClickListener
+    ) {
+        val dialog = BottomSheetDialog(requireActivity())
+        dialog.setContentView(R.layout.dialog_setting)
+        dialog.findViewById<TextView>(R.id.settingTitleTextView)!!.text = settingTitle
+        val settingsRecyclerView = dialog.findViewById<RecyclerView>(R.id.settingsRecyclerView)!!
+
+        val onSettingsSelectListener = object: SettingsAdapter.OnSelectListener {
+            override fun onSelect() {
+                dialog.dismiss()
+            }
+        }
+
+        settingsRecyclerView.adapter = SettingsAdapter(
+            settingsList = settingsList,
+            selectedSetting = selectedSetting,
+            settingsClickListener = onSettingsClickListener,
+            settingsSelectListener = onSettingsSelectListener
+        )
+        dialog.show()
     }
 }

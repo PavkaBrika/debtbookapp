@@ -2,7 +2,6 @@ package com.breckneck.debtbook.presentation.activity
 
 import android.content.Context
 import android.content.Intent
-import android.content.res.Configuration
 import android.net.Uri
 import android.os.*
 import android.text.Editable
@@ -43,7 +42,6 @@ import com.yandex.mobile.ads.interstitial.InterstitialAdLoader
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.lang.IllegalArgumentException
-import java.util.Locale
 import kotlin.math.roundToInt
 
 class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, NewDebtFragment.OnButtonClickListener, DebtDetailsFragment.OnButtonClickListener, SettingsFragment.OnButtonClickListener {
@@ -53,8 +51,8 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
     var vib: Vibrator? = null
 
     private val TAG = "MainActivity"
-    private val AppodealBannerTAG = "MainActivity"
-    private val AppodealInterstitialTAG = "MainActivity"
+    private val bannerTAG = "MainActivity"
+    private val interstitialTAG = "MainActivity"
 
     private val vm by viewModel<MainActivityViewModel>()
 
@@ -113,7 +111,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         else if (theme.equals(getString(R.string.system_theme)))
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
 
-//        YANDEX MOBILE ADVERTISMENT
+//        YANDEX MOBILE ADVERTISEMENT
 
         sharedPrefsAdStorage = SharedPrefsAdStorageImpl(context = this)
         adRepository = AdRepositoryImpl(adStorage = sharedPrefsAdStorage)
@@ -139,7 +137,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
             setAdSize(BannerAdSize.stickySize(applicationContext, adWidth))
             setBannerAdEventListener(object : BannerAdEventListener {
                 override fun onAdLoaded() {
-                    Log.e(AppodealBannerTAG, "BANNER LOADED")
+                    Log.e(bannerTAG, "BANNER LOADED")
                     if (isDestroyed) {
                         bannerAd.destroy()
                         return
@@ -147,23 +145,23 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
                 }
 
                 override fun onAdFailedToLoad(p0: AdRequestError) {
-                    Log.e(AppodealBannerTAG, "BANNER LOAD FAILED")
+                    Log.e(bannerTAG, "BANNER LOAD FAILED")
                 }
 
                 override fun onAdClicked() {
-                    Log.e(AppodealBannerTAG, "BANNER CLICKED")
+                    Log.e(bannerTAG, "BANNER CLICKED")
                 }
 
                 override fun onLeftApplication() {
-                    Log.e(AppodealBannerTAG, "BANNER LEFT")
+                    Log.e(bannerTAG, "BANNER LEFT")
                 }
 
                 override fun onReturnedToApplication() {
-                    Log.e(AppodealBannerTAG, "BANNER RETURN")
+                    Log.e(bannerTAG, "BANNER RETURN")
                 }
 
                 override fun onImpression(p0: ImpressionData?) {
-                    Log.e(AppodealBannerTAG, "BANNER IMPRESSION")
+                    Log.e(bannerTAG, "BANNER IMPRESSION")
                 }
 
             })
@@ -174,12 +172,12 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         interstitialAdLoader = InterstitialAdLoader(applicationContext).apply {
             setAdLoadListener(object: InterstitialAdLoadListener {
                 override fun onAdLoaded(interstitialAd: InterstitialAd) {
-                    Log.e(AppodealInterstitialTAG, "Interstitial ad load success")
+                    Log.e(interstitialTAG, "Interstitial ad load success")
                     this@MainActivity.interstitialAd = interstitialAd
                 }
 
                 override fun onAdFailedToLoad(p0: AdRequestError) {
-                    Log.e(AppodealInterstitialTAG, "Interstitial ad load failed")
+                    Log.e(interstitialTAG, "Interstitial ad load failed")
                 }
             })
         }
@@ -195,26 +193,26 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         interstitialAd?.apply {
             setAdEventListener(object: InterstitialAdEventListener {
                 override fun onAdShown() {
-                    Log.e(AppodealInterstitialTAG, "Interstitial ad shown")
+                    Log.e(interstitialTAG, "Interstitial ad shown")
                 }
 
                 override fun onAdFailedToShow(p0: AdError) {
-                    Log.e(AppodealInterstitialTAG, "Interstitial ad failed to show")
+                    Log.e(interstitialTAG, "Interstitial ad failed to show")
                 }
 
                 override fun onAdDismissed() {
-                    Log.e(AppodealInterstitialTAG, "Interstitial ad dismissed")
+                    Log.e(interstitialTAG, "Interstitial ad dismissed")
                     interstitialAd?.setAdEventListener(null)
                     interstitialAd = null
                     loadInterstitialAd()
                 }
 
                 override fun onAdClicked() {
-                    Log.e(AppodealInterstitialTAG, "Interstitial ad clicked")
+                    Log.e(interstitialTAG, "Interstitial ad clicked")
                 }
 
                 override fun onAdImpression(p0: ImpressionData?) {
-                    Log.e(AppodealInterstitialTAG, "Interstitial ad impression")
+                    Log.e(interstitialTAG, "Interstitial ad impression")
                 }
             })
             show(this@MainActivity)
@@ -241,7 +239,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
     private fun startClickVibration() {
         try {
             if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) && (vib != null)) {
-                vib!!.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.EFFECT_TICK))
+                vib!!.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.EFFECT_DOUBLE_CLICK))
             }
         } catch (e: IllegalArgumentException) {
             e.printStackTrace()
