@@ -96,6 +96,10 @@ class MainFragment : Fragment() {
                 )
                 Log.e(TAG, "Click on human with id = ${humanDomain.id}")
             }
+
+            override fun onHumanLongClick(humanDomain: HumanDomain, position: Int) {
+                openChangeDebtNameDialog()
+            }
         }
 
         val settingsButton: ImageView = view.findViewById(R.id.settingsButton)
@@ -296,5 +300,12 @@ class MainFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun openChangeDebtNameDialog() {
+        val dialog = BottomSheetDialog(requireActivity())
+        dialog.setContentView(R.layout.dialog_change_debt_name)
+        dialog.show()
+
     }
 }

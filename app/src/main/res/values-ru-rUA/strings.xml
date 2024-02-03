@@ -69,4 +69,6 @@
     <string name="support">Поддежка</string>
     <string name="something_went_wrong">Что-то пошло не так</string>
     <string name="privacy_policy">Политика конфиденциальности</string>
+    <string name="long_tap_to_change_the_name_of_the_debt">Долгое нажатие, чтобы сменить имя долга</string>
+    <string name="change_debt_name">Изменить название долга</string>
 </resources>

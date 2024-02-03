@@ -112,7 +112,7 @@ class CustomSwitchView(context: Context, attrs: AttributeSet) : View(context, at
 
     }
 
-    override fun onDraw(canvas: Canvas?) {
+    override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         drawBodyRect(canvas = canvas!!)
         drawStateRect(canvas = canvas)

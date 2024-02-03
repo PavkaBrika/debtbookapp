@@ -68,4 +68,6 @@
     <string name="support">Support</string>
     <string name="something_went_wrong">Something went wrong</string>
     <string name="privacy_policy">Privacy policy</string>
+    <string name="long_tap_to_change_the_name_of_the_debt">Long tap to change the name of the debt</string>
+    <string name="change_debt_name">Change debt name</string>
 </resources>

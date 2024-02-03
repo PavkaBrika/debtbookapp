@@ -91,15 +91,15 @@
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/humanNameTextInput"
+                        style="?attr/textInputOutlinedStyle"
+                        android:theme="@style/TextInputLayoutTheme"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_marginEnd="4dp"
                         android:layout_weight="20"
                         android:hint="@string/name"
-                        app:boxStrokeColor="@color/black"
                         app:endIconMode="clear_text"
-                        app:errorEnabled="true"
-                        app:hintTextColor="@color/black">
+                        app:errorEnabled="true">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/humanNameEditText"
@@ -136,16 +136,16 @@
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/debtSumTextInput"
+                        style="?attr/textInputOutlinedStyle"
+                        android:theme="@style/TextInputLayoutTheme"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:layout_marginEnd="8dp"
                         android:layout_weight="1"
                         android:hint="@string/sum"
-                        app:boxStrokeColor="@color/black"
                         app:endIconMode="clear_text"
-                        app:errorEnabled="true"
-                        app:hintTextColor="@color/black">
+                        app:errorEnabled="true">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/debtSumEditText"
@@ -205,15 +205,15 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/debtInfoTextInput"
+                    style="?attr/textInputOutlinedStyle"
+                    android:theme="@style/TextInputLayoutTheme"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_margin="8dp"
                     android:layout_weight="1"
                     android:hint="@string/comment"
-                    app:boxStrokeColor="@color/black"
                     app:endIconMode="clear_text"
-                    app:errorEnabled="false"
-                    app:hintTextColor="@color/black">
+                    app:errorEnabled="false">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/debtInfoEditText"
