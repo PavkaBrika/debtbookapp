@@ -13,57 +13,51 @@
         android:textSize="24sp"
         android:paddingBottom="16dp" />
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/humanNameTextInput"
+        style="?attr/textInputOutlinedStyle"
+        android:theme="@style/TextInputLayoutTheme"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:contentPadding="8dp"
-        android:elevation="4dp"
-        app:cardCornerRadius="4dp">
+        android:layout_marginEnd="4dp"
+        android:hint="@string/review_hint"
+        app:endIconMode="clear_text"
+        app:errorEnabled="true">
 
-        <EditText
-            android:id="@+id/reviewEditText"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/humanNameEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/review_hint"
-            android:gravity="top"
-            android:minLines="3"
-            />
+            android:minLines="3" />
 
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:layout_marginTop="24dp">
 
-        <LinearLayout
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonOk"
+            style="@style/FilledButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:orientation="horizontal" >
+            android:text="@string/continue_b"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <Button
-                android:id="@+id/buttonCancel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="4dp"
-                android:text="@string/later"
-                style="@style/ButtonsColor"/>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonCancel"
+            style="@style/OutlineButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="@string/later"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/buttonOk"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <Button
-                android:id="@+id/buttonOk"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:text="@string/continue_b"
-                style="@style/ButtonsColor"/>
-
-        </LinearLayout>
-
-    </RelativeLayout>
-
-
-
-
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>
