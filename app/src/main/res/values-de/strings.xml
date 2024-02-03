@@ -71,4 +71,5 @@
     <string name="privacy_policy">Datenschutzbestimmungen</string>
     <string name="long_tap_to_change_the_name_of_the_debt">Langes Antippen, um den Namen der Schuld zu ändern</string>
     <string name="change_debt_name">Schuldtitel ändern</string>
+    <string name="select_currency">Währung auswählen</string>
 </resources>

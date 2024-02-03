@@ -76,10 +76,6 @@ val domainModule = module {
         SetDateUseCase()
     }
 
-    factory<CheckEditTextIsEmpty> {
-        CheckEditTextIsEmpty()
-    }
-
     factory<GetDebtShareString> {
         GetDebtShareString()
     }

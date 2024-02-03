@@ -71,4 +71,5 @@
     <string name="privacy_policy">Politique de confidentialité</string>
     <string name="long_tap_to_change_the_name_of_the_debt">Appui long pour changer le nom de la dette</string>
     <string name="change_debt_name">Modifier le nom de la dette</string>
+    <string name="select_currency">Sélectionner une devise</string>
 </resources>

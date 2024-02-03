@@ -71,4 +71,5 @@
     <string name="privacy_policy">Политика конфиденциальности</string>
     <string name="long_tap_to_change_the_name_of_the_debt">Долгое нажатие, чтобы сменить имя долга</string>
     <string name="change_debt_name">Изменить название долга</string>
+    <string name="select_currency">Выберите валюту</string>
 </resources>
