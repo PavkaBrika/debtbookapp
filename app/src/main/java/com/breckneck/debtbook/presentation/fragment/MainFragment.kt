@@ -50,11 +50,13 @@ class MainFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         buttonClickListener = context as OnButtonClickListener
+        vm.onFragmentNotNeedToRefresh()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.e(TAG, "MainFragmentad created")
+        Log.e(TAG, "MainFragment created")
+        vm.onFragmentNotNeedToRefresh()
     }
 
     override fun onCreateView(
@@ -63,6 +65,9 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_main, container, false)
+
+        if (vm.isFragmentNeedRefresh.value == true)
+            vm.init()
 
         if (vm.isSortDialogOpened.value == true)
             showHumanSortDialog()
@@ -349,6 +354,11 @@ class MainFragment : Fragment() {
 
         dialog.show()
 
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        vm.onFragmentNeedToRefresh()
     }
 
     private fun changeDebtName(humanDomain: HumanDomain, position: Int) {

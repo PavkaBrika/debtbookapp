@@ -32,6 +32,9 @@ class MainFragmentViewModel(
 
     private val TAG = "MainFragmentViewModel"
 
+    private val _isFragmentNeedRefresh = MutableLiveData<Boolean>(true)
+    val isFragmentNeedRefresh: LiveData<Boolean>
+        get() = _isFragmentNeedRefresh
     private val _mainSums = MutableLiveData<Pair<String, String>>()
     val mainSums: LiveData<Pair<String, String>>
         get() = _mainSums
@@ -62,14 +65,18 @@ class MainFragmentViewModel(
 
     init {
         Log.e(TAG, "MainFragment VM created")
-        getHumans()
-        getMainSums()
+        init()
     }
 
     override fun onCleared() {
         Log.e(TAG, "MainFragment VM cleared")
         disposeBag.clear()
         super.onCleared()
+    }
+
+    fun init() {
+        getHumans()
+        getMainSums()
     }
 
     fun sortHumans() {
@@ -177,5 +184,13 @@ class MainFragmentViewModel(
 
     fun onChangeDebtNameDialogClose() {
         _isChangeDebtNameDialogOpened.value = false
+    }
+
+    fun onFragmentNotNeedToRefresh() {
+        _isFragmentNeedRefresh.value = false
+    }
+
+    fun onFragmentNeedToRefresh() {
+        _isFragmentNeedRefresh.value = true
     }
 }

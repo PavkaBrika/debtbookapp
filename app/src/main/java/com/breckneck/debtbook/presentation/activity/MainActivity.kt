@@ -351,7 +351,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
     }
 
     override fun onBackNewDebtButtonClick() {
-        supportFragmentManager.popBackStackImmediate()
+        supportFragmentManager.popBackStack()
     }
 
     //DebtDetailsFragment interfaces
@@ -413,12 +413,12 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
     }
 
     override fun onBackDebtsButtonClick() {
-        supportFragmentManager.popBackStackImmediate()
+        supportFragmentManager.popBackStack()
     }
 
     //settings interface
     override fun onBackSettingsButtonClick() {
-        supportFragmentManager.popBackStackImmediate()
+        supportFragmentManager.popBackStack()
     }
 
     override fun onRateAppButtonClick() {
