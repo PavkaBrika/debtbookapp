@@ -34,11 +34,6 @@
         <item name="android:backgroundTint">@color/darkgray</item>
     </style>
 
-    <style name="switchStyle">
-        <item name="ss_textColor">@color/white</item>
-        <item name="ss_sliderBackgroundColor">@color/nightCollapsLine</item>
-    </style>
-
     <style name="imageViewButton">
         <item name="android:tint">@color/white</item>
     </style>
@@ -66,7 +61,6 @@
         <item name="android:editTextColor">@color/white</item>
         <item name="android:textColorHint">@color/gray</item>
     </style>
-
 
     <style name="appBarLayoutStyle">
         <item name="android:background">@color/black</item>
