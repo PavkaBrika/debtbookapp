@@ -18,6 +18,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SwitchCompat
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.BuildConfig
 import com.breckneck.debtbook.R
@@ -281,6 +282,7 @@ class SettingsFragment : Fragment() {
         dialog.setContentView(R.layout.dialog_setting)
         dialog.findViewById<TextView>(R.id.settingTitleTextView)!!.text = settingTitle
         val settingsRecyclerView = dialog.findViewById<RecyclerView>(R.id.settingsRecyclerView)!!
+        settingsRecyclerView.addItemDecoration(DividerItemDecoration(requireActivity(), DividerItemDecoration.VERTICAL))
 
         val onSettingsSelectListener = object: SettingsAdapter.OnSelectListener {
             override fun onSelect() {

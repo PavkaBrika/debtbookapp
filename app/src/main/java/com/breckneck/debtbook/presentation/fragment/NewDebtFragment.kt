@@ -461,6 +461,7 @@ class NewDebtFragment: Fragment() {
         dialog.findViewById<TextView>(R.id.settingTitleTextView)!!.text =
             getString(R.string.select_currency)
         val settingsRecyclerView = dialog.findViewById<RecyclerView>(R.id.settingsRecyclerView)!!
+        settingsRecyclerView.addItemDecoration(DividerItemDecoration(requireActivity(), DividerItemDecoration.VERTICAL))
 
         val onSettingsSelectListener = object: SettingsAdapter.OnSelectListener {
             override fun onSelect() {
