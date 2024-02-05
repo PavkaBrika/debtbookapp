@@ -35,9 +35,10 @@ class MainFragmentViewModel(
     private val _mainSums = MutableLiveData<Pair<String, String>>()
     val mainSums: LiveData<Pair<String, String>>
         get() = _mainSums
+    private val _resultHumanList = MutableLiveData<List<HumanDomain>>()
+    val resultHumanList: LiveData<List<HumanDomain>>
+        get() = _resultHumanList
     private val _humanList = MutableLiveData<List<HumanDomain>>()
-    val humanList: LiveData<List<HumanDomain>>
-        get() = _humanList
     private val _isSortDialogOpened = MutableLiveData<Boolean>()
     val isSortDialogOpened: LiveData<Boolean>
         get() = _isSortDialogOpened
@@ -61,8 +62,8 @@ class MainFragmentViewModel(
 
     init {
         Log.e(TAG, "MainFragment VM created")
+        getHumans()
         getMainSums()
-        getHumanOrder()
     }
 
     override fun onCleared() {
@@ -72,8 +73,10 @@ class MainFragmentViewModel(
     }
 
     fun sortHumans() {
-        if (humanList.value != null)
-            _humanList.value = sortHumans.execute(humanList.value!!, _humanOrder.value!!)
+        if (_humanList.value != null) {
+            _resultHumanList.value = sortHumans.execute(_humanList.value!!, _humanOrder.value!!)
+            Log.e(TAG, "Humans sorted")
+        }
     }
 
     private fun getHumanOrder() {
@@ -84,20 +87,36 @@ class MainFragmentViewModel(
         setHumanOrder.execute(order = order)
     }
 
-    fun getHumans() {
+    private fun getHumans() {
         val result = Single.create {
-            when (_humanFilter.value!!) {
-                HumanFilter.AllHumans -> it.onSuccess(getAllHumansUseCase.execute())
-                HumanFilter.NegativeHumans -> it.onSuccess(getNegativeHumansUseCase.execute())
-                HumanFilter.PositiveHumans -> it.onSuccess(getPositiveHumansUseCase.execute())
-            }
+            it.onSuccess(getAllHumansUseCase.execute())
         }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 _humanList.value = it
-                sortHumans()
                 Log.e(TAG, "humans loaded in VM")
+                getHumanOrder()
+            }, {
+                Log.e(TAG, it.stackTrace.toString())
+            })
+        disposeBag.add(result)
+    }
+
+    fun applyHumanFilter(filter: HumanFilter) {
+        _humanFilter.value = filter
+        val result = Single.create {
+            when (filter) {
+                HumanFilter.AllHumans -> it.onSuccess(_humanList.value!!)
+                HumanFilter.NegativeHumans -> it.onSuccess(getNegativeHumansUseCase.execute(_humanList.value!!))
+                HumanFilter.PositiveHumans -> it.onSuccess(getPositiveHumansUseCase.execute(_humanList.value!!))
+            }
+        }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                _resultHumanList.value = it
+                Log.e(TAG, "humans filtered")
             }, {
                 Log.e(TAG, it.stackTrace.toString())
             })
@@ -148,10 +167,6 @@ class MainFragmentViewModel(
 
     fun onSetHumanOrder(order: Pair<HumanOrderAttribute, Boolean>) {
         _humanOrder.value = order
-    }
-
-    fun onSetHumanFilter(filter: HumanFilter) {
-        _humanFilter.value = filter
     }
 
     fun onChangeDebtNameDialogOpen(humanDomain: HumanDomain, position: Int) {

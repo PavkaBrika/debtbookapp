@@ -89,6 +89,7 @@ class MainFragment : Fragment() {
         val noDebtsTextView: TextView = view.findViewById(R.id.noDebtTextView)
         val mainRecyclerViewHintTextView: TextView =
             view.findViewById(R.id.mainRecyclerViewHintTextView)
+        val mainRecyclerViewSecondHintTextView: TextView = view.findViewById(R.id.mainRecyclerViewSecondHintTextView)
 
         val addButton: FloatingActionButton = view.findViewById(R.id.addHumanButton)
         addButton.setOnClickListener {
@@ -121,16 +122,17 @@ class MainFragment : Fragment() {
         }
 
         vm.humanFilter.observe(viewLifecycleOwner) {
-            vm.getHumans()
             changeFilterButtonColor(it)
         }
 
-        vm.humanList.observe(viewLifecycleOwner) {
+        vm.resultHumanList.observe(viewLifecycleOwner) {
             if (it.isNotEmpty()) {
                 mainRecyclerViewHintTextView.visibility = View.VISIBLE
+                mainRecyclerViewSecondHintTextView.visibility = View.VISIBLE
                 noDebtsTextView.visibility = View.INVISIBLE
             } else {
                 mainRecyclerViewHintTextView.visibility = View.INVISIBLE
+                mainRecyclerViewSecondHintTextView.visibility = View.INVISIBLE
                 noDebtsTextView.visibility = View.VISIBLE
             }
             humanAdapter = HumanAdapter(it, humanClickListener)
@@ -169,7 +171,7 @@ class MainFragment : Fragment() {
         return view
     }
 
-    fun showHumanSortDialog() {
+    private fun showHumanSortDialog() {
         val bottomSheetDialogFilter = BottomSheetDialog(requireContext())
         bottomSheetDialogFilter.setContentView(R.layout.dialog_sort)
         bottomSheetDialogFilter.behavior.state = BottomSheetBehavior.STATE_EXPANDED
@@ -248,8 +250,10 @@ class MainFragment : Fragment() {
             if (bottomSheetDialogFilter.findViewById<CheckBox>(R.id.rememberChoiceCheckBox)!!.isChecked)
                 vm.setHumanOrder(order = Pair(sortHumansAttribute, sortByIncrease))
 
-            if (vm.humanFilter.value!! != humansFilter)
-                vm.onSetHumanFilter(humansFilter)
+            if (vm.humanFilter.value!! != humansFilter) {
+                vm.applyHumanFilter(filter = humansFilter)
+            }
+
             bottomSheetDialogFilter.dismiss()
         }
 
