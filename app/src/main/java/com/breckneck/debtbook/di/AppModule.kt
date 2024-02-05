@@ -3,6 +3,8 @@ package com.breckneck.debtbook.di
 import com.breckneck.debtbook.presentation.viewmodel.DebtDetailsViewModel
 import com.breckneck.debtbook.presentation.viewmodel.MainActivityViewModel
 import com.breckneck.debtbook.presentation.viewmodel.MainFragmentViewModel
+import com.breckneck.debtbook.presentation.viewmodel.NewDebtFragmentViewModel
+import com.breckneck.debtbook.presentation.viewmodel.SettingsFragmentViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -17,7 +19,8 @@ val appModule = module {
             getFirstMainCurrency = get(),
             getSecondMainCurrency = get(),
             getHumanOrder = get(),
-            setHumanOrder = get()
+            setHumanOrder = get(),
+            updateHuman = get()
         )
     }
 
@@ -36,6 +39,29 @@ val appModule = module {
             addSumUseCase = get(),
             getDebtOrder = get(),
             setDebtOrder = get()
+        )
+    }
+
+    viewModel<SettingsFragmentViewModel> {
+        SettingsFragmentViewModel(
+            setFirstMainCurrency = get(),
+            getFirstMainCurrency = get(),
+            setSecondMainCurrency = get(),
+            getSecondMainCurrency = get(),
+            setDefaultCurrency = get(),
+            getDefaultCurrency = get(),
+            setAddSumInShareText = get(),
+            getAddSumInShareText = get(),
+            getAppTheme = get(),
+            setAppTheme = get()
+        )
+    }
+
+    viewModel<NewDebtFragmentViewModel> {
+        NewDebtFragmentViewModel(
+            getDefaultCurrency = get(),
+            getCurrentDateUseCase = get(),
+            setDateUseCase = get()
         )
     }
 }

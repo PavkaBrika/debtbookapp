@@ -1,6 +1,7 @@
 package com.breckneck.debtbook.presentation.viewmodel
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.breckneck.deptbook.domain.model.DebtDomain
@@ -33,30 +34,50 @@ class DebtDetailsViewModel(
     private val setDebtOrder: SetDebtOrder
 ): ViewModel() {
 
-    val debtList = MutableLiveData<List<DebtDomain>>()
-    val humanId = MutableLiveData<Int>()
-    val overallSum = MutableLiveData<Double>()
-    val isOrderDialogShown by lazy { MutableLiveData<Boolean>() }
-    val isHumanDeleteDialogShown by lazy { MutableLiveData<Boolean>() }
-    val isShareDialogShown by lazy { MutableLiveData<Boolean>() }
-    val isDebtExtrasDialogShown by lazy { MutableLiveData<Boolean>() }
-    val extraDebt by lazy { MutableLiveData<DebtDomain>() }
-    val debtOrder = MutableLiveData<Pair<DebtOrderAttribute, Boolean>>()
+    private val TAG = "DebtDetailsViewModel"
+
+    private val _debtList = MutableLiveData<List<DebtDomain>>()
+    val debtList: LiveData<List<DebtDomain>>
+        get() = _debtList
+    private val _humanId = MutableLiveData<Int>()
+    val humanId: LiveData<Int>
+        get() = _humanId
+    private val _overallSum = MutableLiveData<Double>()
+    val overallSum: LiveData<Double>
+        get() = _overallSum
+    private val _isOrderDialogShown by lazy { MutableLiveData<Boolean>() }
+    val isOrderDialogShown: LiveData<Boolean>
+        get() = _isOrderDialogShown
+    private val _isHumanDeleteDialogShown by lazy { MutableLiveData<Boolean>() }
+    val isHumanDeleteDialogShown: LiveData<Boolean>
+        get() = _isHumanDeleteDialogShown
+    private val _isShareDialogShown by lazy { MutableLiveData<Boolean>() }
+    val isShareDialogShown: LiveData<Boolean>
+        get() = _isShareDialogShown
+    private val _isDebtSettingsDialogShown by lazy { MutableLiveData<Boolean>() }
+    val isDebtSettingsDialogShown: LiveData<Boolean>
+        get() = _isDebtSettingsDialogShown
+    private val _settingDebt by lazy { MutableLiveData<DebtDomain>() }
+    val settingDebt: LiveData<DebtDomain>
+        get() = _settingDebt
+    private val _debtOrder = MutableLiveData<Pair<DebtOrderAttribute, Boolean>>()
+    val debtOrder: LiveData<Pair<DebtOrderAttribute, Boolean>>
+        get() = _debtOrder
     private val disposeBag = CompositeDisposable()
     private val sortDebtsUseCase by lazy { SortDebts() }
 
     init {
-        Log.e("TAG", "Debt Fragment View Model Started")
+        Log.e(TAG, "Debt Fragment View Model Started")
     }
 
     override fun onCleared() {
         super.onCleared()
         disposeBag.clear()
-        Log.e("TAG", "Debt Fragment View Model cleared")
+        Log.e(TAG, "Debt Fragment View Model cleared")
     }
 
     fun getDebtOrder() {
-        debtOrder.value = getDebtOrder.execute()
+        _debtOrder.value = getDebtOrder.execute()
     }
 
     fun saveDebtOrder(order: Pair<DebtOrderAttribute, Boolean>) {
@@ -65,15 +86,15 @@ class DebtDetailsViewModel(
 
     fun getAllDebts() {
         val getDebtsSingle = Single.create {
-            Log.e("TAG", "Open Debt Details of Human id = $humanId")
+            Log.e(TAG, "Open Debt Details of Human id = $humanId")
             it.onSuccess(getAllDebtsUseCase.execute(id = humanId.value!!))
         }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                debtList.value = it
+                _debtList.value = it
                 sortDebts()
-                Log.e("TAG", "Debts load success")
+                Log.e(TAG, "Debts load success")
             }, {
                 it.printStackTrace()
             })
@@ -81,8 +102,8 @@ class DebtDetailsViewModel(
     }
 
     fun sortDebts() {
-        if (debtList.value != null)
-            debtList.value = sortDebtsUseCase.execute(debtList = debtList.value!!, order = debtOrder.value!!)
+        if (_debtList.value != null)
+            _debtList.value = sortDebtsUseCase.execute(debtList = _debtList.value!!, order = _debtOrder.value!!)
     }
 
     fun getAllInfoAboutNewHuman() {
@@ -92,7 +113,7 @@ class DebtDetailsViewModel(
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                humanId.value = it
+                _humanId.value = it
                 getDebtOrder()
                 getAllDebts()
                 getOverallSum()
@@ -109,7 +130,7 @@ class DebtDetailsViewModel(
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                overallSum.value = it
+                _overallSum.value = it
             }, {
                 it.printStackTrace()
             })
@@ -118,14 +139,14 @@ class DebtDetailsViewModel(
 
     fun deleteHuman() {
         val deleteHumanCompletable = Completable.create {
-            deleteHumanUseCase.execute(id = humanId.value!!)
-            deleteDebtsByHumanIdUseCase.execute(id = humanId.value!!)
+            deleteHumanUseCase.execute(id = _humanId.value!!)
+            deleteDebtsByHumanIdUseCase.execute(id = _humanId.value!!)
             it.onComplete()
         }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                Log.e("TAG", "Human with id = ${humanId.value} deleted")
+                Log.e(TAG, "Human with id = ${_humanId.value} deleted")
             },{
                 it.printStackTrace()
             })
@@ -135,19 +156,63 @@ class DebtDetailsViewModel(
     fun deleteDebt(debtDomain: DebtDomain) {
         val deleteDebtCompletable = Completable.create {
             deleteDebtUseCase.execute(debtDomain)
-            addSumUseCase.execute(humanId = humanId.value!!, sum = (debtDomain.sum * (-1.0)))
+            addSumUseCase.execute(humanId = _humanId.value!!, sum = (debtDomain.sum * (-1.0)))
             getOverallSum()
-            Log.e("TAG", "Debt delete success")
+            Log.e(TAG, "Debt delete success")
             it.onComplete()
         }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 getAllDebts()
-                Log.e("TAG", "Debts load success")
+                Log.e(TAG, "Debts load success")
             },{
                 it.printStackTrace()
             })
         disposeBag.add(deleteDebtCompletable)
+    }
+
+    fun onSetHumanId(id: Int) {
+        _humanId.value = id
+    }
+
+    fun onHumanDeleteDialogOpen() {
+        _isHumanDeleteDialogShown.value = true
+    }
+
+    fun onHumanDeleteDialogClose() {
+        _isHumanDeleteDialogShown.value = false
+    }
+
+    fun onDebtSettingsDialogOpen() {
+        _isDebtSettingsDialogShown.value = true
+    }
+
+    fun onDebtSettingsDialogClose() {
+        _isDebtSettingsDialogShown.value = false
+    }
+
+    fun onSetSettingDebt(debt: DebtDomain) {
+        _settingDebt.value = debt
+    }
+
+    fun onShareDialogOpen() {
+        _isShareDialogShown.value = true
+    }
+
+    fun onShareDialogClose() {
+        _isShareDialogShown.value = false
+    }
+
+    fun onOrderDialogOpen() {
+        _isOrderDialogShown.value = true
+    }
+
+    fun onOrderDialogClose() {
+        _isOrderDialogShown.value = false
+    }
+
+    fun onSetDebtOrder(order: Pair<DebtOrderAttribute, Boolean>) {
+        _debtOrder.value = order
     }
 }

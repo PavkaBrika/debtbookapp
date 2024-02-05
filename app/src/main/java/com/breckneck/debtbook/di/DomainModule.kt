@@ -42,6 +42,10 @@ val domainModule = module {
         SetHumanUseCase(humanRepository = get())
     }
 
+    factory<UpdateHuman> {
+        UpdateHuman(humanRepository = get())
+    }
+
     //DEBT
 
     factory<GetAllDebtsSumUseCase> {
@@ -70,10 +74,6 @@ val domainModule = module {
 
     factory<SetDateUseCase> {
         SetDateUseCase()
-    }
-
-    factory<CheckEditTextIsEmpty> {
-        CheckEditTextIsEmpty()
     }
 
     factory<GetDebtShareString> {

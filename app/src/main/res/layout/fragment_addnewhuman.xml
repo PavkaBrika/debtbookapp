@@ -91,15 +91,15 @@
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/humanNameTextInput"
+                        style="?attr/textInputOutlinedStyle"
+                        android:theme="@style/TextInputLayoutTheme"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_marginEnd="4dp"
                         android:layout_weight="20"
                         android:hint="@string/name"
-                        app:boxStrokeColor="@color/black"
                         app:endIconMode="clear_text"
-                        app:errorEnabled="true"
-                        app:hintTextColor="@color/black">
+                        app:errorEnabled="true">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/humanNameEditText"
@@ -136,16 +136,16 @@
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/debtSumTextInput"
+                        style="?attr/textInputOutlinedStyle"
+                        android:theme="@style/TextInputLayoutTheme"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="16dp"
                         android:layout_marginEnd="8dp"
                         android:layout_weight="1"
                         android:hint="@string/sum"
-                        app:boxStrokeColor="@color/black"
                         app:endIconMode="clear_text"
-                        app:errorEnabled="true"
-                        app:hintTextColor="@color/black">
+                        app:errorEnabled="true">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/debtSumEditText"
@@ -162,24 +162,19 @@
                         android:layout_width="1dp"
                         android:layout_height="match_parent" />
 
-                    <Spinner
-                        android:id="@+id/debtCurrencySpinner"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        android:fadeScrollbars="false"
-                        android:textAlignment="center" />
-
                     <TextView
                         android:id="@+id/debtCurrencyTextView"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_gravity="center_vertical"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
                         android:layout_weight="2"
                         android:gravity="center"
                         android:text="CUR"
-                        android:textSize="28sp"
-                        android:visibility="gone" />
+                        android:textSize="20sp"
+                        android:visibility="visible" />
 
                 </LinearLayout>
 
@@ -192,7 +187,8 @@
                     android:id="@+id/debtDateTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="4dp"
+                    android:layout_marginHorizontal="4dp"
+                    android:layout_marginVertical="16dp"
                     android:foreground="?android:attr/selectableItemBackground"
                     android:text="date"
                     android:textAlignment="center"
@@ -205,15 +201,16 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/debtInfoTextInput"
+                    style="?attr/textInputOutlinedStyle"
+                    android:theme="@style/TextInputLayoutTheme"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_margin="8dp"
+                    android:layout_marginHorizontal="8dp"
+                    android:layout_marginVertical="16dp"
                     android:layout_weight="1"
                     android:hint="@string/comment"
-                    app:boxStrokeColor="@color/black"
                     app:endIconMode="clear_text"
-                    app:errorEnabled="false"
-                    app:hintTextColor="@color/black">
+                    app:errorEnabled="false">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/debtInfoEditText"

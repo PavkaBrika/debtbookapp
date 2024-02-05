@@ -3,7 +3,6 @@ package com.breckneck.debtbook.presentation.fragment
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.content.Context
-import android.content.Context.VIBRATOR_SERVICE
 import android.content.pm.PackageManager
 import android.graphics.Typeface
 import android.os.*
@@ -24,13 +23,13 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.adapter.ContactsAdapter
-import com.breckneck.debtbook.presentation.activity.MainActivity
+import com.breckneck.debtbook.adapter.SettingsAdapter
 import com.breckneck.debtbook.presentation.customview.CustomSwitchView
+import com.breckneck.debtbook.presentation.viewmodel.NewDebtFragmentViewModel
 import com.breckneck.deptbook.domain.usecase.Debt.*
 import com.breckneck.deptbook.domain.usecase.Human.AddSumUseCase
 import com.breckneck.deptbook.domain.usecase.Human.GetLastHumanIdUseCase
 import com.breckneck.deptbook.domain.usecase.Human.SetHumanUseCase
-import com.breckneck.deptbook.domain.usecase.Settings.GetDefaultCurrency
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -43,6 +42,7 @@ import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.lang.NullPointerException
 import java.text.DecimalFormat
 import java.util.*
@@ -50,6 +50,8 @@ import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
 class NewDebtFragment: Fragment() {
+
+    private val TAG = "NewDebtFragment"
 
     val decimalFormat = DecimalFormat("#.##")
     val disposeBag = CompositeDisposable()
@@ -74,18 +76,15 @@ class NewDebtFragment: Fragment() {
         enterTransition = inflater.inflateTransition(R.transition.slide_up)
     }
 
+    private val vm by viewModel<NewDebtFragmentViewModel>()
+
     private val setHumanUseCase: SetHumanUseCase by inject()
     private val getLastHumanIdUseCase: GetLastHumanIdUseCase by inject()
     private val addSumUseCase: AddSumUseCase by inject()
 
     private val setDebtUseCase: SetDebtUseCase by inject()
-    private val getCurrentDateUseCase: GetCurrentDateUseCase by inject()
-    private val setDateUseCase: SetDateUseCase by inject()
-    private val checkEditTextIsEmpty: CheckEditTextIsEmpty by inject()
     private val editDebtUseCase: EditDebtUseCase by inject()
     private val updateCurrentSumUseCase: UpdateCurrentSumUseCase by inject()
-    private val getDefaultCurrency: GetDefaultCurrency by inject()
-
 
     @SuppressLint("Range")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -98,7 +97,7 @@ class NewDebtFragment: Fragment() {
 
         val idHuman = arguments?.getInt("idHuman", -1)
         val idDebt = arguments?.getInt("idDebt", -1)
-        var currency = arguments?.getString("currency", "")
+        val currency = arguments?.getString("currency", "")
         val sumArgs = arguments?.getDouble("sum", 0.0)
         val dateArgs = arguments?.getString("date", "")
         val infoArgs = arguments?.getString("info", "")
@@ -109,7 +108,6 @@ class NewDebtFragment: Fragment() {
         val infoEditText: EditText = view.findViewById(R.id.debtInfoEditText)
         val debtDateTextView: TextView = view.findViewById(R.id.debtDateTextView)
         val debtSumEditText : EditText = view.findViewById(R.id.debtSumEditText)
-        val currencySpinner: Spinner = view.findViewById(R.id.debtCurrencySpinner)
         val currencyTextView: TextView = view.findViewById(R.id.debtCurrencyTextView)
         val collapsed: CollapsingToolbarLayout = view.findViewById(R.id.collapsNewDebt)
 
@@ -118,24 +116,42 @@ class NewDebtFragment: Fragment() {
             setExpandedTitleTypeface(Typeface.DEFAULT_BOLD)
         }
 
-        val currencyNames = arrayOf(getString(R.string.usd), getString(R.string.eur), getString(R.string.rub),
+        val currencyNames = listOf(getString(R.string.usd), getString(R.string.eur), getString(R.string.rub),
             getString(R.string.byn), getString(R.string.uah), getString(R.string.kzt),
             getString(R.string.jpy), getString(R.string.gpb), getString(R.string.aud),
             getString(R.string.cad), getString(R.string.chf), getString(R.string.cny),
             getString(R.string.sek), getString(R.string.mxn))
-        val adapter = ArrayAdapter(view.context, android.R.layout.simple_spinner_dropdown_item, currencyNames)
-        currencySpinner.adapter = adapter
-        val defaultCurrency = getDefaultCurrency.execute()
-        for (i in currencyNames.indices)
-            if (currencyNames[i].contains(defaultCurrency))
-                currencySpinner.setSelection(i)
-        currencySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
-            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                buttonClickListener.onSetButtonClick()
-                currency = p0?.getItemAtPosition(p2).toString().substring(p0?.getItemAtPosition(p2).toString().lastIndexOf(" ") + 1)
-            }
 
-            override fun onNothingSelected(p0: AdapterView<*>?) {
+        if (currency != null)
+            vm.setCurrency(currency = currency)
+
+        val onSettingsClickListener = object : SettingsAdapter.OnClickListener {
+            override fun onClick(setting: String, position: Int) {
+                vm.setCurrency(setting.substring(setting.lastIndexOf(" ") + 1))
+            }
+        }
+
+        if (vm.isCurrencyDialogOpened.value == true) {
+            showCurrencyDialog(
+                settingsList = currencyNames,
+                selectedSetting = vm.selectedCurrencyPosition.value!!,
+                onSettingsClickListener = onSettingsClickListener
+            )
+        }
+
+        vm.currency.observe(viewLifecycleOwner) { currency ->
+            for (i in currencyNames.indices) {
+                if (currencyNames[i].contains(currency)) {
+                    currencyTextView.text = currencyNames[i]
+                    currencyTextView.setOnClickListener {
+                        vm.onCurrencyDialogOpen(selectedCurrencyPosition = i)
+                        showCurrencyDialog(
+                            settingsList = currencyNames,
+                            selectedSetting = i,
+                            onSettingsClickListener = onSettingsClickListener
+                        )
+                    }
+                }
             }
         }
 
@@ -161,41 +177,41 @@ class NewDebtFragment: Fragment() {
             }
         } }
 
-        val calendar = Calendar.getInstance()
-        val dateSetListener = DatePickerDialog.OnDateSetListener{view, year, month, day ->
-            debtDateTextView.text = setDateUseCase.execute(year, month, day) + " ${getString(R.string.year)}"
+        vm.date.observe(viewLifecycleOwner) { date ->
+            debtDateTextView.text = "$date ${getString(R.string.year)}"
         }
 
-        var date = getCurrentDateUseCase.execute() + " ${getString(R.string.year)}"
-        debtDateTextView.text = date
+        val dateSetListener = DatePickerDialog.OnDateSetListener{view, year, month, day ->
+            vm.setCurrentDate(year = year, month = month, day = day)
+        }
         debtDateTextView.setOnClickListener{
+            val calendar = Calendar.getInstance()
             DatePickerDialog(view.context, dateSetListener,
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
                 calendar.get(Calendar.DAY_OF_MONTH)).show()
         }
 
-        if (currency != null) { //EXIST HUMAN DEBT DEBT LAYOUT CHANGES
-            currencyTextView.visibility = View.VISIBLE
-            currencySpinner.visibility = View.GONE
-            currencyTextView.text = currency
-            if (sumArgs != 0.0) { //EXIST HUMAN EDIT DEBT LAYOUT CHANGES
-                debtSumEditText.setText(decimalFormat.format(sumArgs))
-                debtDateTextView.text = dateArgs
-                infoEditText.setText(infoArgs)
-                collapsed.title = getString(R.string.editdebtcollaps)
-            }
-        } else {
-            currencyTextView.visibility = View.GONE
-            currencySpinner.visibility = View.VISIBLE
+
+
+        if ((sumArgs != null) && (sumArgs != 0.0)) { //EXIST HUMAN EDIT DEBT LAYOUT CHANGES
+            debtSumEditText.setText(decimalFormat.format(sumArgs))
+            debtDateTextView.text = dateArgs
+            infoEditText.setText(infoArgs)
+            collapsed.title = getString(R.string.editdebtcollaps)
+            currencyTextView.isClickable = false
+            currencyTextView.isFocusable = false
+            currencyTextView.isEnabled = false
         }
 
         if (idHuman != null) {
             humanNameEditText.visibility = View.GONE
             contactsImageView.visibility = View.GONE
             humanNameEditText.setText(nameArgs)
+            currencyTextView.isClickable = false
+            currencyTextView.isFocusable = false
+            currencyTextView.isEnabled = false
         }
-
 
         val humanNameTextInput: TextInputLayout = view.findViewById(R.id.humanNameTextInput)
         val debtSumTextInput: TextInputLayout = view.findViewById(R.id.debtSumTextInput)
@@ -204,29 +220,30 @@ class NewDebtFragment: Fragment() {
             buttonClickListener.onSetButtonClick()
             val name = humanNameEditText.text.toString()
             var sum = debtSumEditText.text.toString()
-            date = debtDateTextView.text.toString()
+            val date = debtDateTextView.text.toString()
             val info = infoEditText.text.toString()
+            val currency = vm.currency.value!!
             try {
                 when (getDebtState(idHuman = idHuman, idDebt = idDebt)) {
                     DebtState.NewHumanDebt -> {
-                        if ((!checkEditTextIsEmpty.execute(name)) && (!checkEditTextIsEmpty.execute(sum))) { //user check if user is not bad
+                        if ((name.trim().isNotEmpty()) && (sum.trim().isNotEmpty())) { //user check if user is not bad
                             if (!customSwitch.isChecked())
                                 sum = (sum.toDouble() * (-1.0)).toString()
                             if (sum.toDouble() != 0.0) {
                                 val saveNewHumanDebt = Completable.create {
-                                    setHumanUseCase.execute(name = name, sumDebt = sum.toDouble(), currency = currency!!)
+                                    setHumanUseCase.execute(name = name, sumDebt = sum.toDouble(), currency = currency)
                                     val lastId = getLastHumanIdUseCase.exectute()
-                                    if (checkEditTextIsEmpty.execute(info))
+                                    if (info.trim().isEmpty())
                                         setDebtUseCase.execute(sum = sum.toDouble(), idHuman = lastId, info = null, date = date)
                                     else
                                         setDebtUseCase.execute(sum = sum.toDouble(), idHuman = lastId, info = info, date = date)
                                     it.onComplete()
-                                    Log.e("TAG", "Human id = $lastId set success")
+                                    Log.e(TAG, "Human id = $lastId set success")
                                 }
                                     .subscribeOn(Schedulers.io())
                                     .observeOn(AndroidSchedulers.mainThread())
                                     .subscribe({
-                                        buttonClickListener.DebtDetailsNewHuman(currency = currency!!, name = name)
+                                        buttonClickListener.DebtDetailsNewHuman(currency = currency, name = name)
                                     }, {
                                         showErrorToast(it)
                                     })
@@ -236,34 +253,34 @@ class NewDebtFragment: Fragment() {
                                 debtSumTextInput.error = getString(R.string.zerodebt)
                             }
                         } else { //user check if user is bad
-                            if (checkEditTextIsEmpty.execute(name))
+                            if (name.trim().isEmpty())
                                 humanNameTextInput.error = getString(R.string.youmustentername)
                             else
                                 humanNameTextInput.error = ""
-                            if (checkEditTextIsEmpty.execute(sum))
+                            if (sum.trim().isEmpty())
                                 debtSumTextInput.error = getString(R.string.youmustentername)
                             else
                                 debtSumTextInput.error = ""
                         }
                     }
                     DebtState.ExistHumanDebt -> {
-                        if (!checkEditTextIsEmpty.execute(sum)) { // user check if user not bad
+                        if (sum.trim().isNotEmpty()) { // user check if user not bad
                             if (!customSwitch.isChecked())
                                 sum = (sum.toDouble() * (-1.0)).toString()
                             if (sum.toDouble() != 0.0) {
                                 val saveExistHumanDebt = Completable.create {
-                                    if (checkEditTextIsEmpty.execute(info))
+                                    if (info.trim().isEmpty())
                                         setDebtUseCase.execute(sum = sum.toDouble(), idHuman = idHuman!!, info = null, date = date)
                                     else
                                         setDebtUseCase.execute(sum = sum.toDouble(), idHuman = idHuman!!, info = info, date = date)
                                     addSumUseCase.execute(humanId = idHuman, sum = sum.toDouble())
                                     it.onComplete()
-                                    Log.e("TAG", "New Debt in humanid = $idHuman set success")
+                                    Log.e(TAG, "New Debt in humanid = $idHuman set success")
                                 }
                                     .subscribeOn(Schedulers.io())
                                     .observeOn(AndroidSchedulers.mainThread())
                                     .subscribe({
-                                        buttonClickListener.DebtDetailsExistHuman(idHuman = idHuman!!, currency = currency!!, name = name)
+                                        buttonClickListener.DebtDetailsExistHuman(idHuman = idHuman!!, currency = currency, name = name)
                                     }, {
                                         showErrorToast(it)
                                     })
@@ -272,30 +289,30 @@ class NewDebtFragment: Fragment() {
                                 debtSumTextInput.error = getString(R.string.zerodebt)
                             }
                         } else { //if user is bad
-                            if (checkEditTextIsEmpty.execute(sum))
+                            if (sum.trim().isEmpty())
                                 debtSumTextInput.error = getString(R.string.youmustentername)
                         }
                     }
                     DebtState.EditDebt -> {
-                        if (!checkEditTextIsEmpty.execute(sum)) { // user check if user not bad
+                        if (sum.trim().isNotEmpty()) { // user check if user not bad
                             if (!customSwitch.isChecked())
                                 sum = (sum.toDouble() * (-1.0)).toString()
                             if (sum.toDouble() != 0.0) {
                                 val editDebt = Completable.create {
                                     val pastSum = arguments?.getDouble("sum")
                                     val currentSum = updateCurrentSumUseCase.execute(sum.toDouble(), pastSum!!)
-                                    if (checkEditTextIsEmpty.execute(info))
+                                    if (info.trim().isEmpty())
                                         editDebtUseCase.execute(id = idDebt!!,sum = sum.toDouble(), idHuman = idHuman!!, info = null, date = date)
                                     else
                                         editDebtUseCase.execute(id = idDebt!! ,sum = sum.toDouble(), idHuman = idHuman!!, info = info, date = date)
                                     addSumUseCase.execute(humanId = idHuman, sum = currentSum)
-                                    Log.e("TAG", "New Debt in humanid = $idHuman set success")
+                                    Log.e(TAG, "New Debt in humanid = $idHuman set success")
                                     it.onComplete()
                                 }
                                     .subscribeOn(Schedulers.io())
                                     .observeOn(AndroidSchedulers.mainThread())
                                     .subscribe({
-                                        buttonClickListener.DebtDetailsExistHuman(idHuman = idHuman!!, currency = currency!!, name = name)
+                                        buttonClickListener.DebtDetailsExistHuman(idHuman = idHuman!!, currency = currency, name = name)
                                     }, {
                                         showErrorToast(it)
                                     })
@@ -304,7 +321,7 @@ class NewDebtFragment: Fragment() {
                                 debtSumTextInput.error = getString(R.string.zerodebt)
                             }
                         } else { //if user is bad
-                            if (checkEditTextIsEmpty.execute(sum))
+                            if (sum.trim().isEmpty())
                                 debtSumTextInput.error = getString(R.string.youmustentername)
                         }
                     }
@@ -433,9 +450,38 @@ class NewDebtFragment: Fragment() {
         object ExistHumanDebt: DebtState()
         object EditDebt: DebtState()
     }
+
+    private fun showCurrencyDialog(
+        settingsList: List<String>,
+        selectedSetting: Int,
+        onSettingsClickListener: SettingsAdapter.OnClickListener
+    ) {
+        val dialog = BottomSheetDialog(requireContext())
+        dialog.setContentView(R.layout.dialog_setting)
+        dialog.findViewById<TextView>(R.id.settingTitleTextView)!!.text =
+            getString(R.string.select_currency)
+        val settingsRecyclerView = dialog.findViewById<RecyclerView>(R.id.settingsRecyclerView)!!
+        settingsRecyclerView.addItemDecoration(DividerItemDecoration(requireActivity(), DividerItemDecoration.VERTICAL))
+
+        val onSettingsSelectListener = object: SettingsAdapter.OnSelectListener {
+            override fun onSelect() {
+                dialog.dismiss()
+            }
+        }
+
+        dialog.setOnDismissListener {
+            vm.onCurrencyDialogClose()
+        }
+        dialog.setOnCancelListener {
+            vm.onCurrencyDialogClose()
+        }
+
+        settingsRecyclerView.adapter = SettingsAdapter(
+            settingsList = settingsList,
+            selectedSetting = selectedSetting,
+            settingsClickListener = onSettingsClickListener,
+            settingsSelectListener = onSettingsSelectListener
+        )
+        dialog.show()
+    }
 }
-
-
-
-
-

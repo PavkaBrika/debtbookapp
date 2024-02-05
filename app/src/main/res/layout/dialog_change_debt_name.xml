@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="24dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:padding="24dp">
 
     <TextView
+        android:id="@+id/dialogTitleTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/review_dialog_title"
-        android:textSize="24sp"
-        android:paddingBottom="16dp" />
+        android:layout_marginBottom="16dp"
+        android:text="@string/change_debt_name"
+        android:textSize="24sp" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/humanNameTextInput"
@@ -20,16 +21,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginEnd="4dp"
-        android:hint="@string/review_hint"
+        android:hint="@string/name"
         app:endIconMode="clear_text"
         app:errorEnabled="true">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/reviewEditText"
+            android:id="@+id/humanNameEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="top"
-            android:minLines="3" />
+            android:maxLength="20"
+            android:maxLines="1" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -39,26 +40,27 @@
         android:layout_marginTop="24dp">
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/buttonOk"
+            android:id="@+id/confirmButton"
             style="@style/FilledButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/continue_b"
+            android:text="@string/confirm"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/buttonCancel"
+            android:id="@+id/cancelButton"
             style="@style/OutlineButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
-            android:text="@string/later"
+            android:text="@string/cancel"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/buttonOk"
+            app:layout_constraintEnd_toStartOf="@+id/confirmButton"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 </LinearLayout>

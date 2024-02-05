@@ -2,7 +2,6 @@ package com.breckneck.debtbook.presentation.activity
 
 import android.content.Context
 import android.content.Intent
-import android.content.res.Configuration
 import android.net.Uri
 import android.os.*
 import android.text.Editable
@@ -32,6 +31,7 @@ import com.breckneck.deptbook.domain.usecase.Settings.*
 import com.breckneck.deptbook.domain.util.DEBT_QUANTITY_FOR_LAST_SHOW_APP_RATE_DIALOG
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.textfield.TextInputEditText
 import com.yandex.mobile.ads.banner.BannerAdSize
 import com.yandex.mobile.ads.banner.BannerAdEventListener
 import com.yandex.mobile.ads.banner.BannerAdView
@@ -43,7 +43,6 @@ import com.yandex.mobile.ads.interstitial.InterstitialAdLoader
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.lang.IllegalArgumentException
-import java.util.Locale
 import kotlin.math.roundToInt
 
 class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, NewDebtFragment.OnButtonClickListener, DebtDetailsFragment.OnButtonClickListener, SettingsFragment.OnButtonClickListener {
@@ -51,6 +50,10 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
     private var interstitialAd: InterstitialAd? = null
     private var interstitialAdLoader: InterstitialAdLoader? = null
     var vib: Vibrator? = null
+
+    private val TAG = "MainActivity"
+    private val bannerTAG = "MainActivity"
+    private val interstitialTAG = "MainActivity"
 
     private val vm by viewModel<MainActivityViewModel>()
 
@@ -109,7 +112,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         else if (theme.equals(getString(R.string.system_theme)))
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
 
-//        YANDEX MOBILE ADVERTISMENT
+//        YANDEX MOBILE ADVERTISEMENT
 
         sharedPrefsAdStorage = SharedPrefsAdStorageImpl(context = this)
         adRepository = AdRepositoryImpl(adStorage = sharedPrefsAdStorage)
@@ -135,7 +138,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
             setAdSize(BannerAdSize.stickySize(applicationContext, adWidth))
             setBannerAdEventListener(object : BannerAdEventListener {
                 override fun onAdLoaded() {
-                    Log.e("TAG", "BANNER LOADED")
+                    Log.e(bannerTAG, "BANNER LOADED")
                     if (isDestroyed) {
                         bannerAd.destroy()
                         return
@@ -143,23 +146,23 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
                 }
 
                 override fun onAdFailedToLoad(p0: AdRequestError) {
-                    Log.e("TAG", "BANNER LOAD FAILED")
+                    Log.e(bannerTAG, "BANNER LOAD FAILED")
                 }
 
                 override fun onAdClicked() {
-                    Log.e("TAG", "BANNER CLICKED")
+                    Log.e(bannerTAG, "BANNER CLICKED")
                 }
 
                 override fun onLeftApplication() {
-                    Log.e("TAG", "BANNER LEFT")
+                    Log.e(bannerTAG, "BANNER LEFT")
                 }
 
                 override fun onReturnedToApplication() {
-                    Log.e("TAG", "BANNER RETURN")
+                    Log.e(bannerTAG, "BANNER RETURN")
                 }
 
                 override fun onImpression(p0: ImpressionData?) {
-                    Log.e("TAG", "BANNER IMPRESSION")
+                    Log.e(bannerTAG, "BANNER IMPRESSION")
                 }
 
             })
@@ -170,12 +173,12 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         interstitialAdLoader = InterstitialAdLoader(applicationContext).apply {
             setAdLoadListener(object: InterstitialAdLoadListener {
                 override fun onAdLoaded(interstitialAd: InterstitialAd) {
-                    Log.e("TAG", "Interstitial ad load success")
+                    Log.e(interstitialTAG, "Interstitial ad load success")
                     this@MainActivity.interstitialAd = interstitialAd
                 }
 
                 override fun onAdFailedToLoad(p0: AdRequestError) {
-                    Log.e("TAG", "Interstitial ad load failed")
+                    Log.e(interstitialTAG, "Interstitial ad load failed")
                 }
             })
         }
@@ -191,26 +194,26 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         interstitialAd?.apply {
             setAdEventListener(object: InterstitialAdEventListener {
                 override fun onAdShown() {
-                    Log.e("TAG", "Interstitial ad shown")
+                    Log.e(interstitialTAG, "Interstitial ad shown")
                 }
 
                 override fun onAdFailedToShow(p0: AdError) {
-                    Log.e("TAG", "Interstitial ad failed to show")
+                    Log.e(interstitialTAG, "Interstitial ad failed to show")
                 }
 
                 override fun onAdDismissed() {
-                    Log.e("TAG", "Interstitial ad dismissed")
+                    Log.e(interstitialTAG, "Interstitial ad dismissed")
                     interstitialAd?.setAdEventListener(null)
                     interstitialAd = null
                     loadInterstitialAd()
                 }
 
                 override fun onAdClicked() {
-                    Log.e("TAG", "Interstitial ad clicked")
+                    Log.e(interstitialTAG, "Interstitial ad clicked")
                 }
 
                 override fun onAdImpression(p0: ImpressionData?) {
-                    Log.e("TAG", "Interstitial ad impression")
+                    Log.e(interstitialTAG, "Interstitial ad impression")
                 }
             })
             show(this@MainActivity)
@@ -237,7 +240,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
     private fun startClickVibration() {
         try {
             if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) && (vib != null)) {
-                vib!!.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.EFFECT_CLICK))
+                vib!!.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.EFFECT_DOUBLE_CLICK))
             }
         } catch (e: IllegalArgumentException) {
             e.printStackTrace()
@@ -348,7 +351,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
     }
 
     override fun onBackNewDebtButtonClick() {
-        supportFragmentManager.popBackStackImmediate()
+        supportFragmentManager.popBackStack()
     }
 
     //DebtDetailsFragment interfaces
@@ -410,12 +413,12 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
     }
 
     override fun onBackDebtsButtonClick() {
-        supportFragmentManager.popBackStackImmediate()
+        supportFragmentManager.popBackStack()
     }
 
     //settings interface
     override fun onBackSettingsButtonClick() {
-        supportFragmentManager.popBackStackImmediate()
+        supportFragmentManager.popBackStack()
     }
 
     override fun onRateAppButtonClick() {
@@ -434,7 +437,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         vm.setAppReviewFromSettings(isFromSettings)
         vm.setAppRateDialogShown(shown = true)
 
-        rateAppBottomSheetDialog.findViewById<Button>(R.id.buttonOk)!!.setOnClickListener {
+        rateAppBottomSheetDialog.findViewById<Button>(R.id.confirmButton)!!.setOnClickListener {
             when (vm.resultAppRate.value) {
                 1, 2, 3 -> {
                     showLowAppRateDialog(fromSettings = isFromSettings)
@@ -451,7 +454,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
             }
         }
 
-        rateAppBottomSheetDialog.findViewById<Button>(R.id.buttonCancel)!!.setOnClickListener {
+        rateAppBottomSheetDialog.findViewById<Button>(R.id.cancelButton)!!.setOnClickListener {
             rateAppBottomSheetDialog.cancel()
         }
 
@@ -546,7 +549,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         lowRateBottomSheetDialog.setCanceledOnTouchOutside(false)
         lowRateBottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
         vm.setAppReviewDialogShown(true)
-        val reviewEditText: EditText = lowRateBottomSheetDialog.findViewById(R.id.reviewEditText)!!
+        val reviewEditText: TextInputEditText = lowRateBottomSheetDialog.findViewById(R.id.reviewEditText)!!
         val sendReviewButton: Button = lowRateBottomSheetDialog.findViewById(R.id.buttonOk)!!
         val cancelButton: Button = lowRateBottomSheetDialog.findViewById(R.id.buttonCancel)!!
         sendReviewButton.setOnClickListener {
@@ -555,6 +558,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
             intent.putExtra(Intent.EXTRA_SUBJECT, "${getString(R.string.email_subject)} ${BuildConfig.VERSION_NAME}")
             intent.putExtra(Intent.EXTRA_TEXT, reviewEditText.text.toString())
             startActivity(intent)
+            lowRateBottomSheetDialog.dismiss()
         }
 
         if (vm.resultAppReviewText.value?.isEmpty() == false) {

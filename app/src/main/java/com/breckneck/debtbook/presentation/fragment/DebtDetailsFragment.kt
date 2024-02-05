@@ -1,8 +1,6 @@
 package com.breckneck.debtbook.presentation.fragment
 
-import android.app.AlertDialog
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.Intent.*
 import android.graphics.Typeface
@@ -26,7 +24,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.adapter.DebtAdapter
@@ -35,9 +32,8 @@ import com.breckneck.deptbook.domain.model.DebtDomain
 import com.breckneck.deptbook.domain.usecase.Debt.*
 import com.breckneck.deptbook.domain.usecase.Settings.GetAddSumInShareText
 import com.breckneck.deptbook.domain.util.DebtOrderAttribute
-import com.breckneck.deptbook.domain.util.ROTATE_DEBT_IMAGE_VIEW_BY_DECREASE
-import com.breckneck.deptbook.domain.util.ROTATE_DEBT_IMAGE_VIEW_BY_INCREASE
-import com.google.android.material.appbar.AppBarLayout
+import com.breckneck.deptbook.domain.util.ROTATE_DEGREE_DEBT_IMAGE_VIEW_BY_DECREASE
+import com.breckneck.deptbook.domain.util.ROTATE_DEGREE_DEBT_IMAGE_VIEW_BY_INCREASE
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -47,11 +43,11 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
-import java.util.Collections
-
 
 
 class DebtDetailsFragment: Fragment() {
+
+    private val TAG = "DebtDetailsFragment"
 
     interface OnButtonClickListener{
         fun addNewDebtFragment(idHuman: Int, currency: String, name: String)
@@ -112,7 +108,7 @@ class DebtDetailsFragment: Fragment() {
             if (newHuman == true) {
                 getAllInfoAboutNewHuman()
             } else {
-                this.humanId.value = humanId
+                onSetHumanId(humanId!!)
                 getDebtOrder()
                 getAllDebts()
                 getOverallSum()
@@ -127,8 +123,8 @@ class DebtDetailsFragment: Fragment() {
             if ((isShareDialogShown.value != null) && (isShareDialogShown.value == true))
                 showShareDialog(humanName, currency)
 
-            if ((isDebtExtrasDialogShown.value != null) && (isDebtExtrasDialogShown.value == true))
-                showDebtExtras(vm.extraDebt.value!!, currency = currency!!, name = humanName!!)
+            if ((isDebtSettingsDialogShown.value != null) && (isDebtSettingsDialogShown.value == true))
+                showDebtSettings(vm.settingDebt.value!!, currency = currency!!, name = humanName!!)
 
             debtList.observe(viewLifecycleOwner) {
                 val list: MutableList<DebtDomain> = it.toMutableList()
@@ -157,8 +153,8 @@ class DebtDetailsFragment: Fragment() {
 
         debtClickListener = object : DebtAdapter.OnDebtClickListener{ //ALERT DIALOG
             override fun onDebtClick(debtDomain: DebtDomain, position: Int) {
-                showDebtExtras(debtDomain = debtDomain, currency = currency!!, name = humanName!!)
-                Log.e("TAG", "Click on debt with id = ${debtDomain.id}")
+                showDebtSettings(debtDomain = debtDomain, currency = currency!!, name = humanName!!)
+                Log.e(TAG, "Click on debt with id = ${debtDomain.id}")
             }
         }
 
@@ -208,7 +204,7 @@ class DebtDetailsFragment: Fragment() {
     private fun showDeleteHumanDialog() {
         val dialog = BottomSheetDialog(requireContext())
         dialog.setContentView(R.layout.dialog_delete_human)
-        vm.isHumanDeleteDialogShown.value = true
+        vm.onHumanDeleteDialogOpen()
 
         dialog.findViewById<Button>(R.id.okButton)!!.setOnClickListener {
             vm.deleteHuman()
@@ -221,19 +217,22 @@ class DebtDetailsFragment: Fragment() {
         }
 
         dialog.setOnDismissListener {
-            vm.isHumanDeleteDialogShown.value = false
+            vm.onHumanDeleteDialogClose()
+        }
+        dialog.setOnCancelListener {
+            vm.onHumanDeleteDialogClose()
         }
 
         dialog.show()
     }
 
-    private fun showDebtExtras(debtDomain: DebtDomain, currency: String, name: String) {
+    private fun showDebtSettings(debtDomain: DebtDomain, currency: String, name: String) {
         val dialog = BottomSheetDialog(requireContext())
         dialog.setContentView(R.layout.dialog_debt_extra_functions)
         val formatDebtSum = FormatDebtSum()
 
-        vm.isDebtExtrasDialogShown.value = true
-        vm.extraDebt.value = debtDomain
+        vm.onDebtSettingsDialogOpen()
+        vm.onSetSettingDebt(debtDomain)
 
         dialog.findViewById<TextView>(R.id.debtExtrasTitle)!!.text = "${debtDomain.date} : ${formatDebtSum.execute(debtDomain.sum)} $currency"
 
@@ -252,7 +251,10 @@ class DebtDetailsFragment: Fragment() {
         }
 
         dialog.setOnDismissListener {
-            vm.isDebtExtrasDialogShown.value = false
+            vm.onDebtSettingsDialogClose()
+        }
+        dialog.setOnCancelListener {
+            vm.onDebtSettingsDialogClose()
         }
 
         dialog.show()
@@ -261,7 +263,7 @@ class DebtDetailsFragment: Fragment() {
     private fun showShareDialog(humanName: String?, currency: String?) {
         val dialog = BottomSheetDialog(requireContext())
         dialog.setContentView(R.layout.dialog_share)
-        vm.isShareDialogShown.value = true
+        vm.onShareDialogOpen()
 
         dialog.findViewById<Button>(R.id.deleteButton)!!.setOnClickListener {
             val intent = Intent(ACTION_SEND)
@@ -291,7 +293,10 @@ class DebtDetailsFragment: Fragment() {
         }
 
         dialog.setOnDismissListener {
-            vm.isShareDialogShown.value = false
+            vm.onShareDialogClose()
+        }
+        dialog.setOnCancelListener {
+            vm.onShareDialogClose()
         }
 
         dialog.show()
@@ -300,13 +305,14 @@ class DebtDetailsFragment: Fragment() {
     private fun showOrderDialog() {
         val orderDialog = BottomSheetDialog(requireContext())
         orderDialog.setContentView(R.layout.dialog_order_settings)
+        vm.onOrderDialogOpen()
 
         var sortByIncrease = vm.debtOrder.value!!.second
         val sortImageView = orderDialog.findViewById<ImageView>(R.id.sortImageView)
         if (sortByIncrease)
-            sortImageView!!.rotationY = ROTATE_DEBT_IMAGE_VIEW_BY_INCREASE
+            sortImageView!!.rotationY = ROTATE_DEGREE_DEBT_IMAGE_VIEW_BY_INCREASE
         else
-            sortImageView!!.rotationY = ROTATE_DEBT_IMAGE_VIEW_BY_DECREASE
+            sortImageView!!.rotationY = ROTATE_DEGREE_DEBT_IMAGE_VIEW_BY_DECREASE
 
         var orderAttribute = vm.debtOrder.value!!.first
         val orderDateRadioButton = orderDialog.findViewById<RadioButton>(R.id.orderDateRadioButton)
@@ -320,11 +326,11 @@ class DebtDetailsFragment: Fragment() {
 
         orderDialog.findViewById<CardView>(R.id.sortButtonCard)!!.setOnClickListener {
             buttonClickListener!!.onChangeOrderButtonClick()
-            if (sortImageView.rotationY == ROTATE_DEBT_IMAGE_VIEW_BY_INCREASE) {
-                sortImageView.rotationY = ROTATE_DEBT_IMAGE_VIEW_BY_DECREASE
+            if (sortImageView.rotationY == ROTATE_DEGREE_DEBT_IMAGE_VIEW_BY_INCREASE) {
+                sortImageView.rotationY = ROTATE_DEGREE_DEBT_IMAGE_VIEW_BY_DECREASE
                 sortByIncrease = false
-            } else if (sortImageView.rotationY == ROTATE_DEBT_IMAGE_VIEW_BY_DECREASE) {
-                sortImageView.rotationY = ROTATE_DEBT_IMAGE_VIEW_BY_INCREASE
+            } else if (sortImageView.rotationY == ROTATE_DEGREE_DEBT_IMAGE_VIEW_BY_DECREASE) {
+                sortImageView.rotationY = ROTATE_DEGREE_DEBT_IMAGE_VIEW_BY_INCREASE
                 sortByIncrease = true
             }
         }
@@ -341,7 +347,7 @@ class DebtDetailsFragment: Fragment() {
             }
             val order = Pair(orderAttribute, sortByIncrease)
             if (order != vm.debtOrder.value) {
-                vm.debtOrder.value = Pair(orderAttribute, sortByIncrease)
+                vm.onSetDebtOrder(Pair(orderAttribute, sortByIncrease))
             }
             if (rememberChoiceCheckBox!!.isChecked) {
                 vm.saveDebtOrder(Pair(orderAttribute, sortByIncrease))
@@ -352,10 +358,12 @@ class DebtDetailsFragment: Fragment() {
             orderDialog.dismiss()
         }
         orderDialog.setOnDismissListener {
-            vm.isOrderDialogShown.value = false
+            vm.onOrderDialogClose()
+        }
+        orderDialog.setOnCancelListener {
+            vm.onOrderDialogClose()
         }
         orderDialog.show()
-        vm.isOrderDialogShown.value = true
     }
 
     override fun onDestroyView() {

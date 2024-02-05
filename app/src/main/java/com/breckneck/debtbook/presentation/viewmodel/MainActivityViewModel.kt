@@ -19,6 +19,8 @@ import ru.vk.store.sdk.review.model.ReviewInfo
 
 class MainActivityViewModel(private val getDebtQuantity: GetDebtQuantity) : ViewModel() {
 
+    private val TAG = "MainActivityViewModel"
+
     var resultIsAppRateDialogShow = MutableLiveData<Boolean>()
     var resultIsAppReviewDialogShow = MutableLiveData<Boolean>()
     var resultIsAppReviewDialogFromSettings = MutableLiveData<Boolean>()
@@ -34,14 +36,14 @@ class MainActivityViewModel(private val getDebtQuantity: GetDebtQuantity) : View
     private val disposeBag = CompositeDisposable()
 
     init {
-        Log.e("TAG", "Main Activity View Model Started")
+        Log.e(TAG, "Main Activity View Model Started")
         resultIsInAppReviewTimerEnds.value = false
     }
 
     override fun onCleared() {
         super.onCleared()
         disposeBag.clear()
-        Log.e("TAG", "Main Activity View Model cleared")
+        Log.e(TAG, "Main Activity View Model cleared")
     }
 
     fun getDebtQuantity() {
@@ -53,7 +55,7 @@ class MainActivityViewModel(private val getDebtQuantity: GetDebtQuantity) : View
             .subscribe({
                 resultDebtQuantity.value = it
             }, {
-                Log.e("TAG", it.stackTrace.toString())
+                Log.e(TAG, it.stackTrace.toString())
             })
         disposeBag.add(result)
     }
@@ -105,7 +107,7 @@ class MainActivityViewModel(private val getDebtQuantity: GetDebtQuantity) : View
                 }
 
                 override fun onFinish() {
-                    Log.e("TAG", "timer finished")
+                    Log.e(TAG, "timer finished")
                     resultIsInAppReviewTimerEnds.value = true
                 }
             }.start()
@@ -116,7 +118,7 @@ class MainActivityViewModel(private val getDebtQuantity: GetDebtQuantity) : View
         if (reviewInfo != null) {
             val flow = reviewManager.launchReviewFlow(reviewInfo!!)
             flow.addOnSuccessListener {
-                Log.e("TAG", "review success")
+                Log.e(TAG, "review success")
             }
         }
     }
