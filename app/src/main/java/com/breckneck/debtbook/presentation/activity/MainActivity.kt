@@ -295,7 +295,9 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
     }
 
     override fun onAddDebt() {
-        vm.onAddDebt()
+        runOnUiThread {
+            vm.onAddDebt()
+        }
     }
 
     //NewDebtFragment interfaces

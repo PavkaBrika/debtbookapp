@@ -81,16 +81,35 @@ class MainFragmentViewModel(
 
     fun sortHumans() {
         if (_humanList.value != null) {
-            _resultHumanList.value = sortHumans.execute(_humanList.value!!, _humanOrder.value!!)
+            val result = Single.create {
+                when (humanFilter.value!!) {
+                    HumanFilter.AllHumans -> it.onSuccess(_humanList.value!!)
+                    HumanFilter.NegativeHumans -> it.onSuccess(getNegativeHumansUseCase.execute(_humanList.value!!))
+                    HumanFilter.PositiveHumans -> it.onSuccess(getPositiveHumansUseCase.execute(_humanList.value!!))
+                }
+            }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    _resultHumanList.value = sortHumans.execute(it, _humanOrder.value!!)
+                }, {
+                    Log.e(TAG, it.stackTrace.toString())
+                })
+            disposeBag.add(result)
             Log.e(TAG, "Humans sorted")
         }
+    }
+
+    fun onSetHumanFilter(filter: HumanFilter) {
+        _humanFilter.value = filter
+        Log.e(TAG, "Human filter set ${filter}")
     }
 
     private fun getHumanOrder() {
         _humanOrder.value = getHumanOrder.execute()
     }
 
-    fun setHumanOrder(order: Pair<HumanOrderAttribute, Boolean>) {
+    fun saveHumanOrder(order: Pair<HumanOrderAttribute, Boolean>) {
         setHumanOrder.execute(order = order)
     }
 
@@ -104,26 +123,6 @@ class MainFragmentViewModel(
                 _humanList.value = it
                 Log.e(TAG, "humans loaded in VM")
                 getHumanOrder()
-            }, {
-                Log.e(TAG, it.stackTrace.toString())
-            })
-        disposeBag.add(result)
-    }
-
-    fun applyHumanFilter(filter: HumanFilter) {
-        _humanFilter.value = filter
-        val result = Single.create {
-            when (filter) {
-                HumanFilter.AllHumans -> it.onSuccess(_humanList.value!!)
-                HumanFilter.NegativeHumans -> it.onSuccess(getNegativeHumansUseCase.execute(_humanList.value!!))
-                HumanFilter.PositiveHumans -> it.onSuccess(getPositiveHumansUseCase.execute(_humanList.value!!))
-            }
-        }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                _resultHumanList.value = it
-                Log.e(TAG, "humans filtered")
             }, {
                 Log.e(TAG, it.stackTrace.toString())
             })
@@ -174,6 +173,7 @@ class MainFragmentViewModel(
 
     fun onSetHumanOrder(order: Pair<HumanOrderAttribute, Boolean>) {
         _humanOrder.value = order
+        Log.e(TAG, "Human order set ${order.first}, ${order.second}")
     }
 
     fun onChangeDebtNameDialogOpen(humanDomain: HumanDomain, position: Int) {

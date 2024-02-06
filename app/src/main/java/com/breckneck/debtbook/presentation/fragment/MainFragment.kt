@@ -245,15 +245,17 @@ class MainFragment : Fragment() {
                 }
             }
 
+            if (vm.humanFilter.value!! != humansFilter) {
+                vm.onSetHumanFilter(filter = humansFilter)
+                if (vm.humanOrder.value!! == Pair(sortHumansAttribute, sortByIncrease))
+                    vm.sortHumans()
+            }
+
             if (vm.humanOrder.value!! != Pair(sortHumansAttribute, sortByIncrease))
                 vm.onSetHumanOrder(order = Pair(sortHumansAttribute, sortByIncrease))
 
             if (bottomSheetDialogFilter.findViewById<CheckBox>(R.id.rememberChoiceCheckBox)!!.isChecked)
-                vm.setHumanOrder(order = Pair(sortHumansAttribute, sortByIncrease))
-
-            if (vm.humanFilter.value!! != humansFilter) {
-                vm.applyHumanFilter(filter = humansFilter)
-            }
+                vm.saveHumanOrder(order = Pair(sortHumansAttribute, sortByIncrease))
 
             bottomSheetDialogFilter.dismiss()
         }
