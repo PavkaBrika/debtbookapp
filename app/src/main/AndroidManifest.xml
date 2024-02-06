@@ -12,13 +12,14 @@
 
     <application
         android:name=".app.App"
-        android:allowBackup="false"
-        android:fullBackupContent="false"
+        android:allowBackup="true"
+        android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Debtbook">
+        android:theme="@style/Theme.Debtbook"
+        android:dataExtractionRules="@xml/data_extraction_rules">
         <activity
             android:name=".presentation.activity.MainActivity"
             android:exported="true"
