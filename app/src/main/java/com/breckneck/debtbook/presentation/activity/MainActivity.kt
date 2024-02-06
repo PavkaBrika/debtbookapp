@@ -8,7 +8,6 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.widget.Button
-import android.widget.EditText
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.Toast
@@ -21,8 +20,6 @@ import com.breckneck.debtbook.BuildConfig
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.presentation.fragment.*
 import com.breckneck.debtbook.presentation.viewmodel.MainActivityViewModel
-import repository.AdRepositoryImpl
-import sharedprefs.SharedPrefsAdStorageImpl
 import com.breckneck.deptbook.domain.model.DebtDomain
 import com.breckneck.deptbook.domain.usecase.Ad.AddClickUseCase
 import com.breckneck.deptbook.domain.usecase.Ad.GetClicksUseCase
@@ -32,8 +29,8 @@ import com.breckneck.deptbook.domain.util.DEBT_QUANTITY_FOR_LAST_SHOW_APP_RATE_D
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.textfield.TextInputEditText
-import com.yandex.mobile.ads.banner.BannerAdSize
 import com.yandex.mobile.ads.banner.BannerAdEventListener
+import com.yandex.mobile.ads.banner.BannerAdSize
 import com.yandex.mobile.ads.banner.BannerAdView
 import com.yandex.mobile.ads.common.*
 import com.yandex.mobile.ads.interstitial.InterstitialAd
@@ -42,7 +39,8 @@ import com.yandex.mobile.ads.interstitial.InterstitialAdLoadListener
 import com.yandex.mobile.ads.interstitial.InterstitialAdLoader
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.lang.IllegalArgumentException
+import repository.AdRepositoryImpl
+import sharedprefs.SharedPrefsAdStorageImpl
 import kotlin.math.roundToInt
 
 class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, NewDebtFragment.OnButtonClickListener, DebtDetailsFragment.OnButtonClickListener, SettingsFragment.OnButtonClickListener {
@@ -63,10 +61,6 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
     lateinit var addClickToAdCounter: AddClickUseCase
     lateinit var refreshAdCounter: SetClicksUseCase
 
-    private val getAppIsRated: GetAppIsRated by inject()
-    private val getDebtQuantityForAppRateDialogShow: GetDebtQuantityForAppRateDialogShow by inject()
-    private val setDebtQuantityForAppRateDialogShow: SetDebtQuantityForAppRateDialogShow by inject()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -85,20 +79,17 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
             fragmentTransaction.replace(R.id.frameLayout, MainFragment()).commit()
         }
 
-        if (vm.resultIsAppRateDialogShow.value == true)
-            showAppRateDialog(vm.resultIsAppReviewDialogFromSettings.value!!)
-        if (vm.resultIsAppReviewDialogShow.value == true)
-            showLowAppRateDialog(vm.resultIsAppReviewDialogFromSettings.value!!)
+        if (vm.isAppRateDialogShow.value == true)
+            showAppRateDialog(vm.isAppReviewDialogFromSettings.value!!)
+        if (vm.isAppReviewDialogShow.value == true)
+            showLowAppRateDialog(vm.isAppReviewDialogFromSettings.value!!)
 
-        if (!getAppIsRated.execute()) {
-            vm.resultDebtQuantity.observe(this) {
-                if (it >= getDebtQuantityForAppRateDialogShow.execute() &&
-                    getDebtQuantityForAppRateDialogShow.execute() <= DEBT_QUANTITY_FOR_LAST_SHOW_APP_RATE_DIALOG
+        vm.isAppRated.observe(this) {
+            vm.debtQuantity.observe(this) {
+                if (it >= vm.debtQuantityForAppRateDialogShow.value!! &&
+                    vm.debtQuantityForAppRateDialogShow.value!! <= DEBT_QUANTITY_FOR_LAST_SHOW_APP_RATE_DIALOG
                 ) {
-                    vm.initInAppReview(applicationContext)
-                    vm.startInAppReviewWithTimer()
-                    if (vm.resultIsInAppReviewTimerEnds.value == true)
-                        showAppRateDialog(false)
+                    showAppRateDialog(false)
                 }
             }
         }
@@ -303,8 +294,8 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
             }
     }
 
-    override fun getDebtQuantity() {
-        vm.getDebtQuantity()
+    override fun onAddDebt() {
+        vm.onAddDebt()
     }
 
     //NewDebtFragment interfaces
@@ -422,7 +413,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
     }
 
     override fun onRateAppButtonClick() {
-        if (!getAppIsRated.execute()) {
+        if (vm.isAppRated.value == false) {
             showAppRateDialog(true)
         } else {
             Toast.makeText(applicationContext, getString(R.string.app_already_rated_hint), Toast.LENGTH_SHORT).show()
@@ -432,20 +423,20 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
     private fun showAppRateDialog(isFromSettings: Boolean) {
         val rateAppBottomSheetDialog = BottomSheetDialog(this)
         rateAppBottomSheetDialog.setContentView(R.layout.dialog_rate_app)
-        rateAppBottomSheetDialog.setCanceledOnTouchOutside(false)
+        rateAppBottomSheetDialog.setCancelable(false)
         rateAppBottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
         vm.setAppReviewFromSettings(isFromSettings)
         vm.setAppRateDialogShown(shown = true)
 
         rateAppBottomSheetDialog.findViewById<Button>(R.id.confirmButton)!!.setOnClickListener {
-            when (vm.resultAppRate.value) {
+            when (vm.appRate.value) {
                 1, 2, 3 -> {
                     showLowAppRateDialog(fromSettings = isFromSettings)
-                    rateAppBottomSheetDialog.cancel()
+                    rateAppBottomSheetDialog.dismiss()
                 }
                 4, 5 -> {
-                    vm.launchInAppReview(this)
-                    rateAppBottomSheetDialog.cancel()
+                    launchMarketIntent()
+                    rateAppBottomSheetDialog.dismiss()
                 }
                 0 -> {
                     vm.setAppReviewFromSettings(false)
@@ -455,12 +446,12 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         }
 
         rateAppBottomSheetDialog.findViewById<Button>(R.id.cancelButton)!!.setOnClickListener {
-            rateAppBottomSheetDialog.cancel()
+            rateAppBottomSheetDialog.dismiss()
         }
 
-        rateAppBottomSheetDialog.setOnCancelListener {
+        rateAppBottomSheetDialog.setOnDismissListener {
             if (!isFromSettings)
-                setDebtQuantityForAppRateDialogShow.execute(getDebtQuantityForAppRateDialogShow.execute() + 10)
+                vm.onAppRateDismiss()
             vm.setAppRateDialogShown(shown = false)
             vm.setAppReviewFromSettings(false)
             vm.setAppRate(0)
@@ -512,7 +503,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
             vm.setAppRate(5)
         }
 
-        when (vm.resultAppRate.value) {
+        when (vm.appRate.value) {
             1 -> {
                 rateStar1ImageView.setColorFilter(ContextCompat.getColor(applicationContext, R.color.yellow))
             }
@@ -543,10 +534,17 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         rateAppBottomSheetDialog.show()
     }
 
+    private fun launchMarketIntent() {
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.setData(Uri.parse("market://details?id=${packageName}"))
+        startActivity(intent)
+        vm.onAppRate()
+    }
+
     private fun showLowAppRateDialog(fromSettings: Boolean) {
         val lowRateBottomSheetDialog = BottomSheetDialog(this)
         lowRateBottomSheetDialog.setContentView(R.layout.dialog_low_app_rate)
-        lowRateBottomSheetDialog.setCanceledOnTouchOutside(false)
+        lowRateBottomSheetDialog.setCancelable(false)
         lowRateBottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
         vm.setAppReviewDialogShown(true)
         val reviewEditText: TextInputEditText = lowRateBottomSheetDialog.findViewById(R.id.reviewEditText)!!
@@ -561,8 +559,8 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
             lowRateBottomSheetDialog.dismiss()
         }
 
-        if (vm.resultAppReviewText.value?.isEmpty() == false) {
-            reviewEditText.setText(vm.resultAppReviewText.value)
+        if (vm.appReviewText.value?.isEmpty() == false) {
+            reviewEditText.setText(vm.appReviewText.value)
         }
 
         reviewEditText.addTextChangedListener(object: TextWatcher {
@@ -580,21 +578,17 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         })
 
         cancelButton.setOnClickListener {
-            lowRateBottomSheetDialog.cancel()
+            lowRateBottomSheetDialog.dismiss()
         }
 
-        lowRateBottomSheetDialog.setOnCancelListener {
+        lowRateBottomSheetDialog.setOnDismissListener {
             if (!fromSettings)
-                setDebtQuantityForAppRateDialogShow.execute(getDebtQuantityForAppRateDialogShow.execute() + 15)
+                vm.onAppRateDismiss()
             vm.setAppReviewFromSettings(false)
             vm.setAppReviewDialogShown(shown = false)
             vm.setAppReviewText(text = "")
         }
 
         lowRateBottomSheetDialog.show()
-    }
-
-    override fun onSettingsFragmentOpen() {
-        vm.initInAppReview(this)
     }
 }

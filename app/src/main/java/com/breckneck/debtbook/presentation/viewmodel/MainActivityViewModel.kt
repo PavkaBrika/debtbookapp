@@ -1,41 +1,62 @@
 package com.breckneck.debtbook.presentation.viewmodel
 
-import android.app.Activity
-import android.content.Context
-import android.os.CountDownTimer
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.breckneck.deptbook.domain.usecase.Debt.GetDebtQuantity
-import com.google.android.play.core.review.ReviewInfo
-import com.google.android.play.core.review.ReviewManager
-import com.google.android.play.core.review.ReviewManagerFactory
+import com.breckneck.deptbook.domain.usecase.Settings.GetAppIsRated
+import com.breckneck.deptbook.domain.usecase.Settings.GetDebtQuantityForAppRateDialogShow
+import com.breckneck.deptbook.domain.usecase.Settings.SetAppIsRated
+import com.breckneck.deptbook.domain.usecase.Settings.SetDebtQuantityForAppRateDialogShow
+import com.breckneck.deptbook.domain.util.DEBT_QUANTITY_FOR_NEXT_SHOW
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 
-class MainActivityViewModel(private val getDebtQuantity: GetDebtQuantity) : ViewModel() {
+class MainActivityViewModel(
+    private val getDebtQuantity: GetDebtQuantity,
+    private val getAppIsRated: GetAppIsRated,
+    private val setAppIsRated: SetAppIsRated,
+    private val getDebtQuantityForAppRateDialogShow: GetDebtQuantityForAppRateDialogShow,
+    private val setDebtQuantityForAppRateDialogShow: SetDebtQuantityForAppRateDialogShow
+) : ViewModel() {
 
     private val TAG = "MainActivityViewModel"
 
-    var resultIsAppRateDialogShow = MutableLiveData<Boolean>()
-    var resultIsAppReviewDialogShow = MutableLiveData<Boolean>()
-    var resultIsAppReviewDialogFromSettings = MutableLiveData<Boolean>()
-    var resultDebtQuantity = MutableLiveData<Int>()
-    var resultAppRate = MutableLiveData<Int>()
-    var resultAppReviewText = MutableLiveData<String>()
-    var resultIsInAppReviewTimerEnds = MutableLiveData<Boolean>()
-
-    private lateinit var reviewManager: ReviewManager
-    private var reviewInfo: ReviewInfo? = null
-    private var isInAppReviewInitCalled = false
+    private val _isAppRateDialogShow = MutableLiveData<Boolean>()
+    val isAppRateDialogShow: LiveData<Boolean>
+        get() = _isAppRateDialogShow
+    private val _isAppReviewDialogShow = MutableLiveData<Boolean>()
+    val isAppReviewDialogShow: LiveData<Boolean>
+        get() = _isAppReviewDialogShow
+    private val _isAppReviewDialogFromSettings = MutableLiveData<Boolean>()
+    val isAppReviewDialogFromSettings: LiveData<Boolean>
+        get() = _isAppReviewDialogFromSettings
+    private val _debtQuantity = MutableLiveData<Int>()
+    val debtQuantity: LiveData<Int>
+        get() = _debtQuantity
+    private val _appRate = MutableLiveData<Int>()
+    val appRate: LiveData<Int>
+        get() = _appRate
+    private val _appReviewText = MutableLiveData<String>()
+    val appReviewText: LiveData<String>
+        get() = _appReviewText
+    private val _isAppRated = MutableLiveData<Boolean>()
+    val isAppRated: LiveData<Boolean>
+        get() = _isAppRated
+    private val _debtQuantityForAppRateDialogShow = MutableLiveData<Int>()
+    val debtQuantityForAppRateDialogShow: LiveData<Int>
+        get() = _debtQuantityForAppRateDialogShow
 
     private val disposeBag = CompositeDisposable()
 
     init {
         Log.e(TAG, "Main Activity View Model Started")
-        resultIsInAppReviewTimerEnds.value = false
+        getDebtQuantityForAppRateDialogShow()
+        getDebtQuantity()
+        getIsAppRated()
     }
 
     override fun onCleared() {
@@ -44,14 +65,14 @@ class MainActivityViewModel(private val getDebtQuantity: GetDebtQuantity) : View
         Log.e(TAG, "Main Activity View Model cleared")
     }
 
-    fun getDebtQuantity() {
+    private fun getDebtQuantity() {
         val result = Single.create {
             it.onSuccess(getDebtQuantity.execute())
         }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                resultDebtQuantity.value = it
+                _debtQuantity.value = it
             }, {
                 Log.e(TAG, it.stackTrace.toString())
             })
@@ -59,60 +80,44 @@ class MainActivityViewModel(private val getDebtQuantity: GetDebtQuantity) : View
     }
 
     fun setAppRateDialogShown(shown: Boolean) {
-        resultIsAppRateDialogShow.value = shown
+        _isAppRateDialogShow.value = shown
     }
 
     fun setAppReviewDialogShown(shown: Boolean) {
-        resultIsAppReviewDialogShow.value = shown
+        _isAppReviewDialogShow.value = shown
     }
 
     fun setAppReviewFromSettings(fromSettings: Boolean) {
-        resultIsAppReviewDialogFromSettings.value = fromSettings
+        _isAppReviewDialogFromSettings.value = fromSettings
     }
 
     fun setAppRate(rate: Int) {
-        resultAppRate.value = rate
+        _appRate.value = rate
     }
 
     fun setAppReviewText(text: String) {
-        resultAppReviewText.value = text
+        _appReviewText.value = text
     }
 
-    fun initInAppReview(context: Context) {
-        if (isInAppReviewInitCalled) return
-        reviewManager = ReviewManagerFactory.create(context)
-        Log.e(TAG, "Init App Review")
-        val requestReviewFlow = reviewManager.requestReviewFlow()
-        requestReviewFlow.addOnCompleteListener { task ->
-            if (task.isSuccessful)
-                reviewInfo = task.result
-            else
-                Log.e(TAG, "In App Review error")
-        }
-        isInAppReviewInitCalled = true
+    private fun getIsAppRated() {
+        _isAppRated.value = getAppIsRated.execute()
     }
 
-    fun startInAppReviewWithTimer() {
-        if (!resultIsInAppReviewTimerEnds.value!!) {
-            object : CountDownTimer(10000, 1000) {
-                override fun onTick(p0: Long) {
-
-                }
-
-                override fun onFinish() {
-                    Log.e(TAG, "timer finished")
-                    resultIsInAppReviewTimerEnds.value = true
-                }
-            }.start()
-        }
+    fun onAppRate() {
+        _isAppRated.value = true
+        setAppIsRated.execute(isRated = true)
     }
 
-    fun launchInAppReview(activity: Activity) {
-        if (reviewInfo != null) {
-            val flow = reviewManager.launchReviewFlow(activity, reviewInfo!!)
-            flow.addOnSuccessListener {
-                Log.e(TAG, "review success")
-            }
-        }
+    fun onAppRateDismiss() {
+        _debtQuantityForAppRateDialogShow.value = _debtQuantityForAppRateDialogShow.value!! + DEBT_QUANTITY_FOR_NEXT_SHOW
+        setDebtQuantityForAppRateDialogShow.execute(debtQuantityForAppRateDialogShow.value!!)
+    }
+
+    fun onAddDebt() {
+        _debtQuantity.value = _debtQuantity.value!! + 1
+    }
+
+    private fun getDebtQuantityForAppRateDialogShow() {
+        _debtQuantityForAppRateDialogShow.value = getDebtQuantityForAppRateDialogShow.execute()
     }
 }

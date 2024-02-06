@@ -34,8 +34,6 @@ class SettingsFragment : Fragment() {
     interface OnButtonClickListener {
         fun onBackSettingsButtonClick()
 
-        fun onSettingsFragmentOpen()
-
         fun onRateAppButtonClick()
     }
 
@@ -73,8 +71,6 @@ class SettingsFragment : Fragment() {
         backButton.setOnClickListener {
             buttonClickListener.onBackSettingsButtonClick()
         }
-
-        buttonClickListener.onSettingsFragmentOpen()
 
         val collaps: CollapsingToolbarLayout = view.findViewById(R.id.collapsSettings)
         collaps.apply {

@@ -2,6 +2,7 @@ package sharedprefs
 
 import android.content.Context
 import com.breckneck.deptbook.data.storage.SettingsStorage
+import com.breckneck.deptbook.domain.util.DEBT_QUANTITY_FOR_NEXT_SHOW
 import util.ORDER_DEBT_BY_DATE
 import util.ORDER_HUMAN_BY_DATE
 
@@ -76,7 +77,7 @@ class SharedPrefsSettingsStorageImpl(val context: Context): SettingsStorage {
     }
 
     override fun getDebtQuantityForAppRateDialogShow(): Int {
-        return sharedPreferences.getInt(DEBTS_QUANTITY_FOR_APP_RATE_DIALOG_SHOW, 15)
+        return sharedPreferences.getInt(DEBTS_QUANTITY_FOR_APP_RATE_DIALOG_SHOW, DEBT_QUANTITY_FOR_NEXT_SHOW)
     }
 
     override fun setDebtOrder(order: Pair<Int, Boolean>) {

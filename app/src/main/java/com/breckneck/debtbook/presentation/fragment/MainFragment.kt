@@ -41,8 +41,6 @@ class MainFragment : Fragment() {
 
         fun onSettingsButtonClick()
 
-        fun getDebtQuantity()
-
         fun onChangeOrderButtonClick()
     }
 
@@ -148,8 +146,6 @@ class MainFragment : Fragment() {
         vm.humanOrder.observe(viewLifecycleOwner) {
             vm.sortHumans()
         }
-
-        buttonClickListener?.getDebtQuantity()
 
         val overallPositiveSumTextView: TextView =
             view.findViewById(R.id.overallPositiveSumTextView)

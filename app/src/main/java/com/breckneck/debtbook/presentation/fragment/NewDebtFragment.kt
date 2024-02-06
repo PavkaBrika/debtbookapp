@@ -61,6 +61,7 @@ class NewDebtFragment: Fragment() {
         fun DebtDetailsExistHuman(idHuman: Int, currency: String, name: String)
         fun onBackNewDebtButtonClick()
         fun onSetButtonClick()
+        fun onAddDebt()
     }
 
     lateinit var buttonClickListener: OnButtonClickListener
@@ -237,6 +238,7 @@ class NewDebtFragment: Fragment() {
                                         setDebtUseCase.execute(sum = sum.toDouble(), idHuman = lastId, info = null, date = date)
                                     else
                                         setDebtUseCase.execute(sum = sum.toDouble(), idHuman = lastId, info = info, date = date)
+                                    buttonClickListener.onAddDebt()
                                     it.onComplete()
                                     Log.e(TAG, "Human id = $lastId set success")
                                 }
@@ -274,6 +276,7 @@ class NewDebtFragment: Fragment() {
                                     else
                                         setDebtUseCase.execute(sum = sum.toDouble(), idHuman = idHuman!!, info = info, date = date)
                                     addSumUseCase.execute(humanId = idHuman, sum = sum.toDouble())
+                                    buttonClickListener.onAddDebt()
                                     it.onComplete()
                                     Log.e(TAG, "New Debt in humanid = $idHuman set success")
                                 }
@@ -305,6 +308,7 @@ class NewDebtFragment: Fragment() {
                                         editDebtUseCase.execute(id = idDebt!!,sum = sum.toDouble(), idHuman = idHuman!!, info = null, date = date)
                                     else
                                         editDebtUseCase.execute(id = idDebt!! ,sum = sum.toDouble(), idHuman = idHuman!!, info = info, date = date)
+                                    buttonClickListener.onAddDebt()
                                     addSumUseCase.execute(humanId = idHuman, sum = currentSum)
                                     Log.e(TAG, "New Debt in humanid = $idHuman set success")
                                     it.onComplete()
