@@ -14,9 +14,9 @@ import java.text.DecimalFormatSymbols
 
 class DebtAdapter(private val debtDomainListImmutable: List<DebtDomain>, private val debtClickListener: OnDebtClickListener, private val currencyText: String): RecyclerView.Adapter<DebtAdapter.DebtViewHolder>() {
 
-    val decimalFormat = DecimalFormat("###,###,###.##")
-    val customSymbol: DecimalFormatSymbols = DecimalFormatSymbols()
-    val debtDomainList: MutableList<DebtDomain> = debtDomainListImmutable.toMutableList()
+    private val decimalFormat = DecimalFormat("###,###,###.##")
+    private val customSymbol: DecimalFormatSymbols = DecimalFormatSymbols()
+    private val debtDomainList: MutableList<DebtDomain> = debtDomainListImmutable.toMutableList()
 
     interface OnDebtClickListener {
         fun onDebtClick(debtDomain: DebtDomain, position: Int)

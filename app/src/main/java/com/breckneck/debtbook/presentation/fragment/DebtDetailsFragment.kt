@@ -78,12 +78,12 @@ class DebtDetailsFragment: Fragment() {
 
     private val vm by viewModel<DebtDetailsViewModel>()
 
-    val getDebtShareString: GetDebtShareString by inject()
-    val getAddSumInShareText: GetAddSumInShareText by inject()
+    private val getDebtShareString: GetDebtShareString by inject()
+    private val getAddSumInShareText: GetAddSumInShareText by inject()
 
-    lateinit var debtClickListener: DebtAdapter.OnDebtClickListener
-    lateinit var overallSumTextView: TextView
-    lateinit var debtAdapter: DebtAdapter
+    private lateinit var debtClickListener: DebtAdapter.OnDebtClickListener
+    private lateinit var overallSumTextView: TextView
+    private lateinit var debtAdapter: DebtAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_debt_details, container, false)
@@ -134,7 +134,7 @@ class DebtDetailsFragment: Fragment() {
                 showShareDialog(humanName, currency)
 
             if ((isDebtSettingsDialogShown.value != null) && (isDebtSettingsDialogShown.value == true))
-                showDebtSettings(vm.settingDebt.value!!, currency = currency!!, name = humanName!!)
+                showDebtSettings(vm.settingDebt.value!!, currency = currency, name = humanName!!)
 
             debtList.observe(viewLifecycleOwner) {
                 if (it.isNotEmpty()) {
@@ -150,7 +150,7 @@ class DebtDetailsFragment: Fragment() {
             }
 
             overallSum.observe(viewLifecycleOwner) {
-                setOverallSumText(sum = it, currency = currency!!, view = view)
+                setOverallSumText(sum = it, currency = currency, view = view)
             }
         }
 

@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.breckneck.deptbook.domain.usecase.Ad.SaveClicksUseCase
+import com.breckneck.deptbook.domain.usecase.Ad.GetClicksUseCase
 import com.breckneck.deptbook.domain.usecase.Debt.GetDebtQuantity
 import com.breckneck.deptbook.domain.usecase.Settings.GetAppIsRated
 import com.breckneck.deptbook.domain.usecase.Settings.GetDebtQuantityForAppRateDialogShow
@@ -20,7 +22,9 @@ class MainActivityViewModel(
     private val getAppIsRated: GetAppIsRated,
     private val setAppIsRated: SetAppIsRated,
     private val getDebtQuantityForAppRateDialogShow: GetDebtQuantityForAppRateDialogShow,
-    private val setDebtQuantityForAppRateDialogShow: SetDebtQuantityForAppRateDialogShow
+    private val setDebtQuantityForAppRateDialogShow: SetDebtQuantityForAppRateDialogShow,
+    private val getClicksUseCase: GetClicksUseCase,
+    private val saveClicks: SaveClicksUseCase
 ) : ViewModel() {
 
     private val TAG = "MainActivityViewModel"
@@ -49,6 +53,9 @@ class MainActivityViewModel(
     private val _debtQuantityForAppRateDialogShow = MutableLiveData<Int>()
     val debtQuantityForAppRateDialogShow: LiveData<Int>
         get() = _debtQuantityForAppRateDialogShow
+    private val _adClicksCounter = MutableLiveData<Int>()
+    val adClicksCounter: LiveData<Int>
+        get() = _adClicksCounter
 
     private val disposeBag = CompositeDisposable()
 
@@ -57,10 +64,12 @@ class MainActivityViewModel(
         getDebtQuantityForAppRateDialogShow()
         getDebtQuantity()
         getIsAppRated()
+        getAdClicksCounter()
     }
 
     override fun onCleared() {
         super.onCleared()
+        saveClicks.execute(adClicksCounter.value!!)
         disposeBag.clear()
         Log.e(TAG, "Main Activity View Model cleared")
     }
@@ -119,5 +128,17 @@ class MainActivityViewModel(
 
     private fun getDebtQuantityForAppRateDialogShow() {
         _debtQuantityForAppRateDialogShow.value = getDebtQuantityForAppRateDialogShow.execute()
+    }
+
+    private fun getAdClicksCounter() {
+        _adClicksCounter.value = getClicksUseCase.execute()
+    }
+
+    fun onActionClick() {
+        _adClicksCounter.value = _adClicksCounter.value!! + 1
+    }
+
+    fun onAdShow() {
+        _adClicksCounter.value = 0
     }
 }

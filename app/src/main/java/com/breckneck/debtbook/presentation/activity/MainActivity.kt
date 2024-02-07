@@ -21,10 +21,10 @@ import com.breckneck.debtbook.R
 import com.breckneck.debtbook.presentation.fragment.*
 import com.breckneck.debtbook.presentation.viewmodel.MainActivityViewModel
 import com.breckneck.deptbook.domain.model.DebtDomain
-import com.breckneck.deptbook.domain.usecase.Ad.AddClickUseCase
+import com.breckneck.deptbook.domain.usecase.Ad.SaveClicksUseCase
 import com.breckneck.deptbook.domain.usecase.Ad.GetClicksUseCase
-import com.breckneck.deptbook.domain.usecase.Ad.SetClicksUseCase
 import com.breckneck.deptbook.domain.usecase.Settings.*
+import com.breckneck.deptbook.domain.util.CLICKS_QUANTITY_FOR_AD_SHOW
 import com.breckneck.deptbook.domain.util.DEBT_QUANTITY_FOR_LAST_SHOW_APP_RATE_DIALOG
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -47,19 +47,13 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
 
     private var interstitialAd: InterstitialAd? = null
     private var interstitialAdLoader: InterstitialAdLoader? = null
-    var vib: Vibrator? = null
+    private var vib: Vibrator? = null
 
     private val TAG = "MainActivity"
     private val bannerTAG = "MainActivity"
     private val interstitialTAG = "MainActivity"
 
     private val vm by viewModel<MainActivityViewModel>()
-
-    lateinit var sharedPrefsAdStorage: SharedPrefsAdStorageImpl
-    lateinit var adRepository: AdRepositoryImpl
-    lateinit var getAdCounterClicks: GetClicksUseCase
-    lateinit var addClickToAdCounter: AddClickUseCase
-    lateinit var refreshAdCounter: SetClicksUseCase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,6 +88,14 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
             }
         }
 
+        vm.adClicksCounter.observe(this) { counter ->
+            if (counter > CLICKS_QUANTITY_FOR_AD_SHOW) {
+                if (interstitialAd != null) {
+                    showInterstitialAd()
+                }
+            }
+        }
+
         val getAppTheme: GetAppTheme by inject()
         val theme = getAppTheme.execute()
         if (theme.equals(getString(R.string.dark_theme)))
@@ -104,13 +106,6 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
 
 //        YANDEX MOBILE ADVERTISEMENT
-
-        sharedPrefsAdStorage = SharedPrefsAdStorageImpl(context = this)
-        adRepository = AdRepositoryImpl(adStorage = sharedPrefsAdStorage)
-        getAdCounterClicks = GetClicksUseCase(adRepository = adRepository)
-        addClickToAdCounter = AddClickUseCase(adRepository = adRepository)
-        refreshAdCounter = SetClicksUseCase(adRepository = adRepository)
-
         MobileAds.setUserConsent(false)
 
         //BANNER AD
@@ -186,6 +181,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
             setAdEventListener(object: InterstitialAdEventListener {
                 override fun onAdShown() {
                     Log.e(interstitialTAG, "Interstitial ad shown")
+                    vm.onAdShow()
                 }
 
                 override fun onAdFailedToShow(p0: AdError) {
@@ -259,12 +255,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         val fragment = DebtDetailsFragment()
         fragment.arguments = args
         fragmentTransaction.replace(R.id.frameLayout, fragment).addToBackStack("main").commit()
-        addClickToAdCounter.execute()
-        if (getAdCounterClicks.execute())
-            if (interstitialAd != null) {
-                showInterstitialAd()
-                refreshAdCounter.execute()
-            }
+        vm.onActionClick()
     }
 
     override fun onAddButtonClick() {
@@ -273,12 +264,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
         fragmentTransaction.replace(R.id.frameLayout, NewDebtFragment()).addToBackStack("main")
             .commit()
-        addClickToAdCounter.execute()
-        if (getAdCounterClicks.execute())
-            if (interstitialAd != null) {
-                showInterstitialAd()
-                refreshAdCounter.execute()
-            }
+        vm.onActionClick()
     }
 
     override fun onSettingsButtonClick() {
@@ -286,12 +272,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         val fragmentTransaction = fragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
         fragmentTransaction.replace(R.id.frameLayout, SettingsFragment()).addToBackStack("main")
             .commit()
-        addClickToAdCounter.execute()
-        if (getAdCounterClicks.execute())
-            if (interstitialAd != null) {
-                showInterstitialAd()
-                refreshAdCounter.execute()
-            }
+        vm.onActionClick()
     }
 
     override fun onAddDebt() {
@@ -316,12 +297,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         val fragment = DebtDetailsFragment()
         fragment.arguments = args
         fragmentTransaction.replace(R.id.frameLayout, fragment).commit()
-        addClickToAdCounter.execute()
-        if (getAdCounterClicks.execute())
-            if (interstitialAd != null) {
-                showInterstitialAd()
-                refreshAdCounter.execute()
-            }
+        vm.onActionClick()
     }
 
     override fun DebtDetailsExistHuman(idHuman: Int, currency: String, name: String) {
@@ -335,12 +311,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         val fragment = DebtDetailsFragment()
         fragment.arguments = args
         fragmentTransaction.replace(R.id.frameLayout, fragment).commit()
-        addClickToAdCounter.execute()
-        if (getAdCounterClicks.execute())
-            if (interstitialAd != null) {
-                showInterstitialAd()
-                refreshAdCounter.execute()
-            }
+        vm.onActionClick()
     }
 
     override fun onBackNewDebtButtonClick() {
@@ -362,12 +333,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         val fragment = NewDebtFragment()
         fragment.arguments = args
         fragmentTransaction.replace(R.id.frameLayout, fragment).addToBackStack("secondary").commit()
-        addClickToAdCounter.execute()
-        if (getAdCounterClicks.execute())
-            if (interstitialAd != null) {
-                showInterstitialAd()
-                refreshAdCounter.execute()
-            }
+        vm.onActionClick()
     }
 
     override fun editDebt(debtDomain: DebtDomain, currency: String, name: String) {
@@ -384,12 +350,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         val fragment = NewDebtFragment()
         fragment.arguments = args
         fragmentTransaction.replace(R.id.frameLayout, fragment).addToBackStack("secondary").commit()
-        addClickToAdCounter.execute()
-        if (getAdCounterClicks.execute())
-            if (interstitialAd != null) {
-                showInterstitialAd()
-                refreshAdCounter.execute()
-            }
+        vm.onActionClick()
     }
 
     override fun deleteHuman() {
@@ -397,12 +358,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         val fragmentManager = supportFragmentManager
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.frameLayout, MainFragment()).commit()
-        addClickToAdCounter.execute()
-        if (getAdCounterClicks.execute())
-            if (interstitialAd != null) {
-                showInterstitialAd()
-                refreshAdCounter.execute()
-            }
+        vm.onActionClick()
     }
 
     override fun onBackDebtsButtonClick() {

@@ -30,7 +30,9 @@ val appModule = module {
             getAppIsRated = get(),
             setAppIsRated = get(),
             getDebtQuantityForAppRateDialogShow = get(),
-            setDebtQuantityForAppRateDialogShow = get())
+            setDebtQuantityForAppRateDialogShow = get(),
+            getClicksUseCase = get(),
+            saveClicks = get())
     }
 
     viewModel<DebtDetailsViewModel> {

@@ -4,7 +4,5 @@ interface AdRepository {
 
     fun getClicks(): Int
 
-    fun addClick()
-
-    fun setClicks()
+    fun saveClick(click: Int)
 }

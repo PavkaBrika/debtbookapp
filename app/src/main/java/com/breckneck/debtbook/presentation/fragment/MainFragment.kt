@@ -31,8 +31,8 @@ class MainFragment : Fragment() {
 
     private val vm by viewModel<MainFragmentViewModel>()
 
-    lateinit var filterButton: ImageView
-    lateinit var humanAdapter: HumanAdapter
+    private lateinit var filterButton: ImageView
+    private lateinit var humanAdapter: HumanAdapter
 
     interface OnButtonClickListener {
         fun onHumanClick(idHuman: Int, currency: String, name: String)

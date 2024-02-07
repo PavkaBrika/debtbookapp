@@ -9,11 +9,7 @@ class AdRepositoryImpl(val adStorage: AdStorage): AdRepository {
         return adStorage.getClicks()
     }
 
-    override fun addClick() {
-        adStorage.addClick()
-    }
-
-    override fun setClicks() {
-        adStorage.setClick()
+    override fun saveClick(click: Int) {
+        adStorage.saveClick(click = click)
     }
 }

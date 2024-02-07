@@ -13,12 +13,12 @@ import java.text.DecimalFormatSymbols
 
 class HumanAdapter(
     humanDomainListImmutable: List<HumanDomain>,
-    val humanClickListener: OnHumanClickListener
+    private val humanClickListener: OnHumanClickListener
 ) : RecyclerView.Adapter<HumanAdapter.HumanViewHolder>() {
 
-    val decimalFormat = DecimalFormat("###,###,###.##")
-    val customSymbol: DecimalFormatSymbols = DecimalFormatSymbols()
-    val humanDomainList: MutableList<HumanDomain> = humanDomainListImmutable.toMutableList()
+    private val decimalFormat = DecimalFormat("###,###,###.##")
+    private val customSymbol: DecimalFormatSymbols = DecimalFormatSymbols()
+    private val humanDomainList: MutableList<HumanDomain> = humanDomainListImmutable.toMutableList()
 
     interface OnHumanClickListener{
         fun onHumanClick(humanDomain: HumanDomain, position: Int)

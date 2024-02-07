@@ -14,15 +14,7 @@ class SharedPrefsAdStorageImpl(context: Context): AdStorage {
         return sharedPreferences.getInt(AD_ID, 0)
     }
 
-    override fun addClick() {
-        var clicks = sharedPreferences.getInt(AD_ID, 0)
-        clicks++
-        sharedPreferences.edit().putInt(AD_ID, clicks).apply()
+    override fun saveClick(click: Int) {
+        sharedPreferences.edit().putInt(AD_ID, click).apply()
     }
-
-    override fun setClick() {
-        sharedPreferences.edit().putInt(AD_ID, 0).apply()
-    }
-
-
 }

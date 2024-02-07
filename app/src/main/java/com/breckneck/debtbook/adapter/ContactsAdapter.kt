@@ -1,5 +1,6 @@
 package com.breckneck.debtbook.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,6 +42,7 @@ class ContactsAdapter(
         return contactsList.size
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun replaceAll(contactsList: List<String>) {
         this.contactsList = contactsList
         notifyDataSetChanged()

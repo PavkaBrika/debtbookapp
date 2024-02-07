@@ -4,7 +4,5 @@ interface AdStorage {
 
     fun getClicks(): Int
 
-    fun addClick()
-
-    fun setClick()
+    fun saveClick(click: Int)
 }

@@ -1,5 +1,7 @@
 package com.breckneck.debtbook.di
 
+import com.breckneck.deptbook.domain.usecase.Ad.SaveClicksUseCase
+import com.breckneck.deptbook.domain.usecase.Ad.GetClicksUseCase
 import com.breckneck.deptbook.domain.usecase.Debt.*
 import com.breckneck.deptbook.domain.usecase.Human.*
 import com.breckneck.deptbook.domain.usecase.Settings.*
@@ -164,5 +166,15 @@ val domainModule = module {
 
     factory<GetHumanOrder> {
         GetHumanOrder(settingsRepository = get())
+    }
+
+    //ADS
+
+    factory<SaveClicksUseCase> {
+        SaveClicksUseCase(adRepository = get())
+    }
+
+    factory<GetClicksUseCase> {
+        GetClicksUseCase(adRepository = get())
     }
 }
