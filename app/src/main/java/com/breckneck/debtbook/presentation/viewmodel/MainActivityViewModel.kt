@@ -131,7 +131,7 @@ class MainActivityViewModel(
         _adClicksCounter.value = 0
     }
 
-    private fun getAppTheme() {
+    fun getAppTheme() {
         _appTheme.value = getAppTheme.execute()
     }
 }

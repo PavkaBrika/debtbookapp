@@ -14,6 +14,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
 import androidx.fragment.app.FragmentTransaction
 import androidx.navigation.NavController
@@ -71,12 +72,6 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
             vib = getSystemService(VIBRATOR_SERVICE) as Vibrator
         }
 
-        if (savedInstanceState == null) {
-            val fragmentManager = supportFragmentManager
-            val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
-            fragmentTransaction.replace(R.id.frameLayout, MainFragment()).commit()
-        }
-
         if (vm.isAppRateDialogShow.value == true)
             showAppRateDialog(vm.isAppReviewDialogFromSettings.value!!)
         if (vm.isAppReviewDialogShow.value == true)
@@ -100,6 +95,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.frameLayout) as NavHostFragment
         navController = navHostFragment.navController
 
+        vm.getAppTheme()
         vm.appTheme.observe(this) { theme ->
             if (theme.equals(getString(R.string.dark_theme)))
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
@@ -268,10 +264,6 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
     }
 
     override fun onSettingsButtonClick() {
-//        val fragmentManager = supportFragmentManager
-//        val fragmentTransaction = fragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-//        fragmentTransaction.replace(R.id.frameLayout, SettingsFragment()).addToBackStack("main")
-//            .commit()
         navController.navigate(R.id.action_mainFragment_to_settingsFragment)
         vm.onActionClick()
     }
@@ -288,35 +280,25 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
     }
 
     override fun DebtDetailsNewHuman(currency: String, name: String) {
-        val fragmentManager = supportFragmentManager
-        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-        supportFragmentManager.popBackStack("secondary",  POP_BACK_STACK_INCLUSIVE)
         val args = Bundle()
         args.putBoolean("newHuman", true)
         args.putString("currency", currency)
         args.putString("name", name)
-        val fragment = DebtDetailsFragment()
-        fragment.arguments = args
-        fragmentTransaction.replace(R.id.frameLayout, fragment).commit()
+        navController.navigate(R.id.action_newDebtFragment_to_debtDetailsFragment, args)
         vm.onActionClick()
     }
 
     override fun DebtDetailsExistHuman(idHuman: Int, currency: String, name: String) {
-        val fragmentManager = supportFragmentManager
-        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-        supportFragmentManager.popBackStack("secondary",  POP_BACK_STACK_INCLUSIVE)
         val args = Bundle()
         args.putInt("idHuman", idHuman)
         args.putString("currency", currency)
         args.putString("name", name)
-        val fragment = DebtDetailsFragment()
-        fragment.arguments = args
-        fragmentTransaction.replace(R.id.frameLayout, fragment).commit()
+        navController.navigate(R.id.action_newDebtFragment_to_debtDetailsFragment, args)
         vm.onActionClick()
     }
 
     override fun onBackNewDebtButtonClick() {
-        supportFragmentManager.popBackStack()
+        navController.popBackStack()
     }
 
     //DebtDetailsFragment interfaces
@@ -325,21 +307,15 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
     }
 
     override fun addNewDebtFragment(idHuman: Int, currency: String, name: String) {
-        val fragmentManager = supportFragmentManager
-        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
         val args = Bundle()
         args.putInt("idHuman", idHuman)
         args.putString("currency", currency)
         args.putString("name", name)
-        val fragment = NewDebtFragment()
-        fragment.arguments = args
-        fragmentTransaction.replace(R.id.frameLayout, fragment).addToBackStack("secondary").commit()
+        navController.navigate(R.id.action_debtDetailsFragment_to_newDebtFragment, args)
         vm.onActionClick()
     }
 
     override fun editDebt(debtDomain: DebtDomain, currency: String, name: String) {
-        val fragmentManager = supportFragmentManager
-        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
         val args = Bundle()
         args.putInt("idDebt", debtDomain.id)
         args.putInt("idHuman", debtDomain.idHuman)
@@ -348,27 +324,23 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         args.putString("info", debtDomain.info)
         args.putString("name", name)
         args.putString("currency", currency)
-        val fragment = NewDebtFragment()
-        fragment.arguments = args
-        fragmentTransaction.replace(R.id.frameLayout, fragment).addToBackStack("secondary").commit()
+        navController.navigate(R.id.action_debtDetailsFragment_to_newDebtFragment, args)
         vm.onActionClick()
     }
 
     override fun deleteHuman() {
         startClickVibration()
-        val fragmentManager = supportFragmentManager
-        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.frameLayout, MainFragment()).commit()
+        navController.popBackStack()
         vm.onActionClick()
     }
 
     override fun onBackDebtsButtonClick() {
-        supportFragmentManager.popBackStack()
+        navController.popBackStack()
     }
 
     //settings interface
     override fun onBackSettingsButtonClick() {
-        supportFragmentManager.popBackStack()
+        navController.popBackStack()
     }
 
     override fun onRateAppButtonClick() {

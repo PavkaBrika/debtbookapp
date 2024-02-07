@@ -69,7 +69,7 @@ class SharedPrefsSettingsStorageImpl(val context: Context): SettingsStorage {
     }
 
     override fun getAppTheme(): String {
-        return sharedPreferences.getString(APP_THEME, "System")!!
+        return sharedPreferences.getString(APP_THEME, "")!!
     }
 
     override fun setDebtQuantityForAppRateDialogShow(quantity: Int) {

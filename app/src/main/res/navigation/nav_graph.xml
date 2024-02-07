@@ -12,13 +12,45 @@
         tools:layout="@layout/fragment_main">
         <action
             android:id="@+id/action_mainFragment_to_settingsFragment"
-            app:destination="@id/settingsFragment" />
+            app:destination="@id/settingsFragment"
+            app:enterAnim="@anim/slide_up"
+            app:popExitAnim="@anim/slide_down" />
         <action
             android:id="@+id/action_mainFragment_to_newDebtFragment"
-            app:destination="@id/newDebtFragment" />
+            app:destination="@id/newDebtFragment"
+            app:enterAnim="@anim/slide_up"
+            app:exitAnim="@anim/slide_down"
+            app:popExitAnim="@anim/slide_down">
+            <argument
+                android:name="idHuman"
+                android:defaultValue="null" />
+            <argument
+                android:name="idDebt"
+                android:defaultValue="null" />
+            <argument
+                android:name="currency"
+                android:defaultValue="null" />
+            <argument
+                android:name="sum"
+                android:defaultValue="null" />
+            <argument
+                android:name="date"
+                android:defaultValue="null" />
+            <argument
+                android:name="info"
+                android:defaultValue="null" />
+            <argument
+                android:name="name"
+                android:defaultValue="null" />
+        </action>
         <action
             android:id="@+id/action_mainFragment_to_debtDetailsFragment"
-            app:destination="@id/debtDetailsFragment" />
+            app:destination="@id/debtDetailsFragment"
+            app:enterAnim="@anim/slide_in"
+            app:popExitAnim="@anim/slide_out">
+            <argument android:name="humanId" />
+            <argument android:name="newHuman" />
+        </action>
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
@@ -32,7 +64,12 @@
         tools:layout="@layout/fragment_addnewhuman">
         <action
             android:id="@+id/action_newDebtFragment_to_debtDetailsFragment"
-            app:destination="@id/debtDetailsFragment">
+            app:destination="@id/debtDetailsFragment"
+            app:enterAnim="@anim/slide_in"
+            app:launchSingleTop="true"
+            app:popExitAnim="@anim/slide_out"
+            app:popUpTo="@id/mainFragment"
+            app:popUpToInclusive="false">
             <argument android:name="humanId" />
         </action>
         <argument
@@ -68,7 +105,11 @@
         tools:layout="@layout/fragment_debt_details">
         <action
             android:id="@+id/action_debtDetailsFragment_to_newDebtFragment"
-            app:destination="@id/newDebtFragment" />
+            app:destination="@id/newDebtFragment"
+            app:enterAnim="@anim/slide_up"
+            app:launchSingleTop="false"
+            app:popExitAnim="@anim/slide_down"
+            app:popUpToInclusive="false" />
         <argument
             android:name="humanId"
             app:argType="integer"

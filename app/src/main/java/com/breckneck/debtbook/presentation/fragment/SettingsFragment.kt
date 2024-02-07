@@ -49,7 +49,7 @@ class SettingsFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val inflater = TransitionInflater.from(requireContext())
-        enterTransition = inflater.inflateTransition(R.transition.slide_up)
+//        enterTransition = inflater.inflateTransition(R.transition.slide_up)
     }
 
     override fun onCreateView(
@@ -193,7 +193,11 @@ class SettingsFragment : Fragment() {
         )
 
         val appThemeTextView: TextView = view.findViewById(R.id.appThemeTextView)
-        vm.appTheme.observe(viewLifecycleOwner) { theme ->
+        vm.appTheme.observe(viewLifecycleOwner) { appTheme ->
+            val theme = if (appTheme.isEmpty())
+                getString(R.string.system_theme)
+            else
+                appTheme
             appThemeTextView.text = theme
             for (i in appThemes.indices)
                 if (appThemes[i].contains(theme)) {

@@ -74,7 +74,7 @@ class NewDebtFragment: Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val inflater = TransitionInflater.from(requireContext())
-        enterTransition = inflater.inflateTransition(R.transition.slide_up)
+//        enterTransition = inflater.inflateTransition(R.transition.slide_up)
     }
 
     private val vm by viewModel<NewDebtFragmentViewModel>()
@@ -96,7 +96,7 @@ class NewDebtFragment: Fragment() {
             buttonClickListener.onBackNewDebtButtonClick()
         }
 
-        val idHuman = arguments?.getInt("idHuman")
+        val idHuman =  arguments?.getInt("idHuman")
         val idDebt = arguments?.getInt("idDebt")
         val currency = arguments?.getString("currency")
         val sumArgs = arguments?.getDouble("sum")
@@ -196,7 +196,7 @@ class NewDebtFragment: Fragment() {
 
 
 
-        if ((sumArgs != null) && (sumArgs != 0.0)) { //EXIST HUMAN EDIT DEBT LAYOUT CHANGES
+        if (sumArgs != 0.0) { //EXIST HUMAN EDIT DEBT LAYOUT CHANGES
             debtSumEditText.setText(decimalFormat.format(sumArgs))
             debtDateTextView.text = dateArgs
             infoEditText.setText(infoArgs)
@@ -433,7 +433,7 @@ class NewDebtFragment: Fragment() {
     }
 
     private fun getDebtState(idHuman: Int?, idDebt: Int?): DebtState {
-        if (idHuman == null)
+        if (idHuman == -1)
             return DebtState.NewHumanDebt
         if (idDebt == -1)
             return DebtState.ExistHumanDebt
