@@ -16,6 +16,9 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
 import androidx.fragment.app.FragmentTransaction
+import androidx.navigation.NavController
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import com.breckneck.debtbook.BuildConfig
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.presentation.fragment.*
@@ -54,6 +57,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
     private val interstitialTAG = "MainActivity"
 
     private val vm by viewModel<MainActivityViewModel>()
+    lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -93,15 +97,17 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
                 }
             }
         }
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.frameLayout) as NavHostFragment
+        navController = navHostFragment.navController
 
-        val getAppTheme: GetAppTheme by inject()
-        val theme = getAppTheme.execute()
-        if (theme.equals(getString(R.string.dark_theme)))
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-        else if (theme.equals(getString(R.string.light_theme)))
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-        else if (theme.equals(getString(R.string.system_theme)))
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+        vm.appTheme.observe(this) { theme ->
+            if (theme.equals(getString(R.string.dark_theme)))
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            else if (theme.equals(getString(R.string.light_theme)))
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            else if (theme.equals(getString(R.string.system_theme)))
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+        }
 
 //        YANDEX MOBILE ADVERTISEMENT
         MobileAds.setUserConsent(false)
@@ -167,6 +173,10 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
             })
         }
         loadInterstitialAd()
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        return super.onSupportNavigateUp()
     }
 
     private fun loadInterstitialAd() {
@@ -244,32 +254,25 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
 
 //MainFragment interfaces
     override fun onHumanClick(idHuman: Int, currency: String, name: String) {
-        val fragmentManager = supportFragmentManager
-        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
         val args = Bundle()
         args.putInt("idHuman", idHuman)
         args.putString("currency", currency)
         args.putString("name", name)
-        val fragment = DebtDetailsFragment()
-        fragment.arguments = args
-        fragmentTransaction.replace(R.id.frameLayout, fragment).addToBackStack("main").commit()
+        navController.navigate(R.id.action_mainFragment_to_debtDetailsFragment, args)
         vm.onActionClick()
     }
 
     override fun onAddButtonClick() {
-        val fragmentManager = supportFragmentManager
-        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
-            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-        fragmentTransaction.replace(R.id.frameLayout, NewDebtFragment()).addToBackStack("main")
-            .commit()
+        navController.navigate(R.id.action_mainFragment_to_newDebtFragment)
         vm.onActionClick()
     }
 
     override fun onSettingsButtonClick() {
-        val fragmentManager = supportFragmentManager
-        val fragmentTransaction = fragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-        fragmentTransaction.replace(R.id.frameLayout, SettingsFragment()).addToBackStack("main")
-            .commit()
+//        val fragmentManager = supportFragmentManager
+//        val fragmentTransaction = fragmentManager.beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+//        fragmentTransaction.replace(R.id.frameLayout, SettingsFragment()).addToBackStack("main")
+//            .commit()
+        navController.navigate(R.id.action_mainFragment_to_settingsFragment)
         vm.onActionClick()
     }
 

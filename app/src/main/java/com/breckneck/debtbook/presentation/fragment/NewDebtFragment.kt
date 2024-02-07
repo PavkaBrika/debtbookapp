@@ -96,13 +96,13 @@ class NewDebtFragment: Fragment() {
             buttonClickListener.onBackNewDebtButtonClick()
         }
 
-        val idHuman = arguments?.getInt("idHuman", -1)
-        val idDebt = arguments?.getInt("idDebt", -1)
-        val currency = arguments?.getString("currency", "")
-        val sumArgs = arguments?.getDouble("sum", 0.0)
-        val dateArgs = arguments?.getString("date", "")
-        val infoArgs = arguments?.getString("info", "")
-        val nameArgs = arguments?.getString("name", "")
+        val idHuman = arguments?.getInt("idHuman")
+        val idDebt = arguments?.getInt("idDebt")
+        val currency = arguments?.getString("currency")
+        val sumArgs = arguments?.getDouble("sum")
+        val dateArgs = arguments?.getString("date")
+        val infoArgs = arguments?.getString("info")
+        val nameArgs = arguments?.getString("name")
 
         val humanNameEditText: EditText = view.findViewById(R.id.humanNameEditText)
         val contactsImageView: ImageView = view.findViewById(R.id.contactsImageView)
@@ -145,6 +145,7 @@ class NewDebtFragment: Fragment() {
                 if (currencyNames[i].contains(currency)) {
                     currencyTextView.text = currencyNames[i]
                     currencyTextView.setOnClickListener {
+                        Log.e(TAG, "Currency clicked")
                         vm.onCurrencyDialogOpen(selectedCurrencyPosition = i)
                         showCurrencyDialog(
                             settingsList = currencyNames,
@@ -205,7 +206,7 @@ class NewDebtFragment: Fragment() {
             currencyTextView.isEnabled = false
         }
 
-        if (idHuman != null) {
+        if (idHuman != -1) {
             humanNameEditText.visibility = View.GONE
             contactsImageView.visibility = View.GONE
             humanNameEditText.setText(nameArgs)

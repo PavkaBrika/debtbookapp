@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.breckneck.deptbook.domain.usecase.Ad.SaveClicksUseCase
 import com.breckneck.deptbook.domain.usecase.Ad.GetClicksUseCase
 import com.breckneck.deptbook.domain.usecase.Debt.GetDebtQuantity
+import com.breckneck.deptbook.domain.usecase.Settings.GetAppTheme
 import com.breckneck.deptbook.domain.usecase.Settings.GetDebtQuantityForAppRateDialogShow
 import com.breckneck.deptbook.domain.usecase.Settings.SetDebtQuantityForAppRateDialogShow
 import com.breckneck.deptbook.domain.util.DEBT_QUANTITY_FOR_NEXT_SHOW
@@ -20,7 +21,8 @@ class MainActivityViewModel(
     private val getDebtQuantityForAppRateDialogShow: GetDebtQuantityForAppRateDialogShow,
     private val setDebtQuantityForAppRateDialogShow: SetDebtQuantityForAppRateDialogShow,
     private val getClicksUseCase: GetClicksUseCase,
-    private val saveClicks: SaveClicksUseCase
+    private val saveClicks: SaveClicksUseCase,
+    private val getAppTheme: GetAppTheme
 ) : ViewModel() {
 
     private val TAG = "MainActivityViewModel"
@@ -49,6 +51,9 @@ class MainActivityViewModel(
     private val _adClicksCounter = MutableLiveData<Int>()
     val adClicksCounter: LiveData<Int>
         get() = _adClicksCounter
+    private val _appTheme = MutableLiveData<String>()
+    val appTheme: LiveData<String>
+        get() = _appTheme
 
     private val disposeBag = CompositeDisposable()
 
@@ -57,6 +62,7 @@ class MainActivityViewModel(
         getDebtQuantityForAppRateDialogShow()
         getDebtQuantity()
         getAdClicksCounter()
+        getAppTheme()
     }
 
     override fun onCleared() {
@@ -123,5 +129,9 @@ class MainActivityViewModel(
 
     fun onAdShow() {
         _adClicksCounter.value = 0
+    }
+
+    private fun getAppTheme() {
+        _appTheme.value = getAppTheme.execute()
     }
 }

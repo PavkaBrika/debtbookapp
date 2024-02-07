@@ -1,6 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/nav_graph">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/mainFragment">
 
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.breckneck.debtbook.presentation.fragment.MainFragment"
+        android:label="MainFragment"
+        tools:layout="@layout/fragment_main">
+        <action
+            android:id="@+id/action_mainFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_newDebtFragment"
+            app:destination="@id/newDebtFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_debtDetailsFragment"
+            app:destination="@id/debtDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.breckneck.debtbook.presentation.fragment.SettingsFragment"
+        android:label="SettingsFragment"
+        tools:layout="@layout/fragment_settings"/>
+    <fragment
+        android:id="@+id/newDebtFragment"
+        android:name="com.breckneck.debtbook.presentation.fragment.NewDebtFragment"
+        android:label="NewDebtFragment"
+        tools:layout="@layout/fragment_addnewhuman">
+        <action
+            android:id="@+id/action_newDebtFragment_to_debtDetailsFragment"
+            app:destination="@id/debtDetailsFragment">
+            <argument android:name="humanId" />
+        </action>
+        <argument
+            android:name="idHuman"
+            app:argType="integer"
+            android:defaultValue="-1" />
+        <argument
+            android:name="idDebt"
+            app:argType="integer"
+            android:defaultValue="-1" />
+        <argument
+            android:name="currency"
+            app:argType="string" />
+        <argument
+            android:name="sum"
+            app:argType="float"
+            android:defaultValue="0.0" />
+        <argument
+            android:name="date"
+            app:argType="string" />
+        <argument
+            android:name="info"
+            app:argType="string" />
+        <argument
+            android:name="name"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/debtDetailsFragment"
+        android:name="com.breckneck.debtbook.presentation.fragment.DebtDetailsFragment"
+        android:label="DebtDetailsFragment"
+        app:route="Details"
+        tools:layout="@layout/fragment_debt_details">
+        <action
+            android:id="@+id/action_debtDetailsFragment_to_newDebtFragment"
+            app:destination="@id/newDebtFragment" />
+        <argument
+            android:name="humanId"
+            app:argType="integer"
+            android:defaultValue="0" />
+        <argument
+            android:name="newHuman"
+            app:argType="boolean"
+            android:defaultValue="false" />
+        <argument
+            android:name="currency"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="humanName"
+            app:argType="string"
+            app:nullable="true" />
+    </fragment>
 </navigation>
