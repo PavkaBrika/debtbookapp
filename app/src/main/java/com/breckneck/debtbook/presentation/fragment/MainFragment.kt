@@ -88,17 +88,6 @@ class MainFragment : Fragment() {
                 DividerItemDecoration.VERTICAL
             )
         )
-
-        val noDebtsTextView: TextView = view.findViewById(R.id.noDebtTextView)
-        val mainRecyclerViewHintTextView: TextView =
-            view.findViewById(R.id.mainRecyclerViewHintTextView)
-        val mainRecyclerViewSecondHintTextView: TextView = view.findViewById(R.id.mainRecyclerViewSecondHintTextView)
-
-        val addButton: FloatingActionButton = view.findViewById(R.id.addHumanButton)
-        addButton.setOnClickListener {
-            buttonClickListener?.onAddButtonClick()
-        }
-
         val humanClickListener = object : HumanAdapter.OnHumanClickListener {
             override fun onHumanClick(humanDomain: HumanDomain, position: Int) {
                 buttonClickListener?.onHumanClick(
@@ -112,6 +101,18 @@ class MainFragment : Fragment() {
             override fun onHumanLongClick(humanDomain: HumanDomain, position: Int) {
                 openChangeDebtNameDialog(humanDomain = humanDomain, position = position)
             }
+        }
+        humanAdapter = HumanAdapter(listOf(), humanClickListener)
+        recyclerView.adapter = humanAdapter
+
+        val noDebtsTextView: TextView = view.findViewById(R.id.noDebtTextView)
+        val mainRecyclerViewHintTextView: TextView =
+            view.findViewById(R.id.mainRecyclerViewHintTextView)
+        val mainRecyclerViewSecondHintTextView: TextView = view.findViewById(R.id.mainRecyclerViewSecondHintTextView)
+
+        val addButton: FloatingActionButton = view.findViewById(R.id.addHumanButton)
+        addButton.setOnClickListener {
+            buttonClickListener?.onAddButtonClick()
         }
 
         val settingsButton: ImageView = view.findViewById(R.id.settingsButton)
@@ -138,8 +139,7 @@ class MainFragment : Fragment() {
                 mainRecyclerViewSecondHintTextView.visibility = View.INVISIBLE
                 noDebtsTextView.visibility = View.VISIBLE
             }
-            humanAdapter = HumanAdapter(it, humanClickListener)
-            recyclerView.adapter = humanAdapter
+            humanAdapter.updateHumansList(it)
             Log.e(TAG, "adapter link success")
         }
 
@@ -302,13 +302,13 @@ class MainFragment : Fragment() {
                 }
 
                 HumanFilter.NegativeHumans -> {
-                    filterButton.setColorFilter(ContextCompat.getColor(view!!.context, R.color.red))
+                    filterButton.setColorFilter(ContextCompat.getColor(requireActivity(), R.color.red))
                 }
 
                 HumanFilter.PositiveHumans -> {
                     filterButton.setColorFilter(
                         ContextCompat.getColor(
-                            view!!.context,
+                            requireActivity(),
                             R.color.green
                         )
                     )

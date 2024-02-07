@@ -55,6 +55,11 @@ dependencies {
     implementation project(path: ':domain')
     implementation project(path: ':data')
 
+    //Navigation
+    def nav_version = "2.7.6"
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
+
     //Yandex Mobile Ads
     implementation 'com.yandex.android:mobileads:6.0.0'
     implementation 'com.yandex.android:mobmetricalib:5.0.0'

@@ -31,6 +31,12 @@ class HumanAdapter(
         notifyItemChanged(position)
     }
 
+    fun updateHumansList(humanList: List<HumanDomain>) {
+        humanDomainList.clear()
+        humanDomainList.addAll(humanList)
+        notifyDataSetChanged()
+    }
+
     class HumanViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val name: TextView = itemView.findViewById(R.id.name)
         val debt: TextView = itemView.findViewById(R.id.debt)
