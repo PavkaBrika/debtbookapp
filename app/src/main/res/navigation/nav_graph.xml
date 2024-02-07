@@ -19,7 +19,6 @@
             android:id="@+id/action_mainFragment_to_newDebtFragment"
             app:destination="@id/newDebtFragment"
             app:enterAnim="@anim/slide_up"
-            app:exitAnim="@anim/slide_down"
             app:popExitAnim="@anim/slide_down">
             <argument
                 android:name="idHuman"
@@ -65,9 +64,8 @@
         <action
             android:id="@+id/action_newDebtFragment_to_debtDetailsFragment"
             app:destination="@id/debtDetailsFragment"
-            app:enterAnim="@anim/slide_in"
+            app:enterAnim="@anim/slide_down"
             app:launchSingleTop="true"
-            app:popExitAnim="@anim/slide_out"
             app:popUpTo="@id/mainFragment"
             app:popUpToInclusive="false">
             <argument android:name="humanId" />
