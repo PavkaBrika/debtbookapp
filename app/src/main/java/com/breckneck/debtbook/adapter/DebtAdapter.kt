@@ -1,5 +1,6 @@
 package com.breckneck.debtbook.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,13 +12,21 @@ import com.breckneck.deptbook.domain.model.DebtDomain
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 
-class DebtAdapter(private val debtDomainList: List<DebtDomain>, private val debtClickListener: OnDebtClickListener, private val currencyText: String): RecyclerView.Adapter<DebtAdapter.DebtViewHolder>() {
+class DebtAdapter(private val debtDomainListImmutable: List<DebtDomain>, private val debtClickListener: OnDebtClickListener, private val currencyText: String): RecyclerView.Adapter<DebtAdapter.DebtViewHolder>() {
 
     val decimalFormat = DecimalFormat("###,###,###.##")
     val customSymbol: DecimalFormatSymbols = DecimalFormatSymbols()
+    val debtDomainList: MutableList<DebtDomain> = debtDomainListImmutable.toMutableList()
 
     interface OnDebtClickListener {
         fun onDebtClick(debtDomain: DebtDomain, position: Int)
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateDebtList(debtList: List<DebtDomain>) {
+        debtDomainList.clear()
+        debtDomainList.addAll(debtList)
+        notifyDataSetChanged()
     }
 
     class DebtViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

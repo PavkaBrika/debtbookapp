@@ -31,6 +31,7 @@ class HumanAdapter(
         notifyItemChanged(position)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateHumansList(humanList: List<HumanDomain>) {
         humanDomainList.clear()
         humanDomainList.addAll(humanList)

@@ -83,6 +83,7 @@ class DebtDetailsFragment: Fragment() {
 
     lateinit var debtClickListener: DebtAdapter.OnDebtClickListener
     lateinit var overallSumTextView: TextView
+    lateinit var debtAdapter: DebtAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_debt_details, container, false)
@@ -103,6 +104,15 @@ class DebtDetailsFragment: Fragment() {
             setCollapsedTitleTypeface(Typeface.DEFAULT_BOLD)
             setExpandedTitleTypeface(Typeface.DEFAULT_BOLD)
         }
+
+        debtClickListener = object : DebtAdapter.OnDebtClickListener{ //ALERT DIALOG
+            override fun onDebtClick(debtDomain: DebtDomain, position: Int) {
+                showDebtSettings(debtDomain = debtDomain, currency = currency!!, name = humanName!!)
+                Log.e(TAG, "Click on debt with id = ${debtDomain.id}")
+            }
+        }
+        debtAdapter = DebtAdapter(listOf(), debtClickListener, currency!!)
+        recyclerView.adapter = debtAdapter
 
         vm.apply {
             if (newHuman == true) {
@@ -127,11 +137,9 @@ class DebtDetailsFragment: Fragment() {
                 showDebtSettings(vm.settingDebt.value!!, currency = currency!!, name = humanName!!)
 
             debtList.observe(viewLifecycleOwner) {
-                val list: MutableList<DebtDomain> = it.toMutableList()
-                val adapter = DebtAdapter(list, debtClickListener, currency!!)
-                recyclerView.adapter = adapter
-                if (list.isNotEmpty()) {
+                if (it.isNotEmpty()) {
                     debtRecyclerViewHintTextView.visibility = View.VISIBLE
+                    debtAdapter.updateDebtList(debtList = it)
                 } else {
                     debtRecyclerViewHintTextView.visibility = View.INVISIBLE
                 }
@@ -149,13 +157,6 @@ class DebtDetailsFragment: Fragment() {
         val deleteHumanButton: ImageView = view.findViewById(R.id.deleteHumanButton)
         deleteHumanButton.setOnClickListener {
             showDeleteHumanDialog()
-        }
-
-        debtClickListener = object : DebtAdapter.OnDebtClickListener{ //ALERT DIALOG
-            override fun onDebtClick(debtDomain: DebtDomain, position: Int) {
-                showDebtSettings(debtDomain = debtDomain, currency = currency!!, name = humanName!!)
-                Log.e(TAG, "Click on debt with id = ${debtDomain.id}")
-            }
         }
 
         val orderButton: ImageView = view.findViewById(R.id.orderButton)
