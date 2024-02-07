@@ -78,13 +78,11 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         if (vm.isAppReviewDialogShow.value == true)
             showLowAppRateDialog(vm.isAppReviewDialogFromSettings.value!!)
 
-        vm.isAppRated.observe(this) {
-            vm.debtQuantity.observe(this) {
-                if (it >= vm.debtQuantityForAppRateDialogShow.value!! &&
-                    vm.debtQuantityForAppRateDialogShow.value!! <= DEBT_QUANTITY_FOR_LAST_SHOW_APP_RATE_DIALOG
-                ) {
-                    showAppRateDialog(false)
-                }
+        vm.debtQuantity.observe(this) {
+            if (it >= vm.debtQuantityForAppRateDialogShow.value!! &&
+                vm.debtQuantityForAppRateDialogShow.value!! <= DEBT_QUANTITY_FOR_LAST_SHOW_APP_RATE_DIALOG
+            ) {
+                showAppRateDialog(false)
             }
         }
 
@@ -371,11 +369,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
     }
 
     override fun onRateAppButtonClick() {
-        if (vm.isAppRated.value == false) {
-            showAppRateDialog(true)
-        } else {
-            Toast.makeText(applicationContext, getString(R.string.app_already_rated_hint), Toast.LENGTH_SHORT).show()
-        }
+        showAppRateDialog(true)
     }
 
     private fun showAppRateDialog(isFromSettings: Boolean) {
@@ -496,7 +490,6 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         val intent = Intent(Intent.ACTION_VIEW)
         intent.setData(Uri.parse("market://details?id=${packageName}"))
         startActivity(intent)
-        vm.onAppRate()
     }
 
     private fun showLowAppRateDialog(fromSettings: Boolean) {

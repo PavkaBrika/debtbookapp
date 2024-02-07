@@ -128,14 +128,6 @@ val domainModule = module {
         GetAddSumInShareText(settingsRepository = get())
     }
 
-    factory<SetAppIsRated> {
-        SetAppIsRated(settingsRepository = get())
-    }
-
-    factory<GetAppIsRated> {
-        GetAppIsRated(settingsRepository = get())
-    }
-
     factory<SetAppTheme> {
         SetAppTheme(settingsRepository = get())
     }

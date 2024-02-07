@@ -27,8 +27,6 @@ val appModule = module {
     viewModel<MainActivityViewModel> {
         MainActivityViewModel(
             getDebtQuantity = get(),
-            getAppIsRated = get(),
-            setAppIsRated = get(),
             getDebtQuantityForAppRateDialogShow = get(),
             setDebtQuantityForAppRateDialogShow = get(),
             getClicksUseCase = get(),
