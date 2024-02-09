@@ -56,6 +56,14 @@
             android:text="@string/order_by_date" />
 
         <RadioButton
+            android:id="@+id/orderCreationDateRadioButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/defaultRadioButtons"
+            android:checked="true"
+            android:text="@string/order_by_creation_date" />
+
+        <RadioButton
             android:id="@+id/orderSumRadioButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

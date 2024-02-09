@@ -70,8 +70,10 @@
         <action
             android:id="@+id/action_newDebtFragment_to_debtDetailsFragment"
             app:destination="@id/debtDetailsFragment"
+            app:enterAnim="@anim/fade_in"
             app:exitAnim="@anim/slide_down"
             app:launchSingleTop="true"
+            app:popEnterAnim="@anim/fade_in"
             app:popExitAnim="@anim/slide_out"
             app:popUpTo="@id/mainFragment"
             app:popUpToInclusive="false">

@@ -66,9 +66,10 @@ class SettingsRepositoryImpl(private val settingsStorage: SettingsStorage): Sett
 
     override fun setDebtOrder(order: Pair<DebtOrderAttribute, Boolean>) {
         val debtAttribute: Int
-        when (order.first) {
-            DebtOrderAttribute.Date -> debtAttribute = ORDER_DEBT_BY_DATE
-            DebtOrderAttribute.Sum -> debtAttribute = ORDER_DEBT_BY_SUM
+        debtAttribute = when (order.first) {
+            DebtOrderAttribute.CreationDate -> ORDER_DEBT_BY_CREATION_DATE
+            DebtOrderAttribute.Date -> ORDER_DEBT_BY_DATE
+            DebtOrderAttribute.Sum -> ORDER_DEBT_BY_SUM
         }
         settingsStorage.setDebtOrder(Pair(debtAttribute, order.second))
     }

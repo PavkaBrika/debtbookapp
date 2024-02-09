@@ -181,7 +181,7 @@ class MainFragment : Fragment() {
         var sortHumansAttribute = vm.humanOrder.value!!.first
         when (sortHumansAttribute) {
             HumanOrderAttribute.Date ->
-                bottomSheetDialogFilter.findViewById<RadioButton>(R.id.orderDateRadioButton)!!.isChecked =
+                bottomSheetDialogFilter.findViewById<RadioButton>(R.id.orderCreationDateRadioButton)!!.isChecked =
                     true
 
             HumanOrderAttribute.Sum ->
@@ -236,7 +236,7 @@ class MainFragment : Fragment() {
             }
 
             when (bottomSheetDialogFilter.findViewById<RadioGroup>(R.id.orderRadioGroup)!!.checkedRadioButtonId) {
-                R.id.orderDateRadioButton -> {
+                R.id.orderCreationDateRadioButton -> {
                     sortHumansAttribute = HumanOrderAttribute.Date
                 }
 

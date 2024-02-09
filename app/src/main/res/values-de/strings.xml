@@ -58,7 +58,7 @@
     <string name="excel_format">Excel-Format</string>
     <string name="error">Irgendetwas ist schief gelaufen...</string>
     <string name="order_debt_sum">Schuldsumme</string>
-    <string name="order_by_date">Datum</string>
+    <string name="order_by_creation_date">Datum der Erstellung</string>
     <string name="order_by_last_debt_date">Datum der letzten Forderung</string>
     <string name="order_by">Bestellen nach</string>
     <string name="remember_choice">Auswahl merken</string>
@@ -72,4 +72,5 @@
     <string name="long_tap_to_change_the_name_of_the_debt">Langes Antippen, um den Namen der Schuld zu ändern</string>
     <string name="change_debt_name">Schuldtitel ändern</string>
     <string name="select_currency">Währung auswählen</string>
+    <string name="order_by_date">Datum</string>
 </resources>

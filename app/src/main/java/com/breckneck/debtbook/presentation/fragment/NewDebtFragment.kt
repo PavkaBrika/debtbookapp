@@ -99,7 +99,7 @@ class NewDebtFragment: Fragment() {
         val idHuman =  arguments?.getInt("idHuman")
         val idDebt = arguments?.getInt("idDebt")
         val currency = arguments?.getString("currency")
-        val sumArgs = arguments?.getDouble("sum")
+        val sumArgs = arguments?.getFloat("sum")
         val dateArgs = arguments?.getString("date")
         val infoArgs = arguments?.getString("info")
         val nameArgs = arguments?.getString("name")
@@ -194,9 +194,7 @@ class NewDebtFragment: Fragment() {
                 calendar.get(Calendar.DAY_OF_MONTH)).show()
         }
 
-
-
-        if (sumArgs != 0.0) { //EXIST HUMAN EDIT DEBT LAYOUT CHANGES
+        if (sumArgs != 0.0.toFloat()) { //EXIST HUMAN EDIT DEBT LAYOUT CHANGES
             debtSumEditText.setText(decimalFormat.format(sumArgs))
             debtDateTextView.text = dateArgs
             infoEditText.setText(infoArgs)

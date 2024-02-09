@@ -316,9 +316,12 @@ class DebtDetailsFragment: Fragment() {
             sortImageView!!.rotationY = ROTATE_DEGREE_DEBT_IMAGE_VIEW_BY_DECREASE
 
         var orderAttribute = vm.debtOrder.value!!.first
+        val orderCreationDateRadioButton = orderDialog.findViewById<RadioButton>(R.id.orderCreationDateRadioButton)
         val orderDateRadioButton = orderDialog.findViewById<RadioButton>(R.id.orderDateRadioButton)
         val orderSumRadioButton = orderDialog.findViewById<RadioButton>(R.id.orderSumRadioButton)
         when (orderAttribute) {
+            DebtOrderAttribute.CreationDate ->
+                orderCreationDateRadioButton!!.isChecked = true
             DebtOrderAttribute.Date ->
                 orderDateRadioButton!!.isChecked = true
             DebtOrderAttribute.Sum ->
@@ -341,6 +344,9 @@ class DebtDetailsFragment: Fragment() {
             when (orderDialog.findViewById<RadioGroup>(R.id.orderRadioGroup)!!.checkedRadioButtonId) {
                 R.id.orderDateRadioButton -> {
                     orderAttribute = DebtOrderAttribute.Date
+                }
+                R.id.orderCreationDateRadioButton -> {
+                    orderAttribute = DebtOrderAttribute.CreationDate
                 }
                 R.id.orderSumRadioButton -> {
                     orderAttribute = DebtOrderAttribute.Sum

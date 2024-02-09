@@ -58,7 +58,7 @@
     <string name="excel_format">Format Excel</string>
     <string name="error">Quelque chose a mal tourné...</string>
     <string name="order_debt_sum">Somme de la dette</string>
-    <string name="order_by_date">Date</string>
+    <string name="order_by_creation_date">Date de création</string>
     <string name="order_by_last_debt_date">Date de la dernière dette</string>
     <string name="order_by">Commander par</string>
     <string name="remember_choice">Se souvenir du choix</string>
@@ -72,4 +72,5 @@
     <string name="long_tap_to_change_the_name_of_the_debt">Appui long pour changer le nom de la dette</string>
     <string name="change_debt_name">Modifier le nom de la dette</string>
     <string name="select_currency">Sélectionner une devise</string>
+    <string name="order_by_date">Date</string>
 </resources>
