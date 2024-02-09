@@ -32,9 +32,6 @@ class MainFragmentViewModel(
 
     private val TAG = "MainFragmentViewModel"
 
-    private val _isFragmentNeedRefresh = MutableLiveData<Boolean>(true)
-    val isFragmentNeedRefresh: LiveData<Boolean>
-        get() = _isFragmentNeedRefresh
     private val _mainSums = MutableLiveData<Pair<String, String>>()
     val mainSums: LiveData<Pair<String, String>>
         get() = _mainSums
@@ -83,15 +80,15 @@ class MainFragmentViewModel(
         if (_humanList.value != null) {
             val result = Single.create {
                 when (humanFilter.value!!) {
-                    HumanFilter.AllHumans -> it.onSuccess(_humanList.value!!)
-                    HumanFilter.NegativeHumans -> it.onSuccess(getNegativeHumansUseCase.execute(_humanList.value!!))
-                    HumanFilter.PositiveHumans -> it.onSuccess(getPositiveHumansUseCase.execute(_humanList.value!!))
+                    HumanFilter.AllHumans -> it.onSuccess(sortHumans.execute(_humanList.value!!, _humanOrder.value!!))
+                    HumanFilter.NegativeHumans -> it.onSuccess(sortHumans.execute(getNegativeHumansUseCase.execute(_humanList.value!!), _humanOrder.value!!))
+                    HumanFilter.PositiveHumans -> it.onSuccess(sortHumans.execute(getPositiveHumansUseCase.execute(_humanList.value!!), _humanOrder.value!!))
                 }
             }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    _resultHumanList.value = sortHumans.execute(it, _humanOrder.value!!)
+                    _resultHumanList.value = it
                 }, {
                     Log.e(TAG, it.stackTrace.toString())
                 })
@@ -184,13 +181,5 @@ class MainFragmentViewModel(
 
     fun onChangeDebtNameDialogClose() {
         _isChangeDebtNameDialogOpened.value = false
-    }
-
-    fun onFragmentNotNeedToRefresh() {
-        _isFragmentNeedRefresh.value = false
-    }
-
-    fun onFragmentNeedToRefresh() {
-        _isFragmentNeedRefresh.value = true
     }
 }

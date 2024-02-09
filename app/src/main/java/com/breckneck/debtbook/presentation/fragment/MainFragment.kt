@@ -13,6 +13,8 @@ import android.widget.*
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
+import androidx.fragment.app.setFragmentResultListener
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
@@ -51,13 +53,15 @@ class MainFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         buttonClickListener = context as OnButtonClickListener
-        vm.onFragmentNotNeedToRefresh()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.e(TAG, "MainFragment created")
-        vm.onFragmentNotNeedToRefresh()
+        setFragmentResultListener("requestKey") { requestKey, bundle ->
+            if (bundle.getBoolean("isListModified"))
+                vm.init()
+        }
     }
 
     override fun onCreateView(
@@ -66,9 +70,6 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_main, container, false)
-
-        if (vm.isFragmentNeedRefresh.value == true)
-            vm.init()
 
         if (vm.isSortDialogOpened.value == true)
             showHumanSortDialog()
@@ -385,7 +386,6 @@ class MainFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        vm.onFragmentNeedToRefresh()
     }
 
     private fun changeDebtName(humanDomain: HumanDomain, position: Int) {

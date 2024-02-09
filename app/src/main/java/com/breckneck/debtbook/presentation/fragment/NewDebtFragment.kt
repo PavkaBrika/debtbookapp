@@ -17,8 +17,10 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
@@ -217,6 +219,7 @@ class NewDebtFragment: Fragment() {
         val debtSumTextInput: TextInputLayout = view.findViewById(R.id.debtSumTextInput)
         val setButton : FloatingActionButton = view.findViewById(R.id.setSettingsButton)
         setButton.setOnClickListener{
+            setFragmentResult("requestKey", bundleOf("isListModified" to true))
             buttonClickListener.onSetButtonClick()
             val name = humanNameEditText.text.toString()
             var sum = debtSumEditText.text.toString()
