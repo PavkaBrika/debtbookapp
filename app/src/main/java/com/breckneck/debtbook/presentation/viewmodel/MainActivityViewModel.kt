@@ -10,7 +10,7 @@ import com.breckneck.deptbook.domain.usecase.Debt.GetDebtQuantity
 import com.breckneck.deptbook.domain.usecase.Settings.GetAppTheme
 import com.breckneck.deptbook.domain.usecase.Settings.GetDebtQuantityForAppRateDialogShow
 import com.breckneck.deptbook.domain.usecase.Settings.SetDebtQuantityForAppRateDialogShow
-import com.breckneck.deptbook.domain.util.DEBT_QUANTITY_FOR_NEXT_SHOW
+import com.breckneck.deptbook.domain.util.DEBT_QUANTITY_FOR_NEXT_SHOW_APP_RATE_DIALOG
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -107,7 +107,7 @@ class MainActivityViewModel(
     }
 
     fun onAppRateDismiss() {
-        _debtQuantityForAppRateDialogShow.value = _debtQuantityForAppRateDialogShow.value!! + DEBT_QUANTITY_FOR_NEXT_SHOW
+        _debtQuantityForAppRateDialogShow.value = _debtQuantityForAppRateDialogShow.value!! + DEBT_QUANTITY_FOR_NEXT_SHOW_APP_RATE_DIALOG
         setDebtQuantityForAppRateDialogShow.execute(debtQuantityForAppRateDialogShow.value!!)
     }
 

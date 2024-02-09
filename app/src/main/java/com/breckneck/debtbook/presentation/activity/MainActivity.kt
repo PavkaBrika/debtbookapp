@@ -14,20 +14,13 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
-import androidx.core.os.bundleOf
-import androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
-import androidx.fragment.app.FragmentTransaction
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import com.breckneck.debtbook.BuildConfig
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.presentation.fragment.*
 import com.breckneck.debtbook.presentation.viewmodel.MainActivityViewModel
 import com.breckneck.deptbook.domain.model.DebtDomain
-import com.breckneck.deptbook.domain.usecase.Ad.SaveClicksUseCase
-import com.breckneck.deptbook.domain.usecase.Ad.GetClicksUseCase
-import com.breckneck.deptbook.domain.usecase.Settings.*
 import com.breckneck.deptbook.domain.util.CLICKS_QUANTITY_FOR_AD_SHOW
 import com.breckneck.deptbook.domain.util.DEBT_QUANTITY_FOR_LAST_SHOW_APP_RATE_DIALOG
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -41,10 +34,7 @@ import com.yandex.mobile.ads.interstitial.InterstitialAd
 import com.yandex.mobile.ads.interstitial.InterstitialAdEventListener
 import com.yandex.mobile.ads.interstitial.InterstitialAdLoadListener
 import com.yandex.mobile.ads.interstitial.InterstitialAdLoader
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import repository.AdRepositoryImpl
-import sharedprefs.SharedPrefsAdStorageImpl
 import kotlin.math.roundToInt
 
 class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, NewDebtFragment.OnButtonClickListener, DebtDetailsFragment.OnButtonClickListener, SettingsFragment.OnButtonClickListener {
@@ -54,8 +44,8 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
     private var vib: Vibrator? = null
 
     private val TAG = "MainActivity"
-    private val bannerTAG = "MainActivity"
-    private val interstitialTAG = "MainActivity"
+    private val bannerTAG = "BANNER AD"
+    private val interstitialTAG = "INTERSTITIAL AD"
 
     private val vm by viewModel<MainActivityViewModel>()
     lateinit var navController: NavController
