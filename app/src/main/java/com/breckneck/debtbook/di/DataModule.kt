@@ -22,21 +22,21 @@ val dataModule = module {
 
     //HUMAN
 
-    single<HumanStorage> {
+    factory<HumanStorage> {
         DataBaseHumanStorageImpl(context = get())
     }
 
-    single<HumanRepository> {
+    factory<HumanRepository> {
         HumanRepositoryImpl(humanStorage = get())
     }
 
     //DEBT
 
-    single<DebtStorage> {
+    factory<DebtStorage> {
         DataBaseDebtStorageImpl(context = get())
     }
 
-    single <DebtRepository> {
+    factory<DebtRepository> {
         DebtRepositoryImpl(debtStorage = get())
     }
 
@@ -52,11 +52,11 @@ val dataModule = module {
 
     //ADS
 
-    single<AdStorage> {
+    factory<AdStorage> {
         SharedPrefsAdStorageImpl(context = get())
     }
 
-    single<AdRepository> {
+    factory<AdRepository> {
         AdRepositoryImpl(adStorage = get())
     }
 

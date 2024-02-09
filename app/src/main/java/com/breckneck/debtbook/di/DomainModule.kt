@@ -96,67 +96,67 @@ val domainModule = module {
 
     //SETTINGS
 
-    factory<SetFirstMainCurrency> {
+    single<SetFirstMainCurrency> {
         SetFirstMainCurrency(settingsRepository = get())
     }
 
-    factory<GetFirstMainCurrency> {
+    single<GetFirstMainCurrency> {
         GetFirstMainCurrency(settingsRepository = get())
     }
 
-    factory<SetSecondMainCurrency> {
+    single<SetSecondMainCurrency> {
         SetSecondMainCurrency(settingsRepository = get())
     }
 
-    factory<GetSecondMainCurrency> {
+    single<GetSecondMainCurrency> {
         GetSecondMainCurrency(settingsRepository = get())
     }
 
-    factory<SetDefaultCurrency> {
+    single<SetDefaultCurrency> {
         SetDefaultCurrency(settingsRepository = get())
     }
 
-    factory<GetDefaultCurrency> {
+    single<GetDefaultCurrency> {
         GetDefaultCurrency(settingsRepository = get())
     }
 
-    factory<SetAddSumInShareText> {
+    single<SetAddSumInShareText> {
         SetAddSumInShareText(settingsRepository = get())
     }
 
-    factory<GetAddSumInShareText> {
+    single<GetAddSumInShareText> {
         GetAddSumInShareText(settingsRepository = get())
     }
 
-    factory<SetAppTheme> {
+    single<SetAppTheme> {
         SetAppTheme(settingsRepository = get())
     }
 
-    factory<GetAppTheme> {
+    single<GetAppTheme> {
         GetAppTheme(settingsRepository = get())
     }
 
-    factory<SetDebtQuantityForAppRateDialogShow> {
+    single<SetDebtQuantityForAppRateDialogShow> {
         SetDebtQuantityForAppRateDialogShow(settingsRepository = get())
     }
 
-    factory<GetDebtQuantityForAppRateDialogShow> {
+    single<GetDebtQuantityForAppRateDialogShow> {
         GetDebtQuantityForAppRateDialogShow(settingsRepository = get())
     }
 
-    factory<SetDebtOrder> {
+    single<SetDebtOrder> {
         SetDebtOrder(settingsRepository = get())
     }
 
-    factory<GetDebtOrder> {
+    single<GetDebtOrder> {
         GetDebtOrder(settingsRepository = get())
     }
 
-    factory<SetHumanOrder> {
+    single<SetHumanOrder> {
         SetHumanOrder(settingsRepository = get())
     }
 
-    factory<GetHumanOrder> {
+    single<GetHumanOrder> {
         GetHumanOrder(settingsRepository = get())
     }
 
