@@ -29,6 +29,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.util.concurrent.TimeUnit
 
 class MainFragment : Fragment() {
 
@@ -69,7 +70,15 @@ class MainFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_main, container, false)
+        return inflater.inflate(R.layout.fragment_main, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        if (savedInstanceState != null)
+            return
+        postponeEnterTransition()
 
         if (vm.isSortDialogOpened.value == true)
             showHumanSortDialog()
@@ -173,7 +182,7 @@ class MainFragment : Fragment() {
                 overallNegativeSumTextView.text = it.second
             }
         }
-        return view
+        view.post { postponeEnterTransition(0, TimeUnit.MILLISECONDS) }
     }
 
     private fun showHumanSortDialog() {

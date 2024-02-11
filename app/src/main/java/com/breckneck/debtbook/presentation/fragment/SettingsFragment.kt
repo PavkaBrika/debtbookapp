@@ -28,6 +28,7 @@ import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.util.concurrent.TimeUnit
 
 class SettingsFragment : Fragment() {
 
@@ -57,7 +58,15 @@ class SettingsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_settings, container, false)
+        return inflater.inflate(R.layout.fragment_settings, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        if (savedInstanceState != null)
+            return
+        postponeEnterTransition()
 
         if (vm.isSettingsDialogOpened.value == true)
             showSettingsDialog(
@@ -260,7 +269,7 @@ class SettingsFragment : Fragment() {
             buttonClickListener.onBackSettingsButtonClick()
         }
 
-        return view
+        view.post { postponeEnterTransition(0, TimeUnit.MILLISECONDS) }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

@@ -43,6 +43,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
+import java.util.concurrent.TimeUnit
 
 
 class DebtDetailsFragment: Fragment() {
@@ -86,7 +87,15 @@ class DebtDetailsFragment: Fragment() {
     private lateinit var debtAdapter: DebtAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_debt_details, container, false)
+        return inflater.inflate(R.layout.fragment_debt_details, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        if (savedInstanceState != null)
+            return
+        postponeEnterTransition()
 
         val recyclerView: RecyclerView = view.findViewById(R.id.debtsRecyclerView)
         recyclerView.addItemDecoration(DividerItemDecoration(view.context, DividerItemDecoration.VERTICAL))
@@ -180,7 +189,7 @@ class DebtDetailsFragment: Fragment() {
             buttonClickListener?.onBackDebtsButtonClick()
         }
 
-        return view
+        view.post { postponeEnterTransition(0, TimeUnit.MILLISECONDS) }
     }
 
     fun setOverallSumText(sum: Double, currency: String, view: View) {

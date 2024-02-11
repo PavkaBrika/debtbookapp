@@ -91,7 +91,15 @@ class NewDebtFragment: Fragment() {
 
     @SuppressLint("Range")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_addnewhuman, container, false)
+        return inflater.inflate(R.layout.fragment_addnewhuman, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        if (savedInstanceState != null)
+            return
+        postponeEnterTransition()
 
         val backButton: ImageView = view.findViewById(R.id.backButton)
         backButton.setOnClickListener {
@@ -430,7 +438,8 @@ class NewDebtFragment: Fragment() {
                 permissionRequestLauncher.launch(android.Manifest.permission.READ_CONTACTS)
             }
         }
-        return view
+
+        view.post { postponeEnterTransition(0, TimeUnit.MILLISECONDS) }
     }
 
     private fun getDebtState(idHuman: Int?, idDebt: Int?): DebtState {
