@@ -93,8 +93,6 @@ class DebtDetailsFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (savedInstanceState != null)
-            return
         postponeEnterTransition()
 
         val recyclerView: RecyclerView = view.findViewById(R.id.debtsRecyclerView)

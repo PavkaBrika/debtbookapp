@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Debt book</string>
-    <string name="name">Schuldenbuch</string>
+    <string name="name">Titel</string>
     <string name="sum">Summe</string>
     <string name="comment">Kommentar</string>
     <string name="year">j.</string>
     <string name="date">Datum</string>
     <string name="youmustentername">Sie haben nicht alle Informationen eingegeben</string>
-    <string name="deletedebt">Diese Schuld löschen</string>
-    <string name="editdebt">Diese Schuld bearbeiten</string>
+    <string name="deletedebt">Löschen</string>
+    <string name="editdebt">bearbeiten</string>
     <string name="give">Geben Sie</string>
     <string name="take">Nehmen Sie</string>
     <string name="zerodebt">Die Verschuldung kann nicht null sein</string>
-    <string name="payoffMessage">Diese Schulden vollständig zurückzahlen?</string>
-    <string name="payoffTitle">Auszahlen</string>
+    <string name="payoffMessage">Sind Sie sicher?</string>
+    <string name="payoffTitle">Diese Schuld löschen</string>
     <string name="yes">Ja</string>
     <string name="No">Nein</string>
     <string name="newdebt">Neue Schulden hinzufügen</string>

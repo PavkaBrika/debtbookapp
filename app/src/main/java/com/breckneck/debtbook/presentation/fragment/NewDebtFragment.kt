@@ -97,8 +97,6 @@ class NewDebtFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (savedInstanceState != null)
-            return
         postponeEnterTransition()
 
         val backButton: ImageView = view.findViewById(R.id.backButton)

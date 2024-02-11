@@ -1,18 +1,18 @@
 <resources>
     <string name="app_name">Debt book</string>
-    <string name="name">Name</string>
+    <string name="name">Title</string>
     <string name="sum">Sum</string>
     <string name="comment">Comment</string>
     <string name="year">y.</string>
     <string name="date">Date</string>
     <string name="youmustentername">You didn\'t enter all the information</string>
-    <string name="deletedebt">Delete this debt</string>
-    <string name="editdebt">Edit this debt</string>
+    <string name="deletedebt">Delete</string>
+    <string name="editdebt">Edit</string>
     <string name="give">Give</string>
     <string name="take">Take</string>
     <string name="zerodebt">Debt cannot be zero</string>
-    <string name="payoffMessage">Pay off this debt in full?</string>
-    <string name="payoffTitle">Pay off</string>
+    <string name="payoffMessage">Are you sure?</string>
+    <string name="payoffTitle">Delete this debt</string>
     <string name="yes">Yes</string>
     <string name="No">No</string>
     <string name="newdebt">Add new debt</string>

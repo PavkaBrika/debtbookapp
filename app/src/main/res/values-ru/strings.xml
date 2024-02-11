@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Книга долгов</string>
-    <string name="name">Имя</string>
+    <string name="name">Название</string>
     <string name="sum">Сумма</string>
     <string name="comment">Комментарий</string>
     <string name="year">г.</string>
     <string name="date">Дата</string>
     <string name="youmustentername">Вы ввели не всю информацию</string>
-    <string name="deletedebt">Погасить этот долг</string>
-    <string name="editdebt">Изменить этот долг</string>
+    <string name="deletedebt">Удалить</string>
+    <string name="editdebt">Изменить</string>
     <string name="give">Дать</string>
     <string name="take">Взять</string>
     <string name="zerodebt">Долг не может быть равен нулю</string>
-    <string name="payoffTitle">Погасить</string>
-    <string name="payoffMessage">Погасить полностью?</string>
+    <string name="payoffTitle">Удалить этот долг</string>
+    <string name="payoffMessage">Вы уверены?</string>
     <string name="yes">Да</string>
     <string name="No">Нет</string>
     <string name="newdebt">Добавить новый долг</string>

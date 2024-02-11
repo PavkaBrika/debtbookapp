@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Debt book</string>
-    <string name="name">Livre de la dette</string>
+    <string name="name">Titre</string>
     <string name="sum">Somme</string>
     <string name="comment">Commentaire</string>
     <string name="year">a</string>
     <string name="date">Date</string>
     <string name="youmustentername">Vous n\'avez pas saisi toutes les informations</string>
-    <string name="deletedebt">Supprimer cette dette</string>
-    <string name="editdebt">Modifier cette dette</string>
+    <string name="deletedebt">Supprimer</string>
+    <string name="editdebt">Editer</string>
     <string name="give">Donner</string>
     <string name="take">Prendre</string>
     <string name="zerodebt">La dette ne peut être nulle</string>
-    <string name="payoffMessage">Rembourser la totalité de la dette ?</string>
+    <string name="payoffMessage">Êtes-vous sûr ?</string>
     <string name="payoffTitle">Remboursement</string>
     <string name="yes">Oui</string>
     <string name="No">Non</string>

@@ -64,8 +64,6 @@ class SettingsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (savedInstanceState != null)
-            return
         postponeEnterTransition()
 
         if (vm.isSettingsDialogOpened.value == true)
