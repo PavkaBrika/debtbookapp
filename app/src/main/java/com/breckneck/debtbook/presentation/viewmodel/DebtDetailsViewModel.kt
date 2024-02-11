@@ -40,8 +40,9 @@ class DebtDetailsViewModel(
     private val TAG = "DebtDetailsViewModel"
 
     private val _debtList = MutableLiveData<List<DebtDomain>>()
-    val debtList: LiveData<List<DebtDomain>>
-        get() = _debtList
+    private val _resultDebtList = MutableLiveData<List<DebtDomain>>()
+    val resultDebtList: LiveData<List<DebtDomain>>
+        get() = _resultDebtList
     private val _humanId = MutableLiveData<Int>()
     val humanId: LiveData<Int>
         get() = _humanId
@@ -111,15 +112,15 @@ class DebtDetailsViewModel(
         if (_debtList.value != null) {
             val result = Single.create {
                 when (debtFilter.value!!) {
-                    Filter.All -> it.onSuccess(sortDebtsUseCase.execute(debtList = debtList.value!!, order = debtOrder.value!!))
-                    Filter.Negative ->  it.onSuccess(sortDebtsUseCase.execute(debtList = filterDebts.execute(debtList = debtList.value!!, filter = debtFilter.value!!), order = debtOrder.value!!))
-                    Filter.Positive -> it.onSuccess(sortDebtsUseCase.execute(debtList = filterDebts.execute(debtList = debtList.value!!, filter = debtFilter.value!!), order = debtOrder.value!!))
+                    Filter.All -> it.onSuccess(sortDebtsUseCase.execute(debtList = _debtList.value!!, order = debtOrder.value!!))
+                    Filter.Negative ->  it.onSuccess(sortDebtsUseCase.execute(debtList = filterDebts.execute(debtList = _debtList.value!!, filter = debtFilter.value!!), order = debtOrder.value!!))
+                    Filter.Positive -> it.onSuccess(sortDebtsUseCase.execute(debtList = filterDebts.execute(debtList = _debtList.value!!, filter = debtFilter.value!!), order = debtOrder.value!!))
                 }
             }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    _debtList.value = it
+                    _resultDebtList.value = it
                 }, {
                     Log.e(TAG, it.stackTrace.toString())
                 })

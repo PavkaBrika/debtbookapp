@@ -37,6 +37,7 @@ import com.breckneck.deptbook.domain.util.Filter
 import com.breckneck.deptbook.domain.util.ROTATE_DEGREE_DEBT_IMAGE_VIEW_BY_DECREASE
 import com.breckneck.deptbook.domain.util.ROTATE_DEGREE_DEBT_IMAGE_VIEW_BY_INCREASE
 import com.google.android.material.appbar.CollapsingToolbarLayout
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -121,13 +122,15 @@ class DebtDetailsFragment: Fragment() {
         recyclerView.adapter = debtAdapter
 
         vm.apply {
-            if (newHuman == true) {
-                getAllInfoAboutNewHuman()
-            } else {
-                onSetHumanId(humanId!!)
-                getDebtOrder()
-                getAllDebts()
-                getOverallSum()
+            if (vm.resultDebtList.value == null) {
+                if (newHuman == true) {
+                    getAllInfoAboutNewHuman()
+                } else {
+                    onSetHumanId(humanId!!)
+                    getDebtOrder()
+                    getAllDebts()
+                    getOverallSum()
+                }
             }
 
             if ((isSortDialogShown.value != null) && (isSortDialogShown.value == true))
@@ -142,7 +145,7 @@ class DebtDetailsFragment: Fragment() {
             if ((isDebtSettingsDialogShown.value != null) && (isDebtSettingsDialogShown.value == true))
                 showDebtSettings(vm.settingDebt.value!!, currency = currency, name = humanName!!)
 
-            debtList.observe(viewLifecycleOwner) {
+            resultDebtList.observe(viewLifecycleOwner) {
                 if (it.isNotEmpty()) {
                     debtRecyclerViewHintTextView.visibility = View.VISIBLE
                     debtAdapter.updateDebtList(debtList = it)
@@ -152,7 +155,8 @@ class DebtDetailsFragment: Fragment() {
             }
 
             debtOrder.observe(viewLifecycleOwner) {
-//                sortDebts()
+                if (vm.resultDebtList.value != null)
+                    sortDebts()
             }
 
             overallSum.observe(viewLifecycleOwner) {
@@ -278,7 +282,7 @@ class DebtDetailsFragment: Fragment() {
             val intent = Intent(ACTION_SEND)
             intent.type = "text/plain"
             intent.putExtra(EXTRA_SUBJECT, humanName)
-            intent.putExtra(EXTRA_TEXT, getDebtShareString.execute(debtList = vm.debtList.value!!, name = humanName!!, currency = currency!!, sum = vm.overallSum.value!!, getAddSumInShareText.execute()))
+            intent.putExtra(EXTRA_TEXT, getDebtShareString.execute(debtList = vm.resultDebtList.value!!, name = humanName!!, currency = currency!!, sum = vm.overallSum.value!!, getAddSumInShareText.execute()))
             startActivity(createChooser(intent, humanName))
         }
 
@@ -286,7 +290,7 @@ class DebtDetailsFragment: Fragment() {
             var rootFolder = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString())
             rootFolder = File(rootFolder, "DebtBookFiles")
             val sheetTitles = arrayOf(getString(R.string.date), "${getString(R.string.sum)} ($currency)", getString(R.string.comment))
-            val excelFile = ExportDebtDataInExcelUseCase().execute(debtList = vm.debtList.value!!, sheetName = "${humanName}_debts", rootFolder = rootFolder, sheetTitles = sheetTitles)
+            val excelFile = ExportDebtDataInExcelUseCase().execute(debtList = vm.resultDebtList.value!!, sheetName = "${humanName}_debts", rootFolder = rootFolder, sheetTitles = sheetTitles)
             if (excelFile.exists())
                 Toast.makeText(requireContext(), R.string.excel_folder_toast_hint, Toast.LENGTH_SHORT).show()
             val intent = Intent(ACTION_SEND)
@@ -314,6 +318,7 @@ class DebtDetailsFragment: Fragment() {
     private fun showSortDialog() {
         val orderDialog = BottomSheetDialog(requireContext())
         orderDialog.setContentView(R.layout.dialog_sort)
+        orderDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
         vm.onSortDialogOpen()
 
         var sortByIncrease = vm.debtOrder.value!!.second
@@ -397,7 +402,6 @@ class DebtDetailsFragment: Fragment() {
 
             if (order != vm.debtOrder.value) {
                 vm.onSetDebtOrder(Pair(orderAttribute, sortByIncrease))
-                vm.sortDebts()
             }
 
             if (rememberChoiceCheckBox!!.isChecked) {
