@@ -14,7 +14,6 @@ import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.setFragmentResultListener
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
@@ -23,6 +22,7 @@ import com.breckneck.debtbook.adapter.HumanAdapter
 import com.breckneck.debtbook.presentation.viewmodel.MainFragmentViewModel
 import com.breckneck.deptbook.domain.model.HumanDomain
 import com.breckneck.deptbook.domain.util.*
+import com.breckneck.deptbook.domain.util.Filter
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -30,7 +30,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.util.concurrent.TimeUnit
 
 class MainFragment : Fragment() {
 
@@ -184,7 +183,6 @@ class MainFragment : Fragment() {
                 overallNegativeSumTextView.text = it.second
             }
         }
-//        view.post { postponeEnterTransition(0, TimeUnit.MILLISECONDS) }
     }
 
     private fun showHumanSortDialog() {
@@ -222,31 +220,34 @@ class MainFragment : Fragment() {
             }
         }
 
-        var humansFilter: HumanFilter = vm.humanFilter.value!!
+        var humansFilter: Filter = vm.humanFilter.value!!
 
         when (vm.humanFilter.value!!) {
-            HumanFilter.AllHumans -> bottomSheetDialogFilter.findViewById<RadioButton>(R.id.showAllHumansRadioButton)!!.isChecked =
+            Filter.All -> bottomSheetDialogFilter.findViewById<RadioButton>(R.id.showAllRadioButton)!!.isChecked =
                 true
 
-            HumanFilter.NegativeHumans -> bottomSheetDialogFilter.findViewById<RadioButton>(R.id.showNegativeHumansRadioButton)!!.isChecked =
+            Filter.Negative -> bottomSheetDialogFilter.findViewById<RadioButton>(R.id.showNegativeRadioButton)!!.isChecked =
                 true
 
-            HumanFilter.PositiveHumans -> bottomSheetDialogFilter.findViewById<RadioButton>(R.id.showPositiveHumansRadioButton)!!.isChecked =
+            Filter.Positive -> bottomSheetDialogFilter.findViewById<RadioButton>(R.id.showPositiveRadioButton)!!.isChecked =
                 true
         }
 
+        //TODO MIGRATE DB TO MAKE THIS VISIBLE
+        bottomSheetDialogFilter.findViewById<RadioButton>(R.id.orderDateRadioButton)!!.visibility = View.GONE
+
         bottomSheetDialogFilter.findViewById<Button>(R.id.confirmButton)!!.setOnClickListener {
             when (bottomSheetDialogFilter.findViewById<RadioGroup>(R.id.filterRadioGroup)!!.checkedRadioButtonId) {
-                R.id.showAllHumansRadioButton -> {
-                    humansFilter = HumanFilter.AllHumans
+                R.id.showAllRadioButton -> {
+                    humansFilter = Filter.All
                 }
 
-                R.id.showPositiveHumansRadioButton -> {
-                    humansFilter = HumanFilter.PositiveHumans
+                R.id.showPositiveRadioButton -> {
+                    humansFilter = Filter.Positive
                 }
 
-                R.id.showNegativeHumansRadioButton -> {
-                    humansFilter = HumanFilter.NegativeHumans
+                R.id.showNegativeRadioButton -> {
+                    humansFilter = Filter.Negative
                 }
             }
 
@@ -259,18 +260,18 @@ class MainFragment : Fragment() {
                     sortHumansAttribute = HumanOrderAttribute.Sum
                 }
             }
-
+            val order = Pair(sortHumansAttribute, sortByIncrease)
             if (vm.humanFilter.value!! != humansFilter) {
                 vm.onSetHumanFilter(filter = humansFilter)
-                if (vm.humanOrder.value!! == Pair(sortHumansAttribute, sortByIncrease))
+                if (vm.humanOrder.value!! == order)
                     vm.sortHumans()
             }
 
-            if (vm.humanOrder.value!! != Pair(sortHumansAttribute, sortByIncrease))
-                vm.onSetHumanOrder(order = Pair(sortHumansAttribute, sortByIncrease))
+            if (vm.humanOrder.value!! != order)
+                vm.onSetHumanOrder(order = order)
 
             if (bottomSheetDialogFilter.findViewById<CheckBox>(R.id.rememberChoiceCheckBox)!!.isChecked)
-                vm.saveHumanOrder(order = Pair(sortHumansAttribute, sortByIncrease))
+                vm.saveHumanOrder(order = order)
 
             bottomSheetDialogFilter.dismiss()
         }
@@ -287,10 +288,10 @@ class MainFragment : Fragment() {
         bottomSheetDialogFilter.show()
     }
 
-    private fun changeFilterButtonColor(humansFilter: HumanFilter) {
+    private fun changeFilterButtonColor(humansFilter: Filter) {
         if (view != null) {
             when (humansFilter) {
-                HumanFilter.AllHumans -> {
+                Filter.All -> {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                         if (resources.configuration.isNightModeActive)
                             filterButton.setColorFilter(
@@ -316,11 +317,11 @@ class MainFragment : Fragment() {
                     }
                 }
 
-                HumanFilter.NegativeHumans -> {
+                Filter.Negative -> {
                     filterButton.setColorFilter(ContextCompat.getColor(requireActivity(), R.color.red))
                 }
 
-                HumanFilter.PositiveHumans -> {
+                Filter.Positive -> {
                     filterButton.setColorFilter(
                         ContextCompat.getColor(
                             requireActivity(),

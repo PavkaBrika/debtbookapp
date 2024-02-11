@@ -77,6 +77,14 @@
                     android:layout_marginHorizontal="8dp">
 
                     <RadioButton
+                        android:id="@+id/orderDateRadioButton"
+                        style="@style/defaultRadioButtons"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="@string/order_by_date" />
+
+                    <RadioButton
                         android:id="@+id/orderCreationDateRadioButton"
                         style="@style/defaultRadioButtons"
                         android:layout_width="match_parent"
@@ -159,7 +167,7 @@
                     android:layout_marginHorizontal="8dp">
 
                     <RadioButton
-                        android:id="@+id/showAllHumansRadioButton"
+                        android:id="@+id/showAllRadioButton"
                         style="@style/defaultRadioButtons"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -168,7 +176,7 @@
                         android:textAlignment="textStart" />
 
                     <RadioButton
-                        android:id="@+id/showPositiveHumansRadioButton"
+                        android:id="@+id/showPositiveRadioButton"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:buttonTint="@color/green"
@@ -176,7 +184,7 @@
                         android:textAlignment="textStart" />
 
                     <RadioButton
-                        android:id="@+id/showNegativeHumansRadioButton"
+                        android:id="@+id/showNegativeRadioButton"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:buttonTint="@color/red"

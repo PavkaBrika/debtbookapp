@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.breckneck.deptbook.domain.util.HumanFilter
+import com.breckneck.deptbook.domain.util.Filter
 import com.breckneck.deptbook.domain.model.HumanDomain
 import com.breckneck.deptbook.domain.usecase.Human.*
 import com.breckneck.deptbook.domain.usecase.Settings.GetFirstMainCurrency
@@ -42,8 +42,8 @@ class MainFragmentViewModel(
     private val _isSortDialogOpened = MutableLiveData<Boolean>()
     val isSortDialogOpened: LiveData<Boolean>
         get() = _isSortDialogOpened
-    private val _humanFilter = MutableLiveData<HumanFilter>(HumanFilter.AllHumans)
-    val humanFilter: LiveData<HumanFilter>
+    private val _humanFilter = MutableLiveData<Filter>(Filter.All)
+    val humanFilter: LiveData<Filter>
         get() = _humanFilter
     private val _humanOrder = MutableLiveData<Pair<HumanOrderAttribute, Boolean>>()
     val humanOrder: LiveData<Pair<HumanOrderAttribute, Boolean>>
@@ -80,9 +80,9 @@ class MainFragmentViewModel(
         if (_humanList.value != null) {
             val result = Single.create {
                 when (humanFilter.value!!) {
-                    HumanFilter.AllHumans -> it.onSuccess(sortHumans.execute(_humanList.value!!, _humanOrder.value!!))
-                    HumanFilter.NegativeHumans -> it.onSuccess(sortHumans.execute(getNegativeHumansUseCase.execute(_humanList.value!!), _humanOrder.value!!))
-                    HumanFilter.PositiveHumans -> it.onSuccess(sortHumans.execute(getPositiveHumansUseCase.execute(_humanList.value!!), _humanOrder.value!!))
+                    Filter.All -> it.onSuccess(sortHumans.execute(_humanList.value!!, _humanOrder.value!!))
+                    Filter.Negative -> it.onSuccess(sortHumans.execute(getNegativeHumansUseCase.execute(_humanList.value!!), _humanOrder.value!!))
+                    Filter.Positive -> it.onSuccess(sortHumans.execute(getPositiveHumansUseCase.execute(_humanList.value!!), _humanOrder.value!!))
                 }
             }
                 .subscribeOn(Schedulers.io())
@@ -97,7 +97,7 @@ class MainFragmentViewModel(
         }
     }
 
-    fun onSetHumanFilter(filter: HumanFilter) {
+    fun onSetHumanFilter(filter: Filter) {
         _humanFilter.value = filter
         Log.e(TAG, "Human filter set ${filter}")
     }

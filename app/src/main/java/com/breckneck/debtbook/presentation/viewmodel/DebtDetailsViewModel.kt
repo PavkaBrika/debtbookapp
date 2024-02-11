@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.breckneck.deptbook.domain.model.DebtDomain
 import com.breckneck.deptbook.domain.usecase.Debt.DeleteDebtUseCase
 import com.breckneck.deptbook.domain.usecase.Debt.DeleteDebtsByHumanIdUseCase
+import com.breckneck.deptbook.domain.usecase.Debt.FilterDebts
 import com.breckneck.deptbook.domain.usecase.Debt.GetAllDebtsUseCase
 import com.breckneck.deptbook.domain.usecase.Debt.SortDebts
 import com.breckneck.deptbook.domain.usecase.Human.AddSumUseCase
@@ -16,6 +17,7 @@ import com.breckneck.deptbook.domain.usecase.Human.GetLastHumanIdUseCase
 import com.breckneck.deptbook.domain.usecase.Settings.GetDebtOrder
 import com.breckneck.deptbook.domain.usecase.Settings.SetDebtOrder
 import com.breckneck.deptbook.domain.util.DebtOrderAttribute
+import com.breckneck.deptbook.domain.util.Filter
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
@@ -31,7 +33,8 @@ class DebtDetailsViewModel(
     private val deleteDebtUseCase: DeleteDebtUseCase,
     private val addSumUseCase: AddSumUseCase,
     private val getDebtOrder: GetDebtOrder,
-    private val setDebtOrder: SetDebtOrder
+    private val setDebtOrder: SetDebtOrder,
+    private val filterDebts: FilterDebts
 ): ViewModel() {
 
     private val TAG = "DebtDetailsViewModel"
@@ -45,9 +48,9 @@ class DebtDetailsViewModel(
     private val _overallSum = MutableLiveData<Double>()
     val overallSum: LiveData<Double>
         get() = _overallSum
-    private val _isOrderDialogShown by lazy { MutableLiveData<Boolean>() }
-    val isOrderDialogShown: LiveData<Boolean>
-        get() = _isOrderDialogShown
+    private val _isSortDialogShown by lazy { MutableLiveData<Boolean>() }
+    val isSortDialogShown: LiveData<Boolean>
+        get() = _isSortDialogShown
     private val _isHumanDeleteDialogShown by lazy { MutableLiveData<Boolean>() }
     val isHumanDeleteDialogShown: LiveData<Boolean>
         get() = _isHumanDeleteDialogShown
@@ -63,6 +66,9 @@ class DebtDetailsViewModel(
     private val _debtOrder = MutableLiveData<Pair<DebtOrderAttribute, Boolean>>()
     val debtOrder: LiveData<Pair<DebtOrderAttribute, Boolean>>
         get() = _debtOrder
+    private val _debtFilter = MutableLiveData<Filter>(Filter.All)
+    val debtFilter: LiveData<Filter>
+        get() = _debtFilter
     private val disposeBag = CompositeDisposable()
     private val sortDebtsUseCase by lazy { SortDebts() }
 
@@ -102,8 +108,24 @@ class DebtDetailsViewModel(
     }
 
     fun sortDebts() {
-        if (_debtList.value != null)
-            _debtList.value = sortDebtsUseCase.execute(debtList = _debtList.value!!, order = _debtOrder.value!!)
+        if (_debtList.value != null) {
+            val result = Single.create {
+                when (debtFilter.value!!) {
+                    Filter.All -> it.onSuccess(sortDebtsUseCase.execute(debtList = debtList.value!!, order = debtOrder.value!!))
+                    Filter.Negative ->  it.onSuccess(sortDebtsUseCase.execute(debtList = filterDebts.execute(debtList = debtList.value!!, filter = debtFilter.value!!), order = debtOrder.value!!))
+                    Filter.Positive -> it.onSuccess(sortDebtsUseCase.execute(debtList = filterDebts.execute(debtList = debtList.value!!, filter = debtFilter.value!!), order = debtOrder.value!!))
+                }
+            }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    _debtList.value = it
+                }, {
+                    Log.e(TAG, it.stackTrace.toString())
+                })
+            disposeBag.add(result)
+            Log.e(TAG, "Debts sorted")
+        }
     }
 
     fun getAllInfoAboutNewHuman() {
@@ -204,15 +226,19 @@ class DebtDetailsViewModel(
         _isShareDialogShown.value = false
     }
 
-    fun onOrderDialogOpen() {
-        _isOrderDialogShown.value = true
+    fun onSortDialogOpen() {
+        _isSortDialogShown.value = true
     }
 
     fun onOrderDialogClose() {
-        _isOrderDialogShown.value = false
+        _isSortDialogShown.value = false
     }
 
     fun onSetDebtOrder(order: Pair<DebtOrderAttribute, Boolean>) {
         _debtOrder.value = order
+    }
+
+    fun onSetDebtFilter(filter: Filter) {
+        _debtFilter.value = filter
     }
 }

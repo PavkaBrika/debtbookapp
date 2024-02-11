@@ -77,7 +77,7 @@
                         android:foreground="?android:attr/selectableItemBackground" />
 
                     <ImageView
-                        android:id="@+id/orderButton"
+                        android:id="@+id/sortButton"
                         style="@style/imageViewButton"
                         android:layout_width="30dp"
                         android:layout_height="30dp"

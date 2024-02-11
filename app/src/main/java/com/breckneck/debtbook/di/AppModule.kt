@@ -44,7 +44,8 @@ val appModule = module {
             deleteDebtUseCase = get(),
             addSumUseCase = get(),
             getDebtOrder = get(),
-            setDebtOrder = get()
+            setDebtOrder = get(),
+            filterDebts = get()
         )
     }
 

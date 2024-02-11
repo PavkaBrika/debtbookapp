@@ -94,6 +94,10 @@ val domainModule = module {
         GetDebtQuantity(debtRepository = get())
     }
 
+    factory<FilterDebts> {
+        FilterDebts()
+    }
+
     //SETTINGS
 
     single<SetFirstMainCurrency> {

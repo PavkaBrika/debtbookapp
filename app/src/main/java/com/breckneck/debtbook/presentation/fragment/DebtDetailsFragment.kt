@@ -5,9 +5,9 @@ import android.content.Intent
 import android.content.Intent.*
 import android.graphics.Typeface
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
-import android.transition.TransitionInflater
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -33,6 +33,7 @@ import com.breckneck.deptbook.domain.model.DebtDomain
 import com.breckneck.deptbook.domain.usecase.Debt.*
 import com.breckneck.deptbook.domain.usecase.Settings.GetAddSumInShareText
 import com.breckneck.deptbook.domain.util.DebtOrderAttribute
+import com.breckneck.deptbook.domain.util.Filter
 import com.breckneck.deptbook.domain.util.ROTATE_DEGREE_DEBT_IMAGE_VIEW_BY_DECREASE
 import com.breckneck.deptbook.domain.util.ROTATE_DEGREE_DEBT_IMAGE_VIEW_BY_INCREASE
 import com.google.android.material.appbar.CollapsingToolbarLayout
@@ -44,7 +45,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
-import java.util.concurrent.TimeUnit
 
 
 class DebtDetailsFragment: Fragment() {
@@ -70,12 +70,6 @@ class DebtDetailsFragment: Fragment() {
         buttonClickListener = context as OnButtonClickListener
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val inflater = TransitionInflater.from(requireContext())
-//        enterTransition = inflater.inflateTransition(R.transition.slide_right)
-    }
-
     val disposeBag = CompositeDisposable()
 
     private val vm by viewModel<DebtDetailsViewModel>()
@@ -86,9 +80,9 @@ class DebtDetailsFragment: Fragment() {
     private lateinit var debtClickListener: DebtAdapter.OnDebtClickListener
     private lateinit var overallSumTextView: TextView
     private lateinit var debtAdapter: DebtAdapter
+    private lateinit var sortButton: ImageView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
         return inflater.inflate(R.layout.fragment_debt_details, container, false)
     }
 
@@ -136,8 +130,8 @@ class DebtDetailsFragment: Fragment() {
                 getOverallSum()
             }
 
-            if ((isOrderDialogShown.value != null) && (isOrderDialogShown.value == true))
-                showOrderDialog()
+            if ((isSortDialogShown.value != null) && (isSortDialogShown.value == true))
+                showSortDialog()
 
             if ((isHumanDeleteDialogShown.value != null) && (isHumanDeleteDialogShown.value == true))
                 showDeleteHumanDialog()
@@ -158,11 +152,15 @@ class DebtDetailsFragment: Fragment() {
             }
 
             debtOrder.observe(viewLifecycleOwner) {
-                sortDebts()
+//                sortDebts()
             }
 
             overallSum.observe(viewLifecycleOwner) {
                 setOverallSumText(sum = it, currency = currency, view = view)
+            }
+
+            debtFilter.observe(viewLifecycleOwner) { filter ->
+                changeFilterButtonColor(filter = filter)
             }
         }
 
@@ -171,9 +169,9 @@ class DebtDetailsFragment: Fragment() {
             showDeleteHumanDialog()
         }
 
-        val orderButton: ImageView = view.findViewById(R.id.orderButton)
-        orderButton.setOnClickListener {
-            showOrderDialog()
+        sortButton = view.findViewById(R.id.sortButton)
+        sortButton.setOnClickListener {
+            showSortDialog()
         }
 
         val shareHumanButton: ImageView = view.findViewById(R.id.shareHumanButton)
@@ -313,10 +311,10 @@ class DebtDetailsFragment: Fragment() {
         dialog.show()
     }
 
-    private fun showOrderDialog() {
+    private fun showSortDialog() {
         val orderDialog = BottomSheetDialog(requireContext())
-        orderDialog.setContentView(R.layout.dialog_order_settings)
-        vm.onOrderDialogOpen()
+        orderDialog.setContentView(R.layout.dialog_sort)
+        vm.onSortDialogOpen()
 
         var sortByIncrease = vm.debtOrder.value!!.second
         val sortImageView = orderDialog.findViewById<ImageView>(R.id.sortImageView)
@@ -349,8 +347,35 @@ class DebtDetailsFragment: Fragment() {
             }
         }
 
+        var debtFilter = vm.debtFilter.value!!
+        when (debtFilter) {
+            Filter.All -> orderDialog.findViewById<RadioButton>(R.id.showAllRadioButton)!!.isChecked =
+                true
+
+            Filter.Negative -> orderDialog.findViewById<RadioButton>(R.id.showNegativeRadioButton)!!.isChecked =
+                true
+
+            Filter.Positive -> orderDialog.findViewById<RadioButton>(R.id.showPositiveRadioButton)!!.isChecked =
+                true
+        }
+
         val rememberChoiceCheckBox = orderDialog.findViewById<CheckBox>(R.id.rememberChoiceCheckBox)
         orderDialog.findViewById<Button>(R.id.confirmButton)!!.setOnClickListener {
+
+            when (orderDialog.findViewById<RadioGroup>(R.id.filterRadioGroup)!!.checkedRadioButtonId) {
+                R.id.showAllRadioButton -> {
+                    debtFilter = Filter.All
+                }
+
+                R.id.showPositiveRadioButton -> {
+                    debtFilter = Filter.Positive
+                }
+
+                R.id.showNegativeRadioButton -> {
+                    debtFilter = Filter.Negative
+                }
+            }
+
             when (orderDialog.findViewById<RadioGroup>(R.id.orderRadioGroup)!!.checkedRadioButtonId) {
                 R.id.orderDateRadioButton -> {
                     orderAttribute = DebtOrderAttribute.Date
@@ -362,25 +387,84 @@ class DebtDetailsFragment: Fragment() {
                     orderAttribute = DebtOrderAttribute.Sum
                 }
             }
+
             val order = Pair(orderAttribute, sortByIncrease)
+            if (vm.debtFilter.value != debtFilter) {
+                vm.onSetDebtFilter(filter = debtFilter)
+                if (vm.debtOrder.value == order)
+                    vm.sortDebts()
+            }
+
             if (order != vm.debtOrder.value) {
                 vm.onSetDebtOrder(Pair(orderAttribute, sortByIncrease))
+                vm.sortDebts()
             }
+
             if (rememberChoiceCheckBox!!.isChecked) {
                 vm.saveDebtOrder(Pair(orderAttribute, sortByIncrease))
             }
+
             orderDialog.dismiss()
         }
+
         orderDialog.findViewById<Button>(R.id.cancelButton)!!.setOnClickListener {
             orderDialog.dismiss()
         }
+
         orderDialog.setOnDismissListener {
             vm.onOrderDialogClose()
         }
+
         orderDialog.setOnCancelListener {
             vm.onOrderDialogClose()
         }
+
         orderDialog.show()
+    }
+
+    private fun changeFilterButtonColor(filter: Filter) {
+        if (view != null) {
+            when (filter) {
+                Filter.All -> {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                        if (resources.configuration.isNightModeActive)
+                            sortButton.setColorFilter(
+                                ContextCompat.getColor(
+                                    requireContext(),
+                                    R.color.white
+                                )
+                            )
+                        else
+                            sortButton.setColorFilter(
+                                ContextCompat.getColor(
+                                    requireContext(),
+                                    R.color.black
+                                )
+                            )
+                    } else {
+                        sortButton.setColorFilter(
+                            ContextCompat.getColor(
+                                requireContext(),
+                                R.color.black
+                            )
+                        )
+                    }
+                }
+
+                Filter.Negative -> {
+                    sortButton.setColorFilter(ContextCompat.getColor(requireActivity(), R.color.red))
+                }
+
+                Filter.Positive -> {
+                    sortButton.setColorFilter(
+                        ContextCompat.getColor(
+                            requireActivity(),
+                            R.color.green
+                        )
+                    )
+                }
+            }
+        }
     }
 
     override fun onDestroyView() {
