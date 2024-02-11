@@ -11,14 +11,26 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp">
 
+        <ImageView
+            android:id="@+id/imageView"
+            style="@style/imageViewButton"
+            android:layout_width="30dp"
+            android:layout_height="0dp"
+            android:src="@drawable/baseline_sort_24"
+            app:layout_constraintBottom_toBottomOf="@+id/textView3"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/textView3" />
+
         <TextView
+            android:id="@+id/textView3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
             android:text="@string/order_by"
             android:textSize="24sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/sortButtonCard"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imageView"
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.cardview.widget.CardView
@@ -49,25 +61,25 @@
 
         <RadioButton
             android:id="@+id/orderDateRadioButton"
+            style="@style/defaultRadioButtons"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/defaultRadioButtons"
             android:checked="true"
             android:text="@string/order_by_date" />
 
         <RadioButton
             android:id="@+id/orderCreationDateRadioButton"
+            style="@style/defaultRadioButtons"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/defaultRadioButtons"
             android:checked="true"
             android:text="@string/order_by_creation_date" />
 
         <RadioButton
             android:id="@+id/orderSumRadioButton"
+            style="@style/defaultRadioButtons"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/defaultRadioButtons"
             android:text="@string/order_debt_sum" />
 
     </RadioGroup>
@@ -78,9 +90,9 @@
 
     <CheckBox
         android:id="@+id/rememberChoiceCheckBox"
+        style="@style/defaultRadioButtons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/defaultRadioButtons"
         android:text="@string/remember_choice" />
 
     <androidx.constraintlayout.widget.ConstraintLayout

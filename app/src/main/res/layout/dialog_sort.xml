@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.core.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -13,30 +12,42 @@
         android:padding="16dp">
 
         <com.google.android.material.card.MaterialCardView
+            style="@style/CardViewStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardBackgroundColor="@color/darker_white"
-            style="@style/CardViewStyle">
+            app:cardBackgroundColor="@color/darker_white">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_margin="16dp">
+                android:layout_margin="16dp"
+                android:orientation="vertical">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp">
 
+                    <ImageView
+                        android:id="@+id/imageView"
+                        style="@style/imageViewButton"
+                        android:layout_width="30dp"
+                        android:layout_height="0dp"
+                        android:src="@drawable/baseline_sort_24"
+                        app:layout_constraintBottom_toBottomOf="@+id/textView3"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/textView3" />
+
                     <TextView
+                        android:id="@+id/textView3"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="16dp"
                         android:text="@string/order_by"
                         android:textSize="24sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/sortButtonCard"
-                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/imageView"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <androidx.cardview.widget.CardView
@@ -67,17 +78,17 @@
 
                     <RadioButton
                         android:id="@+id/orderCreationDateRadioButton"
+                        style="@style/defaultRadioButtons"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        style="@style/defaultRadioButtons"
                         android:checked="true"
                         android:text="@string/order_by_creation_date" />
 
                     <RadioButton
                         android:id="@+id/orderSumRadioButton"
+                        style="@style/defaultRadioButtons"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        style="@style/defaultRadioButtons"
                         android:text="@string/order_debt_sum" />
 
                 </RadioGroup>
@@ -89,35 +100,57 @@
 
                 <CheckBox
                     android:id="@+id/rememberChoiceCheckBox"
+                    style="@style/defaultRadioButtons"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="8dp"
-                    android:text="@string/remember_choice"
-                    style="@style/defaultRadioButtons"/>
+                    android:text="@string/remember_choice" />
 
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
+            style="@style/CardViewStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            style="@style/CardViewStyle" >
+            android:layout_marginTop="8dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_margin="16dp">
+                android:layout_margin="16dp"
+                android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="16dp"
-                    android:paddingTop="8dp"
-                    android:text="@string/filter"
-                    android:textSize="24sp" />
+                    android:layout_marginBottom="16dp">
+
+                    <ImageView
+                        android:id="@+id/imageView2"
+                        style="@style/imageViewButton"
+                        android:layout_width="30dp"
+                        android:layout_height="0dp"
+                        android:src="@drawable/ic_outline_filter_alt_24"
+                        app:layout_constraintBottom_toBottomOf="@+id/textView4"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/textView4" />
+
+                    <TextView
+                        android:id="@+id/textView4"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="16dp"
+                        android:text="@string/filter"
+                        android:textSize="24sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/imageView2"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
 
                 <RadioGroup
                     android:id="@+id/filterRadioGroup"
@@ -127,9 +160,9 @@
 
                     <RadioButton
                         android:id="@+id/showAllHumansRadioButton"
+                        style="@style/defaultRadioButtons"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        style="@style/defaultRadioButtons"
                         android:checked="true"
                         android:text="@string/show_all"
                         android:textAlignment="textStart" />
