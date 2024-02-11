@@ -64,8 +64,6 @@ class SettingsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        postponeEnterTransition()
-
         if (vm.isSettingsDialogOpened.value == true)
             showSettingsDialog(
                 settingTitle = vm.settingsDialogTitle.value!!,
@@ -266,8 +264,6 @@ class SettingsFragment : Fragment() {
         setSettingsButton.setOnClickListener {
             buttonClickListener.onBackSettingsButtonClick()
         }
-
-        view.post { postponeEnterTransition(0, TimeUnit.MILLISECONDS) }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

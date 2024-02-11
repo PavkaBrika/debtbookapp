@@ -97,8 +97,6 @@ class NewDebtFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        postponeEnterTransition()
-
         val backButton: ImageView = view.findViewById(R.id.backButton)
         backButton.setOnClickListener {
             buttonClickListener.onBackNewDebtButtonClick()
@@ -436,8 +434,6 @@ class NewDebtFragment: Fragment() {
                 permissionRequestLauncher.launch(android.Manifest.permission.READ_CONTACTS)
             }
         }
-
-        view.post { postponeEnterTransition(0, TimeUnit.MILLISECONDS) }
     }
 
     private fun getDebtState(idHuman: Int?, idDebt: Int?): DebtState {

@@ -22,6 +22,7 @@ import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
@@ -87,6 +88,7 @@ class DebtDetailsFragment: Fragment() {
     private lateinit var debtAdapter: DebtAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
         return inflater.inflate(R.layout.fragment_debt_details, container, false)
     }
 
@@ -97,6 +99,9 @@ class DebtDetailsFragment: Fragment() {
 
         val recyclerView: RecyclerView = view.findViewById(R.id.debtsRecyclerView)
         recyclerView.addItemDecoration(DividerItemDecoration(view.context, DividerItemDecoration.VERTICAL))
+        recyclerView.doOnPreDraw {
+            startPostponedEnterTransition()
+        }
 
         val debtRecyclerViewHintTextView: TextView = view.findViewById(R.id.debtRecyclerViewHintTextView)
 
@@ -186,8 +191,6 @@ class DebtDetailsFragment: Fragment() {
         backButton.setOnClickListener {
             buttonClickListener?.onBackDebtsButtonClick()
         }
-
-        view.post { postponeEnterTransition(0, TimeUnit.MILLISECONDS) }
     }
 
     fun setOverallSumText(sum: Double, currency: String, view: View) {

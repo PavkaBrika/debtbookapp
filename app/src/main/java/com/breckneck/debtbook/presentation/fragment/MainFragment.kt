@@ -12,6 +12,7 @@ import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.setFragmentResultListener
@@ -99,6 +100,9 @@ class MainFragment : Fragment() {
                 DividerItemDecoration.VERTICAL
             )
         )
+        recyclerView.doOnPreDraw {
+            startPostponedEnterTransition()
+        }
         val humanClickListener = object : HumanAdapter.OnHumanClickListener {
             override fun onHumanClick(humanDomain: HumanDomain, position: Int) {
                 buttonClickListener?.onHumanClick(
@@ -180,7 +184,7 @@ class MainFragment : Fragment() {
                 overallNegativeSumTextView.text = it.second
             }
         }
-        view.post { postponeEnterTransition(0, TimeUnit.MILLISECONDS) }
+//        view.post { postponeEnterTransition(0, TimeUnit.MILLISECONDS) }
     }
 
     private fun showHumanSortDialog() {
