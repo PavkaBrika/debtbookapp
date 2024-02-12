@@ -90,4 +90,6 @@
     <string name="authorize_to_avoid_losing_your_data">Authorize to avoid losing your data</string>
     <string name="authorization">Authorization</string>
     <string name="account">Account</string>
+    <string name="synchronize">Synchronize</string>
+    <string name="log_out">Log out</string>
 </resources>
