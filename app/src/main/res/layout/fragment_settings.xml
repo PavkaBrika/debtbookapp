@@ -87,10 +87,53 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="8dp"
-                            android:text="@string/application"
-                            android:textStyle="bold"
+                            android:text="@string/synchronization"
                             android:textAlignment="center"
-                            android:textSize="28sp" />
+                            android:textSize="28sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/syncHintTextView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingHorizontal="12dp"
+                            android:paddingVertical="8dp"
+                            android:textAlignment="center"
+                            android:text="@string/authorize_to_avoid_losing_your_data" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/googleSignInButton"
+                            style="@style/FilledButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/authorization" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/CardViewStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:layout_marginTop="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="16dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:text="@string/application"
+                            android:textAlignment="center"
+                            android:textSize="28sp"
+                            android:textStyle="bold" />
 
                         <LinearLayout
                             android:id="@+id/firstCurrencyLayout"
@@ -310,8 +353,8 @@
                     style="@style/CardViewStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginHorizontal="8dp">
+                    android:layout_marginHorizontal="8dp"
+                    android:layout_marginTop="16dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -324,9 +367,9 @@
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="8dp"
                             android:text="@string/support"
-                            android:textStyle="bold"
                             android:textAlignment="center"
-                            android:textSize="28sp" />
+                            android:textSize="28sp"
+                            android:textStyle="bold" />
 
                         <LinearLayout
                             android:id="@+id/rateAppLayout"
@@ -384,8 +427,8 @@
                     style="@style/CardViewStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginHorizontal="8dp">
+                    android:layout_marginHorizontal="8dp"
+                    android:layout_marginTop="16dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -398,9 +441,9 @@
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="8dp"
                             android:text="@string/info"
-                            android:textStyle="bold"
                             android:textAlignment="center"
-                            android:textSize="28sp" />
+                            android:textSize="28sp"
+                            android:textStyle="bold" />
 
                         <LinearLayout
                             android:id="@+id/privacyPolicyLayout"

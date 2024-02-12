@@ -86,4 +86,8 @@
     <string name="change_debt_name">Change debt name</string>
     <string name="select_currency">Select currency</string>
     <string name="payoffTitle">Delete this debt</string>
+    <string name="synchronization">Synchronization</string>
+    <string name="authorize_to_avoid_losing_your_data">Authorize to avoid losing your data</string>
+    <string name="authorization">Authorization</string>
+    <string name="account">Account</string>
 </resources>

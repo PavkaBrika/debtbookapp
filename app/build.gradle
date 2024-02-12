@@ -33,6 +33,16 @@ android {
         jvmTarget = '1.8'
         freeCompilerArgs +=  "-Xjvm-default=all"
     }
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/ASL2.0'
+    }
 }
 
 
@@ -67,6 +77,16 @@ dependencies {
     def lifecycle_version = "2.5.0"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
+
+    //Google Synchronization
+    implementation "com.google.android.gms:play-services-auth:20.7.0"
+    implementation("com.google.api-client:google-api-client-android:1.23.0") {
+        exclude group: "org.apache.httpcomponents"
+    }
+    implementation 'com.google.http-client:google-http-client-gson:1.34.0'
+    implementation("com.google.apis:google-api-services-drive:v3-rev136-1.25.0") {
+        exclude group: "org.apache.httpcomponents"
+    }
 
     //Koin
     def koin_version = "3.2.0"
