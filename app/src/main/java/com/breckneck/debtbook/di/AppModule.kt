@@ -1,5 +1,6 @@
 package com.breckneck.debtbook.di
 
+import com.breckneck.debtbook.presentation.viewmodel.SynchronizationFragmentViewModel
 import com.breckneck.debtbook.presentation.viewmodel.DebtDetailsViewModel
 import com.breckneck.debtbook.presentation.viewmodel.MainActivityViewModel
 import com.breckneck.debtbook.presentation.viewmodel.MainFragmentViewModel
@@ -69,6 +70,13 @@ val appModule = module {
             getDefaultCurrency = get(),
             getCurrentDateUseCase = get(),
             setDateUseCase = get()
+        )
+    }
+
+    viewModel<SynchronizationFragmentViewModel> {
+        SynchronizationFragmentViewModel(
+            getIsAuthorized = get(),
+            setIsAuthorized = get()
         )
     }
 }

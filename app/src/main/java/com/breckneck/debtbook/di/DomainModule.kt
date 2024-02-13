@@ -164,6 +164,14 @@ val domainModule = module {
         GetHumanOrder(settingsRepository = get())
     }
 
+    single<SetIsAuthorized> {
+        SetIsAuthorized(settingsRepository = get())
+    }
+
+    single<GetIsAuthorized> {
+        GetIsAuthorized(settingsRepository = get())
+    }
+
     //ADS
 
     factory<SaveClicksUseCase> {

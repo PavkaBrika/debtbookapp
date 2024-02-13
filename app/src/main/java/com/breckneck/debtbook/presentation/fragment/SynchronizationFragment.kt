@@ -8,15 +8,20 @@ import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.UnderlineSpan
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.text.set
 import androidx.fragment.app.Fragment
 import com.breckneck.debtbook.BuildConfig
 import com.breckneck.debtbook.R
+import com.breckneck.debtbook.presentation.viewmodel.SynchronizationFragmentViewModel
 import com.breckneck.debtbook.synchronization.DriveServiceHelper
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -27,11 +32,17 @@ import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveScopes
 import com.google.api.services.drive.model.FileList
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.Collections
 
 class SynchronizationFragment: Fragment() {
 
-    private val REQUEST_CODE_SIGN_IN = 200
+    private val TAG = "Sync fragment"
+
+    private val vm by viewModel<SynchronizationFragmentViewModel>()
+
+    private val REQUEST_CODE_SIGN_IN = 1
+    private val REQUEST_CODE_SIGN_OUT = 201
     private var mDriveServiceHelper: DriveServiceHelper? = null
     private var fileId: String? = null
     private val fileName = "DebtBookSync.txt"
@@ -46,6 +57,43 @@ class SynchronizationFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val authorizationLayout: LinearLayout = view.findViewById(R.id.authorizationLayout)
+        val accountLayout: LinearLayout = view.findViewById(R.id.accountLayout)
+        vm.isAuthorized.observe(viewLifecycleOwner) { isAuthorized ->
+            if (isAuthorized) {
+                authorizationLayout.visibility = View.GONE
+                accountLayout.visibility = View.VISIBLE
+            } else {
+                authorizationLayout.visibility = View.VISIBLE
+                accountLayout.visibility = View.GONE
+            }
+        }
+
+        val userNameTextView: TextView = view.findViewById(R.id.userNameTextView)
+        vm.userName.observe(viewLifecycleOwner) { userName ->
+            userNameTextView.text = userName
+        }
+
+        val userEmailAddressTextView: TextView = view.findViewById(R.id.userEmailAddressTextView)
+        vm.emailAddress.observe(viewLifecycleOwner) { address ->
+            userEmailAddressTextView.text = address
+        }
+
+        val googleButtonCardView: CardView = view.findViewById(R.id.googleButtonCardView)
+        googleButtonCardView.setOnClickListener {
+            requestGoogleSignIn()
+        }
+
+        val synchronizeButtonLayout: ConstraintLayout = view.findViewById(R.id.synchronizeButtonLayout)
+        synchronizeButtonLayout.setOnClickListener {
+            requestGoogleLogOut()
+        }
+
+        val googleLogOutButtonLayout: ConstraintLayout = view.findViewById(R.id.googleLogoutButtonLayout)
+        googleLogOutButtonLayout.setOnClickListener {
+            requestGoogleLogOut()
+        }
 
         val privacyAgreementTextView = view.findViewById<TextView>(R.id.privacyAgreementTextView)
         setPrivacyPolicyText(privacyAgreementTextView)
@@ -91,6 +139,7 @@ class SynchronizationFragment: Fragment() {
                     requireActivity(), Collections.singleton(DriveScopes.DRIVE_APPDATA)
                 )
                 credential.selectedAccount = googleAccount.account
+                vm.setUser(name = googleAccount.displayName, email = googleAccount.email)
                 val googleDriveService =
                     Drive.Builder(AndroidHttp.newCompatibleTransport(), GsonFactory(), credential)
                         .setApplicationName(BuildConfig.APPLICATION_ID)
@@ -101,8 +150,21 @@ class SynchronizationFragment: Fragment() {
                 mDriveServiceHelper = DriveServiceHelper(googleDriveService)
 
                 Toast.makeText(requireActivity(), "Sign in successful", Toast.LENGTH_LONG).show()
+                vm.setIsAuthorized(isAuthorized = true)
             }
             .addOnFailureListener { exception -> throw exception }
+    }
+
+    private fun requestGoogleLogOut() {
+        Toast.makeText(requireActivity(), "Start sign in, pls wait ...", Toast.LENGTH_LONG).show()
+
+        val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .build()
+        val client = GoogleSignIn.getClient(requireActivity(), signInOptions)
+
+        client.signOut().addOnCompleteListener {
+            vm.setIsAuthorized(isAuthorized = false)
+        }
     }
 
     private fun findOrCreateFile(it: FileList) {
@@ -128,12 +190,12 @@ class SynchronizationFragment: Fragment() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             REQUEST_CODE_SIGN_IN -> {
                 handleSignInResult(data!!)
             }
         }
-        super.onActivityResult(requestCode, resultCode, data)
     }
 
 }
