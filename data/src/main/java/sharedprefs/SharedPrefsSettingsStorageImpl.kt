@@ -18,6 +18,7 @@ private const val DEBT_ORDER_ATTRIBUTE = "debt_order_attribute"
 private const val DEBT_ORDER_BY_INCREASE = "debt_order_by_increase"
 private const val HUMAN_ORDER_ATTRIBUTE = "human_order_attribute"
 private const val HUMAN_ORDER_BY_INCREASE = "human_order_by_increase"
+private const val IS_AUTHORIZED = "is_authorized"
 
 
 class SharedPrefsSettingsStorageImpl(val context: Context): SettingsStorage {
@@ -106,5 +107,13 @@ class SharedPrefsSettingsStorageImpl(val context: Context): SettingsStorage {
             sharedPreferences.getInt(HUMAN_ORDER_ATTRIBUTE, ORDER_HUMAN_BY_DATE),
             sharedPreferences.getBoolean(HUMAN_ORDER_BY_INCREASE, true)
         )
+    }
+
+    override fun setIsAuthorized(isAuthorized: Boolean) {
+        sharedPreferences.edit().putBoolean(IS_AUTHORIZED, isAuthorized).apply()
+    }
+
+    override fun getIsAuthorized(): Boolean {
+        return sharedPreferences.getBoolean(IS_AUTHORIZED, false)
     }
 }

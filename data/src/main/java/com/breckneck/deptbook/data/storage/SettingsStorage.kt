@@ -37,4 +37,8 @@ interface SettingsStorage {
     fun setHumanOrder(order: Pair<Int, Boolean>)
 
     fun getHumanOrder(): Pair<Int, Boolean>
+
+    fun setIsAuthorized(isAuthorized: Boolean)
+
+    fun getIsAuthorized(): Boolean
 }

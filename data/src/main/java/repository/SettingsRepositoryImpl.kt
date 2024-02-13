@@ -102,4 +102,12 @@ class SettingsRepositoryImpl(private val settingsStorage: SettingsStorage): Sett
         }
         return Pair(humanAttribute, humanOrder.second)
     }
+
+    override fun setIsAuthorized(isAuthorized: Boolean) {
+        settingsStorage.setIsAuthorized(isAuthorized = isAuthorized)
+    }
+
+    override fun getIsAuthorized(): Boolean {
+        return settingsStorage.getIsAuthorized()
+    }
 }
