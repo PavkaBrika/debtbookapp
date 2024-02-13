@@ -98,14 +98,15 @@
                             android:layout_height="wrap_content"
                             android:paddingHorizontal="12dp"
                             android:paddingVertical="8dp"
-                            android:textAlignment="center"
-                            android:text="@string/authorize_to_avoid_losing_your_data" />
+                            android:text="@string/authorize_to_avoid_losing_your_data"
+                            android:textAlignment="center" />
 
                         <com.google.android.material.button.MaterialButton
-                            android:id="@+id/googleSignInButton"
+                            android:id="@+id/authorizationButton"
                             style="@style/FilledButton"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_margin="12dp"
                             android:text="@string/authorization" />
 
                     </LinearLayout>

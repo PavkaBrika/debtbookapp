@@ -340,6 +340,10 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         showAppRateDialog(true)
     }
 
+    override fun onAuthorizationButtonClick() {
+        navController.navigate(R.id.action_settingsFragment_to_synchronizationFragment)
+    }
+
     private fun showAppRateDialog(isFromSettings: Boolean) {
         val rateAppBottomSheetDialog = BottomSheetDialog(this)
         rateAppBottomSheetDialog.setContentView(R.layout.dialog_rate_app)

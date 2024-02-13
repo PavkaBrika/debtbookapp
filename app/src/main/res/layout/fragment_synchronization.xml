@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     style="@style/appBarLayoutStyle"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -27,7 +26,7 @@
                 app:expandedTitleGravity="center_vertical"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 app:maxLines="3"
-                app:title="@string/account"
+                app:title="@string/authorization"
                 app:titleCollapseMode="scale"
                 app:titleEnabled="true">
 
@@ -79,10 +78,77 @@
                     android:layout_marginHorizontal="8dp">
 
                     <LinearLayout
+                        android:id="@+id/authorizationLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginVertical="16dp"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:visibility="visible">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="12dp"
+                            android:paddingHorizontal="40dp"
+                            android:text="@string/authorize_to_avoid_losing_your_data"
+                            android:textAlignment="center"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/googleButtonCardView"
+                            style="@style/GoogleButtonCardViewStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="12dp">
+
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content" >
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="0dp"
+                                    android:src="@drawable/ic_google_logo"
+                                    app:layout_constraintBottom_toBottomOf="@+id/googleButtonText"
+                                    app:layout_constraintEnd_toStartOf="@+id/googleButtonText"
+                                    app:layout_constraintTop_toTopOf="@+id/googleButtonText" />
+
+                                <TextView
+                                    android:id="@+id/googleButtonText"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="8dp"
+                                    android:padding="8dp"
+                                    android:text="@string/sign_in_with_google"
+                                    android:textAlignment="center"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <TextView
+                            android:id="@+id/privacyAgreementTextView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAlignment="center"
+                            android:text="@string/by_authorizing_you_agree_to_the"
+                            android:textColorLink="@color/darkgray"
+                            android:textColor="@color/darkgray" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/accountLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="16dp"
+                        android:orientation="vertical"
+                        android:visibility="gone">
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="match_parent"

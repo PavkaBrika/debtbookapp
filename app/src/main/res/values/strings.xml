@@ -92,4 +92,7 @@
     <string name="account">Account</string>
     <string name="synchronize">Synchronize</string>
     <string name="log_out">Log out</string>
+    <string name="sign_in_with_google">Sign in with Google</string>
+    <string name="by_authorizing_you_agree_to_the">By authorizing, you agree to the %1$s</string>
+    <string name="privacy_policy_in_agreement">Privacy policy</string>
 </resources>

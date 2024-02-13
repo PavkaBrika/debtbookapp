@@ -117,6 +117,17 @@
         <item name="cardCornerRadius">10dp</item>
     </style>
 
+    <style name="GoogleButtonCardViewStyle">
+        <item name="cardBackgroundColor">@color/black</item>
+        <item name="cardCornerRadius">10dp</item>
+        <item name="strokeColor">@color/white</item>
+        <item name="rippleColor">@color/white</item>
+        <item name="strokeWidth">2dp</item>
+        <item name="android:focusable">true</item>
+        <item name="android:clickable">true</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
     <style name="TextInputLayoutTheme">
         <item name="boxStrokeColor">@color/white</item>
         <item name="hintTextColor">@color/white</item>
