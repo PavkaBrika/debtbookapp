@@ -39,6 +39,7 @@ class SynchronizationFragmentViewModel(
     }
 
     fun setUser(name: String?, email: String?) {
+        //TODO SAVE IN SHARED PREFS
         if (name == null) {
             _userName.value = ""
 
