@@ -48,11 +48,11 @@ import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 
 
-class DebtDetailsFragment: Fragment() {
+class DebtDetailsFragment : Fragment() {
 
     private val TAG = "DebtDetailsFragment"
 
-    interface OnButtonClickListener{
+    interface OnButtonClickListener {
         fun addNewDebtFragment(idHuman: Int, currency: String, name: String)
 
         fun editDebt(debtDomain: DebtDomain, currency: String, name: String)
@@ -83,7 +83,11 @@ class DebtDetailsFragment: Fragment() {
     private lateinit var debtAdapter: DebtAdapter
     private lateinit var sortButton: ImageView
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_debt_details, container, false)
     }
 
@@ -93,12 +97,18 @@ class DebtDetailsFragment: Fragment() {
         postponeEnterTransition()
 
         val recyclerView: RecyclerView = view.findViewById(R.id.debtsRecyclerView)
-        recyclerView.addItemDecoration(DividerItemDecoration(view.context, DividerItemDecoration.VERTICAL))
+        recyclerView.addItemDecoration(
+            DividerItemDecoration(
+                view.context,
+                DividerItemDecoration.VERTICAL
+            )
+        )
         recyclerView.doOnPreDraw {
             startPostponedEnterTransition()
         }
 
-        val debtRecyclerViewHintTextView: TextView = view.findViewById(R.id.debtRecyclerViewHintTextView)
+        val debtRecyclerViewHintTextView: TextView =
+            view.findViewById(R.id.debtRecyclerViewHintTextView)
 
         val humanId = arguments?.getInt("idHuman", 0)
         val newHuman = arguments?.getBoolean("newHuman", false)
@@ -112,7 +122,7 @@ class DebtDetailsFragment: Fragment() {
             setExpandedTitleTypeface(Typeface.DEFAULT_BOLD)
         }
 
-        debtClickListener = object : DebtAdapter.OnDebtClickListener{ //ALERT DIALOG
+        debtClickListener = object : DebtAdapter.OnDebtClickListener { //ALERT DIALOG
             override fun onDebtClick(debtDomain: DebtDomain, position: Int) {
                 showDebtSettings(debtDomain = debtDomain, currency = currency!!, name = humanName!!)
                 Log.e(TAG, "Click on debt with id = ${debtDomain.id}")
@@ -184,9 +194,13 @@ class DebtDetailsFragment: Fragment() {
         }
 
         val addDebtButton: FloatingActionButton = view.findViewById(R.id.addDebtButton)
-        addDebtButton.setOnClickListener{
+        addDebtButton.setOnClickListener {
             if (vm.humanId.value != null)
-                buttonClickListener?.addNewDebtFragment(idHuman = vm.humanId.value!!, currency = currency!!, name = humanName!!)
+                buttonClickListener?.addNewDebtFragment(
+                    idHuman = vm.humanId.value!!,
+                    currency = currency!!,
+                    name = humanName!!
+                )
         }
 
         val backButton: ImageView = view.findViewById(R.id.backButton)
@@ -204,8 +218,7 @@ class DebtDetailsFragment: Fragment() {
         if (sum > 0) {
             overallSumTextView.setTextColor(ContextCompat.getColor(view.context, R.color.green))
             overallSumTextView.text = "+${decimalFormat.format(sum)} $currency"
-        }
-        else if (sum < 0) {
+        } else if (sum < 0) {
             overallSumTextView.setTextColor(ContextCompat.getColor(view.context, R.color.red))
             overallSumTextView.text = "${decimalFormat.format(sum)} $currency"
         } else {
@@ -220,8 +233,14 @@ class DebtDetailsFragment: Fragment() {
         vm.onHumanDeleteDialogOpen()
 
         dialog.findViewById<Button>(R.id.okButton)!!.setOnClickListener {
-            vm.deleteHuman()
-            buttonClickListener?.deleteHuman()
+            val result = vm.deleteHuman()
+                .subscribe(
+                    {
+                        buttonClickListener?.deleteHuman()
+                        Log.e(TAG, "Human deleted")
+                    }, {
+                        it.printStackTrace()
+                    })
             dialog.dismiss()
         }
 
@@ -247,7 +266,8 @@ class DebtDetailsFragment: Fragment() {
         vm.onDebtSettingsDialogOpen()
         vm.onSetSettingDebt(debtDomain)
 
-        dialog.findViewById<TextView>(R.id.debtExtrasTitle)!!.text = "${debtDomain.date} : ${formatDebtSum.execute(debtDomain.sum)} $currency"
+        dialog.findViewById<TextView>(R.id.debtExtrasTitle)!!.text =
+            "${debtDomain.date} : ${formatDebtSum.execute(debtDomain.sum)} $currency"
 
         dialog.findViewById<Button>(R.id.deleteButton)!!.setOnClickListener {
             vm.deleteDebt(debtDomain = debtDomain)
@@ -282,19 +302,48 @@ class DebtDetailsFragment: Fragment() {
             val intent = Intent(ACTION_SEND)
             intent.type = "text/plain"
             intent.putExtra(EXTRA_SUBJECT, humanName)
-            intent.putExtra(EXTRA_TEXT, getDebtShareString.execute(debtList = vm.resultDebtList.value!!, name = humanName!!, currency = currency!!, sum = vm.overallSum.value!!, getAddSumInShareText.execute()))
+            intent.putExtra(
+                EXTRA_TEXT,
+                getDebtShareString.execute(
+                    debtList = vm.resultDebtList.value!!,
+                    name = humanName!!,
+                    currency = currency!!,
+                    sum = vm.overallSum.value!!,
+                    getAddSumInShareText.execute()
+                )
+            )
             startActivity(createChooser(intent, humanName))
         }
 
         dialog.findViewById<Button>(R.id.editButton)!!.setOnClickListener {
-            var rootFolder = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString())
+            var rootFolder = File(
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
+                    .toString()
+            )
             rootFolder = File(rootFolder, "DebtBookFiles")
-            val sheetTitles = arrayOf(getString(R.string.date), "${getString(R.string.sum)} ($currency)", getString(R.string.comment))
-            val excelFile = ExportDebtDataInExcelUseCase().execute(debtList = vm.resultDebtList.value!!, sheetName = "${humanName}_debts", rootFolder = rootFolder, sheetTitles = sheetTitles)
+            val sheetTitles = arrayOf(
+                getString(R.string.date),
+                "${getString(R.string.sum)} ($currency)",
+                getString(R.string.comment)
+            )
+            val excelFile = ExportDebtDataInExcelUseCase().execute(
+                debtList = vm.resultDebtList.value!!,
+                sheetName = "${humanName}_debts",
+                rootFolder = rootFolder,
+                sheetTitles = sheetTitles
+            )
             if (excelFile.exists())
-                Toast.makeText(requireContext(), R.string.excel_folder_toast_hint, Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    R.string.excel_folder_toast_hint,
+                    Toast.LENGTH_SHORT
+                ).show()
             val intent = Intent(ACTION_SEND)
-            val uriPath: Uri = FileProvider.getUriForFile(requireContext(), "${requireContext().packageName}.provider", excelFile)
+            val uriPath: Uri = FileProvider.getUriForFile(
+                requireContext(),
+                "${requireContext().packageName}.provider",
+                excelFile
+            )
             intent.addFlags(FLAG_GRANT_READ_URI_PERMISSION)
             intent.setDataAndType(uriPath, "application/vnd.ms-excel");
             intent.putExtra(EXTRA_STREAM, uriPath)
@@ -329,14 +378,17 @@ class DebtDetailsFragment: Fragment() {
             sortImageView!!.rotationY = ROTATE_DEGREE_DEBT_IMAGE_VIEW_BY_DECREASE
 
         var orderAttribute = vm.debtOrder.value!!.first
-        val orderCreationDateRadioButton = orderDialog.findViewById<RadioButton>(R.id.orderCreationDateRadioButton)
+        val orderCreationDateRadioButton =
+            orderDialog.findViewById<RadioButton>(R.id.orderCreationDateRadioButton)
         val orderDateRadioButton = orderDialog.findViewById<RadioButton>(R.id.orderDateRadioButton)
         val orderSumRadioButton = orderDialog.findViewById<RadioButton>(R.id.orderSumRadioButton)
         when (orderAttribute) {
             DebtOrderAttribute.CreationDate ->
                 orderCreationDateRadioButton!!.isChecked = true
+
             DebtOrderAttribute.Date ->
                 orderDateRadioButton!!.isChecked = true
+
             DebtOrderAttribute.Sum ->
                 orderSumRadioButton!!.isChecked = true
         }
@@ -385,9 +437,11 @@ class DebtDetailsFragment: Fragment() {
                 R.id.orderDateRadioButton -> {
                     orderAttribute = DebtOrderAttribute.Date
                 }
+
                 R.id.orderCreationDateRadioButton -> {
                     orderAttribute = DebtOrderAttribute.CreationDate
                 }
+
                 R.id.orderSumRadioButton -> {
                     orderAttribute = DebtOrderAttribute.Sum
                 }
@@ -456,7 +510,12 @@ class DebtDetailsFragment: Fragment() {
                 }
 
                 Filter.Negative -> {
-                    sortButton.setColorFilter(ContextCompat.getColor(requireActivity(), R.color.red))
+                    sortButton.setColorFilter(
+                        ContextCompat.getColor(
+                            requireActivity(),
+                            R.color.red
+                        )
+                    )
                 }
 
                 Filter.Positive -> {
