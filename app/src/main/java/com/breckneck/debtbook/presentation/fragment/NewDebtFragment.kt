@@ -308,8 +308,8 @@ class NewDebtFragment: Fragment() {
                                 sum = (sum.toDouble() * (-1.0)).toString()
                             if (sum.toDouble() != 0.0) {
                                 val editDebt = Completable.create {
-                                    val pastSum = arguments?.getDouble("sum")
-                                    val currentSum = updateCurrentSumUseCase.execute(sum.toDouble(), pastSum!!)
+                                    val pastSum = arguments?.getFloat("sum")
+                                    val currentSum = updateCurrentSumUseCase.execute(sum.toDouble(), pastSum!!.toDouble())
                                     if (info.trim().isEmpty())
                                         editDebtUseCase.execute(id = idDebt!!,sum = sum.toDouble(), idHuman = idHuman!!, info = null, date = date)
                                     else
