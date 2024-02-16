@@ -22,8 +22,10 @@ import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.core.os.bundleOf
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
@@ -233,14 +235,9 @@ class DebtDetailsFragment : Fragment() {
         vm.onHumanDeleteDialogOpen()
 
         dialog.findViewById<Button>(R.id.okButton)!!.setOnClickListener {
-            val result = vm.deleteHuman()
-                .subscribe(
-                    {
-                        buttonClickListener?.deleteHuman()
-                        Log.e(TAG, "Human deleted")
-                    }, {
-                        it.printStackTrace()
-                    })
+            setFragmentResult("requestKey", bundleOf("isListModified" to true))
+            vm.deleteHuman()
+            buttonClickListener?.deleteHuman()
             dialog.dismiss()
         }
 

@@ -59,10 +59,6 @@ class MainFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.e(TAG, "MainFragment created")
-        setFragmentResultListener("requestKey") { requestKey, bundle ->
-            if (bundle.getBoolean("isListModified"))
-                vm.init()
-        }
     }
 
     override fun onCreateView(
@@ -70,6 +66,10 @@ class MainFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        setFragmentResultListener("requestKey") { requestKey, bundle ->
+            if (bundle.getBoolean("isListModified"))
+                vm.init()
+        }
         return inflater.inflate(R.layout.fragment_main, container, false)
     }
 

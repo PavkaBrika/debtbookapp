@@ -160,15 +160,20 @@ class DebtDetailsViewModel(
         disposeBag.add(getOverallSumSingle)
     }
 
-    fun deleteHuman(): Completable {
-        return Completable.create {
+    fun deleteHuman() {
+        val deleteHumanCompletable = Completable.create {
             deleteHumanUseCase.execute(id = _humanId.value!!)
             deleteDebtsByHumanIdUseCase.execute(id = _humanId.value!!)
             it.onComplete()
         }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-//        disposeBag.add(deleteHumanCompletable)
+            .subscribe({
+                Log.e(TAG, "Deleted human with id = ${_humanId.value}")
+            }, {
+                it.printStackTrace()
+            })
+        disposeBag.add(deleteHumanCompletable)
     }
 
     fun deleteDebt(debtDomain: DebtDomain) {
