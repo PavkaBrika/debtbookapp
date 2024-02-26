@@ -37,7 +37,9 @@ import com.yandex.mobile.ads.interstitial.InterstitialAdLoader
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.math.roundToInt
 
-class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, NewDebtFragment.OnButtonClickListener, DebtDetailsFragment.OnButtonClickListener, SettingsFragment.OnButtonClickListener {
+class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener,
+    NewDebtFragment.OnButtonClickListener, DebtDetailsFragment.OnButtonClickListener,
+    SettingsFragment.OnButtonClickListener, SynchronizationFragment.SynchronizationInterface {
 
     private var interstitialAd: InterstitialAd? = null
     private var interstitialAdLoader: InterstitialAdLoader? = null
@@ -82,7 +84,8 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
                 }
             }
         }
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.frameLayout) as NavHostFragment
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.frameLayout) as NavHostFragment
         navController = navHostFragment.navController
 
         vm.getAppTheme()
@@ -147,7 +150,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
 
 //        //INTERSTITIAL AD
         interstitialAdLoader = InterstitialAdLoader(applicationContext).apply {
-            setAdLoadListener(object: InterstitialAdLoadListener {
+            setAdLoadListener(object : InterstitialAdLoadListener {
                 override fun onAdLoaded(interstitialAd: InterstitialAd) {
                     Log.e(interstitialTAG, "Interstitial ad load success")
                     this@MainActivity.interstitialAd = interstitialAd
@@ -172,7 +175,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
 
     private fun showInterstitialAd() {
         interstitialAd?.apply {
-            setAdEventListener(object: InterstitialAdEventListener {
+            setAdEventListener(object : InterstitialAdEventListener {
                 override fun onAdShown() {
                     Log.e(interstitialTAG, "Interstitial ad shown")
                     vm.onAdShow()
@@ -221,7 +224,12 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
     private fun startClickVibration() {
         try {
             if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) && (vib != null)) {
-                vib!!.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.EFFECT_DOUBLE_CLICK))
+                vib!!.vibrate(
+                    VibrationEffect.createOneShot(
+                        100,
+                        VibrationEffect.EFFECT_DOUBLE_CLICK
+                    )
+                )
             }
         } catch (e: IllegalArgumentException) {
             e.printStackTrace()
@@ -238,7 +246,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         outState.putBoolean("Change state", true)
     }
 
-//MainFragment interfaces
+    //MainFragment interfaces
     override fun onHumanClick(idHuman: Int, currency: String, name: String) {
         val args = Bundle()
         args.putInt("idHuman", idHuman)
@@ -331,6 +339,11 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         navController.popBackStack()
     }
 
+    //synchronization interface
+    override fun onBackButtonClick() {
+        navController.popBackStack()
+    }
+
     //settings interface
     override fun onBackSettingsButtonClick() {
         navController.popBackStack()
@@ -358,13 +371,19 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
                     showLowAppRateDialog(fromSettings = isFromSettings)
                     rateAppBottomSheetDialog.dismiss()
                 }
+
                 4, 5 -> {
                     launchMarketIntent()
                     rateAppBottomSheetDialog.dismiss()
                 }
+
                 0 -> {
                     vm.setAppReviewFromSettings(false)
-                    Toast.makeText(applicationContext, getString(R.string.rate_app_toast), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        applicationContext,
+                        getString(R.string.rate_app_toast),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }
@@ -381,11 +400,16 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
             vm.setAppRate(0)
         }
 
-        val rateStar1ImageView: ImageView = rateAppBottomSheetDialog.findViewById(R.id.rateStar1ImageView)!!
-        val rateStar2ImageView: ImageView = rateAppBottomSheetDialog.findViewById(R.id.rateStar2ImageView)!!
-        val rateStar3ImageView: ImageView = rateAppBottomSheetDialog.findViewById(R.id.rateStar3ImageView)!!
-        val rateStar4ImageView: ImageView = rateAppBottomSheetDialog.findViewById(R.id.rateStar4ImageView)!!
-        val rateStar5ImageView: ImageView = rateAppBottomSheetDialog.findViewById(R.id.rateStar5ImageView)!!
+        val rateStar1ImageView: ImageView =
+            rateAppBottomSheetDialog.findViewById(R.id.rateStar1ImageView)!!
+        val rateStar2ImageView: ImageView =
+            rateAppBottomSheetDialog.findViewById(R.id.rateStar2ImageView)!!
+        val rateStar3ImageView: ImageView =
+            rateAppBottomSheetDialog.findViewById(R.id.rateStar3ImageView)!!
+        val rateStar4ImageView: ImageView =
+            rateAppBottomSheetDialog.findViewById(R.id.rateStar4ImageView)!!
+        val rateStar5ImageView: ImageView =
+            rateAppBottomSheetDialog.findViewById(R.id.rateStar5ImageView)!!
         rateStar1ImageView.setOnClickListener {
             rateStar1ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.yellow))
             rateStar2ImageView.clearColorFilter()
@@ -429,29 +453,108 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
 
         when (vm.appRate.value) {
             1 -> {
-                rateStar1ImageView.setColorFilter(ContextCompat.getColor(applicationContext, R.color.yellow))
+                rateStar1ImageView.setColorFilter(
+                    ContextCompat.getColor(
+                        applicationContext,
+                        R.color.yellow
+                    )
+                )
             }
+
             2 -> {
-                rateStar1ImageView.setColorFilter(ContextCompat.getColor(applicationContext, R.color.yellow))
-                rateStar2ImageView.setColorFilter(ContextCompat.getColor(applicationContext, R.color.yellow))
+                rateStar1ImageView.setColorFilter(
+                    ContextCompat.getColor(
+                        applicationContext,
+                        R.color.yellow
+                    )
+                )
+                rateStar2ImageView.setColorFilter(
+                    ContextCompat.getColor(
+                        applicationContext,
+                        R.color.yellow
+                    )
+                )
             }
+
             3 -> {
-                rateStar1ImageView.setColorFilter(ContextCompat.getColor(applicationContext, R.color.yellow))
-                rateStar2ImageView.setColorFilter(ContextCompat.getColor(applicationContext, R.color.yellow))
-                rateStar3ImageView.setColorFilter(ContextCompat.getColor(applicationContext, R.color.yellow))
+                rateStar1ImageView.setColorFilter(
+                    ContextCompat.getColor(
+                        applicationContext,
+                        R.color.yellow
+                    )
+                )
+                rateStar2ImageView.setColorFilter(
+                    ContextCompat.getColor(
+                        applicationContext,
+                        R.color.yellow
+                    )
+                )
+                rateStar3ImageView.setColorFilter(
+                    ContextCompat.getColor(
+                        applicationContext,
+                        R.color.yellow
+                    )
+                )
             }
+
             4 -> {
-                rateStar1ImageView.setColorFilter(ContextCompat.getColor(applicationContext, R.color.yellow))
-                rateStar2ImageView.setColorFilter(ContextCompat.getColor(applicationContext, R.color.yellow))
-                rateStar3ImageView.setColorFilter(ContextCompat.getColor(applicationContext, R.color.yellow))
-                rateStar4ImageView.setColorFilter(ContextCompat.getColor(applicationContext, R.color.yellow))
+                rateStar1ImageView.setColorFilter(
+                    ContextCompat.getColor(
+                        applicationContext,
+                        R.color.yellow
+                    )
+                )
+                rateStar2ImageView.setColorFilter(
+                    ContextCompat.getColor(
+                        applicationContext,
+                        R.color.yellow
+                    )
+                )
+                rateStar3ImageView.setColorFilter(
+                    ContextCompat.getColor(
+                        applicationContext,
+                        R.color.yellow
+                    )
+                )
+                rateStar4ImageView.setColorFilter(
+                    ContextCompat.getColor(
+                        applicationContext,
+                        R.color.yellow
+                    )
+                )
             }
+
             5 -> {
-                rateStar1ImageView.setColorFilter(ContextCompat.getColor(applicationContext, R.color.yellow))
-                rateStar2ImageView.setColorFilter(ContextCompat.getColor(applicationContext, R.color.yellow))
-                rateStar3ImageView.setColorFilter(ContextCompat.getColor(applicationContext, R.color.yellow))
-                rateStar4ImageView.setColorFilter(ContextCompat.getColor(applicationContext, R.color.yellow))
-                rateStar5ImageView.setColorFilter(ContextCompat.getColor(applicationContext, R.color.yellow))
+                rateStar1ImageView.setColorFilter(
+                    ContextCompat.getColor(
+                        applicationContext,
+                        R.color.yellow
+                    )
+                )
+                rateStar2ImageView.setColorFilter(
+                    ContextCompat.getColor(
+                        applicationContext,
+                        R.color.yellow
+                    )
+                )
+                rateStar3ImageView.setColorFilter(
+                    ContextCompat.getColor(
+                        applicationContext,
+                        R.color.yellow
+                    )
+                )
+                rateStar4ImageView.setColorFilter(
+                    ContextCompat.getColor(
+                        applicationContext,
+                        R.color.yellow
+                    )
+                )
+                rateStar5ImageView.setColorFilter(
+                    ContextCompat.getColor(
+                        applicationContext,
+                        R.color.yellow
+                    )
+                )
             }
         }
 
@@ -470,13 +573,17 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
         lowRateBottomSheetDialog.setCancelable(false)
         lowRateBottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
         vm.setAppReviewDialogShown(true)
-        val reviewEditText: TextInputEditText = lowRateBottomSheetDialog.findViewById(R.id.reviewEditText)!!
+        val reviewEditText: TextInputEditText =
+            lowRateBottomSheetDialog.findViewById(R.id.reviewEditText)!!
         val sendReviewButton: Button = lowRateBottomSheetDialog.findViewById(R.id.buttonOk)!!
         val cancelButton: Button = lowRateBottomSheetDialog.findViewById(R.id.buttonCancel)!!
         sendReviewButton.setOnClickListener {
             val intent = Intent(Intent.ACTION_SENDTO)
             intent.data = Uri.parse("mailto:pavlikbrichkin@yandex.ru")
-            intent.putExtra(Intent.EXTRA_SUBJECT, "${getString(R.string.email_subject)} ${BuildConfig.VERSION_NAME}")
+            intent.putExtra(
+                Intent.EXTRA_SUBJECT,
+                "${getString(R.string.email_subject)} ${BuildConfig.VERSION_NAME}"
+            )
             intent.putExtra(Intent.EXTRA_TEXT, reviewEditText.text.toString())
             startActivity(intent)
             lowRateBottomSheetDialog.dismiss()
@@ -486,7 +593,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener, Ne
             reviewEditText.setText(vm.appReviewText.value)
         }
 
-        reviewEditText.addTextChangedListener(object: TextWatcher {
+        reviewEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
             }

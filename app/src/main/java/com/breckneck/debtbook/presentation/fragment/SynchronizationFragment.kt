@@ -1,5 +1,6 @@
 package com.breckneck.debtbook.presentation.fragment
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -12,6 +13,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -37,6 +39,10 @@ import java.util.Collections
 
 class SynchronizationFragment: Fragment() {
 
+    interface SynchronizationInterface {
+        fun onBackButtonClick()
+    }
+
     private val TAG = "Sync fragment"
 
     private val vm by viewModel<SynchronizationFragmentViewModel>()
@@ -46,6 +52,12 @@ class SynchronizationFragment: Fragment() {
     private var mDriveServiceHelper: DriveServiceHelper? = null
     private var fileId: String? = null
     private val fileName = "DebtBookSync.txt"
+    private var synchronizationInterface: SynchronizationInterface? = null
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        synchronizationInterface = context as SynchronizationInterface
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,6 +69,11 @@ class SynchronizationFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val backButton: Button = view.findViewById(R.id.backButton)
+        backButton.setOnClickListener {
+            synchronizationInterface!!.onBackButtonClick()
+        }
 
         val authorizationLayout: LinearLayout = view.findViewById(R.id.authorizationLayout)
         val accountLayout: LinearLayout = view.findViewById(R.id.accountLayout)
@@ -117,8 +134,6 @@ class SynchronizationFragment: Fragment() {
     }
 
     private fun requestGoogleSignIn() {
-        Toast.makeText(requireActivity(), "Start sign in, pls wait ...", Toast.LENGTH_LONG).show()
-
         val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestEmail()
             .requestProfile()
@@ -128,6 +143,20 @@ class SynchronizationFragment: Fragment() {
 
         // The result of the sign-in Intent is handled in onActivityResult.
         startActivityForResult(client.signInIntent, REQUEST_CODE_SIGN_IN)
+    }
+
+    private fun saveFileChanges() {
+        Toast.makeText(requireActivity(), "Start save file to Google Drive, pls wait ...", Toast.LENGTH_LONG)
+            .show()
+        mDriveServiceHelper!!.saveFile(fileId, fileName, "dasds")
+            .addOnSuccessListener {
+                Toast.makeText(
+                    requireActivity(),
+                    "Save to google drive successful",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+            .addOnFailureListener { throw it }
     }
 
     private fun handleSignInResult(result: Intent) {
@@ -150,14 +179,15 @@ class SynchronizationFragment: Fragment() {
                 mDriveServiceHelper = DriveServiceHelper(googleDriveService)
 
                 Toast.makeText(requireActivity(), "Sign in successful", Toast.LENGTH_LONG).show()
+                mDriveServiceHelper!!.queryFiles()
+                    .addOnSuccessListener { findOrCreateFile(it) }
+                    .addOnFailureListener { throw it }
                 vm.setIsAuthorized(isAuthorized = true)
             }
             .addOnFailureListener { exception -> throw exception }
     }
 
     private fun requestGoogleLogOut() {
-        Toast.makeText(requireActivity(), "Start sign in, pls wait ...", Toast.LENGTH_LONG).show()
-
         val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .build()
         val client = GoogleSignIn.getClient(requireActivity(), signInOptions)
