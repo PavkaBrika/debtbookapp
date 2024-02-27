@@ -20,7 +20,8 @@ class DataBaseHumanStorageImpl(context: Context) : HumanStorage {
     }
 
     override fun replaceAllHumans(humanList: List<Human>) {
-        TODO("Not yet implemented")
+        db.appDao().deleteAllHumans()
+        db.appDao().insertAllHumans(humanList = humanList)
     }
 
     override fun getPositiveHumans(): List<Human> {

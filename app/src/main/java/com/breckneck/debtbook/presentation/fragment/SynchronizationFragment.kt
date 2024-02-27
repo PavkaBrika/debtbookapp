@@ -109,37 +109,57 @@ class SynchronizationFragment : Fragment() {
 
         val synchronizeButtonLayout: ConstraintLayout = view.findViewById(R.id.synchronizeButtonLayout)
         synchronizeButtonLayout.setOnClickListener {
+//            getFile()
+            saveFileChanges()
+            vm.setIsSynchronizing(true)
+        }
+
+        val restoreButtonLayout: ConstraintLayout = view.findViewById(R.id.restoreButtonLayout)
+        restoreButtonLayout.setOnClickListener {
             getFile()
             vm.setIsSynchronizing(true)
         }
 
+        val restoreTextView: TextView = view.findViewById(R.id.restoreTextView)
         val synchronizeTextView: TextView = view.findViewById(R.id.synchronizeTextView)
         vm.fileId.observe(viewLifecycleOwner) { fileId ->
             if ((fileId == null) || (vm.appDataInfoForSync.value == null)) {
                 synchronizeTextView.text = getString(R.string.loading)
+                restoreTextView.text = getString(R.string.loading)
                 synchronizeButtonLayout.isClickable = false
+                restoreButtonLayout.isClickable = false
             } else {
                 synchronizeTextView.text = getString(R.string.synchronize)
+                restoreTextView.text = getString(R.string.restore_data)
                 synchronizeButtonLayout.isClickable = true
+                restoreButtonLayout.isClickable = true
             }
         }
         vm.appDataInfoForSync.observe(viewLifecycleOwner) { appData ->
             if ((appData == null) || (vm.fileId.value == null)) {
                 synchronizeTextView.text = getString(R.string.loading)
+                restoreTextView.text = getString(R.string.loading)
                 synchronizeButtonLayout.isClickable = false
+                restoreButtonLayout.isClickable = false
             } else {
                 synchronizeTextView.text = getString(R.string.synchronize)
+                restoreTextView.text = getString(R.string.restore_data)
                 synchronizeButtonLayout.isClickable = true
+                restoreButtonLayout.isClickable = true
             }
         }
 
         vm.isSynchronizing.observe(viewLifecycleOwner) { isSynchronizing ->
             if (isSynchronizing) {
                 synchronizeTextView.text = getString(R.string.loading)
+                restoreTextView.text = getString(R.string.loading)
                 synchronizeButtonLayout.isClickable = false
+                restoreButtonLayout.isClickable = false
             } else {
                 synchronizeTextView.text = getString(R.string.synchronize)
+                restoreTextView.text = getString(R.string.restore_data)
                 synchronizeButtonLayout.isClickable = true
+                restoreButtonLayout.isClickable = true
             }
         }
 
@@ -180,7 +200,6 @@ class SynchronizationFragment : Fragment() {
             .requestScopes(Scope(DriveScopes.DRIVE_APPDATA))
             .build()
         val client = GoogleSignIn.getClient(requireActivity(), signInOptions)
-        // The result of the sign-in Intent is handled in onActivityResult.
         startActivityForResult(client.signInIntent, REQUEST_CODE_SIGN_IN)
     }
 
@@ -243,8 +262,7 @@ class SynchronizationFragment : Fragment() {
                     requireActivity(),
                     getString(R.string.something_went_wrong),
                     Toast.LENGTH_SHORT
-                )
-                    .show()
+                ).show()
                 throw it
             }
     }
@@ -252,9 +270,7 @@ class SynchronizationFragment : Fragment() {
     private fun getFile() {
         vm.driveServiceHelper.value!!.readFile(vm.fileId.value)
             .addOnSuccessListener {
-                if (isDataDifferent(data = it.second)) {
-                    saveFileChanges()
-                }
+                vm.replaceAllData(gson.fromJson(it.second, AppDataLists::class.java))
             }
             .addOnFailureListener {
                 vm.setIsSynchronizing(false)
@@ -268,18 +284,18 @@ class SynchronizationFragment : Fragment() {
             }
     }
 
-    private fun isDataDifferent(data: String): Boolean {
-        val appDataLists = gson.fromJson(data, AppDataLists::class.java)
-        if ((vm.appDataInfoForSync.value!!.humanList.size == appDataLists.humanList.size)
-            && (vm.appDataInfoForSync.value!!.debtList.size == appDataLists.debtList.size)
-            && (vm.appDataInfoForSync.value!!.humanList.containsAll(appDataLists.humanList))
-            && (vm.appDataInfoForSync.value!!.debtList.containsAll(appDataLists.debtList))
-        ) {
-            return true
-        } else {
-            return false
-        }
-    }
+//    private fun isDataDifferent(data: String): Boolean {
+//        val appDataLists = gson.fromJson(data, AppDataLists::class.java)
+//        if ((vm.appDataInfoForSync.value!!.humanList.size == appDataLists.humanList.size)
+//            && (vm.appDataInfoForSync.value!!.debtList.size == appDataLists.debtList.size)
+//            && (vm.appDataInfoForSync.value!!.humanList.containsAll(appDataLists.humanList))
+//            && (vm.appDataInfoForSync.value!!.debtList.containsAll(appDataLists.debtList))
+//        ) {
+//            return true
+//        } else {
+//            return false
+//        }
+//    }
 
     private fun findOrCreateFile(it: FileList) {
         if (it.files.size == 0) {

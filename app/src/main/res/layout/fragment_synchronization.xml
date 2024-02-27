@@ -209,7 +209,7 @@
                                 android:id="@+id/refreshImageView"
                                 android:layout_width="40dp"
                                 android:layout_height="40dp"
-                                android:src="@drawable/baseline_refresh_24"
+                                android:src="@drawable/baseline_cloud_sync_24"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
@@ -230,7 +230,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="8dp"
                                 android:layout_marginTop="8dp"
-                                android:text="last sync 123 123 123 "
+                                android:text="@string/the_data_has_not_yet_been_synchronized"
                                 android:textColor="@android:color/darker_gray"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
@@ -238,6 +238,55 @@
                                 app:layout_constraintTop_toBottomOf="@+id/synchronizeTextView" />
 
                         </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginHorizontal="16dp"
+                            android:layout_marginVertical="8dp"
+                            android:background="@color/gray" />
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/restoreButtonLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="?android:attr/selectableItemBackground"
+                            android:padding="12dp">
+
+                            <ImageView
+                                android:id="@+id/restoreImageView"
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:src="@drawable/baseline_restore_24"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/restoreTextView"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:text="@string/restore_data"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toEndOf="@+id/restoreImageView"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/restoreHintTextView"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginTop="8dp"
+                                android:text="@string/this_function_will_restore_your_data_from_cloud"
+                                android:textColor="@android:color/darker_gray"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toEndOf="@+id/restoreImageView"
+                                app:layout_constraintTop_toBottomOf="@+id/restoreTextView" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
                         <TextView
                             android:layout_width="match_parent"

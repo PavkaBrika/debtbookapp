@@ -96,4 +96,7 @@
     <string name="sign_in_with_google">Sign in with Google</string>
     <string name="by_authorizing_you_agree_to_the">By authorizing, you agree to the %1$s</string>
     <string name="privacy_policy_in_agreement">Privacy policy</string>
+    <string name="this_function_will_restore_your_data_from_cloud">This function will restore your data from cloud</string>
+    <string name="restore_data">Restore data</string>
+    <string name="the_data_has_not_yet_been_synchronized">The data has not yet been synchronized</string>
 </resources>

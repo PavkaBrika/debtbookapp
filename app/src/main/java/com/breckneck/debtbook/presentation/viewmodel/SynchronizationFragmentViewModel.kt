@@ -9,7 +9,9 @@ import com.breckneck.deptbook.domain.model.AppDataLists
 import com.breckneck.deptbook.domain.model.HumanDomain
 import com.breckneck.deptbook.domain.usecase.Debt.GetAllDebts
 import com.breckneck.deptbook.domain.usecase.Debt.GetAllDebtsByIdUseCase
+import com.breckneck.deptbook.domain.usecase.Debt.ReplaceAllDebts
 import com.breckneck.deptbook.domain.usecase.Human.GetAllHumansUseCase
+import com.breckneck.deptbook.domain.usecase.Human.ReplaceAllHumans
 import com.breckneck.deptbook.domain.usecase.Settings.GetIsAuthorized
 import com.breckneck.deptbook.domain.usecase.Settings.SetIsAuthorized
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -22,7 +24,9 @@ class SynchronizationFragmentViewModel(
     private val getIsAuthorized: GetIsAuthorized,
     private val setIsAuthorized: SetIsAuthorized,
     private val getAllDebts: GetAllDebts,
-    private val getAllHumansUseCase: GetAllHumansUseCase
+    private val getAllHumansUseCase: GetAllHumansUseCase,
+    private val replaceAllDebts: ReplaceAllDebts,
+    private val replaceAllHumans: ReplaceAllHumans
 ): ViewModel() {
 
     private val TAG = "SyncFragmentVM"
@@ -96,6 +100,22 @@ class SynchronizationFragmentViewModel(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 _appDataInfoForSync.value = it
+            }, {
+                Log.e(TAG, it.stackTrace.toString())
+            })
+        disposeBag.add(disposable)
+    }
+
+    fun replaceAllData(appDataLists: AppDataLists) {
+        val disposable = Completable.create {
+            replaceAllHumans.execute(appDataLists.humanList)
+            replaceAllDebts.execute(appDataLists.debtList)
+            it.onComplete()
+        }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                _isSynchronizing.value = false
             }, {
                 Log.e(TAG, it.stackTrace.toString())
             })

@@ -78,7 +78,9 @@ val appModule = module {
             getIsAuthorized = get(),
             setIsAuthorized = get(),
             getAllDebts = get(),
-            getAllHumansUseCase = get()
+            getAllHumansUseCase = get(),
+            replaceAllDebts = get(),
+            replaceAllHumans = get()
         )
     }
 }

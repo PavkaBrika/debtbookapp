@@ -23,7 +23,8 @@ class DataBaseDebtStorageImpl(context: Context): DebtStorage {
     }
 
     override fun replaceAllDebts(debtList: List<Debt>) {
-        TODO("Not yet implemented")
+        db.appDao().deleteAllDebts()
+        db.appDao().insertAllDebts(debtList = debtList)
     }
 
     override fun setDebt(debt: Debt) {

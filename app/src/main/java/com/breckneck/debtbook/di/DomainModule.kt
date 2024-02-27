@@ -48,6 +48,10 @@ val domainModule = module {
         UpdateHuman(humanRepository = get())
     }
 
+    factory<ReplaceAllHumans> {
+        ReplaceAllHumans(humanRepository = get())
+    }
+
     //DEBT
 
     factory<GetAllDebtsSumUseCase> {
@@ -100,6 +104,10 @@ val domainModule = module {
 
     factory<FilterDebts> {
         FilterDebts()
+    }
+
+    factory<ReplaceAllDebts> {
+        ReplaceAllDebts(debtRepository = get())
     }
 
     //SETTINGS
