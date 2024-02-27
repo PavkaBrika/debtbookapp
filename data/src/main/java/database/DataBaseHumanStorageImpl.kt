@@ -19,6 +19,10 @@ class DataBaseHumanStorageImpl(context: Context) : HumanStorage {
         return humanList
     }
 
+    override fun replaceAllHumans(humanList: List<Human>) {
+        TODO("Not yet implemented")
+    }
+
     override fun getPositiveHumans(): List<Human> {
         val humanList = db.appDao().getPositiveHumans()
         return humanList

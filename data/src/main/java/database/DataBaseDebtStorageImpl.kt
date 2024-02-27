@@ -18,6 +18,14 @@ class DataBaseDebtStorageImpl(context: Context): DebtStorage {
         return db.appDao().getAllDebtsById(id = id)
     }
 
+    override fun getAllDebts(): List<Debt> {
+        return db.appDao().getAllDebts()
+    }
+
+    override fun replaceAllDebts(debtList: List<Debt>) {
+        TODO("Not yet implemented")
+    }
+
     override fun setDebt(debt: Debt) {
         var debtId = sharedPreferences.getInt(DEBT_ID, 0)
         debt.id = debtId

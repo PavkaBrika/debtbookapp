@@ -6,6 +6,8 @@ interface HumanStorage  {
 
     fun getAllHumans() : List<Human>
 
+    fun replaceAllHumans(humanList: List<Human>)
+
     fun getPositiveHumans(): List<Human>
 
     fun getNegativeHumans(): List<Human>

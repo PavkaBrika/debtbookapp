@@ -4,7 +4,11 @@ import com.breckneck.deptbook.domain.model.DebtDomain
 
 interface DebtRepository {
 
+    fun getAllDebts(): List<DebtDomain>
+
     fun getAllDebtsById(id: Int): List<DebtDomain>
+
+    fun replaceAllDebts(debtList: List<DebtDomain>)
 
     fun setDebt(debtDomain: DebtDomain)
 

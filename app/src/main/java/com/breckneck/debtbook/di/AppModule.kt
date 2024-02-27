@@ -37,7 +37,7 @@ val appModule = module {
 
     viewModel<DebtDetailsViewModel> {
         DebtDetailsViewModel(
-            getAllDebtsUseCase = get(),
+            getAllDebtsByIdUseCase = get(),
             getLastHumanIdUseCase = get(),
             getHumanSumDebtUseCase = get(),
             deleteHumanUseCase = get(),
@@ -76,7 +76,9 @@ val appModule = module {
     viewModel<SynchronizationFragmentViewModel> {
         SynchronizationFragmentViewModel(
             getIsAuthorized = get(),
-            setIsAuthorized = get()
+            setIsAuthorized = get(),
+            getAllDebts = get(),
+            getAllHumansUseCase = get()
         )
     }
 }

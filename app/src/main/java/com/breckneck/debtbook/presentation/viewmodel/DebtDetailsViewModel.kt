@@ -8,7 +8,7 @@ import com.breckneck.deptbook.domain.model.DebtDomain
 import com.breckneck.deptbook.domain.usecase.Debt.DeleteDebtUseCase
 import com.breckneck.deptbook.domain.usecase.Debt.DeleteDebtsByHumanIdUseCase
 import com.breckneck.deptbook.domain.usecase.Debt.FilterDebts
-import com.breckneck.deptbook.domain.usecase.Debt.GetAllDebtsUseCase
+import com.breckneck.deptbook.domain.usecase.Debt.GetAllDebtsByIdUseCase
 import com.breckneck.deptbook.domain.usecase.Debt.SortDebts
 import com.breckneck.deptbook.domain.usecase.Human.AddSumUseCase
 import com.breckneck.deptbook.domain.usecase.Human.DeleteHumanUseCase
@@ -25,7 +25,7 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 
 class DebtDetailsViewModel(
-    private val getAllDebtsUseCase: GetAllDebtsUseCase,
+    private val getAllDebtsByIdUseCase: GetAllDebtsByIdUseCase,
     private val getLastHumanIdUseCase: GetLastHumanIdUseCase,
     private val getHumanSumDebtUseCase: GetHumanSumDebtUseCase,
     private val deleteHumanUseCase: DeleteHumanUseCase,
@@ -94,7 +94,7 @@ class DebtDetailsViewModel(
     fun getAllDebts() {
         val getDebtsSingle = Single.create {
             Log.e(TAG, "Open Debt Details of Human id = $humanId")
-            it.onSuccess(getAllDebtsUseCase.execute(id = humanId.value!!))
+            it.onSuccess(getAllDebtsByIdUseCase.execute(id = humanId.value!!))
         }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

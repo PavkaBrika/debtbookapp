@@ -54,8 +54,12 @@ val domainModule = module {
         GetAllDebtsSumUseCase(humanRepository = get())
     }
 
-    factory<GetAllDebtsUseCase> {
-        GetAllDebtsUseCase(debtRepository = get())
+    factory<GetAllDebts> {
+        GetAllDebts(debtRepository = get())
+    }
+
+    factory<GetAllDebtsByIdUseCase> {
+        GetAllDebtsByIdUseCase(debtRepository = get())
     }
 
     factory<DeleteDebtUseCase> {

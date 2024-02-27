@@ -15,6 +15,13 @@ class HumanRepositoryImpl(private val humanStorage: HumanStorage) : HumanReposit
         return humanDomainList
     }
 
+    override fun replaceAllHumans(humanList: List<HumanDomain>) {
+        val humanDataList: List<Human> = humanList.map {
+            Human(id = it.id, name = it.name, sumDebt = it.sumDebt, currency = it.currency)
+        }
+        humanStorage.replaceAllHumans(humanList = humanDataList)
+    }
+
     override fun getPositiveHumans(): List<HumanDomain> {
         val humanList: List<Human> = humanStorage.getPositiveHumans()
         val humanDomainList: List<HumanDomain> = humanList.map {
