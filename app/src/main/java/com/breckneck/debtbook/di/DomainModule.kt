@@ -188,6 +188,10 @@ val domainModule = module {
         SetUserData(settingsRepository = get())
     }
 
+    single<GetUserData> {
+        GetUserData(settingsRepository = get())
+    }
+
     //ADS
 
     factory<SaveClicksUseCase> {

@@ -33,6 +33,11 @@ class SharedPrefsSettingsStorageImpl(val context: Context): SettingsStorage {
         sharedPreferences.edit().putString(USER_EMAIL, userData.email).apply()
     }
 
+    override fun getUserData(): UserData {
+        return UserData(name = sharedPreferences.getString(USER_NAME, "")!!, email = sharedPreferences.getString(
+            USER_EMAIL, "")!!)
+    }
+
     override fun setFirstMainCurrency(currency: String) {
         sharedPreferences.edit().putString(MAIN_CURRENCY_FIRST, currency).apply()
     }

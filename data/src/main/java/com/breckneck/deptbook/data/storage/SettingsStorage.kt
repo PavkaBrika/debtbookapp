@@ -6,6 +6,8 @@ interface SettingsStorage {
 
     fun setUserData(userData: UserData)
 
+    fun getUserData(): UserData
+
     fun setFirstMainCurrency(currency: String)
 
     fun getFirstMainCurrency(): String

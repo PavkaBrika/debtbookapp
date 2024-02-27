@@ -14,6 +14,11 @@ class SettingsRepositoryImpl(private val settingsStorage: SettingsStorage): Sett
         settingsStorage.setUserData(userData = UserData(name = user.name, email = user.email))
     }
 
+    override fun getUserData(): User {
+        val userData = settingsStorage.getUserData()
+        return User(name = userData.name, userData.email)
+    }
+
     override fun setFirstMainCurrency(currency: String) {
         settingsStorage.setFirstMainCurrency(currency = currency)
     }

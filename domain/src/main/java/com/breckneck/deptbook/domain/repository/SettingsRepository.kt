@@ -47,4 +47,6 @@ interface SettingsRepository {
     fun getIsAuthorized(): Boolean
 
     fun setUserData(user: User)
+
+    fun getUserData(): User
 }
