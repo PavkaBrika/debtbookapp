@@ -11,6 +11,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -27,6 +28,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.Scope
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.api.client.extensions.android.http.AndroidHttp
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.client.json.gson.GsonFactory
@@ -71,6 +74,14 @@ class SynchronizationFragment : Fragment() {
         backButton.setOnClickListener {
             synchronizationInterface!!.onBackButtonClick()
         }
+        val setSettingsButton: FloatingActionButton = view.findViewById(R.id.setSettingsButton)
+        setSettingsButton.setOnClickListener {
+            synchronizationInterface!!.onBackButtonClick()
+        }
+
+        if (vm.isRestoreDialogOpened.value == true) {
+            openRestoreDataDialog()
+        }
 
         val authorizationLayout: LinearLayout = view.findViewById(R.id.authorizationLayout)
         val accountLayout: LinearLayout = view.findViewById(R.id.accountLayout)
@@ -109,15 +120,15 @@ class SynchronizationFragment : Fragment() {
 
         val synchronizeButtonLayout: ConstraintLayout = view.findViewById(R.id.synchronizeButtonLayout)
         synchronizeButtonLayout.setOnClickListener {
-//            getFile()
             saveFileChanges()
             vm.setIsSynchronizing(true)
         }
 
         val restoreButtonLayout: ConstraintLayout = view.findViewById(R.id.restoreButtonLayout)
         restoreButtonLayout.setOnClickListener {
+
             getFile()
-            vm.setIsSynchronizing(true)
+            vm.setIsRestoring(true)
         }
 
         val restoreTextView: TextView = view.findViewById(R.id.restoreTextView)
@@ -152,11 +163,21 @@ class SynchronizationFragment : Fragment() {
         vm.isSynchronizing.observe(viewLifecycleOwner) { isSynchronizing ->
             if (isSynchronizing) {
                 synchronizeTextView.text = getString(R.string.loading)
-                restoreTextView.text = getString(R.string.loading)
                 synchronizeButtonLayout.isClickable = false
                 restoreButtonLayout.isClickable = false
             } else {
                 synchronizeTextView.text = getString(R.string.synchronize)
+                synchronizeButtonLayout.isClickable = true
+                restoreButtonLayout.isClickable = true
+            }
+        }
+
+        vm.isRestoring.observe(viewLifecycleOwner) { isRestoring ->
+            if (isRestoring) {
+                restoreTextView.text = getString(R.string.loading)
+                synchronizeButtonLayout.isClickable = false
+                restoreButtonLayout.isClickable = false
+            } else {
                 restoreTextView.text = getString(R.string.restore_data)
                 synchronizeButtonLayout.isClickable = true
                 restoreButtonLayout.isClickable = true
@@ -273,7 +294,7 @@ class SynchronizationFragment : Fragment() {
                 vm.replaceAllData(gson.fromJson(it.second, AppDataLists::class.java))
             }
             .addOnFailureListener {
-                vm.setIsSynchronizing(false)
+                vm.setIsRestoring(false)
                 Toast.makeText(
                     requireActivity(),
                     getString(R.string.something_went_wrong),
@@ -325,6 +346,32 @@ class SynchronizationFragment : Fragment() {
                     .show()
                 throw it
             }
+    }
+
+    private fun openRestoreDataDialog() {
+        val bottomSheetDialog = BottomSheetDialog(requireContext(), R.style.DialogStyle)
+        bottomSheetDialog.setContentView(R.layout.dialog_are_you_sure)
+
+        bottomSheetDialog.findViewById<TextView>(R.id.dialogMessage)!!.setText(getString(R.string.recover_all_data_from_the_cloud_this_will_delete_the_current_application_data))
+
+        bottomSheetDialog.findViewById<Button>(R.id.okButton)!!.setOnClickListener {
+
+        }
+
+        bottomSheetDialog.findViewById<Button>(R.id.cancelButton)!!.setOnClickListener {
+            bottomSheetDialog.dismiss()
+        }
+
+        bottomSheetDialog.setOnDismissListener {
+            vm.setIsRestoreDialogOpened(false)
+        }
+
+        bottomSheetDialog.setOnCancelListener {
+            vm.setIsRestoreDialogOpened(false)
+        }
+
+        vm.setIsRestoreDialogOpened(true)
+        bottomSheetDialog.show()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

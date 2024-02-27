@@ -52,7 +52,12 @@ class SynchronizationFragmentViewModel(
     private val _isSynchronizing = MutableLiveData<Boolean>(false)
     val isSynchronizing: LiveData<Boolean>
         get() = _isSynchronizing
-
+    private val _isRestoring = MutableLiveData<Boolean>(false)
+    val isRestoring: LiveData<Boolean>
+        get() = _isRestoring
+    private val _isRestoreDialogOpened = MutableLiveData<Boolean>(false)
+    val isRestoreDialogOpened: LiveData<Boolean>
+        get() = _isRestoreDialogOpened
 
     val disposeBag = CompositeDisposable()
 
@@ -115,7 +120,7 @@ class SynchronizationFragmentViewModel(
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                _isSynchronizing.value = false
+                _isRestoring.value = false
             }, {
                 Log.e(TAG, it.stackTrace.toString())
             })
@@ -132,5 +137,13 @@ class SynchronizationFragmentViewModel(
 
     fun setIsSynchronizing(isSynchronizing: Boolean) {
         _isSynchronizing.value = isSynchronizing
+    }
+
+    fun setIsRestoring(isRestoring: Boolean) {
+        _isRestoring.value = isRestoring
+    }
+
+    fun setIsRestoreDialogOpened(opened: Boolean) {
+        _isRestoreDialogOpened.value = opened
     }
 }
