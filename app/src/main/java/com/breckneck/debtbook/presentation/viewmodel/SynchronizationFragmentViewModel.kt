@@ -60,6 +60,9 @@ class SynchronizationFragmentViewModel(
     private val _isRestoreDialogOpened = MutableLiveData<Boolean>(false)
     val isRestoreDialogOpened: LiveData<Boolean>
         get() = _isRestoreDialogOpened
+    private val _isLogOutDialogOpened = MutableLiveData<Boolean>(false)
+    val isLogOutDialogOpened: LiveData<Boolean>
+        get() = _isLogOutDialogOpened
 
     val disposeBag = CompositeDisposable()
 
@@ -147,5 +150,9 @@ class SynchronizationFragmentViewModel(
 
     fun setIsRestoreDialogOpened(opened: Boolean) {
         _isRestoreDialogOpened.value = opened
+    }
+
+    fun setIsLogOutDialogOpened(opened: Boolean) {
+        _isLogOutDialogOpened.value = opened
     }
 }

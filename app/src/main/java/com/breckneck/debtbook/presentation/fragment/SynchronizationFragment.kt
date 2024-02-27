@@ -79,9 +79,10 @@ class SynchronizationFragment : Fragment() {
             synchronizationInterface!!.onBackButtonClick()
         }
 
-        if (vm.isRestoreDialogOpened.value == true) {
+        if (vm.isRestoreDialogOpened.value == true)
             openRestoreDataDialog()
-        }
+        if (vm.isLogOutDialogOpened.value == true)
+            openLogOutDialog()
 
         val authorizationLayout: LinearLayout = view.findViewById(R.id.authorizationLayout)
         val accountLayout: LinearLayout = view.findViewById(R.id.accountLayout)
@@ -185,7 +186,7 @@ class SynchronizationFragment : Fragment() {
         val googleLogOutButtonLayout: ConstraintLayout =
             view.findViewById(R.id.googleLogoutButtonLayout)
         googleLogOutButtonLayout.setOnClickListener {
-            requestGoogleLogOut()
+            openLogOutDialog()
         }
 
         val privacyAgreementTextView = view.findViewById<TextView>(R.id.privacyAgreementTextView)
@@ -370,6 +371,34 @@ class SynchronizationFragment : Fragment() {
         }
 
         vm.setIsRestoreDialogOpened(true)
+        bottomSheetDialog.show()
+    }
+
+    private fun openLogOutDialog() {
+        val bottomSheetDialog = BottomSheetDialog(requireContext())
+        bottomSheetDialog.setContentView(R.layout.dialog_are_you_sure)
+
+        bottomSheetDialog.findViewById<TextView>(R.id.dialogMessage)!!.text =
+            getString(R.string.do_you_really_want_to_log_out)
+
+        bottomSheetDialog.findViewById<Button>(R.id.okButton)!!.setOnClickListener {
+            requestGoogleLogOut()
+            bottomSheetDialog.dismiss()
+        }
+
+        bottomSheetDialog.findViewById<Button>(R.id.cancelButton)!!.setOnClickListener {
+            bottomSheetDialog.dismiss()
+        }
+
+        bottomSheetDialog.setOnDismissListener {
+            vm.setIsLogOutDialogOpened(false)
+        }
+
+        bottomSheetDialog.setOnCancelListener {
+            vm.setIsLogOutDialogOpened(false)
+        }
+
+        vm.setIsLogOutDialogOpened(true)
         bottomSheetDialog.show()
     }
 
