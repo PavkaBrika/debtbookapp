@@ -104,7 +104,7 @@
 
                             <androidx.constraintlayout.widget.ConstraintLayout
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content" >
+                                android:layout_height="wrap_content">
 
                                 <ImageView
                                     android:layout_width="wrap_content"
@@ -135,10 +135,10 @@
                             android:id="@+id/privacyAgreementTextView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textAlignment="center"
                             android:text="@string/by_authorizing_you_agree_to_the"
-                            android:textColorLink="@color/darkgray"
-                            android:textColor="@color/darkgray" />
+                            android:textAlignment="center"
+                            android:textColor="@color/darkgray"
+                            android:textColorLink="@color/darkgray" />
 
                     </LinearLayout>
 
@@ -159,6 +159,7 @@
 
                             <ImageView
                                 android:id="@+id/accountImageView"
+                                style="@style/imageViewButton"
                                 android:layout_width="40dp"
                                 android:layout_height="40dp"
                                 android:src="@drawable/outline_account_circle_24"
@@ -207,6 +208,7 @@
 
                             <ImageView
                                 android:id="@+id/refreshImageView"
+                                style="@style/imageViewButton"
                                 android:layout_width="40dp"
                                 android:layout_height="40dp"
                                 android:src="@drawable/baseline_cloud_sync_24"
@@ -255,6 +257,7 @@
 
                             <ImageView
                                 android:id="@+id/restoreImageView"
+                                style="@style/imageViewButton"
                                 android:layout_width="40dp"
                                 android:layout_height="40dp"
                                 android:src="@drawable/baseline_restore_24"
@@ -304,6 +307,7 @@
 
                             <ImageView
                                 android:id="@+id/logOutImageView"
+                                style="@style/imageViewButton"
                                 android:layout_width="40dp"
                                 android:layout_height="40dp"
                                 android:src="@drawable/baseline_logout_24"

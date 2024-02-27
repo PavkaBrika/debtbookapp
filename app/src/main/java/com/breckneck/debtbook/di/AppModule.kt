@@ -61,7 +61,9 @@ val appModule = module {
             setAddSumInShareText = get(),
             getAddSumInShareText = get(),
             getAppTheme = get(),
-            setAppTheme = get()
+            setAppTheme = get(),
+            getIsAuthorized = get(),
+            getUserData = get()
         )
     }
 

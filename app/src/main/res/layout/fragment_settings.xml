@@ -72,6 +72,7 @@
                 android:orientation="vertical">
 
                 <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/synchronizationCardView"
                     style="@style/CardViewStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -92,22 +93,73 @@
                             android:textSize="28sp"
                             android:textStyle="bold" />
 
-                        <TextView
-                            android:id="@+id/syncHintTextView"
+                        <LinearLayout
+                            android:id="@+id/authorizationLayout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:paddingHorizontal="12dp"
-                            android:paddingVertical="8dp"
-                            android:text="@string/authorize_to_avoid_losing_your_data"
-                            android:textAlignment="center" />
+                            android:orientation="vertical">
 
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/authorizationButton"
-                            style="@style/FilledButton"
+                            <TextView
+                                android:id="@+id/syncHintTextView"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:paddingHorizontal="12dp"
+                                android:paddingVertical="8dp"
+                                android:text="@string/authorize_to_avoid_losing_your_data"
+                                android:textAlignment="center" />
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/authorizationButton"
+                                style="@style/FilledButton"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="12dp"
+                                android:text="@string/authorization" />
+
+                        </LinearLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/accountInfoLayout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_margin="12dp"
-                            android:text="@string/authorization" />
+                            android:visibility="gone"
+                            android:background="?android:attr/selectableItemBackground"
+                            android:padding="12dp">
+
+                            <ImageView
+                                android:id="@+id/accountImageView"
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                style="@style/imageViewButton"
+                                android:src="@drawable/outline_account_circle_24"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/userNameTextView"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:text="User Name"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toEndOf="@+id/accountImageView"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/userEmailAddressTextView"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginTop="8dp"
+                                android:text="useremailaddress@mail.com"
+                                android:textColor="@android:color/darker_gray"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toEndOf="@+id/accountImageView"
+                                app:layout_constraintTop_toBottomOf="@+id/userNameTextView" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
 
                     </LinearLayout>
 
