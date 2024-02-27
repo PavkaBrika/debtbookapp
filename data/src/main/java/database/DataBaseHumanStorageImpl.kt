@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.breckneck.deptbook.data.storage.HumanStorage
 import entity.Human
 import util.DATA_BASE_NAME
+import java.util.Collections
 
 private const val SHARED_PREFS_HUMAN = "shared_prefs_name"
 private const val HUMAN_ID = "zoneid"
@@ -22,6 +23,7 @@ class DataBaseHumanStorageImpl(context: Context) : HumanStorage {
     override fun replaceAllHumans(humanList: List<Human>) {
         db.appDao().deleteAllHumans()
         db.appDao().insertAllHumans(humanList = humanList)
+        sharedPreferences.edit().putInt(HUMAN_ID, humanList.maxBy { human -> human.id }.id).apply()
     }
 
     override fun getPositiveHumans(): List<Human> {
@@ -36,8 +38,8 @@ class DataBaseHumanStorageImpl(context: Context) : HumanStorage {
 
     override fun insertHuman(human: Human) {
         var humanid = sharedPreferences.getInt(HUMAN_ID, 0)
-        human.id = humanid
         humanid++
+        human.id = humanid
         db.appDao().insertHuman(human)
         sharedPreferences.edit().putInt(HUMAN_ID, humanid).apply()
     }

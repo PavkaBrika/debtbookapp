@@ -25,13 +25,14 @@ class DataBaseDebtStorageImpl(context: Context): DebtStorage {
     override fun replaceAllDebts(debtList: List<Debt>) {
         db.appDao().deleteAllDebts()
         db.appDao().insertAllDebts(debtList = debtList)
+        sharedPreferences.edit().putInt(DEBT_ID , debtList.maxBy { debt -> debt.id }.id).apply()
     }
 
     override fun setDebt(debt: Debt) {
         var debtId = sharedPreferences.getInt(DEBT_ID, 0)
+        debtId++
         debt.id = debtId
         db.appDao().insertDebt(debt)
-        debtId++
         sharedPreferences.edit().putInt(DEBT_ID ,debtId).apply()
     }
 
