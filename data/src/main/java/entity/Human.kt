@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class Human(
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     var id: Int,
     var name: String,
     var sumDebt: Double,

@@ -5,21 +5,18 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.SpannableStringBuilder
-import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
-import android.text.style.UnderlineSpan
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.text.set
 import androidx.fragment.app.Fragment
 import com.breckneck.debtbook.BuildConfig
 import com.breckneck.debtbook.R
@@ -29,12 +26,20 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.Scope
 import com.google.api.client.extensions.android.http.AndroidHttp
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
+import com.google.api.client.http.FileContent
+import com.google.api.client.http.HttpRequestInitializer
 import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveScopes
 import com.google.api.services.drive.model.FileList
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import util.DATA_BASE_NAME
+import java.io.File
+import java.io.FileInputStream
+import java.io.IOException
+import java.util.Arrays
 import java.util.Collections
 
 class SynchronizationFragment: Fragment() {
@@ -50,8 +55,9 @@ class SynchronizationFragment: Fragment() {
     private val REQUEST_CODE_SIGN_IN = 1
     private val REQUEST_CODE_SIGN_OUT = 201
     private var mDriveServiceHelper: DriveServiceHelper? = null
+    private var driveService: Drive? = null
     private var fileId: String? = null
-    private val fileName = "DebtBookSync.txt"
+    private val fileName = "DebtBookSync.db"
     private var synchronizationInterface: SynchronizationInterface? = null
 
     override fun onAttach(context: Context) {
@@ -70,7 +76,7 @@ class SynchronizationFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val backButton: Button = view.findViewById(R.id.backButton)
+        val backButton: ImageView = view.findViewById(R.id.backButton)
         backButton.setOnClickListener {
             synchronizationInterface!!.onBackButtonClick()
         }
@@ -84,6 +90,30 @@ class SynchronizationFragment: Fragment() {
             } else {
                 authorizationLayout.visibility = View.VISIBLE
                 accountLayout.visibility = View.GONE
+            }
+        }
+        if (vm.isAuthorized.value == true) {
+            try {
+                val googleAccount = GoogleSignIn.getLastSignedInAccount(requireContext())
+                val credential = GoogleAccountCredential.usingOAuth2(
+                    requireActivity(), Collections.singleton(DriveScopes.DRIVE_APPDATA)
+                )
+                credential.selectedAccount = googleAccount!!.account
+                driveService =
+                    Drive.Builder(AndroidHttp.newCompatibleTransport(), GsonFactory(), credential)
+                        .setApplicationName(BuildConfig.APPLICATION_ID)
+                        .build()
+
+                // The DriveServiceHelper encapsulates all REST API and SAF functionality.
+                // Its instantiation is required before handling any onClick actions.
+                mDriveServiceHelper = DriveServiceHelper(driveService!!)
+
+                Toast.makeText(requireActivity(), "Sign in successful", Toast.LENGTH_SHORT).show()
+                mDriveServiceHelper!!.queryFiles()
+                    .addOnSuccessListener { findOrCreateFile(it) }
+                    .addOnFailureListener { throw it }
+            } catch (e: Exception) {
+                vm.setIsAuthorized(false)
             }
         }
 
@@ -102,9 +132,14 @@ class SynchronizationFragment: Fragment() {
             requestGoogleSignIn()
         }
 
+        val accountInfoLayout: ConstraintLayout = view.findViewById(R.id.accountInfoLayout)
+        accountInfoLayout.setOnClickListener {
+            getFile()
+        }
+
         val synchronizeButtonLayout: ConstraintLayout = view.findViewById(R.id.synchronizeButtonLayout)
         synchronizeButtonLayout.setOnClickListener {
-            requestGoogleLogOut()
+            saveFileChanges()
         }
 
         val googleLogOutButtonLayout: ConstraintLayout = view.findViewById(R.id.googleLogoutButtonLayout)
@@ -140,23 +175,8 @@ class SynchronizationFragment: Fragment() {
             .requestScopes(Scope(DriveScopes.DRIVE_APPDATA))
             .build()
         val client = GoogleSignIn.getClient(requireActivity(), signInOptions)
-
         // The result of the sign-in Intent is handled in onActivityResult.
         startActivityForResult(client.signInIntent, REQUEST_CODE_SIGN_IN)
-    }
-
-    private fun saveFileChanges() {
-        Toast.makeText(requireActivity(), "Start save file to Google Drive, pls wait ...", Toast.LENGTH_LONG)
-            .show()
-        mDriveServiceHelper!!.saveFile(fileId, fileName, "dasds")
-            .addOnSuccessListener {
-                Toast.makeText(
-                    requireActivity(),
-                    "Save to google drive successful",
-                    Toast.LENGTH_LONG
-                ).show()
-            }
-            .addOnFailureListener { throw it }
     }
 
     private fun handleSignInResult(result: Intent) {
@@ -169,16 +189,16 @@ class SynchronizationFragment: Fragment() {
                 )
                 credential.selectedAccount = googleAccount.account
                 vm.setUser(name = googleAccount.displayName, email = googleAccount.email)
-                val googleDriveService =
+                driveService =
                     Drive.Builder(AndroidHttp.newCompatibleTransport(), GsonFactory(), credential)
                         .setApplicationName(BuildConfig.APPLICATION_ID)
                         .build()
 
                 // The DriveServiceHelper encapsulates all REST API and SAF functionality.
                 // Its instantiation is required before handling any onClick actions.
-                mDriveServiceHelper = DriveServiceHelper(googleDriveService)
+                mDriveServiceHelper = DriveServiceHelper(driveService!!)
 
-                Toast.makeText(requireActivity(), "Sign in successful", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireActivity(), "Sign in successful", Toast.LENGTH_SHORT).show()
                 mDriveServiceHelper!!.queryFiles()
                     .addOnSuccessListener { findOrCreateFile(it) }
                     .addOnFailureListener { throw it }
@@ -197,13 +217,43 @@ class SynchronizationFragment: Fragment() {
         }
     }
 
+    private fun saveFileChanges() {
+        Toast.makeText(requireActivity(), "Start save file to Google Drive, pls wait ...", Toast.LENGTH_SHORT)
+            .show()
+        val dataBaseFileName = requireContext().getDatabasePath(DATA_BASE_NAME).toString()
+
+        mDriveServiceHelper!!.saveFile(fileId, fileName, "123123123")
+            .addOnSuccessListener {
+                Toast.makeText(
+                    requireActivity(),
+                    "Save to google drive successful",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+            .addOnFailureListener { throw it }
+    }
+
+    private fun getFile() {
+        var string: String
+        mDriveServiceHelper!!.readFile(fileId)
+            .addOnSuccessListener {
+                Log.e(TAG, it.second)
+                Toast.makeText(
+                requireActivity(),
+                "Update from google drive successful",
+                Toast.LENGTH_LONG
+            ).show()
+            }
+            .addOnFailureListener { throw it }
+    }
+
+
     private fun findOrCreateFile(it: FileList) {
         if (it.files.size == 0) {
             createNewFile()
         } else {
             fileId = it.files.first().id
-
-            Toast.makeText(requireActivity(), "Found file for chat", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireActivity(), "Found file for chat", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -213,7 +263,7 @@ class SynchronizationFragment: Fragment() {
                 fileId = it; Toast.makeText(
                 requireActivity(),
                 "Created file for chat",
-                Toast.LENGTH_LONG
+                Toast.LENGTH_SHORT
             ).show()
             }
             .addOnFailureListener { throw it }
