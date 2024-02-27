@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.breckneck.debtbook.synchronization.DriveServiceHelper
 import com.breckneck.deptbook.domain.model.AppDataLists
 import com.breckneck.deptbook.domain.model.HumanDomain
 import com.breckneck.deptbook.domain.usecase.Debt.GetAllDebts
@@ -38,6 +39,16 @@ class SynchronizationFragmentViewModel(
     private val _appDataInfoForSync = MutableLiveData<AppDataLists>()
     val appDataInfoForSync: LiveData<AppDataLists>
         get() = _appDataInfoForSync
+    private val _fileId = MutableLiveData<String>(null)
+    val fileId: LiveData<String>
+        get() = _fileId
+    private var _driveServiceHelper = MutableLiveData<DriveServiceHelper>()
+    val driveServiceHelper: LiveData<DriveServiceHelper>
+        get() = _driveServiceHelper
+    private val _isSynchronizing = MutableLiveData<Boolean>(false)
+    val isSynchronizing: LiveData<Boolean>
+        get() = _isSynchronizing
+
 
     val disposeBag = CompositeDisposable()
 
@@ -89,5 +100,17 @@ class SynchronizationFragmentViewModel(
                 Log.e(TAG, it.stackTrace.toString())
             })
         disposeBag.add(disposable)
+    }
+
+    fun setFileId(fileId: String) {
+        _fileId.value = fileId
+    }
+
+    fun setDriveServiceHelper(helper: DriveServiceHelper) {
+        _driveServiceHelper.value = helper
+    }
+
+    fun setIsSynchronizing(isSynchronizing: Boolean) {
+        _isSynchronizing.value = isSynchronizing
     }
 }

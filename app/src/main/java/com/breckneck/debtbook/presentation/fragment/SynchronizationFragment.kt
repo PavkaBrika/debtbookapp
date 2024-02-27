@@ -22,43 +22,34 @@ import com.breckneck.debtbook.BuildConfig
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.presentation.viewmodel.SynchronizationFragmentViewModel
 import com.breckneck.debtbook.synchronization.DriveServiceHelper
+import com.breckneck.deptbook.domain.model.AppDataLists
 import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.Scope
 import com.google.api.client.extensions.android.http.AndroidHttp
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
-import com.google.api.client.http.FileContent
-import com.google.api.client.http.HttpRequestInitializer
 import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveScopes
 import com.google.api.services.drive.model.FileList
 import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import util.DATA_BASE_NAME
-import java.io.File
-import java.io.FileInputStream
-import java.io.IOException
-import java.util.Arrays
 import java.util.Collections
 
-class SynchronizationFragment: Fragment() {
+class SynchronizationFragment : Fragment() {
 
     interface SynchronizationInterface {
         fun onBackButtonClick()
     }
 
     private val TAG = "Sync fragment"
+    private val REQUEST_CODE_SIGN_IN = 1
 
     private val vm by viewModel<SynchronizationFragmentViewModel>()
-
-    private val REQUEST_CODE_SIGN_IN = 1
-    private var mDriveServiceHelper: DriveServiceHelper? = null
-    private var fileId: String? = null
     private val fileName = "DebtBookSync.json"
     private var synchronizationInterface: SynchronizationInterface? = null
+    private val gson = Gson()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -92,34 +83,13 @@ class SynchronizationFragment: Fragment() {
                 accountLayout.visibility = View.GONE
             }
         }
-        if (vm.isAuthorized.value == true) {
+        if ((vm.isAuthorized.value == true) && (vm.driveServiceHelper.value == null)) {
             try {
                 val googleAccount = GoogleSignIn.getLastSignedInAccount(requireContext())
-                val credential = GoogleAccountCredential.usingOAuth2(
-                    requireActivity(), Collections.singleton(DriveScopes.DRIVE_APPDATA)
-                )
-                credential.selectedAccount = googleAccount!!.account
-                vm.setUser(name = googleAccount.displayName, email = googleAccount.email)
-                val driveService =
-                    Drive.Builder(AndroidHttp.newCompatibleTransport(), GsonFactory(), credential)
-                        .setApplicationName(BuildConfig.APPLICATION_ID)
-                        .build()
-
-                mDriveServiceHelper = DriveServiceHelper(driveService!!)
-                mDriveServiceHelper!!.queryFiles()
-                    .addOnSuccessListener { findOrCreateFile(it) }
-                    .addOnFailureListener { throw it }
+                onSuccessSignIn(googleAccount = googleAccount!!)
             } catch (e: Exception) {
                 vm.setIsAuthorized(false)
             }
-        }
-
-        val synchronizeTextView: TextView = view.findViewById(R.id.synchronizeTextView)
-        vm.appDataInfoForSync.observe(viewLifecycleOwner) { appData ->
-            if (appData == null)
-                synchronizeTextView.text = getString(R.string.loading)
-            else
-                synchronizeTextView.text = getString(R.string.synchronize)
         }
 
         val userNameTextView: TextView = view.findViewById(R.id.userNameTextView)
@@ -137,18 +107,44 @@ class SynchronizationFragment: Fragment() {
             requestGoogleSignIn()
         }
 
-//        val accountInfoLayout: ConstraintLayout = view.findViewById(R.id.accountInfoLayout)
-//        accountInfoLayout.setOnClickListener {
-//            getFile()
-//        }
-
         val synchronizeButtonLayout: ConstraintLayout = view.findViewById(R.id.synchronizeButtonLayout)
         synchronizeButtonLayout.setOnClickListener {
-//            saveFileChanges()
             getFile()
+            vm.setIsSynchronizing(true)
         }
 
-        val googleLogOutButtonLayout: ConstraintLayout = view.findViewById(R.id.googleLogoutButtonLayout)
+        val synchronizeTextView: TextView = view.findViewById(R.id.synchronizeTextView)
+        vm.fileId.observe(viewLifecycleOwner) { fileId ->
+            if ((fileId == null) || (vm.appDataInfoForSync.value == null)) {
+                synchronizeTextView.text = getString(R.string.loading)
+                synchronizeButtonLayout.isClickable = false
+            } else {
+                synchronizeTextView.text = getString(R.string.synchronize)
+                synchronizeButtonLayout.isClickable = true
+            }
+        }
+        vm.appDataInfoForSync.observe(viewLifecycleOwner) { appData ->
+            if ((appData == null) || (vm.fileId.value == null)) {
+                synchronizeTextView.text = getString(R.string.loading)
+                synchronizeButtonLayout.isClickable = false
+            } else {
+                synchronizeTextView.text = getString(R.string.synchronize)
+                synchronizeButtonLayout.isClickable = true
+            }
+        }
+
+        vm.isSynchronizing.observe(viewLifecycleOwner) { isSynchronizing ->
+            if (isSynchronizing) {
+                synchronizeTextView.text = getString(R.string.loading)
+                synchronizeButtonLayout.isClickable = false
+            } else {
+                synchronizeTextView.text = getString(R.string.synchronize)
+                synchronizeButtonLayout.isClickable = true
+            }
+        }
+
+        val googleLogOutButtonLayout: ConstraintLayout =
+            view.findViewById(R.id.googleLogoutButtonLayout)
         googleLogOutButtonLayout.setOnClickListener {
             requestGoogleLogOut()
         }
@@ -163,9 +159,12 @@ class SynchronizationFragment: Fragment() {
         val startIndex = completeString.indexOf(privacyPolicy)
         val endIndex = completeString.length
         val spannableStringBuilder = SpannableStringBuilder(completeString)
-        val clickOnPrivacy = object: ClickableSpan() {
+        val clickOnPrivacy = object : ClickableSpan() {
             override fun onClick(p0: View) {
-                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://simpledebtbook-privacy-policy.ucoz.net/"))
+                val browserIntent = Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("https://simpledebtbook-privacy-policy.ucoz.net/")
+                )
                 startActivity(browserIntent)
             }
         }
@@ -188,29 +187,35 @@ class SynchronizationFragment: Fragment() {
     private fun handleSignInResult(result: Intent) {
         GoogleSignIn.getSignedInAccountFromIntent(result)
             .addOnSuccessListener { googleAccount ->
-
-                // Use the authenticated account to sign in to the Drive service.
-                val credential = GoogleAccountCredential.usingOAuth2(
-                    requireActivity(), Collections.singleton(DriveScopes.DRIVE_APPDATA)
-                )
-                credential.selectedAccount = googleAccount.account
-                vm.setUser(name = googleAccount.displayName, email = googleAccount.email)
-                val driveService =
-                    Drive.Builder(AndroidHttp.newCompatibleTransport(), GsonFactory(), credential)
-                        .setApplicationName(BuildConfig.APPLICATION_ID)
-                        .build()
-
-                // The DriveServiceHelper encapsulates all REST API and SAF functionality.
-                // Its instantiation is required before handling any onClick actions.
-                mDriveServiceHelper = DriveServiceHelper(driveService)
-
-                Toast.makeText(requireActivity(), "Sign in successful", Toast.LENGTH_SHORT).show()
-                mDriveServiceHelper!!.queryFiles()
-                    .addOnSuccessListener { findOrCreateFile(it) }
-                    .addOnFailureListener { throw it }
+                onSuccessSignIn(googleAccount = googleAccount)
                 vm.setIsAuthorized(isAuthorized = true)
             }
-            .addOnFailureListener { exception -> throw exception }
+            .addOnFailureListener {
+                Toast.makeText(requireActivity(), getString(R.string.something_went_wrong), Toast.LENGTH_SHORT)
+                    .show()
+                throw it
+            }
+    }
+
+    private fun onSuccessSignIn(googleAccount: GoogleSignInAccount) {
+        val credential = GoogleAccountCredential.usingOAuth2(
+            requireActivity(), Collections.singleton(DriveScopes.DRIVE_APPDATA)
+        )
+        credential.selectedAccount = googleAccount.account
+        vm.setUser(name = googleAccount.displayName, email = googleAccount.email)
+        val driveService =
+            Drive.Builder(AndroidHttp.newCompatibleTransport(), GsonFactory(), credential)
+                .setApplicationName(BuildConfig.APPLICATION_ID)
+                .build()
+
+        vm.setDriveServiceHelper(DriveServiceHelper(driveService))
+        vm.driveServiceHelper.value!!.queryFiles()
+            .addOnSuccessListener { findOrCreateFile(it) }
+            .addOnFailureListener {
+                Toast.makeText(requireActivity(), getString(R.string.something_went_wrong), Toast.LENGTH_SHORT)
+                    .show()
+                throw it
+            }
     }
 
     private fun requestGoogleLogOut() {
@@ -224,54 +229,86 @@ class SynchronizationFragment: Fragment() {
     }
 
     private fun saveFileChanges() {
-        Toast.makeText(requireActivity(), "Start save file to Google Drive, pls wait ...", Toast.LENGTH_SHORT)
-            .show()
-        val gson = Gson()
-        mDriveServiceHelper!!.saveFile(fileId, fileName, gson.toJson(vm.appDataInfoForSync.value))
+        vm.driveServiceHelper.value!!.saveFile(
+            vm.fileId.value,
+            fileName,
+            gson.toJson(vm.appDataInfoForSync.value)
+        )
             .addOnSuccessListener {
+                vm.setIsSynchronizing(false)
+            }
+            .addOnFailureListener {
+                vm.setIsSynchronizing(false)
                 Toast.makeText(
                     requireActivity(),
-                    "Save to google drive successful",
-                    Toast.LENGTH_LONG
-                ).show()
+                    getString(R.string.something_went_wrong),
+                    Toast.LENGTH_SHORT
+                )
+                    .show()
+                throw it
             }
-            .addOnFailureListener { throw it }
     }
 
     private fun getFile() {
-        mDriveServiceHelper!!.readFile(fileId)
+        vm.driveServiceHelper.value!!.readFile(vm.fileId.value)
             .addOnSuccessListener {
-                Log.e(TAG, it.second)
-                Toast.makeText(
-                requireActivity(),
-                "Update from google drive successful",
-                Toast.LENGTH_LONG
-                ).show()
-
+                if (isDataDifferent(data = it.second)) {
+                    saveFileChanges()
+                }
             }
-            .addOnFailureListener { throw it }
+            .addOnFailureListener {
+                vm.setIsSynchronizing(false)
+                Toast.makeText(
+                    requireActivity(),
+                    getString(R.string.something_went_wrong),
+                    Toast.LENGTH_SHORT
+                )
+                    .show()
+                throw it
+            }
     }
 
+    private fun isDataDifferent(data: String): Boolean {
+        val appDataLists = gson.fromJson(data, AppDataLists::class.java)
+        if ((vm.appDataInfoForSync.value!!.humanList.size == appDataLists.humanList.size)
+            && (vm.appDataInfoForSync.value!!.debtList.size == appDataLists.debtList.size)
+            && (vm.appDataInfoForSync.value!!.humanList.containsAll(appDataLists.humanList))
+            && (vm.appDataInfoForSync.value!!.debtList.containsAll(appDataLists.debtList))
+        ) {
+            return true
+        } else {
+            return false
+        }
+    }
 
     private fun findOrCreateFile(it: FileList) {
         if (it.files.size == 0) {
             createNewFile()
         } else {
-            fileId = it.files.first().id
+            vm.setFileId(it.files.first().id)
             Toast.makeText(requireActivity(), "Found file for chat", Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun createNewFile() {
-        mDriveServiceHelper!!.createFile(fileName)
+        vm.driveServiceHelper.value!!.createFile(fileName)
             .addOnSuccessListener {
-                fileId = it; Toast.makeText(
-                requireActivity(),
-                "Created file for chat",
-                Toast.LENGTH_SHORT
-            ).show()
+                vm.setFileId(it)
+                Toast.makeText(
+                    requireActivity(),
+                    "Created file for chat",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
-            .addOnFailureListener { throw it }
+            .addOnFailureListener {
+                Toast.makeText(
+                    requireActivity(),
+                    getString(R.string.something_went_wrong),
+                    Toast.LENGTH_SHORT
+                )
+                    .show()
+                throw it
+            }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
