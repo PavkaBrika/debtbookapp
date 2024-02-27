@@ -10,16 +10,20 @@ import com.breckneck.deptbook.domain.model.HumanDomain
 import com.breckneck.deptbook.domain.usecase.Debt.GetAllDebts
 import com.breckneck.deptbook.domain.usecase.Debt.GetAllDebtsByIdUseCase
 import com.breckneck.deptbook.domain.usecase.Debt.ReplaceAllDebts
+import com.breckneck.deptbook.domain.usecase.Debt.SetDateUseCase
 import com.breckneck.deptbook.domain.usecase.Human.GetAllHumansUseCase
 import com.breckneck.deptbook.domain.usecase.Human.ReplaceAllHumans
 import com.breckneck.deptbook.domain.usecase.Settings.GetIsAuthorized
+import com.breckneck.deptbook.domain.usecase.Settings.GetLastSyncDate
 import com.breckneck.deptbook.domain.usecase.Settings.SetIsAuthorized
+import com.breckneck.deptbook.domain.usecase.Settings.SetLastSyncDate
 import com.breckneck.deptbook.domain.usecase.Settings.SetUserData
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
+import java.util.Calendar
 
 class SynchronizationFragmentViewModel(
     private val getIsAuthorized: GetIsAuthorized,
@@ -28,8 +32,11 @@ class SynchronizationFragmentViewModel(
     private val getAllHumansUseCase: GetAllHumansUseCase,
     private val replaceAllDebts: ReplaceAllDebts,
     private val replaceAllHumans: ReplaceAllHumans,
-    private val setUserData: SetUserData
-): ViewModel() {
+    private val setUserData: SetUserData,
+    private val setDateUseCase: SetDateUseCase,
+    private val setLastSyncDate: SetLastSyncDate,
+    private val getLastSyncDate: GetLastSyncDate
+) : ViewModel() {
 
     private val TAG = "SyncFragmentVM"
 
@@ -66,17 +73,36 @@ class SynchronizationFragmentViewModel(
     private val _isListModified = MutableLiveData<Boolean>(false)
     val isListModified: LiveData<Boolean>
         get() = _isListModified
+    private val _lastSyncDate = MutableLiveData<String>()
+    val lastSyncDate: LiveData<String>
+        get() = _lastSyncDate
 
     val disposeBag = CompositeDisposable()
 
     init {
         getIsAuthorized()
         getAppDataForSync()
+        getLastSyncDate()
     }
 
     override fun onCleared() {
         super.onCleared()
         disposeBag.dispose()
+    }
+
+    fun setLastSyncDate() {
+        val calendar = Calendar.getInstance()
+        val date = setDateUseCase.execute(
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        )
+        setLastSyncDate.execute(date)
+        _lastSyncDate.value = date
+    }
+
+    private fun getLastSyncDate() {
+        _lastSyncDate.value = getLastSyncDate.execute()
     }
 
     private fun getIsAuthorized() {

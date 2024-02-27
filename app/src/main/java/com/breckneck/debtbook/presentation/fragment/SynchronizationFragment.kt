@@ -106,6 +106,14 @@ class SynchronizationFragment : Fragment() {
             }
         }
 
+        val synchronizationStatusTextView: TextView = view.findViewById(R.id.synchronizationStatusTextView)
+        vm.lastSyncDate.observe(viewLifecycleOwner) { date ->
+            if (date == "")
+                synchronizationStatusTextView.text = getString(R.string.the_data_has_not_yet_been_synchronized)
+            else
+                synchronizationStatusTextView.text = "${getString(R.string.last_synchronization)} $date"
+        }
+
         val userNameTextView: TextView = view.findViewById(R.id.userNameTextView)
         vm.userName.observe(viewLifecycleOwner) { userName ->
             userNameTextView.text = userName
@@ -279,6 +287,7 @@ class SynchronizationFragment : Fragment() {
         )
             .addOnSuccessListener {
                 vm.setIsSynchronizing(false)
+                vm.setLastSyncDate()
             }
             .addOnFailureListener {
                 vm.setIsSynchronizing(false)

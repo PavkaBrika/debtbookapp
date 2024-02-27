@@ -121,4 +121,12 @@ class SettingsRepositoryImpl(private val settingsStorage: SettingsStorage): Sett
     override fun getIsAuthorized(): Boolean {
         return settingsStorage.getIsAuthorized()
     }
+
+    override fun setLastSyncDate(lastSyncDate: String) {
+        settingsStorage.setLastSyncDate(lastSyncDate = lastSyncDate)
+    }
+
+    override fun getLastSyncDate(): String {
+        return settingsStorage.getLastSyncDate()
+    }
 }

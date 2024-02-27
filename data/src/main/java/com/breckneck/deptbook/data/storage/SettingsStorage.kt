@@ -47,4 +47,8 @@ interface SettingsStorage {
     fun setIsAuthorized(isAuthorized: Boolean)
 
     fun getIsAuthorized(): Boolean
+
+    fun setLastSyncDate(lastSyncDate: String)
+
+    fun getLastSyncDate(): String
 }

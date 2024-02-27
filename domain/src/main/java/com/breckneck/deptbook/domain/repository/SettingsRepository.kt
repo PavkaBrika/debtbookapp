@@ -49,4 +49,8 @@ interface SettingsRepository {
     fun setUserData(user: User)
 
     fun getUserData(): User
+
+    fun setLastSyncDate(lastSyncDate: String)
+
+    fun getLastSyncDate(): String
 }

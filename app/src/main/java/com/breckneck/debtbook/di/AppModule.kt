@@ -83,7 +83,10 @@ val appModule = module {
             getAllHumansUseCase = get(),
             replaceAllDebts = get(),
             replaceAllHumans = get(),
-            setUserData = get()
+            setUserData = get(),
+            setDateUseCase = get(),
+            setLastSyncDate = get(),
+            getLastSyncDate = get()
         )
     }
 }

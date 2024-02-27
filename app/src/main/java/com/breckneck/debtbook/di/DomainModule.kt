@@ -192,6 +192,14 @@ val domainModule = module {
         GetUserData(settingsRepository = get())
     }
 
+    single<SetLastSyncDate> {
+        SetLastSyncDate(settingsRepository = get())
+    }
+
+    single<GetLastSyncDate> {
+        GetLastSyncDate(settingsRepository = get())
+    }
+
     //ADS
 
     factory<SaveClicksUseCase> {

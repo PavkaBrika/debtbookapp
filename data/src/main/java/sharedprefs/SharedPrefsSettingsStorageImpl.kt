@@ -22,6 +22,7 @@ private const val HUMAN_ORDER_BY_INCREASE = "human_order_by_increase"
 private const val IS_AUTHORIZED = "is_authorized"
 private const val USER_NAME = "user_name"
 private const val USER_EMAIL = "user_email"
+private const val LAST_SYNC_DATE = "last_sync_date"
 
 
 class SharedPrefsSettingsStorageImpl(val context: Context): SettingsStorage {
@@ -128,5 +129,13 @@ class SharedPrefsSettingsStorageImpl(val context: Context): SettingsStorage {
 
     override fun getIsAuthorized(): Boolean {
         return sharedPreferences.getBoolean(IS_AUTHORIZED, false)
+    }
+
+    override fun setLastSyncDate(lastSyncDate: String) {
+        sharedPreferences.edit().putString(LAST_SYNC_DATE, lastSyncDate).apply()
+    }
+
+    override fun getLastSyncDate(): String {
+        return sharedPreferences.getString(LAST_SYNC_DATE, "")!!
     }
 }
