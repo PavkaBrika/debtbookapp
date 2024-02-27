@@ -126,9 +126,7 @@ class SynchronizationFragment : Fragment() {
 
         val restoreButtonLayout: ConstraintLayout = view.findViewById(R.id.restoreButtonLayout)
         restoreButtonLayout.setOnClickListener {
-
-            getFile()
-            vm.setIsRestoring(true)
+            openRestoreDataDialog()
         }
 
         val restoreTextView: TextView = view.findViewById(R.id.restoreTextView)
@@ -323,7 +321,6 @@ class SynchronizationFragment : Fragment() {
             createNewFile()
         } else {
             vm.setFileId(it.files.first().id)
-            Toast.makeText(requireActivity(), "Found file for chat", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -352,10 +349,11 @@ class SynchronizationFragment : Fragment() {
         val bottomSheetDialog = BottomSheetDialog(requireContext(), R.style.DialogStyle)
         bottomSheetDialog.setContentView(R.layout.dialog_are_you_sure)
 
-        bottomSheetDialog.findViewById<TextView>(R.id.dialogMessage)!!.setText(getString(R.string.recover_all_data_from_the_cloud_this_will_delete_the_current_application_data))
+        bottomSheetDialog.findViewById<TextView>(R.id.dialogMessage)!!.text = getString(R.string.recover_all_data_from_the_cloud_this_will_delete_the_current_application_data)
 
         bottomSheetDialog.findViewById<Button>(R.id.okButton)!!.setOnClickListener {
-
+            getFile()
+            vm.setIsRestoring(true)
         }
 
         bottomSheetDialog.findViewById<Button>(R.id.cancelButton)!!.setOnClickListener {

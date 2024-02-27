@@ -14,6 +14,7 @@ import com.breckneck.deptbook.domain.usecase.Human.GetAllHumansUseCase
 import com.breckneck.deptbook.domain.usecase.Human.ReplaceAllHumans
 import com.breckneck.deptbook.domain.usecase.Settings.GetIsAuthorized
 import com.breckneck.deptbook.domain.usecase.Settings.SetIsAuthorized
+import com.breckneck.deptbook.domain.usecase.Settings.SetUserData
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
@@ -26,7 +27,8 @@ class SynchronizationFragmentViewModel(
     private val getAllDebts: GetAllDebts,
     private val getAllHumansUseCase: GetAllHumansUseCase,
     private val replaceAllDebts: ReplaceAllDebts,
-    private val replaceAllHumans: ReplaceAllHumans
+    private val replaceAllHumans: ReplaceAllHumans,
+    private val setUserData: SetUserData
 ): ViewModel() {
 
     private val TAG = "SyncFragmentVM"
@@ -81,7 +83,6 @@ class SynchronizationFragmentViewModel(
     }
 
     fun setUser(name: String?, email: String?) {
-        //TODO SAVE IN SHARED PREFS
         if (name == null) {
             _userName.value = ""
         } else {
@@ -93,6 +94,7 @@ class SynchronizationFragmentViewModel(
         } else {
             _emailAddress.value = email!!
         }
+        setUserData.execute(userName.value!!, emailAddress.value!!)
     }
 
     fun getAppDataForSync() {

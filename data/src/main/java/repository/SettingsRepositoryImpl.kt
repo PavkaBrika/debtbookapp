@@ -1,12 +1,18 @@
 package repository
 
 import com.breckneck.deptbook.data.storage.SettingsStorage
+import com.breckneck.deptbook.domain.model.User
 import com.breckneck.deptbook.domain.repository.SettingsRepository
 import com.breckneck.deptbook.domain.util.DebtOrderAttribute
 import com.breckneck.deptbook.domain.util.HumanOrderAttribute
+import entity.UserData
 import util.*
 
 class SettingsRepositoryImpl(private val settingsStorage: SettingsStorage): SettingsRepository {
+
+    override fun setUserData(user: User) {
+        settingsStorage.setUserData(userData = UserData(name = user.name, email = user.email))
+    }
 
     override fun setFirstMainCurrency(currency: String) {
         settingsStorage.setFirstMainCurrency(currency = currency)

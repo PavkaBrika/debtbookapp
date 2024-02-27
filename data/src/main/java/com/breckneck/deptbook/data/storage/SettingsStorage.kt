@@ -1,6 +1,10 @@
 package com.breckneck.deptbook.data.storage
 
+import entity.UserData
+
 interface SettingsStorage {
+
+    fun setUserData(userData: UserData)
 
     fun setFirstMainCurrency(currency: String)
 

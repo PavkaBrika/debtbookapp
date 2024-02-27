@@ -1,5 +1,6 @@
 package com.breckneck.deptbook.domain.repository
 
+import com.breckneck.deptbook.domain.model.User
 import com.breckneck.deptbook.domain.util.DebtOrderAttribute
 import com.breckneck.deptbook.domain.util.HumanOrderAttribute
 
@@ -44,4 +45,6 @@ interface SettingsRepository {
     fun setIsAuthorized(isAuthorized: Boolean)
 
     fun getIsAuthorized(): Boolean
+
+    fun setUserData(user: User)
 }

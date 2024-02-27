@@ -184,6 +184,10 @@ val domainModule = module {
         GetIsAuthorized(settingsRepository = get())
     }
 
+    single<SetUserData> {
+        SetUserData(settingsRepository = get())
+    }
+
     //ADS
 
     factory<SaveClicksUseCase> {
