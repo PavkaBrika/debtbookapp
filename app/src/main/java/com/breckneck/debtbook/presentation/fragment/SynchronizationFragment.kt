@@ -18,7 +18,9 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
 import com.breckneck.debtbook.BuildConfig
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.presentation.viewmodel.SynchronizationFragmentViewModel
@@ -228,6 +230,7 @@ class SynchronizationFragment : Fragment() {
             .addOnSuccessListener { googleAccount ->
                 onSuccessSignIn(googleAccount = googleAccount)
                 vm.setIsAuthorized(isAuthorized = true)
+                setFragmentResult("requestKey", bundleOf("isAuthorized" to true))
             }
             .addOnFailureListener {
                 Toast.makeText(requireActivity(), getString(R.string.something_went_wrong), Toast.LENGTH_SHORT)
@@ -264,6 +267,7 @@ class SynchronizationFragment : Fragment() {
 
         client.signOut().addOnCompleteListener {
             vm.setIsAuthorized(isAuthorized = false)
+
         }
     }
 
@@ -409,6 +413,11 @@ class SynchronizationFragment : Fragment() {
                 handleSignInResult(data!!)
             }
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        setFragmentResult("settingsKey", bundleOf("isAuthorized" to vm.isAuthorized.value, "isListModified" to vm.isListModified.value))
     }
 
 }

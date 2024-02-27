@@ -19,7 +19,10 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SwitchCompat
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
+import androidx.fragment.app.setFragmentResultListener
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.BuildConfig
@@ -61,6 +64,12 @@ class SettingsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        setFragmentResultListener("settingsKey") { requestKey, bundle ->
+            if (bundle.getBoolean("isAuthorized") != vm.isAuthorized.value)
+                vm.getIsAuthorized()
+            if (bundle.getBoolean("isListModified"))
+                vm.setIsListModified(true)
+        }
         return inflater.inflate(R.layout.fragment_settings, container, false)
     }
 
@@ -362,4 +371,10 @@ class SettingsFragment : Fragment() {
         else
             vm.setIsSynchronizationAvailable(false)
     }
+
+    override fun onPause() {
+        super.onPause()
+        setFragmentResult("requestKey", bundleOf("isListModified" to vm.isListModified.value))
+    }
+
 }

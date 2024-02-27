@@ -63,6 +63,9 @@ class SynchronizationFragmentViewModel(
     private val _isLogOutDialogOpened = MutableLiveData<Boolean>(false)
     val isLogOutDialogOpened: LiveData<Boolean>
         get() = _isLogOutDialogOpened
+    private val _isListModified = MutableLiveData<Boolean>(false)
+    val isListModified: LiveData<Boolean>
+        get() = _isListModified
 
     val disposeBag = CompositeDisposable()
 
@@ -126,6 +129,7 @@ class SynchronizationFragmentViewModel(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 _isRestoring.value = false
+                _isListModified.value = true
             }, {
                 Log.e(TAG, it.stackTrace.toString())
             })

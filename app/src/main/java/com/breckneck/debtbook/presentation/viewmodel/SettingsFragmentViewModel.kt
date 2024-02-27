@@ -78,6 +78,9 @@ class SettingsFragmentViewModel(
     private val _emailAddress = MutableLiveData<String>()
     val emailAddress: LiveData<String>
         get() = _emailAddress
+    private val _isListModified = MutableLiveData<Boolean>(false)
+    val isListModified: LiveData<Boolean>
+        get() = _isListModified
 
     init {
         getFirstMainCurrency()
@@ -88,7 +91,7 @@ class SettingsFragmentViewModel(
         getIsAuthorized()
     }
 
-    private fun getIsAuthorized() {
+    fun getIsAuthorized() {
         _isAuthorized.value = getIsAuthorized.execute()
     }
 
@@ -164,4 +167,7 @@ class SettingsFragmentViewModel(
         _emailAddress.value = userData.email
     }
 
+    fun setIsListModified(isModified: Boolean) {
+        _isListModified.value = isModified
+    }
 }
