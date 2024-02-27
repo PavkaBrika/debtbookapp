@@ -12,6 +12,9 @@ interface AppDao {
     @Query("SELECT * FROM human")
     fun getAllHuman(): List<Human>
 
+    @Query("DELETE FROM human")
+    fun deleteAllHumans()
+
     @Query("SELECT * FROM human WHERE sumDebt >= 0")
     fun getPositiveHumans(): List<Human>
 
@@ -36,6 +39,9 @@ interface AppDao {
     @Insert
     fun insertHuman(human: Human)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAllHumans(humanList: List<Human>)
+
     @Delete
     fun deleteHuman(human: Human)
 
@@ -45,6 +51,9 @@ interface AppDao {
     //Debt
     @Query("SELECT * FROM debt")
     fun getAllDebts(): List<Debt>
+
+    @Query("DELETE FROM debt")
+    fun deleteAllDebts()
 
     @Query("SELECT * FROM debt WHERE idHuman = :id")
     fun getAllDebtsById(id: Int): List<Debt>
@@ -57,6 +66,9 @@ interface AppDao {
 
     @Insert
     fun insertDebt(debt: Debt)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAllDebts(debtList: List<Debt>)
 
     @Delete
     fun deleteDebt(debt: Debt)

@@ -8,12 +8,15 @@ import com.breckneck.deptbook.domain.usecase.Settings.GetAddSumInShareText
 import com.breckneck.deptbook.domain.usecase.Settings.GetAppTheme
 import com.breckneck.deptbook.domain.usecase.Settings.GetDefaultCurrency
 import com.breckneck.deptbook.domain.usecase.Settings.GetFirstMainCurrency
+import com.breckneck.deptbook.domain.usecase.Settings.GetIsAuthorized
 import com.breckneck.deptbook.domain.usecase.Settings.GetSecondMainCurrency
+import com.breckneck.deptbook.domain.usecase.Settings.GetUserData
 import com.breckneck.deptbook.domain.usecase.Settings.SetAddSumInShareText
 import com.breckneck.deptbook.domain.usecase.Settings.SetAppTheme
 import com.breckneck.deptbook.domain.usecase.Settings.SetDefaultCurrency
 import com.breckneck.deptbook.domain.usecase.Settings.SetFirstMainCurrency
 import com.breckneck.deptbook.domain.usecase.Settings.SetSecondMainCurrency
+import com.google.android.gms.common.GoogleApiAvailability
 import org.koin.android.ext.android.inject
 
 class SettingsFragmentViewModel(
@@ -26,7 +29,9 @@ class SettingsFragmentViewModel(
     private val setAddSumInShareText: SetAddSumInShareText,
     private val getAddSumInShareText: GetAddSumInShareText,
     private val getAppTheme: GetAppTheme,
-    private val setAppTheme: SetAppTheme
+    private val setAppTheme: SetAppTheme,
+    private val getIsAuthorized: GetIsAuthorized,
+    private val getUserData: GetUserData
 ) : ViewModel() {
 
     private val TAG = "SettingsFragmentViewModel"
@@ -61,6 +66,18 @@ class SettingsFragmentViewModel(
     private val _onSettingsClickListener = MutableLiveData<SettingsAdapter.OnClickListener>()
     val onSettingsClickListener: LiveData<SettingsAdapter.OnClickListener>
         get() = _onSettingsClickListener
+    private val _isSynchronizationAvailable = MutableLiveData<Boolean>(null)
+    val isSynchronizationAvailable: LiveData<Boolean>
+        get() = _isSynchronizationAvailable
+    private val _isAuthorized = MutableLiveData<Boolean>(false)
+    val isAuthorized: LiveData<Boolean>
+        get() = _isAuthorized
+    private val _userName = MutableLiveData<String>()
+    val userName: LiveData<String>
+        get() = _userName
+    private val _emailAddress = MutableLiveData<String>()
+    val emailAddress: LiveData<String>
+        get() = _emailAddress
 
     init {
         getFirstMainCurrency()
@@ -68,6 +85,11 @@ class SettingsFragmentViewModel(
         getDefaultCurrency()
         getAppTheme()
         getSumInShareText()
+        getIsAuthorized()
+    }
+
+    private fun getIsAuthorized() {
+        _isAuthorized.value = getIsAuthorized.execute()
     }
 
     private fun getFirstMainCurrency() {
@@ -130,6 +152,16 @@ class SettingsFragmentViewModel(
 
     fun onDialogClose() {
         _isSettingsDialogOpened.value = false
+    }
+
+    fun setIsSynchronizationAvailable(available: Boolean) {
+        _isSynchronizationAvailable.value = available
+    }
+
+    fun getUserData() {
+        val userData = getUserData.execute()
+        _userName.value = userData.name
+        _emailAddress.value = userData.email
     }
 
 }

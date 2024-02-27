@@ -231,7 +231,7 @@ class DebtDetailsFragment : Fragment() {
 
     private fun showDeleteHumanDialog() {
         val dialog = BottomSheetDialog(requireContext())
-        dialog.setContentView(R.layout.dialog_delete_human)
+        dialog.setContentView(R.layout.dialog_are_you_sure)
         vm.onHumanDeleteDialogOpen()
 
         dialog.findViewById<Button>(R.id.okButton)!!.setOnClickListener {

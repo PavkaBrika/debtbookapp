@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.breckneck.deptbook.data.storage.DebtStorage
 import entity.Debt
+import util.DATA_BASE_NAME
 
 private const val SHARED_PREFS_DEBT = "shared_prefs_name_2"
 private const val DEBT_ID = "debtid"
@@ -11,10 +12,19 @@ private const val DEBT_ID = "debtid"
 class DataBaseDebtStorageImpl(context: Context): DebtStorage {
 
     val sharedPreferences = context.getSharedPreferences(SHARED_PREFS_DEBT, Context.MODE_PRIVATE)
-    val db = Room.databaseBuilder(context, AppDataBase::class.java, "HumanDataBase").build()
+    val db = Room.databaseBuilder(context, AppDataBase::class.java, DATA_BASE_NAME).build()
 
     override fun getAllDebtsById(id: Int): List<Debt> {
         return db.appDao().getAllDebtsById(id = id)
+    }
+
+    override fun getAllDebts(): List<Debt> {
+        return db.appDao().getAllDebts()
+    }
+
+    override fun replaceAllDebts(debtList: List<Debt>) {
+        db.appDao().deleteAllDebts()
+        db.appDao().insertAllDebts(debtList = debtList)
     }
 
     override fun setDebt(debt: Debt) {

@@ -6,6 +6,10 @@ interface DebtStorage {
 
     fun getAllDebtsById(id: Int) : List<Debt>
 
+    fun getAllDebts(): List<Debt>
+
+    fun replaceAllDebts(debtList: List<Debt>)
+
     fun setDebt(debt: Debt)
 
     fun deleteDebt(debt: Debt)

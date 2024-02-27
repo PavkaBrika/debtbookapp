@@ -6,6 +6,8 @@ interface HumanRepository {
 
     fun getAllHumans() : List<HumanDomain>
 
+    fun replaceAllHumans(humanList: List<HumanDomain>)
+
     fun getPositiveHumans(): List<HumanDomain>
 
     fun getNegativeHumans(): List<HumanDomain>

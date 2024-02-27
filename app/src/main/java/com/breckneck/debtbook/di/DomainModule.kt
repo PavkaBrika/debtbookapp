@@ -48,14 +48,22 @@ val domainModule = module {
         UpdateHuman(humanRepository = get())
     }
 
+    factory<ReplaceAllHumans> {
+        ReplaceAllHumans(humanRepository = get())
+    }
+
     //DEBT
 
     factory<GetAllDebtsSumUseCase> {
         GetAllDebtsSumUseCase(humanRepository = get())
     }
 
-    factory<GetAllDebtsUseCase> {
-        GetAllDebtsUseCase(debtRepository = get())
+    factory<GetAllDebts> {
+        GetAllDebts(debtRepository = get())
+    }
+
+    factory<GetAllDebtsByIdUseCase> {
+        GetAllDebtsByIdUseCase(debtRepository = get())
     }
 
     factory<DeleteDebtUseCase> {
@@ -96,6 +104,10 @@ val domainModule = module {
 
     factory<FilterDebts> {
         FilterDebts()
+    }
+
+    factory<ReplaceAllDebts> {
+        ReplaceAllDebts(debtRepository = get())
     }
 
     //SETTINGS
@@ -162,6 +174,22 @@ val domainModule = module {
 
     single<GetHumanOrder> {
         GetHumanOrder(settingsRepository = get())
+    }
+
+    single<SetIsAuthorized> {
+        SetIsAuthorized(settingsRepository = get())
+    }
+
+    single<GetIsAuthorized> {
+        GetIsAuthorized(settingsRepository = get())
+    }
+
+    single<SetUserData> {
+        SetUserData(settingsRepository = get())
+    }
+
+    single<GetUserData> {
+        GetUserData(settingsRepository = get())
     }
 
     //ADS

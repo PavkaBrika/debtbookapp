@@ -5,11 +5,11 @@ import android.content.Intent
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
-import android.transition.TransitionInflater
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.CompoundButton
 import android.widget.CompoundButton.OnCheckedChangeListener
 import android.widget.ImageView
@@ -17,6 +17,8 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SwitchCompat
+import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
@@ -24,11 +26,12 @@ import com.breckneck.debtbook.BuildConfig
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.adapter.SettingsAdapter
 import com.breckneck.debtbook.presentation.viewmodel.SettingsFragmentViewModel
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.util.concurrent.TimeUnit
 
 class SettingsFragment : Fragment() {
 
@@ -36,6 +39,8 @@ class SettingsFragment : Fragment() {
         fun onBackSettingsButtonClick()
 
         fun onRateAppButtonClick()
+
+        fun onAuthorizationButtonClick()
     }
 
     lateinit var buttonClickListener: OnButtonClickListener
@@ -49,8 +54,6 @@ class SettingsFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val inflater = TransitionInflater.from(requireContext())
-//        enterTransition = inflater.inflateTransition(R.transition.slide_up)
     }
 
     override fun onCreateView(
@@ -63,6 +66,41 @@ class SettingsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        if (vm.isSynchronizationAvailable.value == null) {
+            checkIsSynchronizationAvailable()
+        }
+
+        val synchronizationCardView: CardView = view.findViewById(R.id.synchronizationCardView)
+        vm.isSynchronizationAvailable.observe(viewLifecycleOwner) { isAvailable ->
+            if (isAvailable)
+                synchronizationCardView.visibility = View.VISIBLE
+            else
+                synchronizationCardView.visibility = View.GONE
+        }
+
+        val authorizationLayout: LinearLayout = view.findViewById(R.id.authorizationLayout)
+        val accountInfoLayout: ConstraintLayout = view.findViewById(R.id.accountInfoLayout)
+        vm.isAuthorized.observe(viewLifecycleOwner) { isAuthorized ->
+            if (isAuthorized) {
+                authorizationLayout.visibility = View.GONE
+                accountInfoLayout.visibility = View.VISIBLE
+                vm.getUserData()
+            } else {
+                authorizationLayout.visibility = View.VISIBLE
+                accountInfoLayout.visibility = View.GONE
+            }
+        }
+
+        val userNameTextView: TextView = view.findViewById(R.id.userNameTextView)
+        vm.userName.observe(viewLifecycleOwner) { name ->
+            userNameTextView.text = name
+        }
+
+        val userEmailAddressTextView: TextView = view.findViewById(R.id.userEmailAddressTextView)
+        vm.emailAddress.observe(viewLifecycleOwner) { email ->
+            userEmailAddressTextView.text = email
+        }
 
         if (vm.isSettingsDialogOpened.value == true)
             showSettingsDialog(
@@ -264,6 +302,14 @@ class SettingsFragment : Fragment() {
         setSettingsButton.setOnClickListener {
             buttonClickListener.onBackSettingsButtonClick()
         }
+
+        val authorizationButton: Button = view.findViewById(R.id.authorizationButton)
+        authorizationButton.setOnClickListener {
+            buttonClickListener.onAuthorizationButtonClick()
+        }
+        accountInfoLayout.setOnClickListener {
+            buttonClickListener.onAuthorizationButtonClick()
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -307,5 +353,13 @@ class SettingsFragment : Fragment() {
             settingsSelectListener = onSettingsSelectListener
         )
         dialog.show()
+    }
+
+    private fun checkIsSynchronizationAvailable() {
+        val isAvailable = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(requireContext())
+        if (isAvailable == ConnectionResult.SUCCESS)
+            vm.setIsSynchronizationAvailable(true)
+        else
+            vm.setIsSynchronizationAvailable(false)
     }
 }

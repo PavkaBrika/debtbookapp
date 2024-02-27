@@ -3,6 +3,7 @@ package sharedprefs
 import android.content.Context
 import com.breckneck.deptbook.data.storage.SettingsStorage
 import com.breckneck.deptbook.domain.util.DEBT_QUANTITY_FOR_NEXT_SHOW_APP_RATE_DIALOG
+import entity.UserData
 import util.ORDER_DEBT_BY_DATE
 import util.ORDER_HUMAN_BY_DATE
 
@@ -18,11 +19,24 @@ private const val DEBT_ORDER_ATTRIBUTE = "debt_order_attribute"
 private const val DEBT_ORDER_BY_INCREASE = "debt_order_by_increase"
 private const val HUMAN_ORDER_ATTRIBUTE = "human_order_attribute"
 private const val HUMAN_ORDER_BY_INCREASE = "human_order_by_increase"
+private const val IS_AUTHORIZED = "is_authorized"
+private const val USER_NAME = "user_name"
+private const val USER_EMAIL = "user_email"
 
 
 class SharedPrefsSettingsStorageImpl(val context: Context): SettingsStorage {
 
     val sharedPreferences = context.getSharedPreferences(SHARED_PREFS_SETTINGS, Context.MODE_PRIVATE)
+
+    override fun setUserData(userData: UserData) {
+        sharedPreferences.edit().putString(USER_NAME, userData.name).apply()
+        sharedPreferences.edit().putString(USER_EMAIL, userData.email).apply()
+    }
+
+    override fun getUserData(): UserData {
+        return UserData(name = sharedPreferences.getString(USER_NAME, "")!!, email = sharedPreferences.getString(
+            USER_EMAIL, "")!!)
+    }
 
     override fun setFirstMainCurrency(currency: String) {
         sharedPreferences.edit().putString(MAIN_CURRENCY_FIRST, currency).apply()
@@ -106,5 +120,13 @@ class SharedPrefsSettingsStorageImpl(val context: Context): SettingsStorage {
             sharedPreferences.getInt(HUMAN_ORDER_ATTRIBUTE, ORDER_HUMAN_BY_DATE),
             sharedPreferences.getBoolean(HUMAN_ORDER_BY_INCREASE, true)
         )
+    }
+
+    override fun setIsAuthorized(isAuthorized: Boolean) {
+        sharedPreferences.edit().putBoolean(IS_AUTHORIZED, isAuthorized).apply()
+    }
+
+    override fun getIsAuthorized(): Boolean {
+        return sharedPreferences.getBoolean(IS_AUTHORIZED, false)
     }
 }

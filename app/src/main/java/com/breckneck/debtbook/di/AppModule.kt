@@ -1,5 +1,6 @@
 package com.breckneck.debtbook.di
 
+import com.breckneck.debtbook.presentation.viewmodel.SynchronizationFragmentViewModel
 import com.breckneck.debtbook.presentation.viewmodel.DebtDetailsViewModel
 import com.breckneck.debtbook.presentation.viewmodel.MainActivityViewModel
 import com.breckneck.debtbook.presentation.viewmodel.MainFragmentViewModel
@@ -36,7 +37,7 @@ val appModule = module {
 
     viewModel<DebtDetailsViewModel> {
         DebtDetailsViewModel(
-            getAllDebtsUseCase = get(),
+            getAllDebtsByIdUseCase = get(),
             getLastHumanIdUseCase = get(),
             getHumanSumDebtUseCase = get(),
             deleteHumanUseCase = get(),
@@ -60,7 +61,9 @@ val appModule = module {
             setAddSumInShareText = get(),
             getAddSumInShareText = get(),
             getAppTheme = get(),
-            setAppTheme = get()
+            setAppTheme = get(),
+            getIsAuthorized = get(),
+            getUserData = get()
         )
     }
 
@@ -69,6 +72,18 @@ val appModule = module {
             getDefaultCurrency = get(),
             getCurrentDateUseCase = get(),
             setDateUseCase = get()
+        )
+    }
+
+    viewModel<SynchronizationFragmentViewModel> {
+        SynchronizationFragmentViewModel(
+            getIsAuthorized = get(),
+            setIsAuthorized = get(),
+            getAllDebts = get(),
+            getAllHumansUseCase = get(),
+            replaceAllDebts = get(),
+            replaceAllHumans = get(),
+            setUserData = get()
         )
     }
 }

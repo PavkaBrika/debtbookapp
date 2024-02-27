@@ -15,6 +15,21 @@ class DebtRepositoryImpl(val debtStorage: DebtStorage): DebtRepository {
         return humanDomainList
     }
 
+    override fun getAllDebts(): List<DebtDomain> {
+        val debtList = debtStorage.getAllDebts()
+        val humanDomainList = debtList.map {
+            DebtDomain(id = it.id, sum = it.sum, idHuman = it.idHuman, info = it.info, date = it.date)
+        }
+        return humanDomainList
+    }
+
+    override fun replaceAllDebts(debtList: List<DebtDomain>) {
+        val debtDataList = debtList.map {
+            Debt(id = it.id, sum = it.sum, idHuman = it.idHuman, info = it.info, date = it.date)
+        }
+        debtStorage.replaceAllDebts(debtList = debtDataList)
+    }
+
     override fun setDebt(debtDomain: DebtDomain) {
         val debt = Debt(id = debtDomain.id, sum = debtDomain.sum, idHuman = debtDomain.idHuman, info = debtDomain.info, date = debtDomain.date)
         debtStorage.setDebt(debt)
