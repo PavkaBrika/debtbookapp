@@ -346,7 +346,7 @@ class SynchronizationFragment : Fragment() {
     }
 
     private fun openRestoreDataDialog() {
-        val bottomSheetDialog = BottomSheetDialog(requireContext(), R.style.DialogStyle)
+        val bottomSheetDialog = BottomSheetDialog(requireContext())
         bottomSheetDialog.setContentView(R.layout.dialog_are_you_sure)
 
         bottomSheetDialog.findViewById<TextView>(R.id.dialogMessage)!!.text = getString(R.string.recover_all_data_from_the_cloud_this_will_delete_the_current_application_data)
@@ -354,6 +354,7 @@ class SynchronizationFragment : Fragment() {
         bottomSheetDialog.findViewById<Button>(R.id.okButton)!!.setOnClickListener {
             getFile()
             vm.setIsRestoring(true)
+            bottomSheetDialog.dismiss()
         }
 
         bottomSheetDialog.findViewById<Button>(R.id.cancelButton)!!.setOnClickListener {
