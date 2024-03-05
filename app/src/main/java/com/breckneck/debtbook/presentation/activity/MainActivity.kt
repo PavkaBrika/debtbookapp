@@ -262,11 +262,6 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener,
         vm.onActionClick()
     }
 
-    override fun onSettingsButtonClick() {
-        navController.navigate(R.id.action_mainFragment_to_settingsFragment)
-        vm.onActionClick()
-    }
-
     override fun onAddDebt() {
         runOnUiThread {
             vm.onAddDebt()
@@ -346,10 +341,6 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener,
     }
 
     //settings interface
-    override fun onBackSettingsButtonClick() {
-        navController.popBackStack()
-    }
-
     override fun onRateAppButtonClick() {
         showAppRateDialog(true)
     }

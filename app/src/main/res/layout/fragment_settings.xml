@@ -37,16 +37,6 @@
                     android:fitsSystemWindows="true"
                     app:layout_collapseMode="pin">
 
-                    <ImageView
-                        android:id="@+id/backButton"
-                        style="@style/imageViewButton"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_marginEnd="16dp"
-                        android:background="@android:color/transparent"
-                        android:foreground="?android:attr/selectableItemBackground"
-                        android:src="@drawable/baseline_arrow_back_24" />
-
                 </androidx.appcompat.widget.Toolbar>
 
             </com.google.android.material.appbar.CollapsingToolbarLayout>
@@ -68,7 +58,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="44dp"
+                android:layout_marginTop="16dp"
                 android:orientation="vertical">
 
                 <com.google.android.material.card.MaterialCardView
@@ -551,16 +541,6 @@
             </LinearLayout>
 
         </androidx.core.widget.NestedScrollView>
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/setSettingsButton"
-            style="@style/fabTheme"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="24dp"
-            android:src="@drawable/ic_baseline_check_24"
-            app:layout_anchor="@id/app_bar"
-            app:layout_anchorGravity="bottom|end" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </RelativeLayout>

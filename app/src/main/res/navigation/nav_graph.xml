@@ -11,13 +11,6 @@
         android:label="MainFragment"
         tools:layout="@layout/fragment_main">
         <action
-            android:id="@+id/action_mainFragment_to_settingsFragment"
-            app:destination="@id/settingsFragment"
-            app:enterAnim="@anim/slide_up"
-            app:exitAnim="@anim/fade_out"
-            app:popEnterAnim="@anim/fade_in"
-            app:popExitAnim="@anim/slide_down" />
-        <action
             android:id="@+id/action_mainFragment_to_newDebtFragment"
             app:destination="@id/newDebtFragment"
             app:enterAnim="@anim/slide_up"

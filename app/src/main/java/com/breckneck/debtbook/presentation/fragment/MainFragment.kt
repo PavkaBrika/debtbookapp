@@ -45,8 +45,6 @@ class MainFragment : Fragment() {
 
         fun onAddButtonClick()
 
-        fun onSettingsButtonClick()
-
         fun onChangeOrderButtonClick()
     }
 
@@ -127,11 +125,6 @@ class MainFragment : Fragment() {
         val addButton: FloatingActionButton = view.findViewById(R.id.addHumanButton)
         addButton.setOnClickListener {
             buttonClickListener?.onAddButtonClick()
-        }
-
-        val settingsButton: ImageView = view.findViewById(R.id.settingsButton)
-        settingsButton.setOnClickListener {
-            buttonClickListener?.onSettingsButtonClick()
         }
 
         filterButton = view.findViewById(R.id.filterHumanButton)

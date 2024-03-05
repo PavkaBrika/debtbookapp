@@ -39,8 +39,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class SettingsFragment : Fragment() {
 
     interface OnButtonClickListener {
-        fun onBackSettingsButtonClick()
-
         fun onRateAppButtonClick()
 
         fun onAuthorizationButtonClick()
@@ -118,11 +116,6 @@ class SettingsFragment : Fragment() {
                 selectedSetting = vm.selectedSetting.value!!,
                 onSettingsClickListener = vm.onSettingsClickListener.value!!
             )
-
-        val backButton: ImageView = view.findViewById(R.id.backButton)
-        backButton.setOnClickListener {
-            buttonClickListener.onBackSettingsButtonClick()
-        }
 
         val collaps: CollapsingToolbarLayout = view.findViewById(R.id.collapsSettings)
         collaps.apply {
@@ -307,11 +300,6 @@ class SettingsFragment : Fragment() {
         val appVersionTextView: TextView = view.findViewById(R.id.appVersionTextView)
         appVersionTextView.text = "${getString(R.string.app_version)} ${BuildConfig.VERSION_NAME}"
 
-        val setSettingsButton: FloatingActionButton = view.findViewById(R.id.setSettingsButton)
-        setSettingsButton.setOnClickListener {
-            buttonClickListener.onBackSettingsButtonClick()
-        }
-
         val authorizationButton: Button = view.findViewById(R.id.authorizationButton)
         authorizationButton.setOnClickListener {
             buttonClickListener.onAuthorizationButtonClick()
@@ -319,15 +307,6 @@ class SettingsFragment : Fragment() {
         accountInfoLayout.setOnClickListener {
             buttonClickListener.onAuthorizationButtonClick()
         }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> {
-                buttonClickListener.onBackSettingsButtonClick()
-            }
-        }
-        return super.onOptionsItemSelected(item)
     }
 
     private fun showSettingsDialog(
