@@ -60,6 +60,9 @@ class MainActivityViewModel(
     private val _isNeedUpdateDebtSums = MutableLiveData<Boolean>(false)
     val isNeedUpdateDebtSums: LiveData<Boolean>
         get() = _isNeedUpdateDebtSums
+    private val _isBottomNavViewVisible = MutableLiveData<Boolean>(true)
+    val isBottomNavViewVisible: LiveData<Boolean>
+        get() = _isBottomNavViewVisible
 
     private val disposeBag = CompositeDisposable()
 
@@ -147,6 +150,10 @@ class MainActivityViewModel(
 
     fun setIsNeedUpdateDebtSums(isNeedUpdate: Boolean) {
         _isNeedUpdateDebtSums.value = isNeedUpdate
+    }
+
+    fun setIsBottomNavBarVisible(isVisible: Boolean) {
+        _isBottomNavViewVisible.value = isVisible
     }
 
 }

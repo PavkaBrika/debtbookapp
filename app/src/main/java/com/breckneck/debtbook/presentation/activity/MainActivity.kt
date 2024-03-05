@@ -7,6 +7,7 @@ import android.os.*
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.RelativeLayout
@@ -16,6 +17,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
+import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.breckneck.debtbook.BuildConfig
@@ -87,9 +89,6 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener,
                 }
             }
         }
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.frameLayout) as NavHostFragment
-        navController = navHostFragment.navController
 
         vm.getAppTheme()
         vm.appTheme.observe(this) { theme ->
@@ -166,9 +165,40 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener,
         }
         loadInterstitialAd()
 
-        //bottom nav bar
+        //NAVIGATION
+
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.frameLayout) as NavHostFragment
+        navController = navHostFragment.navController
+
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.mainFragment -> vm.setIsBottomNavBarVisible(isVisible = true)
+                R.id.settingsFragment -> vm.setIsBottomNavBarVisible(isVisible = true)
+                else -> vm.setIsBottomNavBarVisible(isVisible = false)
+            }
+        }
+
         val bottomNavBar = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
         bottomNavBar.setupWithNavController(navController)
+
+        vm.isBottomNavViewVisible.observe(this) { isVisible ->
+            if (isVisible) {
+                if (bottomNavBar.visibility == View.GONE) { //SHOW NAV BAR
+                    bottomNavBar.clearAnimation()
+                    bottomNavBar.animate().translationY(0F).setDuration(300)
+                    bottomNavBar.visibility = View.VISIBLE
+                }
+            } else {
+                if (bottomNavBar.visibility == View.VISIBLE) { //HIDE NAV BAR
+                    bottomNavBar.clearAnimation()
+                    bottomNavBar.animate().translationY(bottomNavBar.height.toFloat() + bannerAd.height.toFloat()).setDuration(300)
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        bottomNavBar.visibility = View.GONE
+                    }, 350)
+                }
+            }
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
