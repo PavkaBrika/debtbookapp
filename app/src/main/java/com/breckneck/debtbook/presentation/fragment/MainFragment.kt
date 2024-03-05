@@ -14,11 +14,13 @@ import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResultListener
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.adapter.HumanAdapter
+import com.breckneck.debtbook.presentation.viewmodel.MainActivityViewModel
 import com.breckneck.debtbook.presentation.viewmodel.MainFragmentViewModel
 import com.breckneck.deptbook.domain.model.HumanDomain
 import com.breckneck.deptbook.domain.util.*
@@ -29,6 +31,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainFragment : Fragment() {
@@ -36,6 +39,7 @@ class MainFragment : Fragment() {
     private val TAG = "MainFragment"
 
     private val vm by viewModel<MainFragmentViewModel>()
+    private val mainActivityVM by activityViewModel<MainActivityViewModel>()
 
     private lateinit var filterButton: ImageView
     private lateinit var humanAdapter: HumanAdapter
@@ -67,6 +71,10 @@ class MainFragment : Fragment() {
         setFragmentResultListener("requestKey") { requestKey, bundle ->
             if (bundle.getBoolean("isListModified"))
                 vm.init()
+            else if (mainActivityVM.isNeedDebtDataUpdate.value == true)
+                vm.init()
+            else if (mainActivityVM.isNeedUpdateDebtSums.value == true)
+                vm.getMainSums()
         }
         Log.e(TAG, "MainFragment create view")
         return inflater.inflate(R.layout.fragment_main, container, false)
@@ -74,7 +82,6 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.e(TAG, "MainFragment view created")
         postponeEnterTransition()
 
         if (vm.isSortDialogOpened.value == true)

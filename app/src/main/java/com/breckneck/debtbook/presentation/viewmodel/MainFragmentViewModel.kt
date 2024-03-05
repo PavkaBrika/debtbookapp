@@ -141,7 +141,7 @@ class MainFragmentViewModel(
         disposeBag.add(result)
     }
 
-    private fun getMainSums() {
+    fun getMainSums() {
         val result = Single.create {
             it.onSuccess(
                 getAllDebtsSumUseCase.execute(

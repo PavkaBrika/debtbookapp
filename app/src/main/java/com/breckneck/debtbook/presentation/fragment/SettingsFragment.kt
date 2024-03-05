@@ -28,12 +28,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.BuildConfig
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.adapter.SettingsAdapter
+import com.breckneck.debtbook.presentation.viewmodel.MainActivityViewModel
 import com.breckneck.debtbook.presentation.viewmodel.SettingsFragmentViewModel
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsFragment : Fragment() {
@@ -47,6 +49,7 @@ class SettingsFragment : Fragment() {
     lateinit var buttonClickListener: OnButtonClickListener
 
     private val vm by viewModel<SettingsFragmentViewModel>()
+    private val mainActivityVM by activityViewModel<MainActivityViewModel>()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -66,7 +69,7 @@ class SettingsFragment : Fragment() {
             if (bundle.getBoolean("isAuthorized") != vm.isAuthorized.value)
                 vm.getIsAuthorized()
             if (bundle.getBoolean("isListModified"))
-                vm.setIsListModified(true)
+                mainActivityVM.setIsNeedUpdateDebtData(true)
         }
         return inflater.inflate(R.layout.fragment_settings, container, false)
     }
@@ -141,6 +144,7 @@ class SettingsFragment : Fragment() {
                         val onSettingClickListener = object : SettingsAdapter.OnClickListener {
                             override fun onClick(setting: String, position: Int) {
                                 vm.setFirstMainCurrency(currency = setting.substring(setting.lastIndexOf(" ") + 1))
+                                mainActivityVM.setIsNeedUpdateDebtSums(true)
                             }
                         }
                         vm.onSettingsDialogOpen(
@@ -169,6 +173,7 @@ class SettingsFragment : Fragment() {
                         val onSettingClickListener = object : SettingsAdapter.OnClickListener {
                             override fun onClick(setting: String, position: Int) {
                                 vm.setSecondMainCurrency(currency = setting.substring(setting.lastIndexOf(" ") + 1))
+                                mainActivityVM.setIsNeedUpdateDebtSums(true)
                             }
                         }
                         vm.onSettingsDialogOpen(

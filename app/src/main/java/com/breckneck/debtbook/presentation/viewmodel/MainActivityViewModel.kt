@@ -54,6 +54,12 @@ class MainActivityViewModel(
     private val _appTheme = MutableLiveData<String>()
     val appTheme: LiveData<String>
         get() = _appTheme
+    private val _isNeedUpdateDebtData = MutableLiveData<Boolean>(false)
+    val isNeedDebtDataUpdate: LiveData<Boolean>
+        get() = _isNeedUpdateDebtData
+    private val _isNeedUpdateDebtSums = MutableLiveData<Boolean>(false)
+    val isNeedUpdateDebtSums: LiveData<Boolean>
+        get() = _isNeedUpdateDebtSums
 
     private val disposeBag = CompositeDisposable()
 
@@ -134,4 +140,13 @@ class MainActivityViewModel(
     fun getAppTheme() {
         _appTheme.value = getAppTheme.execute()
     }
+
+    fun setIsNeedUpdateDebtData(isNeedUpdate: Boolean) {
+        _isNeedUpdateDebtData.value = isNeedUpdate
+    }
+
+    fun setIsNeedUpdateDebtSums(isNeedUpdate: Boolean) {
+        _isNeedUpdateDebtSums.value = isNeedUpdate
+    }
+
 }
