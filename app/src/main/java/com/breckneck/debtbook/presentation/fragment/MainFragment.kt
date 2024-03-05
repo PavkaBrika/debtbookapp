@@ -68,12 +68,13 @@ class MainFragment : Fragment() {
             if (bundle.getBoolean("isListModified"))
                 vm.init()
         }
+        Log.e(TAG, "MainFragment create view")
         return inflater.inflate(R.layout.fragment_main, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        Log.e(TAG, "MainFragment view created")
         postponeEnterTransition()
 
         if (vm.isSortDialogOpened.value == true)

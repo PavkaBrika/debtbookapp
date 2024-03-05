@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/item_main"
+        android:id="@+id/mainFragment"
         android:enabled="true"
         android:icon="@drawable/outline_monetization_on_24"
         android:title="@string/debts" />
     <item
-        android:id="@+id/item_settings"
+        android:id="@+id/settingsFragment"
         android:enabled="true"
         android:icon="@drawable/outline_settings_24"
         android:title="@string/settings"/>

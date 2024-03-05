@@ -17,6 +17,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
 import com.breckneck.debtbook.BuildConfig
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.presentation.fragment.*
@@ -24,6 +25,7 @@ import com.breckneck.debtbook.presentation.viewmodel.MainActivityViewModel
 import com.breckneck.deptbook.domain.model.DebtDomain
 import com.breckneck.deptbook.domain.util.CLICKS_QUANTITY_FOR_AD_SHOW
 import com.breckneck.deptbook.domain.util.DEBT_QUANTITY_FOR_LAST_SHOW_APP_RATE_DIALOG
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.textfield.TextInputEditText
@@ -163,6 +165,10 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener,
             })
         }
         loadInterstitialAd()
+
+        //bottom nav bar
+        val bottomNavBar = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+        bottomNavBar.setupWithNavController(navController)
     }
 
     override fun onSupportNavigateUp(): Boolean {
