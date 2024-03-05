@@ -13,6 +13,7 @@ import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -105,7 +106,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener,
         val bannerAd: BannerAdView = findViewById(R.id.bannerAdView)
         val adRequestBuild = AdRequest.Builder().build()
 
-        var adWidthPixels = findViewById<RelativeLayout>(R.id.rootLayout).width
+        var adWidthPixels = findViewById<ConstraintLayout>(R.id.rootLayout).width
         if (adWidthPixels == 0) {
             adWidthPixels = resources.displayMetrics.widthPixels
         }
