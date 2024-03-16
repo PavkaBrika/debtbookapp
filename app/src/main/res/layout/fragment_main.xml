@@ -100,7 +100,7 @@
                 android:layout_height="match_parent">
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/namesRecyclerView"
+                    android:id="@+id/categoryRecyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:clickable="true"
@@ -127,7 +127,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/namesRecyclerView" />
+                    app:layout_constraintTop_toBottomOf="@+id/categoryRecyclerView" />
 
                 <TextView
                     android:id="@+id/mainRecyclerViewSecondHintTextView"

@@ -6,8 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.breckneck.debtbook.R
+import com.breckneck.debtbook.presentation.viewmodel.FinanceFragmentViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FinanceFragment: Fragment() {
+
+    private val vm by viewModel<FinanceFragmentViewModel>()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -18,10 +23,14 @@ class FinanceFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return super.onCreateView(inflater, container, savedInstanceState)
+        return inflater.inflate(R.layout.fragment_finance, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        vm.financeList.observe(viewLifecycleOwner) { financeList ->
+
+        }
     }
 }

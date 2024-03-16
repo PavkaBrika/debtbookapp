@@ -94,7 +94,7 @@ class MainFragment : Fragment() {
             setExpandedTitleTypeface(Typeface.DEFAULT_BOLD)
         }
 
-        val recyclerView: RecyclerView = view.findViewById(R.id.namesRecyclerView)
+        val recyclerView: RecyclerView = view.findViewById(R.id.categoryRecyclerView)
         recyclerView.addItemDecoration(
             DividerItemDecoration(
                 view.context,
