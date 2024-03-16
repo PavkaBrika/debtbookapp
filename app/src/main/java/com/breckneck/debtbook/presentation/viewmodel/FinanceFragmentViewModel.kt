@@ -20,8 +20,8 @@ class FinanceFragmentViewModel(
 
     private val TAG = "FinanceFragmentVM"
 
-    private val _financeList = MutableLiveData<List<Finance>>()
-    val financeList: LiveData<List<Finance>>
+    private val _financeList = MutableLiveData<MutableList<Finance>>()
+    val financeList: LiveData<MutableList<Finance>>
         get() = _financeList
 
     private val disposeBag = CompositeDisposable()
@@ -43,10 +43,10 @@ class FinanceFragmentViewModel(
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                _financeList.value = it
+                _financeList.value!!.addAll(it)
                 Log.e(TAG, "finances loaded in VM")
             }, {
-                Log.e(TAG, it.stackTrace.toString())
+                Log.e(TAG, it.message.toString())
             })
         disposeBag.add(result)
     }
@@ -60,9 +60,11 @@ class FinanceFragmentViewModel(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 Log.e(TAG, "finance added")
+                _financeList.value!!.add(finance)
             }, {
-                Log.e(TAG, it.stackTrace.toString())
+                Log.e(TAG, it.message.toString())
             })
+        disposeBag.add(result)
     }
 
 }

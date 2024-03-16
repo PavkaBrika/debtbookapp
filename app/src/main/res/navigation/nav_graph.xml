@@ -142,4 +142,8 @@
         android:name="com.breckneck.debtbook.presentation.fragment.settings.SynchronizationFragment"
         android:label="SynchronizationFragment"
         tools:layout="@layout/fragment_synchronization"/>
+    <fragment
+        android:id="@+id/financeFragment"
+        android:name="com.breckneck.debtbook.presentation.fragment.finance.FinanceFragment"
+        android:label="FinanceFragment" />
 </navigation>

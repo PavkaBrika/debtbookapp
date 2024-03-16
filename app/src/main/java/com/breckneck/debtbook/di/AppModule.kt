@@ -2,6 +2,7 @@ package com.breckneck.debtbook.di
 
 import com.breckneck.debtbook.presentation.viewmodel.SynchronizationFragmentViewModel
 import com.breckneck.debtbook.presentation.viewmodel.DebtDetailsViewModel
+import com.breckneck.debtbook.presentation.viewmodel.FinanceFragmentViewModel
 import com.breckneck.debtbook.presentation.viewmodel.MainActivityViewModel
 import com.breckneck.debtbook.presentation.viewmodel.MainFragmentViewModel
 import com.breckneck.debtbook.presentation.viewmodel.NewDebtFragmentViewModel
@@ -87,6 +88,13 @@ val appModule = module {
             setDateUseCase = get(),
             setLastSyncDate = get(),
             getLastSyncDate = get()
+        )
+    }
+
+    viewModel<FinanceFragmentViewModel> {
+        FinanceFragmentViewModel(
+            getAllFinances = get(),
+            setFinance = get()
         )
     }
 }

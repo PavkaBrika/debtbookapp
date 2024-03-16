@@ -8,18 +8,18 @@
     android:paddingHorizontal="12dp">
 
     <TextView
-        android:id="@+id/categoryNameTextView"
+        android:id="@+id/usedCategoryNameTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Category name"
         android:textSize="22sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/categorySumTextView"
+        app:layout_constraintEnd_toStartOf="@+id/usedCategorySumTextView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/categorySumTextView"
+        android:id="@+id/usedCategorySumTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Sum"

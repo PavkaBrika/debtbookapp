@@ -6,6 +6,11 @@
         android:icon="@drawable/outline_monetization_on_24"
         android:title="@string/debts" />
     <item
+        android:id="@+id/financeFragment"
+        android:enabled="true"
+        android:icon="@drawable/outline_monetization_on_24"
+        android:title="@string/finances" />
+    <item
         android:id="@+id/settingsFragment"
         android:enabled="true"
         android:icon="@drawable/outline_settings_24"

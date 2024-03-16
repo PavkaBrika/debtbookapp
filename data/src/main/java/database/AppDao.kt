@@ -78,7 +78,7 @@ interface AppDao {
     fun updateDebt(debt: Debt)
 
     //Finance
-    @Query("SELECT * from financedata")
+//    @Query("SELECT * from financedata")
     fun getAllFinances(): List<FinanceData>
 
     @Insert
