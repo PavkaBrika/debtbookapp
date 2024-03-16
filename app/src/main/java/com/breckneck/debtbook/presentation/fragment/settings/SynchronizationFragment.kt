@@ -1,4 +1,4 @@
-package com.breckneck.debtbook.presentation.fragment
+package com.breckneck.debtbook.presentation.fragment.settings
 
 import android.content.Context
 import android.content.Intent
@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

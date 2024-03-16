@@ -2,6 +2,7 @@ package database
 
 import androidx.room.*
 import entity.Debt
+import entity.FinanceData
 import entity.Human
 
 
@@ -76,4 +77,16 @@ interface AppDao {
     @Update
     fun updateDebt(debt: Debt)
 
+    //Finance
+    @Query("SELECT * from financedata")
+    fun getAllFinances(): List<FinanceData>
+
+    @Insert
+    fun insertFinance(financeData: FinanceData)
+
+    @Delete
+    fun deleteFinance(financeData: FinanceData)
+
+    @Update
+    fun updateFinance(financeData: FinanceData)
 }

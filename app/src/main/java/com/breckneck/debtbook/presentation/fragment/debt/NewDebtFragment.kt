@@ -1,4 +1,4 @@
-package com.breckneck.debtbook.presentation.fragment
+package com.breckneck.debtbook.presentation.fragment.debt
 
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog

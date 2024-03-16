@@ -3,6 +3,8 @@ package com.breckneck.debtbook.di
 import com.breckneck.deptbook.domain.usecase.Ad.SaveClicksUseCase
 import com.breckneck.deptbook.domain.usecase.Ad.GetClicksUseCase
 import com.breckneck.deptbook.domain.usecase.Debt.*
+import com.breckneck.deptbook.domain.usecase.Finance.GetAllFinances
+import com.breckneck.deptbook.domain.usecase.Finance.SetFinance
 import com.breckneck.deptbook.domain.usecase.Human.*
 import com.breckneck.deptbook.domain.usecase.Settings.*
 import org.koin.dsl.module
@@ -198,6 +200,15 @@ val domainModule = module {
 
     single<GetLastSyncDate> {
         GetLastSyncDate(settingsRepository = get())
+    }
+
+    //FINANCE
+    single<SetFinance> {
+        SetFinance(financeRepository = get())
+    }
+
+    single<GetAllFinances> {
+        GetAllFinances(financeRepository = get())
     }
 
     //ADS

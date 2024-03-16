@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.breckneck.debtbook.presentation.fragment.MainFragment"
+        android:name="com.breckneck.debtbook.presentation.fragment.debt.MainFragment"
         android:label="MainFragment"
         tools:layout="@layout/fragment_main">
         <action
@@ -52,7 +52,7 @@
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.breckneck.debtbook.presentation.fragment.SettingsFragment"
+        android:name="com.breckneck.debtbook.presentation.fragment.settings.SettingsFragment"
         android:label="SettingsFragment"
         tools:layout="@layout/fragment_settings">
         <action
@@ -65,7 +65,7 @@
     </fragment>
     <fragment
         android:id="@+id/newDebtFragment"
-        android:name="com.breckneck.debtbook.presentation.fragment.NewDebtFragment"
+        android:name="com.breckneck.debtbook.presentation.fragment.debt.NewDebtFragment"
         android:label="NewDebtFragment"
         tools:layout="@layout/fragment_addnewhuman">
         <action
@@ -107,7 +107,7 @@
     </fragment>
     <fragment
         android:id="@+id/debtDetailsFragment"
-        android:name="com.breckneck.debtbook.presentation.fragment.DebtDetailsFragment"
+        android:name="com.breckneck.debtbook.presentation.fragment.debt.DebtDetailsFragment"
         android:label="DebtDetailsFragment"
         app:route="Details"
         tools:layout="@layout/fragment_debt_details">
@@ -139,7 +139,7 @@
     </fragment>
     <fragment
         android:id="@+id/synchronizationFragment"
-        android:name="com.breckneck.debtbook.presentation.fragment.SynchronizationFragment"
+        android:name="com.breckneck.debtbook.presentation.fragment.settings.SynchronizationFragment"
         android:label="SynchronizationFragment"
         tools:layout="@layout/fragment_synchronization"/>
 </navigation>

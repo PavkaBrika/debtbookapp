@@ -1,4 +1,4 @@
-package com.breckneck.debtbook.presentation.fragment
+package com.breckneck.debtbook.presentation.fragment.debt
 
 import android.content.Context
 import android.content.Intent
