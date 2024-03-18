@@ -23,6 +23,7 @@ import com.breckneck.debtbook.R
 import com.breckneck.debtbook.presentation.fragment.debt.DebtDetailsFragment
 import com.breckneck.debtbook.presentation.fragment.debt.MainFragment
 import com.breckneck.debtbook.presentation.fragment.debt.NewDebtFragment
+import com.breckneck.debtbook.presentation.fragment.finance.FinanceFragment
 import com.breckneck.debtbook.presentation.fragment.settings.SettingsFragment
 import com.breckneck.debtbook.presentation.fragment.settings.SynchronizationFragment
 import com.breckneck.debtbook.presentation.viewmodel.MainActivityViewModel
@@ -46,7 +47,7 @@ import kotlin.math.roundToInt
 
 class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener,
     NewDebtFragment.OnButtonClickListener, DebtDetailsFragment.OnButtonClickListener,
-    SettingsFragment.OnButtonClickListener, SynchronizationFragment.SynchronizationInterface {
+    SettingsFragment.OnButtonClickListener, SynchronizationFragment.SynchronizationInterface, FinanceFragment.OnButtonClickListener {
 
     private var interstitialAd: InterstitialAd? = null
     private var interstitialAdLoader: InterstitialAdLoader? = null
@@ -372,6 +373,11 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener,
 
     override fun onBackDebtsButtonClick() {
         navController.popBackStack()
+    }
+
+    //finance interface
+    override fun onAddFinanceButtonClick() {
+        navController.navigate(R.id.action_financeFragment_to_createFinanceFragment)
     }
 
     //synchronization interface

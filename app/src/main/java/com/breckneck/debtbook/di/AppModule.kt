@@ -1,5 +1,6 @@
 package com.breckneck.debtbook.di
 
+import com.breckneck.debtbook.presentation.viewmodel.CreateFinanceFragmentViewModel
 import com.breckneck.debtbook.presentation.viewmodel.SynchronizationFragmentViewModel
 import com.breckneck.debtbook.presentation.viewmodel.DebtDetailsViewModel
 import com.breckneck.debtbook.presentation.viewmodel.FinanceFragmentViewModel
@@ -93,7 +94,12 @@ val appModule = module {
 
     viewModel<FinanceFragmentViewModel> {
         FinanceFragmentViewModel(
-            getAllFinances = get(),
+            getAllFinances = get()
+        )
+    }
+
+    viewModel<CreateFinanceFragmentViewModel> {
+        CreateFinanceFragmentViewModel(
             setFinance = get()
         )
     }

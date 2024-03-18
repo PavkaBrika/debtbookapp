@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.adapter.UsedFinanceCategoryAdapter
 import com.breckneck.debtbook.presentation.viewmodel.FinanceFragmentViewModel
-import com.breckneck.deptbook.domain.model.Finance
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -19,8 +18,14 @@ class FinanceFragment: Fragment() {
 
     private val vm by viewModel<FinanceFragmentViewModel>()
 
+    interface OnButtonClickListener {
+        fun onAddFinanceButtonClick()
+    }
+
+    var buttonClickListener: OnButtonClickListener? = null
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        buttonClickListener = context as OnButtonClickListener
     }
 
     override fun onCreateView(
@@ -47,7 +52,7 @@ class FinanceFragment: Fragment() {
 
         val addFinanceButton: FloatingActionButton = view.findViewById(R.id.addFinanceButton)
         addFinanceButton.setOnClickListener {
-            vm.setFinance(Finance(id = 0 , name = "123", sum = 123.0, info = ""))
+            buttonClickListener!!.onAddFinanceButtonClick()
         }
     }
 }

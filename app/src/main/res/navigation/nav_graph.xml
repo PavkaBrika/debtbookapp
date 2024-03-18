@@ -145,5 +145,17 @@
     <fragment
         android:id="@+id/financeFragment"
         android:name="com.breckneck.debtbook.presentation.fragment.finance.FinanceFragment"
-        android:label="FinanceFragment" />
+        android:label="FinanceFragment" >
+        <action
+            android:id="@+id/action_financeFragment_to_createFinanceFragment"
+            app:destination="@id/createFinanceFragment"
+            app:enterAnim="@anim/slide_up"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/slide_down"/>
+    </fragment>
+    <fragment
+        android:id="@+id/createFinanceFragment"
+        android:name="com.breckneck.debtbook.presentation.fragment.finance.CreateFinanceFragment"
+        android:label="CreateFinanceFragment" />
 </navigation>
