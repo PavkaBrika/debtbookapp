@@ -90,7 +90,7 @@ class MainActivityViewModel(
             .subscribe({
                 _debtQuantity.value = it
             }, {
-                Log.e(TAG, it.stackTrace.toString())
+                Log.e(TAG, it.message.toString())
             })
         disposeBag.add(result)
     }

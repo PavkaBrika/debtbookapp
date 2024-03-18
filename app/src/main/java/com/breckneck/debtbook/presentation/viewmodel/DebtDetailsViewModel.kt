@@ -103,7 +103,7 @@ class DebtDetailsViewModel(
                 sortDebts()
                 Log.e(TAG, "Debts load success")
             }, {
-                it.printStackTrace()
+                Log.e(TAG, it.message.toString())
             })
         disposeBag.add(getDebtsSingle)
     }
@@ -122,7 +122,7 @@ class DebtDetailsViewModel(
                 .subscribe({
                     _resultDebtList.value = it
                 }, {
-                    Log.e(TAG, it.stackTrace.toString())
+                    Log.e(TAG, it.message.toString())
                 })
             disposeBag.add(result)
             Log.e(TAG, "Debts sorted")
@@ -141,7 +141,7 @@ class DebtDetailsViewModel(
                 getAllDebts()
                 getOverallSum()
             }, {
-                it.printStackTrace()
+                Log.e(TAG, it.message.toString())
             })
         disposeBag.add(getLastHumanIdSingle)
     }
@@ -155,7 +155,7 @@ class DebtDetailsViewModel(
             .subscribe({
                 _overallSum.value = it
             }, {
-                it.printStackTrace()
+                Log.e(TAG, it.message.toString())
             })
         disposeBag.add(getOverallSumSingle)
     }
@@ -171,7 +171,7 @@ class DebtDetailsViewModel(
             .subscribe({
                 Log.e(TAG, "Deleted human with id = ${_humanId.value}")
             }, {
-                it.printStackTrace()
+                Log.e(TAG, it.message.toString())
             })
         disposeBag.add(deleteHumanCompletable)
     }
@@ -190,7 +190,7 @@ class DebtDetailsViewModel(
                 getAllDebts()
                 Log.e(TAG, "Debts load success")
             },{
-                it.printStackTrace()
+                Log.e(TAG, it.message.toString())
             })
         disposeBag.add(deleteDebtCompletable)
     }

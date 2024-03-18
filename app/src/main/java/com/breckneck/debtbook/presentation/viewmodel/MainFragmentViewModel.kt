@@ -90,7 +90,7 @@ class MainFragmentViewModel(
                 .subscribe({
                     _resultHumanList.value = it
                 }, {
-                    Log.e(TAG, it.stackTrace.toString())
+                    Log.e(TAG, it.message.toString())
                 })
             disposeBag.add(result)
             Log.e(TAG, "Humans sorted")
@@ -121,7 +121,7 @@ class MainFragmentViewModel(
                 Log.e(TAG, "humans loaded in VM")
                 getHumanOrder()
             }, {
-                Log.e(TAG, it.stackTrace.toString())
+                Log.e(TAG, it.message.toString())
             })
         disposeBag.add(result)
     }
@@ -136,7 +136,7 @@ class MainFragmentViewModel(
             .subscribe({
                 Log.e(TAG, "human updated")
             }, {
-                Log.e(TAG, it.stackTrace.toString())
+                Log.e(TAG, it.message.toString())
             })
         disposeBag.add(result)
     }
@@ -155,7 +155,7 @@ class MainFragmentViewModel(
             .subscribe({
                 _mainSums.value = it
             }, {
-                Log.e(TAG, it.stackTrace.toString())
+                Log.e(TAG, it.message.toString())
             })
         disposeBag.add(result)
     }

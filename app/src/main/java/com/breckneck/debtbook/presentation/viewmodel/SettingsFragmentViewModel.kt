@@ -166,8 +166,4 @@ class SettingsFragmentViewModel(
         _userName.value = userData.name
         _emailAddress.value = userData.email
     }
-
-    fun setIsListModified(isModified: Boolean) {
-        _isListModified.value = isModified
-    }
 }
