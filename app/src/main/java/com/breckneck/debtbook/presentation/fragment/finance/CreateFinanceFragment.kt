@@ -6,11 +6,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
+import com.breckneck.debtbook.adapter.FinanceCategoryAdapter
+import com.breckneck.debtbook.presentation.viewmodel.CreateFinanceFragmentViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class CreateFinanceFragment: Fragment() {
 
-
+    private val vm by viewModel<CreateFinanceFragmentViewModel>()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -26,5 +31,16 @@ class CreateFinanceFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val categoryRecyclerView: RecyclerView = view.findViewById(R.id.categoryRecyclerView)
+        categoryRecyclerView.addItemDecoration(
+            DividerItemDecoration(
+                view.context,
+                DividerItemDecoration.VERTICAL
+            )
+        )
+        vm.financeCategoryList.observe(viewLifecycleOwner) { financeCategoryList ->
+            categoryRecyclerView.adapter = FinanceCategoryAdapter(financeCategoryList = financeCategoryList)
+        }
     }
 }
