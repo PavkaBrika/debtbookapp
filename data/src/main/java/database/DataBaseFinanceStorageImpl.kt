@@ -11,10 +11,10 @@ import util.DATA_BASE_NAME
 
 class DataBaseFinanceStorageImpl(context: Context): FinanceStorage {
 
-    val MIGRATION_5_10 = object : Migration(5 ,10) {
+    val MIGRATION_5_10 = object : Migration(5 ,6) {
         override fun migrate(database: SupportSQLiteDatabase) {
-            database.execSQL("CREATE TABLE IF NOT EXISTS 'FinanceData' ('id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 'name' TEXT NOT NULL, 'sum' REAL NOT NULL, 'info' TEXT NOT NULL, 'financeCategoryId' INTEGER NOT NULL)")
-//            database.execSQL("CREATE TABLE IF NOT EXISTS 'FinanceCategoryData' ('id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 'name' TEXT NOT NULL, 'color' TEXT NOT NULL, 'image' INTEGER NOT NULL)")
+            database.execSQL("CREATE TABLE IF NOT EXISTS 'FinanceData' ('id' INTEGER PRIMARY KEY AUTOINCREMENT, 'name' TEXT, 'sum' REAL, 'info' TEXT, 'financeCategoryId' INTEGER)")
+            database.execSQL("CREATE TABLE IF NOT EXISTS 'FinanceCategoryData' ('id' INTEGER PRIMARY KEY AUTOINCREMENT, 'name' TEXT, 'color' TEXT, 'image' INTEGER)")
         }
     }
 
@@ -32,7 +32,6 @@ class DataBaseFinanceStorageImpl(context: Context): FinanceStorage {
 
 
     override fun getAllFinanceCategories(): List<FinanceCategoryData> {
-//        return db.appDao().getAllFinanceCategories()
-        return listOf()
+        return db.appDao().getAllFinanceCategories()
     }
 }
