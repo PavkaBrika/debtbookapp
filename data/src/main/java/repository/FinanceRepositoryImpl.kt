@@ -9,7 +9,7 @@ import entity.FinanceData
 class FinanceRepositoryImpl(private val financeStorage: FinanceStorage): FinanceRepository {
 
     override fun setFinance(finance: Finance) {
-        financeStorage.setFinance(finance = FinanceData(finance.id, finance.name, finance.sum, finance.info))
+        financeStorage.setFinance(finance = FinanceData(finance.id, finance.name, finance.sum, finance.info, 1))
     }
 
     override fun getAllFinance(): List<Finance> {

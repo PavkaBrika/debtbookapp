@@ -5,6 +5,7 @@ import entity.Debt
 import entity.FinanceCategoryData
 import entity.FinanceData
 import entity.Human
+import entity.relations.CategoryWithFinances
 
 
 @Dao
@@ -94,6 +95,9 @@ interface AppDao {
     //Finance category
     @Query("SELECT * FROM financecategorydata")
     fun getAllFinanceCategories(): List<FinanceCategoryData>
+
+    @Query("SELECT * FROM financecategorydata")
+    fun getAllCategoriesWithFinances(): List<CategoryWithFinances>
 
     @Insert
     fun insertFinanceCategory(financeCategoryData: FinanceCategoryData)

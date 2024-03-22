@@ -8,7 +8,7 @@ import entity.FinanceData
 import entity.Human
 
 
-@Database (entities = [Human::class, Debt::class, FinanceData::class, FinanceCategoryData::class], version = 7)
+@Database (entities = [Human::class, Debt::class, FinanceData::class, FinanceCategoryData::class], version = 6)
 abstract class AppDataBase: RoomDatabase() {
     abstract fun appDao() : AppDao
 }
