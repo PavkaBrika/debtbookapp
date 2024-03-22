@@ -4,5 +4,5 @@ data class Finance(
     var id: Int,
     var name: String,
     var sum: Double,
-    var info: String
+    var info: String?
 )

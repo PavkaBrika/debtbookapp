@@ -11,15 +11,7 @@ import util.DATA_BASE_NAME
 
 class DataBaseFinanceStorageImpl(context: Context): FinanceStorage {
 
-    val MIGRATION_5_10 = object : Migration(5 ,6) {
-        override fun migrate(database: SupportSQLiteDatabase) {
-            database.execSQL("CREATE TABLE IF NOT EXISTS 'FinanceData' ('id' INTEGER PRIMARY KEY AUTOINCREMENT, 'name' TEXT, 'sum' REAL, 'info' TEXT, 'financeCategoryId' INTEGER)")
-            database.execSQL("CREATE TABLE IF NOT EXISTS 'FinanceCategoryData' ('id' INTEGER PRIMARY KEY AUTOINCREMENT, 'name' TEXT, 'color' TEXT, 'image' INTEGER)")
-        }
-    }
-
     private val db = Room.databaseBuilder(context, AppDataBase::class.java, DATA_BASE_NAME)
-        .addMigrations(MIGRATION_5_10)
         .build()
 
     override fun setFinance(finance: FinanceData) {

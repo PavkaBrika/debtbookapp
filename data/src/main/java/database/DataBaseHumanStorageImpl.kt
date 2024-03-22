@@ -2,6 +2,8 @@ package database
 
 import android.content.Context
 import androidx.room.Room
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.breckneck.deptbook.data.storage.HumanStorage
 import entity.Human
 import util.DATA_BASE_NAME
@@ -12,8 +14,17 @@ private const val HUMAN_ID = "zoneid"
 
 class DataBaseHumanStorageImpl(context: Context) : HumanStorage {
 
+    val MIGRATION_5_10 = object : Migration(5 ,11) {
+        override fun migrate(database: SupportSQLiteDatabase) {
+            database.execSQL("CREATE TABLE IF NOT EXISTS 'FinanceData' ('id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 'name' TEXT NOT NULL, 'sum' REAL NOT NULL, 'info' TEXT, 'financeCategoryId' INTEGER NOT NULL)")
+            database.execSQL("CREATE TABLE IF NOT EXISTS 'FinanceCategoryData' ('id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 'name' TEXT NOT NULL, 'color' TEXT NOT NULL, 'image' INTEGER NOT NULL)")
+        }
+    }
+
     val sharedPreferences = context.getSharedPreferences(SHARED_PREFS_HUMAN, Context.MODE_PRIVATE)
-    val db = Room.databaseBuilder(context, AppDataBase::class.java, DATA_BASE_NAME).build()
+    val db = Room.databaseBuilder(context, AppDataBase::class.java, DATA_BASE_NAME)
+        .addMigrations(MIGRATION_5_10)
+        .build()
 
     override fun getAllHumans(): List<Human> {
         val humanList = db.appDao().getAllHuman()
