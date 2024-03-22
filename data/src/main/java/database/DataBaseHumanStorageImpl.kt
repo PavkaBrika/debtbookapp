@@ -15,13 +15,6 @@ class DataBaseHumanStorageImpl(context: Context) : HumanStorage {
         override fun migrate(database: SupportSQLiteDatabase) {
             database.execSQL("CREATE TABLE IF NOT EXISTS 'FinanceData' ('id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 'name' TEXT NOT NULL, 'sum' REAL NOT NULL, 'info' TEXT, 'financeCategoryId' INTEGER NOT NULL)")
             database.execSQL("CREATE TABLE IF NOT EXISTS 'FinanceCategoryData' ('id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 'name' TEXT NOT NULL, 'color' TEXT NOT NULL, 'image' INTEGER NOT NULL)")
-            database.execSQL("INSERT INTO 'FinanceCategoryData' ('name', 'color', 'image') VALUES ('Health', 'EF9A9A', '1')")
-            database.execSQL("INSERT INTO 'FinanceCategoryData' ('name', 'color', 'image') VALUES ('Entertainment', 'F48FB1', '2')")
-            database.execSQL("INSERT INTO 'FinanceCategoryData' ('name', 'color', 'image') VALUES ('Home', 'CE93D8', '3')")
-            database.execSQL("INSERT INTO 'FinanceCategoryData' ('name', 'color', 'image') VALUES ('Education', 'B39DDB', '4')")
-            database.execSQL("INSERT INTO 'FinanceCategoryData' ('name', 'color', 'image') VALUES ('Presents', '9FA8DA', '5')")
-            database.execSQL("INSERT INTO 'FinanceCategoryData' ('name', 'color', 'image') VALUES ('Food', '80DEEA', '6')")
-            database.execSQL("INSERT INTO 'FinanceCategoryData' ('name', 'color', 'image') VALUES ('Other', '90CAF9', '7')")
         }
     }
 
