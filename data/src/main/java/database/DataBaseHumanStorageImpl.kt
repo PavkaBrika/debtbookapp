@@ -7,23 +7,36 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.breckneck.deptbook.data.storage.HumanStorage
 import entity.Human
 import util.DATA_BASE_NAME
-import java.util.Collections
-
-private const val SHARED_PREFS_HUMAN = "shared_prefs_name"
-private const val HUMAN_ID = "zoneid"
 
 class DataBaseHumanStorageImpl(context: Context) : HumanStorage {
 
-    val MIGRATION_5_10 = object : Migration(5 ,11) {
+    val MIGRATION_5_11 = object : Migration(5 ,11) {
         override fun migrate(database: SupportSQLiteDatabase) {
             database.execSQL("CREATE TABLE IF NOT EXISTS 'FinanceData' ('id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 'name' TEXT NOT NULL, 'sum' REAL NOT NULL, 'info' TEXT, 'financeCategoryId' INTEGER NOT NULL)")
             database.execSQL("CREATE TABLE IF NOT EXISTS 'FinanceCategoryData' ('id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 'name' TEXT NOT NULL, 'color' TEXT NOT NULL, 'image' INTEGER NOT NULL)")
         }
     }
 
-    val sharedPreferences = context.getSharedPreferences(SHARED_PREFS_HUMAN, Context.MODE_PRIVATE)
+    val MIGRATION_11_12 = object: Migration(11, 12) {
+        override fun migrate(database: SupportSQLiteDatabase) {
+            database.execSQL("CREATE TABLE IF NOT EXISTS 'Debt_new'('id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 'sum' REAL NOT NULL, 'idHuman' INTEGER NOT NULL, 'info' TEXT, 'date' TEXT NOT NULL)")
+            database.execSQL("INSERT INTO 'Debt_new' SELECT * FROM 'Debt'")
+            database.execSQL("DROP TABLE IF EXISTS 'Debt'")
+            database.execSQL("ALTER TABLE 'Debt_new' RENAME TO 'Debt'")
+        }
+    }
+
+    val MIGRATION_12_13 = object: Migration(12, 13) {
+        override fun migrate(database: SupportSQLiteDatabase) {
+            database.execSQL("CREATE TABLE IF NOT EXISTS 'Human_new'('id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 'name' TEXT NOT NULL, 'sumDebt' REAL NOT NULL, 'currency' TEXT NOT NULL)")
+            database.execSQL("INSERT INTO 'Human_new' SELECT * FROM 'Human'")
+            database.execSQL("DROP TABLE IF EXISTS 'Human'")
+            database.execSQL("ALTER TABLE 'Human_new' RENAME TO 'Human'")
+        }
+    }
+
     val db = Room.databaseBuilder(context, AppDataBase::class.java, DATA_BASE_NAME)
-        .addMigrations(MIGRATION_5_10)
+        .addMigrations(MIGRATION_5_11, MIGRATION_11_12, MIGRATION_12_13)
         .build()
 
     override fun getAllHumans(): List<Human> {
@@ -34,7 +47,6 @@ class DataBaseHumanStorageImpl(context: Context) : HumanStorage {
     override fun replaceAllHumans(humanList: List<Human>) {
         db.appDao().deleteAllHumans()
         db.appDao().insertAllHumans(humanList = humanList)
-        sharedPreferences.edit().putInt(HUMAN_ID, humanList.maxBy { human -> human.id }.id).apply()
     }
 
     override fun getPositiveHumans(): List<Human> {
@@ -48,11 +60,7 @@ class DataBaseHumanStorageImpl(context: Context) : HumanStorage {
     }
 
     override fun insertHuman(human: Human) {
-        var humanid = sharedPreferences.getInt(HUMAN_ID, 0)
-        humanid++
-        human.id = humanid
         db.appDao().insertHuman(human)
-        sharedPreferences.edit().putInt(HUMAN_ID, humanid).apply()
     }
 
     override fun getLastHumanId(): Int {
