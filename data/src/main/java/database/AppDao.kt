@@ -2,7 +2,6 @@ package database
 
 import androidx.room.*
 import entity.Debt
-import entity.FinanceCategoryData
 import entity.FinanceData
 import entity.Human
 
@@ -92,18 +91,15 @@ interface AppDao {
     fun updateFinance(financeData: FinanceData)
 
     //Finance category
-    @Query("SELECT * FROM financecategorydata")
-    fun getAllFinanceCategories(): List<FinanceCategoryData>
-
 //    @Query("SELECT * FROM financecategorydata")
-//    fun getAllCategoriesWithFinances(): List<CategoryWithFinances>
-
-    @Insert
-    fun insertFinanceCategory(financeCategoryData: FinanceCategoryData)
-
-    @Delete
-    fun deleteFinanceCategory(financeCategoryData: FinanceCategoryData)
-
-    @Update
-    fun updateFinanceCategory(financeCategoryData: FinanceCategoryData)
+//    fun getAllFinanceCategories(): List<FinanceCategoryData>
+//
+//    @Insert
+//    fun insertFinanceCategory(financeCategoryData: FinanceCategoryData)
+//
+//    @Delete
+//    fun deleteFinanceCategory(financeCategoryData: FinanceCategoryData)
+//
+//    @Update
+//    fun updateFinanceCategory(financeCategoryData: FinanceCategoryData)
 }
