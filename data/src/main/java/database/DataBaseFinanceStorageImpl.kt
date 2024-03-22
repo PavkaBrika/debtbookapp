@@ -13,15 +13,16 @@ class DataBaseFinanceStorageImpl(context: Context): FinanceStorage {
 
     val MIGRATION_5_6 = object : Migration(5 ,6) {
         override fun migrate(database: SupportSQLiteDatabase) {
+//            database.execSQL("CREATE TABLE IF NOT EXISTS 'FinanceData' ('id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 'name' TEXT NOT NULL, 'sum' REAL NOT NULL, 'info' TEXT NOT NULL, FOREIGN KEY('financeCategoryId') REFERENCES 'FinanceCategoryData'('id') ON UPDATE NO ACTION ON DELETE CASCADE)")
             database.execSQL("CREATE TABLE IF NOT EXISTS 'FinanceData' ('id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 'name' TEXT NOT NULL, 'sum' REAL NOT NULL, 'info' TEXT NOT NULL, 'financeCategoryId' INTEGER NOT NULL)")
             database.execSQL("CREATE TABLE IF NOT EXISTS 'FinanceCategoryData' ('id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 'name' TEXT NOT NULL, 'color' TEXT NOT NULL, 'image' INTEGER NOT NULL)")
-            database.execSQL("INSERT INTO 'FinanceCategoryData' ('name', 'color') VALUES ('Health', 'EF9A9A')")
-            database.execSQL("INSERT INTO 'FinanceCategoryData' ('name', 'color') VALUES ('Entertainment', 'F48FB1')")
-            database.execSQL("INSERT INTO 'FinanceCategoryData' ('name', 'color') VALUES ('Home', 'CE93D8')")
-            database.execSQL("INSERT INTO 'FinanceCategoryData' ('name', 'color') VALUES ('Education', 'B39DDB')")
-            database.execSQL("INSERT INTO 'FinanceCategoryData' ('name', 'color') VALUES ('Presents', '9FA8DA')")
-            database.execSQL("INSERT INTO 'FinanceCategoryData' ('name', 'color') VALUES ('Food', '80DEEA')")
-            database.execSQL("INSERT INTO 'FinanceCategoryData' ('name', 'color') VALUES ('Other', '90CAF9')")
+            database.execSQL("INSERT INTO 'FinanceCategoryData' ('name', 'color', 'image') VALUES ('Health', 'EF9A9A', '1')")
+            database.execSQL("INSERT INTO 'FinanceCategoryData' ('name', 'color', 'image') VALUES ('Entertainment', 'F48FB1', '2')")
+            database.execSQL("INSERT INTO 'FinanceCategoryData' ('name', 'color', 'image') VALUES ('Home', 'CE93D8', '2')")
+            database.execSQL("INSERT INTO 'FinanceCategoryData' ('name', 'color', 'image') VALUES ('Education', 'B39DDB', '2')")
+            database.execSQL("INSERT INTO 'FinanceCategoryData' ('name', 'color', 'image') VALUES ('Presents', '9FA8DA', '2')")
+            database.execSQL("INSERT INTO 'FinanceCategoryData' ('name', 'color', 'image') VALUES ('Food', '80DEEA', '2')")
+            database.execSQL("INSERT INTO 'FinanceCategoryData' ('name', 'color', 'image') VALUES ('Other', '90CAF9', '2')")
         }
     }
 

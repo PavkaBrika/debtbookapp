@@ -9,5 +9,5 @@ data class FinanceCategoryData(
     var id: Int,
     var name: String,
     var color: String,
-    var image: String,
+    var image: Int,
 )
