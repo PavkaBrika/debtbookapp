@@ -247,7 +247,7 @@
         </androidx.core.widget.NestedScrollView>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/setSettingsButton"
+            android:id="@+id/setFinanceButton"
             style="@style/fabTheme"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

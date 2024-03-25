@@ -75,7 +75,7 @@ class SynchronizationFragment : Fragment() {
         backButton.setOnClickListener {
             synchronizationInterface!!.onBackButtonClick()
         }
-        val setSettingsButton: FloatingActionButton = view.findViewById(R.id.setSettingsButton)
+        val setSettingsButton: FloatingActionButton = view.findViewById(R.id.setFinanceButton)
         setSettingsButton.setOnClickListener {
             synchronizationInterface!!.onBackButtonClick()
         }

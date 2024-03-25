@@ -220,7 +220,7 @@ class NewDebtFragment: Fragment() {
 
         val humanNameTextInput: TextInputLayout = view.findViewById(R.id.humanNameTextInput)
         val debtSumTextInput: TextInputLayout = view.findViewById(R.id.debtSumTextInput)
-        val setButton : FloatingActionButton = view.findViewById(R.id.setSettingsButton)
+        val setButton : FloatingActionButton = view.findViewById(R.id.setFinanceButton)
         setButton.setOnClickListener{
             setFragmentResult("requestKey", bundleOf("isListModified" to true))
             buttonClickListener.onSetButtonClick()

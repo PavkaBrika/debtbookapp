@@ -11,15 +11,20 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.adapter.FinanceCategoryAdapter
+import com.breckneck.debtbook.presentation.customview.CustomSwitchView
 import com.breckneck.debtbook.presentation.viewmodel.CreateFinanceFragmentViewModel
+import com.breckneck.deptbook.domain.model.Finance
 import com.breckneck.deptbook.domain.model.FinanceCategory
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.textfield.TextInputLayout
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.w3c.dom.Text
 import java.util.Calendar
 
 class CreateFinanceFragment : Fragment() {
@@ -106,5 +111,71 @@ class CreateFinanceFragment : Fragment() {
                 onFinanceCategoryClickListener = onFinanceCategoryClickListener
             )
         }
+
+        val financeNameEditText: EditText = view.findViewById(R.id.financeNameEditText)
+        val financeNameTextInput: TextInputLayout = view.findViewById(R.id.financeNameTextInput)
+        val financeSumTextInput: TextInputLayout = view.findViewById(R.id.financeSumTextInput)
+        val financeInfoEditText: EditText = view.findViewById(R.id.financeInfoEditText)
+        fun isAllFieldsFilledRight(): Boolean {
+            var isFilledRight = true
+            if (financeNameEditText.text.toString().trim().isEmpty()) {
+                financeNameTextInput.error = getString(R.string.youmustentername)
+                isFilledRight = false
+            } else
+                financeNameTextInput.error = ""
+
+            if (financeSumEditText.text.toString().trim().isEmpty()) {
+                financeSumTextInput.error = getString(R.string.youmustentername)
+                isFilledRight = false
+            } else {
+                financeSumTextInput.error = ""
+                try {
+                    if (financeSumEditText.text.toString().toDouble() == 0.0) {
+                        financeSumTextInput.error = getString(R.string.zerodebt)
+                        isFilledRight = false
+                    } else
+                        financeSumTextInput.error = ""
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    financeSumTextInput.error = getString(R.string.something_went_wrong)
+                }
+            }
+
+            if (vm.checkedFinanceCategory.value == null) {
+                Toast.makeText(
+                    requireActivity(),
+                    getString(R.string.you_must_select_category), Toast.LENGTH_SHORT
+                ).show()
+                isFilledRight = false
+            }
+
+            return isFilledRight
+        }
+
+        val customSwitch: CustomSwitchView = view.findViewById(R.id.customSwitch)
+        val setFinanceButton: FloatingActionButton = view.findViewById(R.id.setFinanceButton)
+        setFinanceButton.setOnClickListener {
+            if (isAllFieldsFilledRight())
+                vm.setFinance(
+                    Finance(
+                        name = financeNameEditText.text.toString(),
+                        sum = financeSumEditText.text.toString().toDouble(),
+                        isRevenue = customSwitch.isChecked(),
+                        info = financeInfoEditText.text.toString()
+                    )
+                )
+        }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+

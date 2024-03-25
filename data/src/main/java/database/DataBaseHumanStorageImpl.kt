@@ -43,6 +43,12 @@ class DataBaseHumanStorageImpl(context: Context) : HumanStorage {
         }
     }
 
+    val MIGRATION_13_14 = object: Migration(13, 14) {
+        override fun migrate(database: SupportSQLiteDatabase) {
+            database.execSQL("ALTER TABLE 'FinanceData' ADD COLUMN 'isRevenue' INTEGER NOT NULL")
+        }
+    }
+
     val roomDatabaseCallback = object: RoomDatabase.Callback() {
         override fun onCreate(database: SupportSQLiteDatabase) {
             database.execSQL("INSERT OR IGNORE INTO 'FinanceCategoryData' ('id', 'name', 'color', 'image') VALUES ('1', 'Health', 'EF9A9A', '1')")
@@ -58,7 +64,7 @@ class DataBaseHumanStorageImpl(context: Context) : HumanStorage {
 
     val db = Room.databaseBuilder(context, AppDataBase::class.java, DATA_BASE_NAME)
         .addCallback(roomDatabaseCallback)
-        .addMigrations(MIGRATION_5_11, MIGRATION_11_12, MIGRATION_12_13)
+        .addMigrations(MIGRATION_5_11, MIGRATION_11_12, MIGRATION_12_13, MIGRATION_13_14)
         .build()
 
     override fun getAllHumans(): List<Human> {

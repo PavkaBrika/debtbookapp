@@ -24,7 +24,7 @@
     <string name="editdebt">Edit</string>
     <string name="give">Give</string>
     <string name="take">Take</string>
-    <string name="zerodebt">Debt cannot be zero</string>
+    <string name="zerodebt">This field cannot be zero</string>
     <string name="payoffMessage">Are you sure?</string>
     <string name="yes">Yes</string>
     <string name="No">No</string>
@@ -104,4 +104,5 @@
     <string name="last_synchronization">Last synchronization:</string>
     <string name="finances">Finances</string>
     <string name="category">Category</string>
+    <string name="you_must_select_category">You must select category!</string>
 </resources>

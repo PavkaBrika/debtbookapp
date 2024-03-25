@@ -9,6 +9,7 @@ data class FinanceData(
     var id: Int,
     var name: String,
     var sum: Double,
+    var isRevenue: Boolean,
     var info: String?,
     var financeCategoryId: Int
 )
