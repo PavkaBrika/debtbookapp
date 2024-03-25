@@ -23,6 +23,7 @@ import com.breckneck.debtbook.R
 import com.breckneck.debtbook.presentation.fragment.debt.DebtDetailsFragment
 import com.breckneck.debtbook.presentation.fragment.debt.MainFragment
 import com.breckneck.debtbook.presentation.fragment.debt.NewDebtFragment
+import com.breckneck.debtbook.presentation.fragment.finance.CreateFinanceFragment
 import com.breckneck.debtbook.presentation.fragment.finance.FinanceFragment
 import com.breckneck.debtbook.presentation.fragment.settings.SettingsFragment
 import com.breckneck.debtbook.presentation.fragment.settings.SynchronizationFragment
@@ -47,7 +48,7 @@ import kotlin.math.roundToInt
 
 class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener,
     NewDebtFragment.OnButtonClickListener, DebtDetailsFragment.OnButtonClickListener,
-    SettingsFragment.OnButtonClickListener, SynchronizationFragment.SynchronizationInterface, FinanceFragment.OnButtonClickListener {
+    SettingsFragment.OnButtonClickListener, SynchronizationFragment.SynchronizationInterface, FinanceFragment.OnButtonClickListener, CreateFinanceFragment.OnClickListener {
 
     private var interstitialAd: InterstitialAd? = null
     private var interstitialAdLoader: InterstitialAdLoader? = null
@@ -331,10 +332,6 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener,
         vm.onActionClick()
     }
 
-    override fun onBackNewDebtButtonClick() {
-        navController.popBackStack()
-    }
-
     //DebtDetailsFragment interfaces
     override fun onChangeOrderButtonClick() {
         startTickVibration()
@@ -369,10 +366,6 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener,
         startClickVibration()
         navController.popBackStack()
         vm.onActionClick()
-    }
-
-    override fun onBackDebtsButtonClick() {
-        navController.popBackStack()
     }
 
     //finance interface

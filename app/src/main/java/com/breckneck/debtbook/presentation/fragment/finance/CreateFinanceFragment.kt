@@ -3,10 +3,15 @@ package com.breckneck.debtbook.presentation.fragment.finance
 import android.app.DatePickerDialog
 import android.content.Context
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
@@ -21,8 +26,14 @@ class CreateFinanceFragment : Fragment() {
 
     private val vm by viewModel<CreateFinanceFragmentViewModel>()
 
+    interface OnClickListener {
+        fun onBackButtonClick()
+    }
+
+    private var onClickListener: OnClickListener? = null
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        onClickListener = context as OnClickListener
     }
 
     override fun onCreateView(
@@ -35,6 +46,33 @@ class CreateFinanceFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val backButtonImageView: ImageView = view.findViewById(R.id.backButton)
+        backButtonImageView.setOnClickListener {
+            onClickListener!!.onBackButtonClick()
+        }
+
+        val financeSumEditText: EditText = view.findViewById(R.id.financeSumEditText)
+        financeSumEditText.addTextChangedListener {
+            object : TextWatcher {
+                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                }
+
+                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                }
+
+                override fun afterTextChanged(editable: Editable?) {
+                    val str = editable.toString()
+                    val position = str.indexOf(".")
+                    if (position != -1) {
+                        val subStr = str.substring(position)
+                        val subStrStart = str.substring(0, position)
+                        if ((subStr.length > 3) || (subStrStart.length == 0))
+                            editable?.delete(editable.length - 1, editable.length)
+                    }
+                }
+            }
+        }
 
         val financeDateTextView: TextView = view.findViewById(R.id.financeDateTextView)
         vm.date.observe(viewLifecycleOwner) { date ->

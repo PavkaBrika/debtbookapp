@@ -61,7 +61,7 @@ class NewDebtFragment: Fragment() {
     interface OnButtonClickListener{
         fun DebtDetailsNewHuman(currency: String, name: String)
         fun DebtDetailsExistHuman(idHuman: Int, currency: String, name: String)
-        fun onBackNewDebtButtonClick()
+        fun onBackButtonClick()
         fun onSetButtonClick()
         fun onAddDebt()
     }
@@ -99,7 +99,7 @@ class NewDebtFragment: Fragment() {
 
         val backButton: ImageView = view.findViewById(R.id.backButton)
         backButton.setOnClickListener {
-            buttonClickListener.onBackNewDebtButtonClick()
+            buttonClickListener.onBackButtonClick()
         }
 
         val idHuman =  arguments?.getInt("idHuman")
@@ -178,9 +178,8 @@ class NewDebtFragment: Fragment() {
                 if (position != -1) {
                     val subStr = str.substring(position)
                     val subStrStart = str.substring(0, position)
-                    if ((subStr.length > 3) || (subStrStart.length == 0)) {
+                    if ((subStr.length > 3) || (subStrStart.length == 0))
                         editable?.delete(editable.length - 1, editable.length)
-                    }
                 }
             }
         } }

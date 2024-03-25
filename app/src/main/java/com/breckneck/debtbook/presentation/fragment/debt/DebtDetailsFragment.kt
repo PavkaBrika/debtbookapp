@@ -61,7 +61,7 @@ class DebtDetailsFragment : Fragment() {
 
         fun deleteHuman()
 
-        fun onBackDebtsButtonClick()
+        fun onBackButtonClick()
 
         fun onChangeOrderButtonClick()
     }
@@ -207,7 +207,7 @@ class DebtDetailsFragment : Fragment() {
 
         val backButton: ImageView = view.findViewById(R.id.backButton)
         backButton.setOnClickListener {
-            buttonClickListener?.onBackDebtsButtonClick()
+            buttonClickListener?.onBackButtonClick()
         }
     }
 
