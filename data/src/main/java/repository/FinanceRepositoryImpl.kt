@@ -18,7 +18,6 @@ class FinanceRepositoryImpl(private val financeStorage: FinanceStorage): Finance
         }
     }
 
-
     override fun getAllFinanceCategories(): List<FinanceCategory> {
         return financeStorage.getAllFinanceCategories().map { financeCategoryData ->
             FinanceCategory(financeCategoryData.id, financeCategoryData.name, financeCategoryData.color)

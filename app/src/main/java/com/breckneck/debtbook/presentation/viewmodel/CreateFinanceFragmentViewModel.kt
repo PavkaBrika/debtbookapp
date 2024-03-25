@@ -33,6 +33,9 @@ class CreateFinanceFragmentViewModel(
     private val _date = MutableLiveData<String>()
     val date: LiveData<String>
         get() = _date
+    private val _checkedFinanceCategory = MutableLiveData<FinanceCategory>()
+    val checkedFinanceCategory: LiveData<FinanceCategory>
+        get() = _checkedFinanceCategory
 
     init {
         Log.e(TAG, "Initialized")
@@ -58,6 +61,7 @@ class CreateFinanceFragmentViewModel(
             }, {
                 Log.e(TAG, it.message.toString())
             })
+        disposeBag.add(result)
     }
 
     fun setFinance(finance: Finance) {
@@ -81,5 +85,9 @@ class CreateFinanceFragmentViewModel(
 
     fun setCurrentDate(year: Int, month: Int, day: Int) {
         _date.value = setDateUseCase.execute(year = year, month = month, day = day)
+    }
+
+    fun setCheckedFinanceCategory(financeCategory: FinanceCategory) {
+        _checkedFinanceCategory.value = financeCategory
     }
 }

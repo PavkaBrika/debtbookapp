@@ -13,10 +13,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.adapter.FinanceCategoryAdapter
 import com.breckneck.debtbook.presentation.viewmodel.CreateFinanceFragmentViewModel
+import com.breckneck.deptbook.domain.model.FinanceCategory
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.Calendar
 
-class CreateFinanceFragment: Fragment() {
+class CreateFinanceFragment : Fragment() {
 
     private val vm by viewModel<CreateFinanceFragmentViewModel>()
 
@@ -40,20 +41,32 @@ class CreateFinanceFragment: Fragment() {
             financeDateTextView.text = "$date ${getString(R.string.year)}"
         }
 
-        val dateSetListener = DatePickerDialog.OnDateSetListener{ view, year, month, day ->
+        val dateSetListener = DatePickerDialog.OnDateSetListener { view, year, month, day ->
             vm.setCurrentDate(year = year, month = month, day = day)
         }
-        financeDateTextView.setOnClickListener{
+        financeDateTextView.setOnClickListener {
             val calendar = Calendar.getInstance()
-            DatePickerDialog(view.context, dateSetListener,
+            DatePickerDialog(
+                view.context, dateSetListener,
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)).show()
+                calendar.get(Calendar.DAY_OF_MONTH)
+            ).show()
         }
+
+        val onFinanceCategoryClickListener =
+            object : FinanceCategoryAdapter.OnFinanceCategoryClickListener {
+                override fun onClick(financeCategory: FinanceCategory) {
+                    vm.setCheckedFinanceCategory(financeCategory = financeCategory)
+                }
+            }
 
         val categoryRecyclerView: RecyclerView = view.findViewById(R.id.categoryRecyclerView)
         vm.financeCategoryList.observe(viewLifecycleOwner) { financeCategoryList ->
-            categoryRecyclerView.adapter = FinanceCategoryAdapter(financeCategoryList = financeCategoryList)
+            categoryRecyclerView.adapter = FinanceCategoryAdapter(
+                financeCategoryList = financeCategoryList,
+                onFinanceCategoryClickListener = onFinanceCategoryClickListener
+            )
         }
     }
 }
