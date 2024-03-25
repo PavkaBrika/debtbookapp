@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.deptbook.domain.model.FinanceCategory
@@ -15,7 +15,7 @@ class FinanceCategoryAdapter(
 ): RecyclerView.Adapter<FinanceCategoryAdapter.FinanceCategoryViewHolder>() {
 
     class FinanceCategoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val categoryBackgroundLayout: ConstraintLayout = itemView.findViewById(R.id.categoryBackgroundLayout)
+        val categoryBackgroundCardView: CardView = itemView.findViewById(R.id.categoryBackgroundCardView)
         val categoryTextView: TextView = itemView.findViewById(R.id.categoryTextView)
     }
 
@@ -27,7 +27,7 @@ class FinanceCategoryAdapter(
     override fun onBindViewHolder(holder: FinanceCategoryViewHolder, position: Int) {
         val financeCategory = financeCategoryList[position]
 
-        holder.categoryBackgroundLayout.setBackgroundColor(Color.parseColor("#${financeCategory.color}"))
+        holder.categoryBackgroundCardView.setCardBackgroundColor(Color.parseColor("#${financeCategory.color}"))
         holder.categoryTextView.text = financeCategory.name
     }
 

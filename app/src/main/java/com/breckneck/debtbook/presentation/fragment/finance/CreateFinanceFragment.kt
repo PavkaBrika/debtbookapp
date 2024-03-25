@@ -33,12 +33,6 @@ class CreateFinanceFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val categoryRecyclerView: RecyclerView = view.findViewById(R.id.categoryRecyclerView)
-        categoryRecyclerView.addItemDecoration(
-            DividerItemDecoration(
-                view.context,
-                DividerItemDecoration.VERTICAL
-            )
-        )
         vm.financeCategoryList.observe(viewLifecycleOwner) { financeCategoryList ->
             categoryRecyclerView.adapter = FinanceCategoryAdapter(financeCategoryList = financeCategoryList)
         }
