@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
@@ -33,6 +34,10 @@ class FinanceFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        setFragmentResultListener("requestKey") { requestKey, bundle ->
+            if (bundle.getBoolean("isListModified"))
+                vm.getAllFinances()
+        }
         return inflater.inflate(R.layout.fragment_finance, container, false)
     }
 

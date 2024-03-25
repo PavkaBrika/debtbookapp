@@ -12,8 +12,10 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.adapter.FinanceCategoryAdapter
@@ -155,7 +157,7 @@ class CreateFinanceFragment : Fragment() {
         val customSwitch: CustomSwitchView = view.findViewById(R.id.customSwitch)
         val setFinanceButton: FloatingActionButton = view.findViewById(R.id.setFinanceButton)
         setFinanceButton.setOnClickListener {
-            if (isAllFieldsFilledRight())
+            if (isAllFieldsFilledRight()) {
                 vm.setFinance(
                     Finance(
                         name = financeNameEditText.text.toString(),
@@ -164,6 +166,9 @@ class CreateFinanceFragment : Fragment() {
                         info = financeInfoEditText.text.toString()
                     )
                 )
+                setFragmentResult("requestKey", bundleOf("isListModified" to true))
+                onClickListener!!.onBackButtonClick()
+            }
         }
     }
 }

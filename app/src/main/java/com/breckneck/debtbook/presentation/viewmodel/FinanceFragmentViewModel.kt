@@ -35,7 +35,7 @@ class FinanceFragmentViewModel(
         Log.e(TAG, "Cleared")
     }
 
-    private fun getAllFinances() {
+    fun getAllFinances() {
         val result = Single.create {
             it.onSuccess(getAllFinances.execute())
         }
