@@ -3,9 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_marginHorizontal="16dp"
     android:background="@drawable/custom_border_outline"
-    android:padding="8dp"
-    android:layout_marginHorizontal="16dp">
+    android:foreground="?android:attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+    android:padding="8dp">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/categoryBackgroundCardView"
@@ -35,8 +38,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="@string/category"
         android:lines="1"
+        android:text="@string/category"
         android:textAlignment="center"
         app:autoSizeMinTextSize="12sp"
         app:autoSizeStepGranularity="1px"
