@@ -6,6 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.breckneck.deptbook.domain.model.Finance
 import com.breckneck.deptbook.domain.model.FinanceCategory
+import com.breckneck.deptbook.domain.usecase.Debt.GetCurrentDateUseCase
+import com.breckneck.deptbook.domain.usecase.Debt.SetDateUseCase
 import com.breckneck.deptbook.domain.usecase.Finance.SetFinance
 import com.breckneck.deptbook.domain.usecase.FinanceCategory.GetAllFinanceCategories
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -16,8 +18,10 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 
 class CreateFinanceFragmentViewModel(
     private val setFinance: SetFinance,
-    private val getAllFinanceCategories: GetAllFinanceCategories
-): ViewModel() {
+    private val getAllFinanceCategories: GetAllFinanceCategories,
+    private val setDateUseCase: SetDateUseCase,
+    private val getCurrentDateUseCase: GetCurrentDateUseCase
+    ): ViewModel() {
 
     private val TAG = "CreateFinanceFragmentVM"
 
@@ -26,10 +30,14 @@ class CreateFinanceFragmentViewModel(
     private val _financeCategoryList = MutableLiveData<List<FinanceCategory>>()
     val financeCategoryList: LiveData<List<FinanceCategory>>
         get() = _financeCategoryList
+    private val _date = MutableLiveData<String>()
+    val date: LiveData<String>
+        get() = _date
 
     init {
         Log.e(TAG, "Initialized")
         getAllFinanceCategories()
+        getCurrentDate()
     }
 
     override fun onCleared() {
@@ -65,5 +73,13 @@ class CreateFinanceFragmentViewModel(
                 Log.e(TAG, it.message.toString())
             })
         disposeBag.add(result)
+    }
+
+    fun getCurrentDate() {
+        _date.value = getCurrentDateUseCase.execute()
+    }
+
+    fun setCurrentDate(year: Int, month: Int, day: Int) {
+        _date.value = setDateUseCase.execute(year = year, month = month, day = day)
     }
 }

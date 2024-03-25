@@ -101,7 +101,9 @@ val appModule = module {
     viewModel<CreateFinanceFragmentViewModel> {
         CreateFinanceFragmentViewModel(
             setFinance = get(),
-            getAllFinanceCategories = get()
+            getAllFinanceCategories = get(),
+            setDateUseCase = get(),
+            getCurrentDateUseCase = get()
         )
     }
 }
