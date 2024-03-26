@@ -21,9 +21,4 @@ class DataBaseFinanceStorageImpl(context: Context): FinanceStorage {
     override fun getAllFinance(): List<FinanceData> {
         return db.appDao().getAllFinances()
     }
-
-
-    override fun getAllFinanceCategories(): List<FinanceCategoryData> {
-        return db.appDao().getAllFinanceCategories()
-    }
 }

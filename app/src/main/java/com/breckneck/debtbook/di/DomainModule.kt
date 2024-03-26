@@ -6,6 +6,7 @@ import com.breckneck.deptbook.domain.usecase.Debt.*
 import com.breckneck.deptbook.domain.usecase.Finance.GetAllFinances
 import com.breckneck.deptbook.domain.usecase.Finance.SetFinance
 import com.breckneck.deptbook.domain.usecase.FinanceCategory.GetAllFinanceCategories
+import com.breckneck.deptbook.domain.usecase.FinanceCategory.SetFinanceCategory
 import com.breckneck.deptbook.domain.usecase.Human.*
 import com.breckneck.deptbook.domain.usecase.Settings.*
 import org.koin.dsl.module
@@ -213,7 +214,11 @@ val domainModule = module {
     }
 
     single<GetAllFinanceCategories> {
-        GetAllFinanceCategories(financeRepository = get())
+        GetAllFinanceCategories(financeCategoryRepository = get())
+    }
+
+    single<SetFinanceCategory> {
+        SetFinanceCategory(financeCategoryRepository = get())
     }
 
     //ADS

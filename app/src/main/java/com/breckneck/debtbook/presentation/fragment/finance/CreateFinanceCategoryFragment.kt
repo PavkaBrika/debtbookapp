@@ -5,18 +5,25 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.ImageView
+import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.adapter.CategoryColorAdapter
 import com.breckneck.debtbook.adapter.CategoryImageAdapter
 import com.breckneck.debtbook.presentation.viewmodel.CreateFinanceCategoryFragmentViewModel
+import com.breckneck.deptbook.domain.model.FinanceCategory
 import com.breckneck.deptbook.domain.util.categoryColorList
 import com.breckneck.deptbook.domain.util.categoryImageList
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.textfield.TextInputLayout
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class CreateFinanceCategoryFragment: Fragment() {
+class CreateFinanceCategoryFragment : Fragment() {
 
     private val vm by viewModel<CreateFinanceCategoryFragmentViewModel>()
 
@@ -46,26 +53,79 @@ class CreateFinanceCategoryFragment: Fragment() {
             onClickListener!!.onBackButtonClick()
         }
 
-        val categoryImageRecyclerView: RecyclerView = view.findViewById(R.id.categoryImageRecyclerView)
-        val categoryImageClickListener = object: CategoryImageAdapter.OnCategoryImageClickListener {
-            override fun onClick(position: Int, categoryImage: Int) {
-                vm.setCheckedImage(image =  categoryImage)
-                vm.setCheckedImagePosition(position = position)
+        val categoryImageRecyclerView: RecyclerView =
+            view.findViewById(R.id.categoryImageRecyclerView)
+        val categoryImageClickListener =
+            object : CategoryImageAdapter.OnCategoryImageClickListener {
+                override fun onClick(position: Int, categoryImage: Int) {
+                    vm.setCheckedImage(image = categoryImage)
+                    vm.setCheckedImagePosition(position = position)
+                }
+            }
+        categoryImageRecyclerView.adapter = CategoryImageAdapter(
+            categoryImageList,
+            vm.checkedImagePosition.value,
+            categoryImageClickListener
+        )
+
+        val categoryColorRecyclerView: RecyclerView =
+            view.findViewById(R.id.categoryColorRecyclerView)
+        val categoryColorClickListener =
+            object : CategoryColorAdapter.OnCategoryColorClickListener {
+                override fun onClick(position: Int, categoryColor: String) {
+                    vm.setCheckedColor(color = categoryColor)
+                    vm.setCheckedColorPosition(position = position)
+                }
+            }
+        categoryColorRecyclerView.adapter = CategoryColorAdapter(
+            categoryColorList,
+            vm.checkedColorPosition.value,
+            categoryColorClickListener
+        )
+
+        val financeNameTextInput: TextInputLayout = view.findViewById(R.id.financeNameTextInput)
+        val financeNameEditText: EditText = view.findViewById(R.id.financeNameEditText)
+        fun isAllFieldsFilledRight(): Boolean {
+            var isFilledRight = true
+            if (financeNameEditText.text.toString().trim().isEmpty()) {
+                financeNameTextInput.error = getString(R.string.youmustentername)
+                isFilledRight = false
+            } else
+                financeNameTextInput.error = ""
+
+            if (vm.checkedColor.value == null) {
+                Toast.makeText(
+                    requireActivity(),
+                    getString(R.string.you_must_select_color), Toast.LENGTH_SHORT
+                ).show()
+                isFilledRight = false
+            }
+
+            if (vm.checkedImage.value == null) {
+                Toast.makeText(
+                    requireActivity(),
+                    getString(R.string.you_must_select_image), Toast.LENGTH_SHORT
+                ).show()
+                isFilledRight = false
+            }
+
+            return isFilledRight
+        }
+
+        val setCategoryButton: FloatingActionButton = view.findViewById(R.id.setCategoryButton)
+        setCategoryButton.setOnClickListener {
+            if (isAllFieldsFilledRight()) {
+                vm.setFinanceCategory(
+                    FinanceCategory(
+                        name = financeNameEditText.text.toString(),
+                        color = vm.checkedColor.value!!,
+                        image = vm.checkedImage.value!!
+                    )
+                )
+                setFragmentResult("requestKey", bundleOf("isListModified" to true))
+                onClickListener!!.onBackButtonClick()
             }
         }
-        categoryImageRecyclerView.adapter = CategoryImageAdapter(categoryImageList, vm.checkedImagePosition.value, categoryImageClickListener)
-
-
-        val categoryColorRecyclerView: RecyclerView = view.findViewById(R.id.categoryColorRecyclerView)
-        val categoryColorClickListener = object: CategoryColorAdapter.OnCategoryColorClickListener {
-            override fun onClick(position: Int, categoryColor: String) {
-                vm.setCheckedColor(color = categoryColor)
-                vm.setCheckedColorPosition(position = position)
-            }
-        }
-        categoryColorRecyclerView.adapter = CategoryColorAdapter(categoryColorList, vm.checkedColorPosition.value, categoryColorClickListener)
-
-
     }
 
 

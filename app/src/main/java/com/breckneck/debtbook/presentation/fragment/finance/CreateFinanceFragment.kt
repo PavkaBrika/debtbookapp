@@ -16,6 +16,7 @@ import androidx.core.os.bundleOf
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
+import androidx.fragment.app.setFragmentResultListener
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.adapter.FinanceCategoryAdapter
@@ -50,6 +51,10 @@ class CreateFinanceFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        setFragmentResultListener("requestKey") { requestKey, bundle ->
+            if (bundle.getBoolean("isListModified"))
+                vm.getAllFinanceCategories()
+        }
         return inflater.inflate(R.layout.fragment_create_finance, container, false)
     }
 

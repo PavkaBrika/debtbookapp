@@ -8,7 +8,4 @@ interface FinanceRepository {
     fun setFinance(finance: Finance)
 
     fun getAllFinance(): List<Finance>
-
-    //categories
-    fun getAllFinanceCategories(): List<FinanceCategory>
 }

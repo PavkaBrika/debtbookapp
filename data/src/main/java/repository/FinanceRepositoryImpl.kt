@@ -32,15 +32,4 @@ class FinanceRepositoryImpl(private val financeStorage: FinanceStorage) : Financ
             )
         }
     }
-
-    override fun getAllFinanceCategories(): List<FinanceCategory> {
-        return financeStorage.getAllFinanceCategories().map { financeCategoryData ->
-            FinanceCategory(
-                id = financeCategoryData.id,
-                name = financeCategoryData.name,
-                color = financeCategoryData.color,
-                image = financeCategoryData.image
-            )
-        }
-    }
 }

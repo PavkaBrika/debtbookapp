@@ -2,6 +2,7 @@ package com.breckneck.debtbook.di
 
 import com.breckneck.deptbook.data.storage.AdStorage
 import com.breckneck.deptbook.data.storage.DebtStorage
+import com.breckneck.deptbook.data.storage.FinanceCategoryStorage
 import com.breckneck.deptbook.data.storage.FinanceStorage
 import com.breckneck.deptbook.data.storage.HumanStorage
 import com.breckneck.deptbook.data.storage.SettingsStorage
@@ -11,12 +12,15 @@ import database.DataBaseHumanStorageImpl
 import repository.DebtRepositoryImpl
 import repository.HumanRepositoryImpl
 import com.breckneck.deptbook.domain.repository.DebtRepository
+import com.breckneck.deptbook.domain.repository.FinanceCategoryRepository
 import com.breckneck.deptbook.domain.repository.FinanceRepository
 import com.breckneck.deptbook.domain.repository.HumanRepository
 import com.breckneck.deptbook.domain.repository.SettingsRepository
+import database.DataBaseFinanceCategoryStorageImpl
 import database.DataBaseFinanceStorageImpl
 import org.koin.dsl.module
 import repository.AdRepositoryImpl
+import repository.FinanceCategoryRepositoryImpl
 import repository.FinanceRepositoryImpl
 import repository.SettingsRepositoryImpl
 import sharedprefs.SharedPrefsAdStorageImpl
@@ -62,6 +66,16 @@ val dataModule = module {
 
     factory<FinanceRepository> {
         FinanceRepositoryImpl(financeStorage = get())
+    }
+
+    //FINANCE CATEGORY
+
+    factory<FinanceCategoryStorage> {
+        DataBaseFinanceCategoryStorageImpl(context = get())
+    }
+
+    factory<FinanceCategoryRepository> {
+        FinanceCategoryRepositoryImpl(financeCategoryStorage = get())
     }
 
     //ADS

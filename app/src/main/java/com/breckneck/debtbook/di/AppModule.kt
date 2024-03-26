@@ -109,6 +109,6 @@ val appModule = module {
     }
 
     viewModel<CreateFinanceCategoryFragmentViewModel> {
-        CreateFinanceCategoryFragmentViewModel()
+        CreateFinanceCategoryFragmentViewModel(setFinanceCategory = get())
     }
 }

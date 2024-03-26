@@ -8,7 +8,4 @@ interface FinanceStorage {
     fun setFinance(finance: FinanceData)
 
     fun getAllFinance(): List<FinanceData>
-
-    fun getAllFinanceCategories(): List<FinanceCategoryData>
-
 }
