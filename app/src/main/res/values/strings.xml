@@ -105,4 +105,12 @@
     <string name="finances">Finances</string>
     <string name="category">Category</string>
     <string name="you_must_select_category">You must select category!</string>
+    <string name="revenues">Revenues</string>
+    <string name="expenses">Expenses</string>
+    <string name="categories">Categories</string>
+    <string name="history">History</string>
+    <string name="create_new_category">Create new category</string>
+    <string name="adding">Adding</string>
+    <string name="image">Image</string>
+    <string name="color">Color</string>
 </resources>

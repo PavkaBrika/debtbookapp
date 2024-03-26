@@ -27,7 +27,7 @@
                 app:expandedTitleGravity="center_vertical"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 app:maxLines="3"
-                app:title="@string/adding"
+                app:title="@string/create_new_category"
                 app:titleEnabled="true">
 
                 <androidx.appcompat.widget.Toolbar
@@ -69,21 +69,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <com.breckneck.debtbook.presentation.customview.CustomSwitchView
-                    android:id="@+id/customSwitch"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="48dp"
-                    android:layout_marginBottom="20dp"
-                    android:layout_marginHorizontal="8dp"
-                    app:disabledBackgroundColor="#e25d56"
-                    app:disabledText="@string/expenses"
-                    app:enabled="true"
-                    app:enabledBackgroundColor="#59cb72"
-                    app:enabledText="@string/revenues" />
+                android:orientation="vertical"
+                android:layout_marginTop="48dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -94,12 +81,12 @@
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/financeNameTextInput"
                         style="?attr/textInputOutlinedStyle"
-                        android:theme="@style/TextInputLayoutTheme"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_marginEnd="4dp"
                         android:layout_weight="20"
                         android:hint="@string/name"
+                        android:theme="@style/TextInputLayoutTheme"
                         app:endIconMode="clear_text"
                         app:errorEnabled="true">
 
@@ -107,8 +94,8 @@
                             android:id="@+id/financeNameEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:maxLength="20"
-                            android:lines="1" />
+                            android:lines="1"
+                            android:maxLength="20" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -122,98 +109,24 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:orientation="horizontal">
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/financeSumTextInput"
-                        style="?attr/textInputOutlinedStyle"
-                        android:theme="@style/TextInputLayoutTheme"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginEnd="8dp"
-                        android:layout_weight="1"
-                        android:hint="@string/sum"
-                        app:endIconMode="clear_text"
-                        app:errorEnabled="true">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/financeSumEditText"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="numberDecimal"
-                            android:maxLength="10"
-                            android:maxLines="1" />
-
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <TextView
-                        style="@style/addNewHumanLines"
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent" />
-
-                    <TextView
-                        android:id="@+id/financeCurrencyTextView"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center_vertical"
-                        android:paddingEnd="8dp"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:layout_weight="2"
-                        android:gravity="center"
-                        android:text="CUR"
-                        android:textSize="20sp"
-                        android:visibility="visible" />
-
-                </LinearLayout>
-
-                <TextView
-                    style="@style/addNewHumanLines"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp" />
-
-                <TextView
-                    android:id="@+id/financeDateTextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingHorizontal="4dp"
-                    android:paddingVertical="16dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?android:attr/selectableItemBackground"
-                    android:text="date"
-                    android:textAlignment="center"
-                    android:textSize="26sp" />
-
-                <TextView
-                    style="@style/addNewHumanLines"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingVertical="16dp"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:paddingVertical="16dp">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/category"
-                        android:textSize="24sp"
+                        android:layout_marginBottom="8dp"
                         android:paddingHorizontal="8dp"
-                        android:layout_marginBottom="8dp"/>
+                        android:text="@string/image"
+                        android:textSize="24sp" />
 
                     <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/categoryRecyclerView"
+                        android:id="@+id/categoryImageRecyclerView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        tools:listitem="@layout/item_finance_category"
                         android:orientation="horizontal"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        tools:listitem="@layout/item_category_image" />
 
                 </LinearLayout>
 
@@ -222,25 +135,30 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp" />
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/financeInfoTextInput"
-                    style="?attr/textInputOutlinedStyle"
-                    android:theme="@style/TextInputLayoutTheme"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_marginHorizontal="8dp"
-                    android:layout_marginVertical="16dp"
-                    android:layout_weight="1"
-                    android:hint="@string/comment"
-                    app:endIconMode="clear_text"
-                    app:errorEnabled="false">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingVertical="16dp">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/financeInfoEditText"
+                    <TextView
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:paddingHorizontal="8dp"
+                        android:text="@string/color"
+                        android:textSize="24sp" />
 
-                </com.google.android.material.textfield.TextInputLayout>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/categoryColorRecyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        tools:listitem="@layout/item_category_color" />
+
+                </LinearLayout>
+
 
             </LinearLayout>
 
