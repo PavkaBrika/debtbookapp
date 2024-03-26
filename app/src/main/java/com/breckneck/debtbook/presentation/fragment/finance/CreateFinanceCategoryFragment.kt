@@ -122,7 +122,7 @@ class CreateFinanceCategoryFragment : Fragment() {
                         image = vm.checkedImage.value!!
                     )
                 )
-                setFragmentResult("requestKey", bundleOf("isListModified" to true))
+                setFragmentResult("requestKey2", bundleOf("isListModified" to true))
                 onClickListener!!.onBackButtonClick()
             }
         }

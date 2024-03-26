@@ -51,7 +51,7 @@ class CreateFinanceFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        setFragmentResultListener("requestKey") { requestKey, bundle ->
+        setFragmentResultListener("requestKey2") { requestKey, bundle ->
             if (bundle.getBoolean("isListModified"))
                 vm.getAllFinanceCategories()
         }
