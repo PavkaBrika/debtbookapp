@@ -38,7 +38,7 @@ class FinanceCategoryAdapter(
     override fun onBindViewHolder(holder: FinanceCategoryViewHolder, position: Int) {
         val financeCategory = financeCategoryList[position]
 
-        holder.categoryBackgroundCardView.setCardBackgroundColor(Color.parseColor("#${financeCategory.color}"))
+        holder.categoryBackgroundCardView.setCardBackgroundColor(Color.parseColor(financeCategory.color))
         holder.categoryTextView.text = financeCategory.name
 
         if (financeCategory.isChecked) {

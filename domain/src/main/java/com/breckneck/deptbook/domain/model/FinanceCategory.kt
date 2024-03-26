@@ -4,5 +4,6 @@ data class FinanceCategory(
     var id: Int,
     var name: String,
     var color: String,
+    var image: Int,
     var isChecked: Boolean = false
 )
