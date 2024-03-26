@@ -12,7 +12,7 @@
     android:padding="8dp">
 
     <ImageView
-        android:id="@+id/categoryImageView"
+        android:id="@+id/categoryColorCheckImageView"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_gravity="center"

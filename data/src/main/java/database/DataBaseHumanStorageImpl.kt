@@ -15,13 +15,13 @@ class DataBaseHumanStorageImpl(context: Context) : HumanStorage {
         override fun migrate(database: SupportSQLiteDatabase) {
             database.execSQL("CREATE TABLE IF NOT EXISTS 'FinanceData' ('id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 'name' TEXT NOT NULL, 'sum' REAL NOT NULL, 'info' TEXT, 'financeCategoryId' INTEGER NOT NULL)")
             database.execSQL("CREATE TABLE IF NOT EXISTS 'FinanceCategoryData' ('id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 'name' TEXT NOT NULL, 'color' TEXT NOT NULL, 'image' INTEGER NOT NULL)")
-            database.execSQL("INSERT OR IGNORE INTO 'FinanceCategoryData' ('id', 'name', 'color', 'image') VALUES ('1', 'Health', '#EF9A9A', '1')")
-            database.execSQL("INSERT OR IGNORE INTO 'FinanceCategoryData' ('id', 'name', 'color', 'image') VALUES ('2', 'Entertainment', '#F48FB1', '2')")
-            database.execSQL("INSERT OR IGNORE INTO 'FinanceCategoryData' ('id', 'name', 'color', 'image') VALUES ('3', 'Home', '#CE93D8', '3')")
-            database.execSQL("INSERT OR IGNORE INTO 'FinanceCategoryData' ('id', 'name', 'color', 'image') VALUES ('4', 'Education', '#B39DDB', '4')")
-            database.execSQL("INSERT OR IGNORE INTO 'FinanceCategoryData' ('id', 'name', 'color', 'image') VALUES ('5', 'Presents', '#9FA8DA', '5')")
-            database.execSQL("INSERT OR IGNORE INTO 'FinanceCategoryData' ('id', 'name', 'color', 'image') VALUES ('6', 'Food', '#80DEEA', '6')")
-            database.execSQL("INSERT OR IGNORE INTO 'FinanceCategoryData' ('id', 'name', 'color', 'image') VALUES ('7', 'Other', '#90CAF9', '7')")
+            database.execSQL("INSERT OR IGNORE INTO 'FinanceCategoryData' ('id', 'name', 'color', 'image') VALUES ('1', 'Health', '#EF9A9A', '0')")
+            database.execSQL("INSERT OR IGNORE INTO 'FinanceCategoryData' ('id', 'name', 'color', 'image') VALUES ('2', 'Entertainment', '#F48FB1', '1')")
+            database.execSQL("INSERT OR IGNORE INTO 'FinanceCategoryData' ('id', 'name', 'color', 'image') VALUES ('3', 'Home', '#CE93D8', '2')")
+            database.execSQL("INSERT OR IGNORE INTO 'FinanceCategoryData' ('id', 'name', 'color', 'image') VALUES ('4', 'Education', '#B39DDB', '3')")
+            database.execSQL("INSERT OR IGNORE INTO 'FinanceCategoryData' ('id', 'name', 'color', 'image') VALUES ('5', 'Presents', '#9FA8DA', '4')")
+            database.execSQL("INSERT OR IGNORE INTO 'FinanceCategoryData' ('id', 'name', 'color', 'image') VALUES ('6', 'Food', '#80DEEA', '5')")
+            database.execSQL("INSERT OR IGNORE INTO 'FinanceCategoryData' ('id', 'name', 'color', 'image') VALUES ('7', 'Other', '#90CAF9', '6')")
         }
     }
 
@@ -51,13 +51,13 @@ class DataBaseHumanStorageImpl(context: Context) : HumanStorage {
 
     val roomDatabaseCallback = object: RoomDatabase.Callback() {
         override fun onCreate(database: SupportSQLiteDatabase) {
-            database.execSQL("INSERT OR IGNORE INTO 'FinanceCategoryData' ('id', 'name', 'color', 'image') VALUES ('1', 'Health', '#EF9A9A', '1')")
-            database.execSQL("INSERT OR IGNORE INTO 'FinanceCategoryData' ('id', 'name', 'color', 'image') VALUES ('2', 'Entertainment', '#F48FB1', '2')")
-            database.execSQL("INSERT OR IGNORE INTO 'FinanceCategoryData' ('id', 'name', 'color', 'image') VALUES ('3', 'Home', '#CE93D8', '3')")
-            database.execSQL("INSERT OR IGNORE INTO 'FinanceCategoryData' ('id', 'name', 'color', 'image') VALUES ('4', 'Education', '#B39DDB', '4')")
-            database.execSQL("INSERT OR IGNORE INTO 'FinanceCategoryData' ('id', 'name', 'color', 'image') VALUES ('5', 'Presents', '#9FA8DA', '5')")
-            database.execSQL("INSERT OR IGNORE INTO 'FinanceCategoryData' ('id', 'name', 'color', 'image') VALUES ('6', 'Food', '#80DEEA', '6')")
-            database.execSQL("INSERT OR IGNORE INTO 'FinanceCategoryData' ('id', 'name', 'color', 'image') VALUES ('7', 'Other', '#90CAF9', '7')")
+            database.execSQL("INSERT OR IGNORE INTO 'FinanceCategoryData' ('id', 'name', 'color', 'image') VALUES ('1', 'Health', '#EF9A9A', '0')")
+            database.execSQL("INSERT OR IGNORE INTO 'FinanceCategoryData' ('id', 'name', 'color', 'image') VALUES ('2', 'Entertainment', '#F48FB1', '1')")
+            database.execSQL("INSERT OR IGNORE INTO 'FinanceCategoryData' ('id', 'name', 'color', 'image') VALUES ('3', 'Home', '#CE93D8', '2')")
+            database.execSQL("INSERT OR IGNORE INTO 'FinanceCategoryData' ('id', 'name', 'color', 'image') VALUES ('4', 'Education', '#B39DDB', '3')")
+            database.execSQL("INSERT OR IGNORE INTO 'FinanceCategoryData' ('id', 'name', 'color', 'image') VALUES ('5', 'Presents', '#9FA8DA', '4')")
+            database.execSQL("INSERT OR IGNORE INTO 'FinanceCategoryData' ('id', 'name', 'color', 'image') VALUES ('6', 'Food', '#80DEEA', '5')")
+            database.execSQL("INSERT OR IGNORE INTO 'FinanceCategoryData' ('id', 'name', 'color', 'image') VALUES ('7', 'Other', '#90CAF9', '6')")
             super.onCreate(database)
         }
     }
