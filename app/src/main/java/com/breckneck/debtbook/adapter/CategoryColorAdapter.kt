@@ -6,20 +6,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.cardview.widget.CardView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.deptbook.domain.util.LAST_CHECKED_POSITION_NOT_EXISTS
 
 class CategoryColorAdapter(
     private val categoryColorList: List<String>,
+    private val checkedCategoryColorPosition: Int?,
     private val onCategoryColorClickListener: OnCategoryColorClickListener
 ): RecyclerView.Adapter<CategoryColorAdapter.CategoryColorViewHolder>() {
 
     private var lastCheckedPosition = LAST_CHECKED_POSITION_NOT_EXISTS
 
     interface OnCategoryColorClickListener {
-        fun onCLick(categoryColor: String)
+        fun onClick(position: Int, categoryColor: String)
     }
 
     class CategoryColorViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
@@ -29,6 +29,10 @@ class CategoryColorAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryColorViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_category_color, parent, false)
+
+        if (checkedCategoryColorPosition != null)
+            lastCheckedPosition = checkedCategoryColorPosition
+
         return CategoryColorViewHolder(itemView)
     }
 
@@ -48,7 +52,7 @@ class CategoryColorAdapter(
                 notifyItemChanged(lastCheckedPosition)
             lastCheckedPosition = position
             notifyItemChanged(lastCheckedPosition)
-            onCategoryColorClickListener.onCLick(categoryColor = categoryColor)
+            onCategoryColorClickListener.onClick(position = position, categoryColor = categoryColor)
         }
     }
 

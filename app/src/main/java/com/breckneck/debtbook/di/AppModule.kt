@@ -1,5 +1,6 @@
 package com.breckneck.debtbook.di
 
+import com.breckneck.debtbook.presentation.viewmodel.CreateFinanceCategoryFragmentViewModel
 import com.breckneck.debtbook.presentation.viewmodel.CreateFinanceFragmentViewModel
 import com.breckneck.debtbook.presentation.viewmodel.SynchronizationFragmentViewModel
 import com.breckneck.debtbook.presentation.viewmodel.DebtDetailsViewModel
@@ -105,5 +106,9 @@ val appModule = module {
             setDateUseCase = get(),
             getCurrentDateUseCase = get()
         )
+    }
+
+    viewModel<CreateFinanceCategoryFragmentViewModel> {
+        CreateFinanceCategoryFragmentViewModel()
     }
 }

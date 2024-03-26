@@ -23,6 +23,7 @@ import com.breckneck.debtbook.R
 import com.breckneck.debtbook.presentation.fragment.debt.DebtDetailsFragment
 import com.breckneck.debtbook.presentation.fragment.debt.MainFragment
 import com.breckneck.debtbook.presentation.fragment.debt.NewDebtFragment
+import com.breckneck.debtbook.presentation.fragment.finance.CreateFinanceCategoryFragment
 import com.breckneck.debtbook.presentation.fragment.finance.CreateFinanceFragment
 import com.breckneck.debtbook.presentation.fragment.finance.FinanceFragment
 import com.breckneck.debtbook.presentation.fragment.settings.SettingsFragment
@@ -48,7 +49,8 @@ import kotlin.math.roundToInt
 
 class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener,
     NewDebtFragment.OnButtonClickListener, DebtDetailsFragment.OnButtonClickListener,
-    SettingsFragment.OnButtonClickListener, SynchronizationFragment.SynchronizationInterface, FinanceFragment.OnButtonClickListener, CreateFinanceFragment.OnClickListener {
+    SettingsFragment.OnButtonClickListener, SynchronizationFragment.SynchronizationInterface,
+    FinanceFragment.OnButtonClickListener, CreateFinanceFragment.OnClickListener, CreateFinanceCategoryFragment.OnClickListener {
 
     private var interstitialAd: InterstitialAd? = null
     private var interstitialAdLoader: InterstitialAdLoader? = null
@@ -197,7 +199,9 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener,
             } else {
                 if (bottomNavBar.visibility == View.VISIBLE) { //HIDE NAV BAR
                     bottomNavBar.clearAnimation()
-                    bottomNavBar.animate().translationY(bottomNavBar.height.toFloat() + bannerAd.height.toFloat()).setDuration(300)
+                    bottomNavBar.animate()
+                        .translationY(bottomNavBar.height.toFloat() + bannerAd.height.toFloat())
+                        .setDuration(300)
                     Handler(Looper.getMainLooper()).postDelayed({
                         bottomNavBar.visibility = View.GONE
                     }, 350)

@@ -3,7 +3,6 @@ package com.breckneck.debtbook.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -13,13 +12,14 @@ import com.breckneck.deptbook.domain.util.LAST_CHECKED_POSITION_NOT_EXISTS
 
 class CategoryImageAdapter(
     private val categoryImageList: List<Int>,
+    private val checkedCategoryImagePosition: Int?,
     private val onCategoryImageClickListener: OnCategoryImageClickListener
 ): RecyclerView.Adapter<CategoryImageAdapter.CategoryImageViewHolder>() {
 
     var lastCheckedPosition = LAST_CHECKED_POSITION_NOT_EXISTS
 
     interface OnCategoryImageClickListener {
-        fun onCLick(categoryImage: Int)
+        fun onClick(position: Int, categoryImage: Int)
     }
 
     class CategoryImageViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
@@ -29,6 +29,10 @@ class CategoryImageAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryImageViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_category_image, parent, false)
+
+        if (checkedCategoryImagePosition != null)
+            lastCheckedPosition = checkedCategoryImagePosition
+
         return CategoryImageViewHolder(itemView)
     }
 
@@ -48,7 +52,7 @@ class CategoryImageAdapter(
                 notifyItemChanged(lastCheckedPosition)
             lastCheckedPosition = position
             notifyItemChanged(lastCheckedPosition)
-            onCategoryImageClickListener.onCLick(categoryImage = categoryImage)
+            onCategoryImageClickListener.onClick(position = position, categoryImage = categoryImage)
         }
     }
 
