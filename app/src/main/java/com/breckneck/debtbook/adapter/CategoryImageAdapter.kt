@@ -12,14 +12,14 @@ import com.breckneck.debtbook.R
 import com.breckneck.deptbook.domain.util.LAST_CHECKED_POSITION_NOT_EXISTS
 
 class CategoryImageAdapter(
-    private val categoryImageList: List<String>,
+    private val categoryImageList: List<Int>,
     private val onCategoryImageClickListener: OnCategoryImageClickListener
 ): RecyclerView.Adapter<CategoryImageAdapter.CategoryImageViewHolder>() {
 
     var lastCheckedPosition = LAST_CHECKED_POSITION_NOT_EXISTS
 
     interface OnCategoryImageClickListener {
-        fun onCLick(categoryImage: String)
+        fun onCLick(categoryImage: Int)
     }
 
     class CategoryImageViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
@@ -35,7 +35,7 @@ class CategoryImageAdapter(
     override fun onBindViewHolder(holder: CategoryImageViewHolder, position: Int) {
         val categoryImage = categoryImageList[position]
 
-        holder.categoryTextView.text = categoryImage
+        holder.categoryTextView.text = String(Character.toChars(categoryImage))
 
         if (lastCheckedPosition == position) {
             holder.categoryImageRootLayout.background = ContextCompat.getDrawable(holder.itemView.context, R.drawable.custom_border_filled)

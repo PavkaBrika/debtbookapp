@@ -35,26 +35,26 @@ val categoryColorList = listOf(
     "#B0BEC5"
 )
 
-//val categoryImageList = listOf(
-//    "&#10084;", //heart
-//    "&#127916;", //film
-//    "&#127968;", //home
-//    "&#127891;", //education hat
-//    "&#127873;", //gift
-//    "&#127869;", //plate
-//    "&#127853;", //lollipop
-//    "&#128054;", //dog
-//    "&#128049;", //cat
-//    "&#127825;", //peach
-//    "&#127831;", //chicken
-//    "&#127828;", //burger
-//    "&#127874;", //cake
-//    "&#129346;", //champagne
-//    "&#127963;", //bank
-//    "&#128136;", //barber role
-//    "&#128663;", //car
-//    "&#9992;", //plane
-//    "&#128293;", //fire
-//    "&#127881;", //holiday
-//    "&#127918;" //game pad
-//)
+val categoryImageList = listOf(
+    0x2764, //heart
+    0x1F3AC, //film
+    0x1F3E0, //home
+    0x1F393, //education hat
+    0x1F381, //gift
+    0x1F37D, //plate
+    0x1F36D, //lollipop
+    0x1F436, //dog
+    0x1F431, //cat
+    0x1F351, //peach
+    0x1F357, //chicken
+    0x1F354, //burger
+    0x1F382, //cake
+    0x1F942, //champagne
+    0x1F3DB, //bank
+    0x1F488, //barber role
+    0x1F697, //car
+    0x2708, //plane
+    0x1F525, //fire
+    0x1F389, //holiday
+    0x1F3AE //game pad
+)

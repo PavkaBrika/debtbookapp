@@ -9,7 +9,9 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.adapter.CategoryColorAdapter
+import com.breckneck.debtbook.adapter.CategoryImageAdapter
 import com.breckneck.deptbook.domain.util.categoryColorList
+import com.breckneck.deptbook.domain.util.categoryImageList
 
 class CreateFinanceCategoryFragment: Fragment() {
 
@@ -27,6 +29,14 @@ class CreateFinanceCategoryFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val categoryImageRecyclerView: RecyclerView = view.findViewById(R.id.categoryImageRecyclerView)
+        val categoryImageClickListener = object: CategoryImageAdapter.OnCategoryImageClickListener {
+            override fun onCLick(categoryImage: Int) {
+
+            }
+        }
+        categoryImageRecyclerView.adapter = CategoryImageAdapter(categoryImageList, categoryImageClickListener)
 
         val categoryColorRecyclerView: RecyclerView = view.findViewById(R.id.categoryColorRecyclerView)
         val categoryColorClickListener = object: CategoryColorAdapter.OnCategoryColorClickListener {
