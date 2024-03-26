@@ -373,6 +373,10 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener,
         navController.navigate(R.id.action_financeFragment_to_createFinanceFragment)
     }
 
+    override fun onAddCategoryButtonClick() {
+        navController.navigate(R.id.action_createFinanceFragment_to_createFinanceCategoryFragment)
+    }
+
     //synchronization interface
     override fun onBackButtonClick() {
         navController.popBackStack()

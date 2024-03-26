@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -21,13 +22,16 @@ class FinanceCategoryAdapter(
     var lastCheckedPosition = LAST_CHECKED_POSITION_NOT_EXISTS
 
     interface OnFinanceCategoryClickListener {
-        fun onClick(financeCategory: FinanceCategory)
+        fun onCategoryClick(financeCategory: FinanceCategory)
+
+        fun onAddCategoryClick()
     }
 
     class FinanceCategoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val categoryRootLayout: ConstraintLayout = itemView.findViewById(R.id.rootLayout)
         val categoryBackgroundCardView: CardView = itemView.findViewById(R.id.categoryBackgroundCardView)
         val categoryTextView: TextView = itemView.findViewById(R.id.categoryTextView)
+        val categoryImageView: ImageView = itemView.findViewById(R.id.categoryImageView)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FinanceCategoryViewHolder {
@@ -36,30 +40,39 @@ class FinanceCategoryAdapter(
     }
 
     override fun onBindViewHolder(holder: FinanceCategoryViewHolder, position: Int) {
-        val financeCategory = financeCategoryList[position]
-
-        holder.categoryBackgroundCardView.setCardBackgroundColor(Color.parseColor(financeCategory.color))
-        holder.categoryTextView.text = financeCategory.name
-
-        if (financeCategory.isChecked) {
-            holder.categoryRootLayout.background = ContextCompat.getDrawable(holder.itemView.context, R.drawable.custom_border_filled)
-            lastCheckedPosition = position
-        } else
-            holder.categoryRootLayout.background = ContextCompat.getDrawable(holder.itemView.context, R.drawable.custom_border_outline)
-
-        holder.categoryRootLayout.setOnClickListener {
-            if (lastCheckedPosition != LAST_CHECKED_POSITION_NOT_EXISTS) {
-                financeCategoryList[lastCheckedPosition].isChecked = false
-                notifyItemChanged(lastCheckedPosition)
+        if (position == financeCategoryList.size) {
+            holder.categoryTextView.text = "Add"
+            holder.categoryImageView.setImageDrawable(ContextCompat.getDrawable(holder.itemView.context, R.drawable.ic_baseline_add_24))
+            holder.categoryBackgroundCardView.setCardBackgroundColor(Color.parseColor("#C5E1A5"))
+            holder.categoryRootLayout.setOnClickListener {
+                onFinanceCategoryClickListener.onAddCategoryClick()
             }
-            lastCheckedPosition = position
-            notifyItemChanged(lastCheckedPosition)
-            financeCategory.isChecked = true
-            onFinanceCategoryClickListener.onClick(financeCategory = financeCategory)
+        } else {
+            val financeCategory = financeCategoryList[position]
+
+            holder.categoryBackgroundCardView.setCardBackgroundColor(Color.parseColor(financeCategory.color))
+            holder.categoryTextView.text = financeCategory.name
+
+            if (financeCategory.isChecked) {
+                holder.categoryRootLayout.background = ContextCompat.getDrawable(holder.itemView.context, R.drawable.custom_border_filled)
+                lastCheckedPosition = position
+            } else
+                holder.categoryRootLayout.background = ContextCompat.getDrawable(holder.itemView.context, R.drawable.custom_border_outline)
+
+            holder.categoryRootLayout.setOnClickListener {
+                if (lastCheckedPosition != LAST_CHECKED_POSITION_NOT_EXISTS) {
+                    financeCategoryList[lastCheckedPosition].isChecked = false
+                    notifyItemChanged(lastCheckedPosition)
+                }
+                lastCheckedPosition = position
+                notifyItemChanged(lastCheckedPosition)
+                financeCategory.isChecked = true
+                onFinanceCategoryClickListener.onCategoryClick(financeCategory = financeCategory)
+            }
         }
     }
 
     override fun getItemCount(): Int {
-        return financeCategoryList.size
+        return financeCategoryList.size + 1
     }
 }

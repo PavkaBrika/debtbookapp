@@ -35,6 +35,8 @@ class CreateFinanceFragment : Fragment() {
 
     interface OnClickListener {
         fun onBackButtonClick()
+
+        fun onAddCategoryButtonClick()
     }
 
     private var onClickListener: OnClickListener? = null
@@ -101,8 +103,12 @@ class CreateFinanceFragment : Fragment() {
 
         val onFinanceCategoryClickListener =
             object : FinanceCategoryAdapter.OnFinanceCategoryClickListener {
-                override fun onClick(financeCategory: FinanceCategory) {
+                override fun onCategoryClick(financeCategory: FinanceCategory) {
                     vm.setCheckedFinanceCategory(financeCategory = financeCategory)
+                }
+
+                override fun onAddCategoryClick() {
+                    onClickListener!!.onAddCategoryButtonClick()
                 }
             }
 
