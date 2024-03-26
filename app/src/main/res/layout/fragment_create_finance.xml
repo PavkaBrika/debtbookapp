@@ -204,13 +204,13 @@
                         android:layout_height="wrap_content"
                         android:text="@string/category"
                         android:textSize="24sp"
-                        android:paddingHorizontal="8dp"
-                        android:layout_marginBottom="8dp"/>
+                        android:paddingHorizontal="8dp" />
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/categoryRecyclerView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:paddingTop="16dp"
                         tools:listitem="@layout/item_finance_category"
                         android:orientation="vertical"
                         app:spanCount="3"
@@ -242,6 +242,10 @@
                         android:layout_height="wrap_content" />
 
                 </com.google.android.material.textfield.TextInputLayout>
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp" />
 
             </LinearLayout>
 

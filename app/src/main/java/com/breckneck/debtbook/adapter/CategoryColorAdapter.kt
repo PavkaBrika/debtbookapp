@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
@@ -23,7 +24,7 @@ class CategoryColorAdapter(
 
     class CategoryColorViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val categoryColorCheckImageView: ImageView = itemView.findViewById(R.id.categoryColorCheckImageView)
-        val categoryColorRootLayout: ConstraintLayout = itemView.findViewById(R.id.rootLayout)
+        val categoryColorRootLayout: CardView = itemView.findViewById(R.id.rootLayout)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryColorViewHolder {
@@ -34,7 +35,7 @@ class CategoryColorAdapter(
     override fun onBindViewHolder(holder: CategoryColorViewHolder, position: Int) {
         val categoryColor = categoryColorList[position]
 
-        holder.categoryColorRootLayout.setBackgroundColor(Color.parseColor(categoryColor))
+        holder.categoryColorRootLayout.setCardBackgroundColor(Color.parseColor(categoryColor))
 
         if (lastCheckedPosition == position) {
             holder.categoryColorCheckImageView.visibility = View.VISIBLE
