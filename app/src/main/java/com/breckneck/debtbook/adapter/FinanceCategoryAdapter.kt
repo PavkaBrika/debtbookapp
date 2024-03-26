@@ -31,6 +31,7 @@ class FinanceCategoryAdapter(
         val categoryRootLayout: ConstraintLayout = itemView.findViewById(R.id.rootLayout)
         val categoryBackgroundCardView: CardView = itemView.findViewById(R.id.categoryBackgroundCardView)
         val categoryTextView: TextView = itemView.findViewById(R.id.categoryTextView)
+        val categoryImageTextView: TextView = itemView.findViewById(R.id.categoryImageTextView)
         val categoryImageView: ImageView = itemView.findViewById(R.id.categoryImageView)
     }
 
@@ -43,6 +44,8 @@ class FinanceCategoryAdapter(
         if (position == financeCategoryList.size) {
             holder.categoryTextView.text = "Add"
             holder.categoryImageView.setImageDrawable(ContextCompat.getDrawable(holder.itemView.context, R.drawable.ic_baseline_add_24))
+            holder.categoryImageView.visibility = View.VISIBLE
+            holder.categoryImageTextView.visibility = View.GONE
             holder.categoryBackgroundCardView.setCardBackgroundColor(Color.parseColor("#C5E1A5"))
             holder.categoryRootLayout.setOnClickListener {
                 onFinanceCategoryClickListener.onAddCategoryClick()
@@ -52,6 +55,10 @@ class FinanceCategoryAdapter(
 
             holder.categoryBackgroundCardView.setCardBackgroundColor(Color.parseColor(financeCategory.color))
             holder.categoryTextView.text = financeCategory.name
+            holder.categoryImageView.visibility = View.GONE
+            holder.categoryImageTextView.visibility = View.VISIBLE
+
+            holder.categoryImageTextView.text = String(Character.toChars(financeCategory.image))
 
             if (financeCategory.isChecked) {
                 holder.categoryRootLayout.background = ContextCompat.getDrawable(holder.itemView.context, R.drawable.custom_border_filled)

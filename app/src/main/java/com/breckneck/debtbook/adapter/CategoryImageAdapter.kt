@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -11,18 +12,18 @@ import com.breckneck.debtbook.R
 import com.breckneck.deptbook.domain.util.LAST_CHECKED_POSITION_NOT_EXISTS
 
 class CategoryImageAdapter(
-    private val categoryImageList: List<Int>,
+    private val categoryImageList: List<String>,
     private val onCategoryImageClickListener: OnCategoryImageClickListener
 ): RecyclerView.Adapter<CategoryImageAdapter.CategoryImageViewHolder>() {
 
     var lastCheckedPosition = LAST_CHECKED_POSITION_NOT_EXISTS
 
     interface OnCategoryImageClickListener {
-        fun onCLick(categoryImage: Int)
+        fun onCLick(categoryImage: String)
     }
 
     class CategoryImageViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-        val categoryImageView: ImageView = itemView.findViewById(R.id.categoryImageView)
+        val categoryTextView: TextView = itemView.findViewById(R.id.categoryTextView)
         val categoryImageRootLayout: ConstraintLayout = itemView.findViewById(R.id.rootLayout)
     }
 
@@ -34,7 +35,7 @@ class CategoryImageAdapter(
     override fun onBindViewHolder(holder: CategoryImageViewHolder, position: Int) {
         val categoryImage = categoryImageList[position]
 
-        holder.categoryImageView.setImageResource(categoryImage)
+        holder.categoryTextView.text = categoryImage
 
         if (lastCheckedPosition == position) {
             holder.categoryImageRootLayout.background = ContextCompat.getDrawable(holder.itemView.context, R.drawable.custom_border_filled)

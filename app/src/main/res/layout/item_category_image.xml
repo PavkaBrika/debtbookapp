@@ -11,12 +11,14 @@
     android:focusable="true"
     android:padding="8dp">
 
-    <ImageView
-        android:id="@+id/categoryImageView"
+    <TextView
+        android:id="@+id/categoryTextView"
         android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:src="@drawable/outline_monetization_on_24"
+        android:text="&#10084;"
+        android:textSize="40sp"
+        android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -34,3 +34,27 @@ val categoryColorList = listOf(
     "#EEEEEE",
     "#B0BEC5"
 )
+
+//val categoryImageList = listOf(
+//    "&#10084;", //heart
+//    "&#127916;", //film
+//    "&#127968;", //home
+//    "&#127891;", //education hat
+//    "&#127873;", //gift
+//    "&#127869;", //plate
+//    "&#127853;", //lollipop
+//    "&#128054;", //dog
+//    "&#128049;", //cat
+//    "&#127825;", //peach
+//    "&#127831;", //chicken
+//    "&#127828;", //burger
+//    "&#127874;", //cake
+//    "&#129346;", //champagne
+//    "&#127963;", //bank
+//    "&#128136;", //barber role
+//    "&#128663;", //car
+//    "&#9992;", //plane
+//    "&#128293;", //fire
+//    "&#127881;", //holiday
+//    "&#127918;" //game pad
+//)
