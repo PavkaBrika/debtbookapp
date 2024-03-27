@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -61,6 +62,12 @@ class CreateFinanceFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val currencyNames = listOf(getString(R.string.usd), getString(R.string.eur), getString(R.string.rub),
+            getString(R.string.byn), getString(R.string.uah), getString(R.string.kzt),
+            getString(R.string.jpy), getString(R.string.gpb), getString(R.string.aud),
+            getString(R.string.cad), getString(R.string.chf), getString(R.string.cny),
+            getString(R.string.sek), getString(R.string.mxn))
+
         val backButtonImageView: ImageView = view.findViewById(R.id.backButton)
         backButtonImageView.setOnClickListener {
             onClickListener!!.onBackButtonClick()
@@ -86,6 +93,13 @@ class CreateFinanceFragment : Fragment() {
                     }
                 }
             }
+        }
+
+        val financeCurrencyTextView: TextView = view.findViewById(R.id.financeCurrencyTextView)
+        vm.currency.observe(viewLifecycleOwner) { currency ->
+            for (i in currencyNames.indices)
+                if (currencyNames[i].contains(currency))
+                    financeCurrencyTextView.text = currencyNames[i]
         }
 
         val financeDateTextView: TextView = view.findViewById(R.id.financeDateTextView)

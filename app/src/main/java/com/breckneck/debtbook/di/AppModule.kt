@@ -106,7 +106,8 @@ val appModule = module {
             setFinance = get(),
             getAllFinanceCategories = get(),
             setDateUseCase = get(),
-            getCurrentDateUseCase = get()
+            getCurrentDateUseCase = get(),
+            getFinanceCurrency = get()
         )
     }
 

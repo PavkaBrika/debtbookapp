@@ -10,6 +10,7 @@ import com.breckneck.deptbook.domain.usecase.Debt.GetCurrentDateUseCase
 import com.breckneck.deptbook.domain.usecase.Debt.SetDateUseCase
 import com.breckneck.deptbook.domain.usecase.Finance.SetFinance
 import com.breckneck.deptbook.domain.usecase.FinanceCategory.GetAllFinanceCategories
+import com.breckneck.deptbook.domain.usecase.Settings.GetFinanceCurrency
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
@@ -20,7 +21,8 @@ class CreateFinanceFragmentViewModel(
     private val setFinance: SetFinance,
     private val getAllFinanceCategories: GetAllFinanceCategories,
     private val setDateUseCase: SetDateUseCase,
-    private val getCurrentDateUseCase: GetCurrentDateUseCase
+    private val getCurrentDateUseCase: GetCurrentDateUseCase,
+    private val getFinanceCurrency: GetFinanceCurrency
     ): ViewModel() {
 
     private val TAG = "CreateFinanceFragmentVM"
@@ -36,11 +38,15 @@ class CreateFinanceFragmentViewModel(
     private val _checkedFinanceCategory = MutableLiveData<FinanceCategory>()
     val checkedFinanceCategory: LiveData<FinanceCategory>
         get() = _checkedFinanceCategory
+    private val _currency = MutableLiveData<String>()
+    val currency: LiveData<String>
+        get() = _currency
 
     init {
         Log.e(TAG, "Initialized")
         getAllFinanceCategories()
         getCurrentDate()
+        getFinanceCurrency()
     }
 
     override fun onCleared() {
@@ -77,6 +83,10 @@ class CreateFinanceFragmentViewModel(
                 Log.e(TAG, it.message.toString())
             })
         disposeBag.add(result)
+    }
+
+    fun getFinanceCurrency() {
+        _currency.value = getFinanceCurrency.execute()
     }
 
     fun getCurrentDate() {
