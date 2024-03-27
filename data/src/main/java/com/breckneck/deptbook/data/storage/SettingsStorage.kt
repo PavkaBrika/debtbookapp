@@ -51,4 +51,8 @@ interface SettingsStorage {
     fun setLastSyncDate(lastSyncDate: String)
 
     fun getLastSyncDate(): String
+
+    fun setFinanceCurrency(currency: String)
+
+    fun getFinanceCurrency(): String
 }

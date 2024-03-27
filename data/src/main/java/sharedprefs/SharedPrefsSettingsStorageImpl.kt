@@ -23,6 +23,7 @@ private const val IS_AUTHORIZED = "is_authorized"
 private const val USER_NAME = "user_name"
 private const val USER_EMAIL = "user_email"
 private const val LAST_SYNC_DATE = "last_sync_date"
+private const val FINANCE_CURRENCY = "finance_currency"
 
 
 class SharedPrefsSettingsStorageImpl(val context: Context): SettingsStorage {
@@ -137,5 +138,13 @@ class SharedPrefsSettingsStorageImpl(val context: Context): SettingsStorage {
 
     override fun getLastSyncDate(): String {
         return sharedPreferences.getString(LAST_SYNC_DATE, "")!!
+    }
+
+    override fun setFinanceCurrency(currency: String) {
+        sharedPreferences.edit().putString(FINANCE_CURRENCY, currency).apply()
+    }
+
+    override fun getFinanceCurrency(): String {
+        return sharedPreferences.getString(FINANCE_CURRENCY, "USD")!!
     }
 }

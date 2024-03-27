@@ -204,6 +204,14 @@ val domainModule = module {
         GetLastSyncDate(settingsRepository = get())
     }
 
+    single<SetFinanceCurrency> {
+        SetFinanceCurrency(settingsRepository = get())
+    }
+
+    single<GetFinanceCurrency> {
+        GetFinanceCurrency(settingsRepository = get())
+    }
+
     //FINANCE
     single<SetFinance> {
         SetFinance(financeRepository = get())

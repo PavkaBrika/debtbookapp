@@ -129,4 +129,12 @@ class SettingsRepositoryImpl(private val settingsStorage: SettingsStorage): Sett
     override fun getLastSyncDate(): String {
         return settingsStorage.getLastSyncDate()
     }
+
+    override fun setFinanceCurrency(currency: String) {
+        settingsStorage.setFinanceCurrency(currency = currency)
+    }
+
+    override fun getFinanceCurrency(): String {
+        return settingsStorage.getFinanceCurrency()
+    }
 }

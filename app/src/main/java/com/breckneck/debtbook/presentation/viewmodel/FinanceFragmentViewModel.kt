@@ -6,6 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.breckneck.deptbook.domain.model.Finance
 import com.breckneck.deptbook.domain.usecase.Finance.GetAllFinances
+import com.breckneck.deptbook.domain.usecase.Settings.GetFinanceCurrency
+import com.breckneck.deptbook.domain.usecase.Settings.SetFinanceCurrency
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -13,6 +15,8 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 
 class FinanceFragmentViewModel(
     private val getAllFinances: GetAllFinances,
+    private val getFinanceCurrency: GetFinanceCurrency,
+    private val setFinanceCurrency: SetFinanceCurrency
 ): ViewModel() {
 
     private val TAG = "FinanceFragmentVM"
@@ -20,11 +24,21 @@ class FinanceFragmentViewModel(
     private val _financeList = MutableLiveData<List<Finance>>()
     val financeList: LiveData<List<Finance>>
         get() = _financeList
+    private val _isCurrencyDialogOpened = MutableLiveData<Boolean>(false)
+    val isCurrencyDialogOpened: LiveData<Boolean>
+        get() = _isCurrencyDialogOpened
+    private val _selectedCurrencyPosition = MutableLiveData<Int>()
+    val selectedCurrencyPosition: LiveData<Int>
+        get() = _selectedCurrencyPosition
+    private val _currency = MutableLiveData<String>()
+    val currency: LiveData<String>
+        get() = _currency
 
     private val disposeBag = CompositeDisposable()
 
     init {
         getAllFinances()
+        getFinanceCurrency()
     }
 
     override fun onCleared() {
@@ -48,4 +62,21 @@ class FinanceFragmentViewModel(
         disposeBag.add(result)
     }
 
+    fun onCurrencyDialogOpen(selectedCurrencyPosition: Int) {
+        _isCurrencyDialogOpened.value = true
+        _selectedCurrencyPosition.value = selectedCurrencyPosition
+    }
+
+    fun onCurrencyDialogClose() {
+        _isCurrencyDialogOpened.value = false
+    }
+
+    fun setCurrency(currency: String) {
+        _currency.value = currency
+        setFinanceCurrency.execute(currency = currency)
+    }
+
+    private fun getFinanceCurrency() {
+        _currency.value = getFinanceCurrency.execute()
+    }
 }
