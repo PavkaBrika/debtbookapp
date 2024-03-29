@@ -8,6 +8,7 @@ import com.breckneck.deptbook.domain.model.Finance
 import com.breckneck.deptbook.domain.model.FinanceCategory
 import com.breckneck.deptbook.domain.model.FinanceCategoryWithFinances
 import com.breckneck.deptbook.domain.usecase.Finance.GetAllFinances
+import com.breckneck.deptbook.domain.usecase.FinanceCategory.GetAllCategoriesWithFinances
 import com.breckneck.deptbook.domain.usecase.FinanceCategory.GetAllFinanceCategories
 import com.breckneck.deptbook.domain.usecase.Settings.GetFinanceCurrency
 import com.breckneck.deptbook.domain.usecase.Settings.SetFinanceCurrency
@@ -20,7 +21,8 @@ class FinanceFragmentViewModel(
     private val getAllFinances: GetAllFinances,
     private val getAllFinanceCategories: GetAllFinanceCategories,
     private val getFinanceCurrency: GetFinanceCurrency,
-    private val setFinanceCurrency: SetFinanceCurrency
+    private val setFinanceCurrency: SetFinanceCurrency,
+    private val getAllCategoriesWithFinances: GetAllCategoriesWithFinances
 ): ViewModel() {
 
     private val TAG = "FinanceFragmentVM"
@@ -78,6 +80,7 @@ class FinanceFragmentViewModel(
 
     fun getAllCategories() {
         val result = Single.create {
+            getAllCategoriesWithFinances.execute()
             it.onSuccess(getAllFinanceCategories.execute())
         }
             .subscribeOn(Schedulers.io())

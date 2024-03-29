@@ -98,7 +98,8 @@ val appModule = module {
             getAllFinances = get(),
             getAllFinanceCategories = get(),
             getFinanceCurrency = get(),
-            setFinanceCurrency = get()
+            setFinanceCurrency = get(),
+            getAllCategoriesWithFinances = get()
         )
     }
 
