@@ -95,8 +95,8 @@ class FinanceFragment: Fragment() {
                 DividerItemDecoration.VERTICAL
             )
         )
-        vm.financeList.observe(viewLifecycleOwner) { financeList ->
-            categoryRecyclerView.adapter = UsedFinanceCategoryAdapter(financeList)
+        vm.financeCategoryList.observe(viewLifecycleOwner) { categoryList ->
+            categoryRecyclerView.adapter = UsedFinanceCategoryAdapter(categoryList)
         }
 
         val addFinanceButton: FloatingActionButton = view.findViewById(R.id.addFinanceButton)

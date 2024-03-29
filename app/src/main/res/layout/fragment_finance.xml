@@ -103,7 +103,22 @@
                     android:orientation="vertical">
 
                     <com.breckneck.debtbook.presentation.customview.CustomSwitchView
-                        android:id="@+id/customSwitch"
+                        android:id="@+id/financeSwitch"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center"
+                        android:layout_marginHorizontal="8dp"
+                        app:disabledBackgroundColor="#e25d56"
+                        app:disabledText="@string/expenses"
+                        app:enabled="true"
+                        app:enabledBackgroundColor="#59cb72"
+                        app:enabledText="@string/revenues"
+                        app:layout_constraintBottom_toTopOf="@+id/materialCardView"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+                    <com.breckneck.debtbook.presentation.customview.CustomSwitchView
+                        android:id="@+id/listSwitch"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
                         android:layout_gravity="center"

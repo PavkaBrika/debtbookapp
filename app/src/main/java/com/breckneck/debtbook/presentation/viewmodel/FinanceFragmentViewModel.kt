@@ -5,7 +5,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.breckneck.deptbook.domain.model.Finance
+import com.breckneck.deptbook.domain.model.FinanceCategory
+import com.breckneck.deptbook.domain.model.FinanceCategoryWithFinances
 import com.breckneck.deptbook.domain.usecase.Finance.GetAllFinances
+import com.breckneck.deptbook.domain.usecase.FinanceCategory.GetAllFinanceCategories
 import com.breckneck.deptbook.domain.usecase.Settings.GetFinanceCurrency
 import com.breckneck.deptbook.domain.usecase.Settings.SetFinanceCurrency
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -15,6 +18,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 
 class FinanceFragmentViewModel(
     private val getAllFinances: GetAllFinances,
+    private val getAllFinanceCategories: GetAllFinanceCategories,
     private val getFinanceCurrency: GetFinanceCurrency,
     private val setFinanceCurrency: SetFinanceCurrency
 ): ViewModel() {
@@ -24,6 +28,15 @@ class FinanceFragmentViewModel(
     private val _financeList = MutableLiveData<List<Finance>>()
     val financeList: LiveData<List<Finance>>
         get() = _financeList
+    private val _financeCategoryList = MutableLiveData<List<FinanceCategory>>()
+    val financeCategoryList: LiveData<List<FinanceCategory>>
+        get() = _financeCategoryList
+    private val _categoryWithFinancesList = MutableLiveData<List<FinanceCategoryWithFinances>>()
+    val categoryWithFinancesList: LiveData<List<FinanceCategoryWithFinances>>
+        get() = _categoryWithFinancesList
+    private val _isRevenueSwitch = MutableLiveData<Boolean>(true)
+    val isRevenueSwitch: LiveData<Boolean>
+        get() = _isRevenueSwitch
     private val _isCurrencyDialogOpened = MutableLiveData<Boolean>(false)
     val isCurrencyDialogOpened: LiveData<Boolean>
         get() = _isCurrencyDialogOpened
@@ -38,6 +51,7 @@ class FinanceFragmentViewModel(
 
     init {
         getAllFinances()
+        getAllCategories()
         getFinanceCurrency()
     }
 
@@ -56,6 +70,20 @@ class FinanceFragmentViewModel(
             .subscribe({
                 _financeList.value = it
                 Log.e(TAG, "finances loaded in VM")
+            }, {
+                Log.e(TAG, it.message.toString())
+            })
+        disposeBag.add(result)
+    }
+
+    fun getAllCategories() {
+        val result = Single.create {
+            it.onSuccess(getAllFinanceCategories.execute())
+        }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                _financeCategoryList.value = it
             }, {
                 Log.e(TAG, it.message.toString())
             })

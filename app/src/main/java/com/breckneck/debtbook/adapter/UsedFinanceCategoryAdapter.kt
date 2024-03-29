@@ -1,20 +1,26 @@
 package com.breckneck.debtbook.adapter
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.deptbook.domain.model.Finance
+import com.breckneck.deptbook.domain.model.FinanceCategory
+import com.breckneck.deptbook.domain.model.FinanceCategoryWithFinances
 
 class UsedFinanceCategoryAdapter(
-    private val usedFinanceCategoryList: List<Finance> //TODO CHANGE TYPE FROM FINANCE TO CATEGORY
+    private val usedFinanceCategoryList: List<FinanceCategory> //TODO CHANGE TYPE FROM FINANCE TO CATEGORY
 ): RecyclerView.Adapter<UsedFinanceCategoryAdapter.UsedFinanceCategoryViewHolder>() {
 
     class UsedFinanceCategoryViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val usedCategoryNameTextView: TextView = itemView.findViewById(R.id.usedCategoryNameTextView)
         val usedCategorySumTextView: TextView = itemView.findViewById(R.id.usedCategorySumTextView)
+        val usedCategoryBackgroundCardView: CardView = itemView.findViewById(R.id.categoryBackgroundCardView)
+        val categoryImageTextView: TextView = itemView.findViewById(R.id.categoryImageTextView)
     }
 
     override fun onCreateViewHolder(
@@ -29,7 +35,9 @@ class UsedFinanceCategoryAdapter(
         val usedFinanceCategory = usedFinanceCategoryList[position]
 
         holder.usedCategoryNameTextView.text = usedFinanceCategory.name
-        holder.usedCategorySumTextView.text = usedFinanceCategory.sum.toString()
+//        holder.usedCategorySumTextView.text = usedFinanceCategory.sum.toString()
+        holder.usedCategoryBackgroundCardView.setCardBackgroundColor(Color.parseColor(usedFinanceCategory.color))
+        holder.categoryImageTextView.text = String(Character.toChars(usedFinanceCategory.image))
     }
 
     override fun getItemCount(): Int {
