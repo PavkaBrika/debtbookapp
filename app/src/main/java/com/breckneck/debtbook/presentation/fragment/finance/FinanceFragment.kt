@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.adapter.SettingsAdapter
 import com.breckneck.debtbook.adapter.UsedFinanceCategoryAdapter
+import com.breckneck.debtbook.presentation.customview.CustomSwitchView
 import com.breckneck.debtbook.presentation.viewmodel.FinanceFragmentViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -42,7 +43,7 @@ class FinanceFragment: Fragment() {
     ): View? {
         setFragmentResultListener("requestKey") { requestKey, bundle ->
             if (bundle.getBoolean("isListModified"))
-                vm.getAllFinances()
+                vm.getAllCategoriesWithFinances()
         }
         return inflater.inflate(R.layout.fragment_finance, container, false)
     }
@@ -88,6 +89,16 @@ class FinanceFragment: Fragment() {
             }
         }
 
+        val financeSwitch: CustomSwitchView = view.findViewById(R.id.financeSwitch)
+        financeSwitch.setOnClickListener {
+            vm.onChangeIsRevenueSwitch()
+        }
+
+        vm.isRevenueSwitch.observe(viewLifecycleOwner) { isRevenue ->
+            vm.getAllCategoriesWithFinances()
+        }
+
+
         val categoryRecyclerView: RecyclerView = view.findViewById(R.id.categoryRecyclerView)
         categoryRecyclerView.addItemDecoration(
             DividerItemDecoration(
@@ -95,7 +106,7 @@ class FinanceFragment: Fragment() {
                 DividerItemDecoration.VERTICAL
             )
         )
-        vm.financeCategoryList.observe(viewLifecycleOwner) { categoryList ->
+        vm.categoriesWithFinancesList.observe(viewLifecycleOwner) { categoryList ->
             categoryRecyclerView.adapter = UsedFinanceCategoryAdapter(categoryList)
         }
 

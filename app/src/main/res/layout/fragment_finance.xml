@@ -110,6 +110,8 @@
                         android:layout_marginHorizontal="8dp"
                         app:disabledBackgroundColor="#e25d56"
                         app:disabledText="@string/expenses"
+                        android:clickable="true"
+                        android:focusable="true"
                         app:enabled="true"
                         app:enabledBackgroundColor="#59cb72"
                         app:enabledText="@string/revenues"

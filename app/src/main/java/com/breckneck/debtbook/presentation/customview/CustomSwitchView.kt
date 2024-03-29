@@ -6,6 +6,7 @@ import android.graphics.*
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.AttributeSet
+import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
 import com.breckneck.debtbook.R
@@ -33,6 +34,8 @@ class CustomSwitchView(context: Context, attrs: AttributeSet) : View(context, at
     private var enabledText = "Enabled"
     private var disabledText = "Disabled"
     private var isEnabled = true
+
+    private var onClickListener: OnClickListener? = null
 
     //RECT
     private val bodyRect = Rect()
@@ -179,15 +182,19 @@ class CustomSwitchView(context: Context, attrs: AttributeSet) : View(context, at
         when (action) {
             MotionEvent.ACTION_DOWN -> {
                 if (event.x > bodyRect.centerX()) {
-                    if (isEnabled)
+                    if (isEnabled) {
                         startAnim()
+                        onClickListener?.onClick(this)
+                    }
                     isEnabled = false
                     invalidate()
                     requestLayout()
                     return true
                 } else {
-                    if (!isEnabled)
+                    if (!isEnabled) {
                         startAnim()
+                        onClickListener?.onClick(this)
+                    }
                     isEnabled = true
                     invalidate()
                     requestLayout()
@@ -220,5 +227,21 @@ class CustomSwitchView(context: Context, attrs: AttributeSet) : View(context, at
             stateRect.right = bodyRect.right / 2 + value
             stateRect.left = value / 2
         }
+    }
+
+//    override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
+//        if (event!!.action == MotionEvent.ACTION_UP) {
+//            onClickListener?.onClick(this)
+//        }
+//        return super.dispatchTouchEvent(event)
+//    }
+//
+//    override fun dispatchKeyEvent(event: KeyEvent?): Boolean {
+//        if (event!!.action == MotionEvent.ACTION_UP && ())
+//        return super.dispatchKeyEvent(event)
+//    }
+
+    public override fun setOnClickListener(l: OnClickListener?) {
+        this.onClickListener = l
     }
 }

@@ -33,9 +33,9 @@ class FinanceFragmentViewModel(
     private val _financeCategoryList = MutableLiveData<List<FinanceCategory>>()
     val financeCategoryList: LiveData<List<FinanceCategory>>
         get() = _financeCategoryList
-    private val _categoryWithFinancesList = MutableLiveData<List<FinanceCategoryWithFinances>>()
-    val categoryWithFinancesList: LiveData<List<FinanceCategoryWithFinances>>
-        get() = _categoryWithFinancesList
+    private val _categoriesWithFinancesList = MutableLiveData<List<FinanceCategoryWithFinances>>()
+    val categoriesWithFinancesList: LiveData<List<FinanceCategoryWithFinances>>
+        get() = _categoriesWithFinancesList
     private val _isRevenueSwitch = MutableLiveData<Boolean>(true)
     val isRevenueSwitch: LiveData<Boolean>
         get() = _isRevenueSwitch
@@ -52,15 +52,48 @@ class FinanceFragmentViewModel(
     private val disposeBag = CompositeDisposable()
 
     init {
-        getAllFinances()
-        getAllCategories()
+//        getAllFinances()
+//        getAllCategories()
         getFinanceCurrency()
+        getAllCategoriesWithFinances()
     }
 
     override fun onCleared() {
         super.onCleared()
         disposeBag.clear()
         Log.e(TAG, "Cleared")
+    }
+
+    fun getAllCategoriesWithFinances() {
+        val result = Single.create {
+            val categoriesWithFinancesList = getAllCategoriesWithFinances.execute()
+            val deleteFinancesList: MutableList<Finance> = mutableListOf()
+            val deleteCategoriesList: MutableList<FinanceCategoryWithFinances> = mutableListOf()
+            for (categoriesWithFinances in categoriesWithFinancesList) {
+                if (categoriesWithFinances.financeList.isEmpty())
+                    deleteCategoriesList.add(categoriesWithFinances)
+                else {
+                    for (finance in categoriesWithFinances.financeList) {
+                        if (isRevenueSwitch.value != finance.isRevenue)
+                            deleteFinancesList.add(finance)
+                    }
+                    categoriesWithFinances.financeList.removeAll(deleteFinancesList)
+                    if (categoriesWithFinances.financeList.isEmpty())
+                        deleteCategoriesList.add(categoriesWithFinances)
+                    deleteFinancesList.clear()
+                }
+            }
+            categoriesWithFinancesList.removeAll(deleteCategoriesList)
+            it.onSuccess(categoriesWithFinancesList)
+        }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                _categoriesWithFinancesList.value = it
+            }, {
+                Log.e(TAG, it.message.toString())
+            })
+        disposeBag.add(result)
     }
 
     fun getAllFinances() {
@@ -80,7 +113,6 @@ class FinanceFragmentViewModel(
 
     fun getAllCategories() {
         val result = Single.create {
-            getAllCategoriesWithFinances.execute()
             it.onSuccess(getAllFinanceCategories.execute())
         }
             .subscribeOn(Schedulers.io())
@@ -109,5 +141,9 @@ class FinanceFragmentViewModel(
 
     private fun getFinanceCurrency() {
         _currency.value = getFinanceCurrency.execute()
+    }
+
+    fun onChangeIsRevenueSwitch() {
+        _isRevenueSwitch.value = !(_isRevenueSwitch.value)!!
     }
 }

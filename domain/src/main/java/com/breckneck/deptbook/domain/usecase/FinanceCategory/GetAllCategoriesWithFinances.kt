@@ -5,7 +5,7 @@ import com.breckneck.deptbook.domain.repository.FinanceCategoryRepository
 
 class GetAllCategoriesWithFinances(private val financeCategoryRepository: FinanceCategoryRepository) {
 
-    fun execute(): List<FinanceCategoryWithFinances> {
-        return financeCategoryRepository.getAllCategoriesWithFinances()
+    fun execute(): MutableList<FinanceCategoryWithFinances> {
+        return financeCategoryRepository.getAllCategoriesWithFinances().toMutableList()
     }
 }

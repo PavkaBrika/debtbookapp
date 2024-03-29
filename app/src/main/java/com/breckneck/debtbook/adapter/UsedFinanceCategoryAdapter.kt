@@ -13,7 +13,7 @@ import com.breckneck.deptbook.domain.model.FinanceCategory
 import com.breckneck.deptbook.domain.model.FinanceCategoryWithFinances
 
 class UsedFinanceCategoryAdapter(
-    private val usedFinanceCategoryList: List<FinanceCategory> //TODO CHANGE TYPE FROM FINANCE TO CATEGORY
+    private val usedFinanceCategoryList: List<FinanceCategoryWithFinances> //TODO CHANGE TYPE FROM FINANCE TO CATEGORY
 ): RecyclerView.Adapter<UsedFinanceCategoryAdapter.UsedFinanceCategoryViewHolder>() {
 
     class UsedFinanceCategoryViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
@@ -34,10 +34,10 @@ class UsedFinanceCategoryAdapter(
     override fun onBindViewHolder(holder: UsedFinanceCategoryViewHolder, position: Int) {
         val usedFinanceCategory = usedFinanceCategoryList[position]
 
-        holder.usedCategoryNameTextView.text = usedFinanceCategory.name
+        holder.usedCategoryNameTextView.text = usedFinanceCategory.financeCategory.name
 //        holder.usedCategorySumTextView.text = usedFinanceCategory.sum.toString()
-        holder.usedCategoryBackgroundCardView.setCardBackgroundColor(Color.parseColor(usedFinanceCategory.color))
-        holder.categoryImageTextView.text = String(Character.toChars(usedFinanceCategory.image))
+        holder.usedCategoryBackgroundCardView.setCardBackgroundColor(Color.parseColor(usedFinanceCategory.financeCategory.color))
+        holder.categoryImageTextView.text = String(Character.toChars(usedFinanceCategory.financeCategory.image))
     }
 
     override fun getItemCount(): Int {
