@@ -188,7 +188,8 @@ class CreateFinanceFragment : Fragment() {
                         name = financeNameEditText.text.toString(),
                         sum = financeSumEditText.text.toString().toDouble(),
                         isRevenue = customSwitch.isChecked(),
-                        info = financeInfoEditText.text.toString()
+                        info = financeInfoEditText.text.toString(),
+                        financeCategoryId = vm.checkedFinanceCategory.value!!.id
                     )
                 )
                 setFragmentResult("requestKey", bundleOf("isListModified" to true))
