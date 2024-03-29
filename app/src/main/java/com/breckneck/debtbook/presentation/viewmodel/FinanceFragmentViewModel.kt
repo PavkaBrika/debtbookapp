@@ -16,6 +16,7 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlin.math.roundToInt
 
 class FinanceFragmentViewModel(
     private val getAllFinances: GetAllFinances,
@@ -48,6 +49,9 @@ class FinanceFragmentViewModel(
     private val _currency = MutableLiveData<String>()
     val currency: LiveData<String>
         get() = _currency
+    private val _overallSum = MutableLiveData<Double>(0.0)
+    val overallSum: LiveData<Double>
+        get() = _overallSum
 
     private val disposeBag = CompositeDisposable()
 
@@ -66,6 +70,7 @@ class FinanceFragmentViewModel(
 
     fun getAllCategoriesWithFinances() {
         val result = Single.create {
+            var overallSum = 0.0
             val categoriesWithFinancesList = getAllCategoriesWithFinances.execute()
             val deleteFinancesList: MutableList<Finance> = mutableListOf()
             val deleteCategoriesList: MutableList<FinanceCategoryWithFinances> = mutableListOf()
@@ -76,6 +81,10 @@ class FinanceFragmentViewModel(
                     for (finance in categoriesWithFinances.financeList) {
                         if (isRevenueSwitch.value != finance.isRevenue)
                             deleteFinancesList.add(finance)
+                        else {
+                            overallSum += finance.sum
+                            categoriesWithFinances.categorySum += categoriesWithFinances.categorySum + finance.sum
+                        }
                     }
                     categoriesWithFinances.financeList.removeAll(deleteFinancesList)
                     if (categoriesWithFinances.financeList.isEmpty())
@@ -84,12 +93,18 @@ class FinanceFragmentViewModel(
                 }
             }
             categoriesWithFinancesList.removeAll(deleteCategoriesList)
-            it.onSuccess(categoriesWithFinancesList)
+
+            for (categoriesWithFinances in categoriesWithFinancesList) {
+                categoriesWithFinances.categoryPercentage = ((categoriesWithFinances.categorySum * 100) / overallSum).roundToInt()
+            }
+
+            it.onSuccess(Pair(categoriesWithFinancesList, overallSum))
         }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                _categoriesWithFinancesList.value = it
+                _categoriesWithFinancesList.value = it.first!!
+                _overallSum.value = it.second!!
             }, {
                 Log.e(TAG, it.message.toString())
             })

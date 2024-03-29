@@ -13,12 +13,13 @@ import com.breckneck.deptbook.domain.model.FinanceCategory
 import com.breckneck.deptbook.domain.model.FinanceCategoryWithFinances
 
 class UsedFinanceCategoryAdapter(
-    private val usedFinanceCategoryList: List<FinanceCategoryWithFinances> //TODO CHANGE TYPE FROM FINANCE TO CATEGORY
+    private val usedFinanceCategoryList: List<FinanceCategoryWithFinances>
 ): RecyclerView.Adapter<UsedFinanceCategoryAdapter.UsedFinanceCategoryViewHolder>() {
 
     class UsedFinanceCategoryViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val usedCategoryNameTextView: TextView = itemView.findViewById(R.id.usedCategoryNameTextView)
         val usedCategorySumTextView: TextView = itemView.findViewById(R.id.usedCategorySumTextView)
+        val usedCategoryPercent: TextView = itemView.findViewById(R.id.usedCategoryPercent)
         val usedCategoryBackgroundCardView: CardView = itemView.findViewById(R.id.categoryBackgroundCardView)
         val categoryImageTextView: TextView = itemView.findViewById(R.id.categoryImageTextView)
     }
@@ -35,7 +36,8 @@ class UsedFinanceCategoryAdapter(
         val usedFinanceCategory = usedFinanceCategoryList[position]
 
         holder.usedCategoryNameTextView.text = usedFinanceCategory.financeCategory.name
-//        holder.usedCategorySumTextView.text = usedFinanceCategory.sum.toString()
+        holder.usedCategorySumTextView.text = usedFinanceCategory.categorySum.toString()
+        holder.usedCategoryPercent.text = "${usedFinanceCategory.categoryPercentage}%"
         holder.usedCategoryBackgroundCardView.setCardBackgroundColor(Color.parseColor(usedFinanceCategory.financeCategory.color))
         holder.categoryImageTextView.text = String(Character.toChars(usedFinanceCategory.financeCategory.image))
     }
