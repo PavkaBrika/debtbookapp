@@ -16,12 +16,12 @@ import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
+import java.util.Calendar
+import java.util.Date
 
 class CreateFinanceFragmentViewModel(
     private val setFinance: SetFinance,
     private val getAllFinanceCategories: GetAllFinanceCategories,
-    private val setDateUseCase: SetDateUseCase,
-    private val getCurrentDateUseCase: GetCurrentDateUseCase,
     private val getFinanceCurrency: GetFinanceCurrency
     ): ViewModel() {
 
@@ -32,8 +32,8 @@ class CreateFinanceFragmentViewModel(
     private val _financeCategoryList = MutableLiveData<List<FinanceCategory>>()
     val financeCategoryList: LiveData<List<FinanceCategory>>
         get() = _financeCategoryList
-    private val _date = MutableLiveData<String>()
-    val date: LiveData<String>
+    private val _date = MutableLiveData<Date>()
+    val date: LiveData<Date>
         get() = _date
     private val _checkedFinanceCategory = MutableLiveData<FinanceCategory>()
     val checkedFinanceCategory: LiveData<FinanceCategory>
@@ -90,11 +90,11 @@ class CreateFinanceFragmentViewModel(
     }
 
     fun getCurrentDate() {
-        _date.value = getCurrentDateUseCase.execute()
+        _date.value = Calendar.getInstance().time
     }
 
-    fun setCurrentDate(year: Int, month: Int, day: Int) {
-        _date.value = setDateUseCase.execute(year = year, month = month, day = day)
+    fun setCurrentDate(date: Date) {
+        _date.value = date
     }
 
     fun setCheckedFinanceCategory(financeCategory: FinanceCategory) {

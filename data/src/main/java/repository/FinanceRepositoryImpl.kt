@@ -16,7 +16,8 @@ class FinanceRepositoryImpl(private val financeStorage: FinanceStorage) : Financ
                 sum = finance.sum,
                 isRevenue = finance.isRevenue,
                 info = finance.info,
-                financeCategoryId = finance.financeCategoryId
+                financeCategoryId = finance.financeCategoryId,
+                date = finance.date
             )
         )
     }
@@ -29,7 +30,8 @@ class FinanceRepositoryImpl(private val financeStorage: FinanceStorage) : Financ
                 sum = financeData.sum,
                 isRevenue = financeData.isRevenue,
                 info = financeData.info,
-                financeCategoryId = financeData.financeCategoryId
+                financeCategoryId = financeData.financeCategoryId,
+                date = financeData.date
             )
         }
     }

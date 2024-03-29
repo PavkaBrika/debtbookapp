@@ -3,6 +3,7 @@ package entity
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import java.util.Date
 
 @Entity(
     foreignKeys = [ForeignKey(
@@ -18,6 +19,7 @@ data class FinanceData(
     var name: String,
     var sum: Double,
     var isRevenue: Boolean,
+    var date: Date,
     var info: String?,
     var financeCategoryId: Int
 )

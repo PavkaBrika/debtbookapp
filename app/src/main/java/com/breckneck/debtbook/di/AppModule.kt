@@ -107,8 +107,6 @@ val appModule = module {
         CreateFinanceFragmentViewModel(
             setFinance = get(),
             getAllFinanceCategories = get(),
-            setDateUseCase = get(),
-            getCurrentDateUseCase = get(),
             getFinanceCurrency = get()
         )
     }

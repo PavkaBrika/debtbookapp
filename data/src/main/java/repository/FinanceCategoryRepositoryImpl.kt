@@ -27,7 +27,8 @@ class FinanceCategoryRepositoryImpl(private val financeCategoryStorage: FinanceC
                         sum = financeData.sum,
                         isRevenue = financeData.isRevenue,
                         info = financeData.info,
-                        financeCategoryId = financeData.financeCategoryId
+                        financeCategoryId = financeData.financeCategoryId,
+                        date = financeData.date
                     )
                 }.toMutableList()
             )

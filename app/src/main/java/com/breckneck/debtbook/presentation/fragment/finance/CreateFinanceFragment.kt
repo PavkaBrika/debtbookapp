@@ -5,7 +5,6 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,7 +27,7 @@ import com.breckneck.deptbook.domain.model.FinanceCategory
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputLayout
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.w3c.dom.Text
+import java.text.SimpleDateFormat
 import java.util.Calendar
 
 class CreateFinanceFragment : Fragment() {
@@ -68,6 +67,8 @@ class CreateFinanceFragment : Fragment() {
             getString(R.string.cad), getString(R.string.chf), getString(R.string.cny),
             getString(R.string.sek), getString(R.string.mxn))
 
+        val sdf = SimpleDateFormat("d MMM yyyy")
+
         val backButtonImageView: ImageView = view.findViewById(R.id.backButton)
         backButtonImageView.setOnClickListener {
             onClickListener!!.onBackButtonClick()
@@ -104,11 +105,15 @@ class CreateFinanceFragment : Fragment() {
 
         val financeDateTextView: TextView = view.findViewById(R.id.financeDateTextView)
         vm.date.observe(viewLifecycleOwner) { date ->
-            financeDateTextView.text = "$date ${getString(R.string.year)}"
+            financeDateTextView.text = "${sdf.format(date)} ${getString(R.string.year)}"
         }
 
         val dateSetListener = DatePickerDialog.OnDateSetListener { view, year, month, day ->
-            vm.setCurrentDate(year = year, month = month, day = day)
+            val calendar = Calendar.getInstance()
+            calendar.set(Calendar.YEAR, year)
+            calendar.set(Calendar.MONTH, month)
+            calendar.set(Calendar.DAY_OF_MONTH, day)
+            vm.setCurrentDate(calendar.time)
         }
         financeDateTextView.setOnClickListener {
             val calendar = Calendar.getInstance()
@@ -189,7 +194,8 @@ class CreateFinanceFragment : Fragment() {
                         sum = financeSumEditText.text.toString().toDouble(),
                         isRevenue = customSwitch.isChecked(),
                         info = financeInfoEditText.text.toString(),
-                        financeCategoryId = vm.checkedFinanceCategory.value!!.id
+                        financeCategoryId = vm.checkedFinanceCategory.value!!.id,
+                        date = vm.date.value!!
                     )
                 )
                 setFragmentResult("requestKey", bundleOf("isListModified" to true))
