@@ -16,11 +16,14 @@ import com.breckneck.debtbook.adapter.SettingsAdapter
 import com.breckneck.debtbook.adapter.UsedFinanceCategoryAdapter
 import com.breckneck.debtbook.presentation.customview.CustomSwitchView
 import com.breckneck.debtbook.presentation.viewmodel.FinanceFragmentViewModel
+import com.breckneck.deptbook.domain.model.Finance
+import com.breckneck.deptbook.domain.model.FinanceCategory
+import com.breckneck.deptbook.domain.model.FinanceCategoryWithFinances
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class FinanceFragment: Fragment() {
+class FinanceFragment : Fragment() {
 
     private val TAG = "FinanceFragment"
 
@@ -51,11 +54,13 @@ class FinanceFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val currencyNames = listOf(getString(R.string.usd), getString(R.string.eur), getString(R.string.rub),
+        val currencyNames = listOf(
+            getString(R.string.usd), getString(R.string.eur), getString(R.string.rub),
             getString(R.string.byn), getString(R.string.uah), getString(R.string.kzt),
             getString(R.string.jpy), getString(R.string.gpb), getString(R.string.aud),
             getString(R.string.cad), getString(R.string.chf), getString(R.string.cny),
-            getString(R.string.sek), getString(R.string.mxn))
+            getString(R.string.sek), getString(R.string.mxn)
+        )
 
         val onSettingsClickListener = object : SettingsAdapter.OnClickListener {
             override fun onClick(setting: String, position: Int) {
@@ -106,8 +111,18 @@ class FinanceFragment: Fragment() {
                 DividerItemDecoration.VERTICAL
             )
         )
+        val onUsedFinanceCategoryClickListener =
+            object : UsedFinanceCategoryAdapter.OnUsedFinanceCategoryClickListener {
+                override fun onClick(usedFinance: FinanceCategoryWithFinances) {
+
+                }
+            }
         vm.categoriesWithFinancesList.observe(viewLifecycleOwner) { categoryList ->
-            categoryRecyclerView.adapter = UsedFinanceCategoryAdapter(categoryList)
+            categoryRecyclerView.adapter = UsedFinanceCategoryAdapter(
+                usedFinanceCategoryList = categoryList,
+                onUsedFinanceCategoryClickListener = onUsedFinanceCategoryClickListener,
+                currency = vm.currency.value!!
+            )
         }
 
         val addFinanceButton: FloatingActionButton = view.findViewById(R.id.addFinanceButton)
@@ -126,9 +141,14 @@ class FinanceFragment: Fragment() {
         dialog.findViewById<TextView>(R.id.settingTitleTextView)!!.text =
             getString(R.string.select_currency)
         val settingsRecyclerView = dialog.findViewById<RecyclerView>(R.id.settingsRecyclerView)!!
-        settingsRecyclerView.addItemDecoration(DividerItemDecoration(requireActivity(), DividerItemDecoration.VERTICAL))
+        settingsRecyclerView.addItemDecoration(
+            DividerItemDecoration(
+                requireActivity(),
+                DividerItemDecoration.VERTICAL
+            )
+        )
 
-        val onSettingsSelectListener = object: SettingsAdapter.OnSelectListener {
+        val onSettingsSelectListener = object : SettingsAdapter.OnSelectListener {
             override fun onSelect() {
                 dialog.dismiss()
             }

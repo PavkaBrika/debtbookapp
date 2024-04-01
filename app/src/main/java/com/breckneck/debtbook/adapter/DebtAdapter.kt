@@ -40,13 +40,13 @@ class DebtAdapter(private val debtDomainListImmutable: List<DebtDomain>, private
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DebtViewHolder {
+        customSymbol.groupingSeparator = ' '
+        decimalFormat.decimalFormatSymbols = customSymbol
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_debt, parent, false)
         return  DebtViewHolder(itemView)
     }
 
     override fun onBindViewHolder(holder: DebtViewHolder, position: Int) {
-        customSymbol.groupingSeparator = ' '
-        decimalFormat.decimalFormatSymbols = customSymbol
         val debtDomain = debtDomainList[position]
         if (debtDomain.sum > 0) {
             holder.debt.setTextColor(holder.greenColor)
