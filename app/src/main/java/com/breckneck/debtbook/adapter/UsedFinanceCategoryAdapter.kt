@@ -1,5 +1,6 @@
 package com.breckneck.debtbook.adapter
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
@@ -16,16 +17,23 @@ import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 
 class UsedFinanceCategoryAdapter(
-    private val usedFinanceCategoryList: List<FinanceCategoryWithFinances>,
     private val onUsedFinanceCategoryClickListener: OnUsedFinanceCategoryClickListener,
     private val currency: String
 ): RecyclerView.Adapter<UsedFinanceCategoryAdapter.UsedFinanceCategoryViewHolder>() {
 
     private val decimalFormat = DecimalFormat("###,###,###.##")
     private val customSymbol: DecimalFormatSymbols = DecimalFormatSymbols()
+    private val usedFinanceCategoryList: MutableList<FinanceCategoryWithFinances> = mutableListOf()
 
     interface OnUsedFinanceCategoryClickListener {
         fun onClick(usedFinance: FinanceCategoryWithFinances)
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateUsedFinanceCategoryList(usedFinanceCategoryList: List<FinanceCategoryWithFinances>) {
+        this.usedFinanceCategoryList.clear()
+        this.usedFinanceCategoryList.addAll(usedFinanceCategoryList)
+        notifyDataSetChanged()
     }
 
     class UsedFinanceCategoryViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {

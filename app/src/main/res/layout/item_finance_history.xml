@@ -35,25 +35,25 @@
         android:id="@+id/usedCategoryNameTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:padding="8dp"
+        android:paddingHorizontal="8dp"
         android:text="Category name"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/usedCategoryPercent"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toStartOf="@+id/usedCategorySumTextView"
         app:layout_constraintStart_toEndOf="@+id/categoryBackgroundCardView"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/usedCategoryPercent"
-        android:layout_width="wrap_content"
+        android:id="@+id/financeNameTextView"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:text="100%"
+        android:paddingVertical="4dp"
+        android:paddingHorizontal="8dp"
+        android:text="Finance name"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/usedCategorySumTextView"
-        app:layout_constraintTop_toTopOf="parent" />
-
+        app:layout_constraintStart_toEndOf="@+id/categoryBackgroundCardView"
+        app:layout_constraintTop_toBottomOf="@+id/usedCategoryNameTextView" />
 
     <TextView
         android:id="@+id/usedCategorySumTextView"

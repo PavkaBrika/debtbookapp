@@ -12,6 +12,7 @@ import com.breckneck.deptbook.domain.usecase.FinanceCategory.GetAllCategoriesWit
 import com.breckneck.deptbook.domain.usecase.FinanceCategory.GetAllFinanceCategories
 import com.breckneck.deptbook.domain.usecase.Settings.GetFinanceCurrency
 import com.breckneck.deptbook.domain.usecase.Settings.SetFinanceCurrency
+import com.breckneck.deptbook.domain.util.FinanceListState
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -52,12 +53,13 @@ class FinanceFragmentViewModel(
     private val _overallSum = MutableLiveData<Double>(0.0)
     val overallSum: LiveData<Double>
         get() = _overallSum
+//    private val _financeListState= MutableLiveData<FinanceListState>(FinanceListState.CATEGORIES)
+//    val financeListState: LiveData<FinanceListState>
+//        get() = _financeListState
 
     private val disposeBag = CompositeDisposable()
 
     init {
-//        getAllFinances()
-//        getAllCategories()
         getFinanceCurrency()
         getAllCategoriesWithFinances()
     }
@@ -97,6 +99,7 @@ class FinanceFragmentViewModel(
             for (categoriesWithFinances in categoriesWithFinancesList) {
                 categoriesWithFinances.categoryPercentage = ((categoriesWithFinances.categorySum * 100) / overallSum).roundToInt()
             }
+            categoriesWithFinancesList.sortBy { financeCategoryWithFinances -> financeCategoryWithFinances.categoryPercentage }
 
             it.onSuccess(Pair(categoriesWithFinancesList, overallSum))
         }
@@ -126,20 +129,6 @@ class FinanceFragmentViewModel(
         disposeBag.add(result)
     }
 
-    fun getAllCategories() {
-        val result = Single.create {
-            it.onSuccess(getAllFinanceCategories.execute())
-        }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                _financeCategoryList.value = it
-            }, {
-                Log.e(TAG, it.message.toString())
-            })
-        disposeBag.add(result)
-    }
-
     fun onCurrencyDialogOpen(selectedCurrencyPosition: Int) {
         _isCurrencyDialogOpened.value = true
         _selectedCurrencyPosition.value = selectedCurrencyPosition
@@ -161,4 +150,18 @@ class FinanceFragmentViewModel(
     fun onChangeIsRevenueSwitch() {
         _isRevenueSwitch.value = !(_isRevenueSwitch.value)!!
     }
+
+//    fun onChangeFinanceListStateSwitch() {
+//        when (_financeListState.value) {
+//            FinanceListState.CATEGORIES -> {
+//                _financeListState.value = FinanceListState.HISTORY
+//                getAllFinances()
+//            }
+//            FinanceListState.HISTORY -> {
+//                _financeListState.value = FinanceListState.CATEGORIES
+//                getAllCategoriesWithFinances()
+//            }
+//            null -> {}
+//        }
+//    }
 }

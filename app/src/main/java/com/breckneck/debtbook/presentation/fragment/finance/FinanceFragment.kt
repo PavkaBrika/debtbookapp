@@ -19,6 +19,7 @@ import com.breckneck.debtbook.presentation.viewmodel.FinanceFragmentViewModel
 import com.breckneck.deptbook.domain.model.Finance
 import com.breckneck.deptbook.domain.model.FinanceCategory
 import com.breckneck.deptbook.domain.model.FinanceCategoryWithFinances
+import com.breckneck.deptbook.domain.util.FinanceListState
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -28,6 +29,8 @@ class FinanceFragment : Fragment() {
     private val TAG = "FinanceFragment"
 
     private val vm by viewModel<FinanceFragmentViewModel>()
+
+    private lateinit var usedFinanceCategoryAdapter: UsedFinanceCategoryAdapter
 
     interface OnButtonClickListener {
         fun onAddFinanceButtonClick()
@@ -103,6 +106,10 @@ class FinanceFragment : Fragment() {
             vm.getAllCategoriesWithFinances()
         }
 
+//        val listSwitch: CustomSwitchView = view.findViewById(R.id.listSwitch)
+//        listSwitch.setOnClickListener {
+//            vm.onChangeFinanceListStateSwitch()
+//        }
 
         val categoryRecyclerView: RecyclerView = view.findViewById(R.id.categoryRecyclerView)
         categoryRecyclerView.addItemDecoration(
@@ -111,18 +118,32 @@ class FinanceFragment : Fragment() {
                 DividerItemDecoration.VERTICAL
             )
         )
-        val onUsedFinanceCategoryClickListener =
-            object : UsedFinanceCategoryAdapter.OnUsedFinanceCategoryClickListener {
-                override fun onClick(usedFinance: FinanceCategoryWithFinances) {
 
-                }
-            }
+//        vm.financeListState.observe(viewLifecycleOwner) { state ->
+//            when (state) {
+//                FinanceListState.CATEGORIES -> {
+//                    val onUsedFinanceCategoryClickListener =
+//                        object : UsedFinanceCategoryAdapter.OnUsedFinanceCategoryClickListener {
+//                            override fun onClick(usedFinance: FinanceCategoryWithFinances) {
+//
+//                            }
+//                        }
+//                    usedFinanceCategoryAdapter = UsedFinanceCategoryAdapter(
+//                        onUsedFinanceCategoryClickListener = onUsedFinanceCategoryClickListener,
+//                        currency = vm.currency.value!!
+//                    ).also {
+//                        categoryRecyclerView.adapter = it
+//                    }
+//                }
+//
+//                FinanceListState.HISTORY -> {
+//
+//                }
+//            }
+//        }
+
         vm.categoriesWithFinancesList.observe(viewLifecycleOwner) { categoryList ->
-            categoryRecyclerView.adapter = UsedFinanceCategoryAdapter(
-                usedFinanceCategoryList = categoryList,
-                onUsedFinanceCategoryClickListener = onUsedFinanceCategoryClickListener,
-                currency = vm.currency.value!!
-            )
+            usedFinanceCategoryAdapter.updateUsedFinanceCategoryList(usedFinanceCategoryList = categoryList)
         }
 
         val addFinanceButton: FloatingActionButton = view.findViewById(R.id.addFinanceButton)
