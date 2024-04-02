@@ -25,7 +25,7 @@
                 android:fitsSystemWindows="true"
                 app:expandedTitleGravity="bottom"
                 app:expandedTitleMarginStart="16dp"
-                app:layout_scrollFlags="scroll"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 app:title="@string/finances"
                 app:titleCollapseMode="scale"
                 app:titleEnabled="true">
@@ -39,21 +39,13 @@
                     android:layout_marginBottom="24dp">
 
                     <TextView
-                        android:id="@+id/overallPositiveSumTextView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_above="@id/overallNegativeSumTextView"
-                        android:textAlignment="viewEnd"
-                        android:textColor="@color/green"
-                        android:textSize="18sp" />
-
-                    <TextView
-                        android:id="@+id/overallNegativeSumTextView"
+                        android:id="@+id/financeDateIntervalTextView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_alignParentBottom="true"
+                        android:foreground="?android:attr/selectableItemBackground"
                         android:textAlignment="viewEnd"
-                        android:textColor="@color/red"
+                        android:textColor="@color/green"
                         android:textSize="18sp" />
 
                 </RelativeLayout>

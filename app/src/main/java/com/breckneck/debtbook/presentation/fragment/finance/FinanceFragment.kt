@@ -16,10 +16,8 @@ import com.breckneck.debtbook.adapter.SettingsAdapter
 import com.breckneck.debtbook.adapter.UsedFinanceCategoryAdapter
 import com.breckneck.debtbook.presentation.customview.CustomSwitchView
 import com.breckneck.debtbook.presentation.viewmodel.FinanceFragmentViewModel
-import com.breckneck.deptbook.domain.model.Finance
-import com.breckneck.deptbook.domain.model.FinanceCategory
 import com.breckneck.deptbook.domain.model.FinanceCategoryWithFinances
-import com.breckneck.deptbook.domain.util.FinanceListState
+import com.breckneck.deptbook.domain.util.FinanceInterval
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -65,9 +63,22 @@ class FinanceFragment : Fragment() {
             getString(R.string.sek), getString(R.string.mxn)
         )
 
-        val onSettingsClickListener = object : SettingsAdapter.OnClickListener {
+        val financeIntervalNames = listOf("Day", "Week", "Month", "Year")
+
+        val onCurrencySettingsClickListener = object : SettingsAdapter.OnClickListener {
             override fun onClick(setting: String, position: Int) {
                 vm.setCurrency(setting.substring(setting.lastIndexOf(" ") + 1))
+            }
+        }
+
+        val onIntervalSettingsClickListener = object : SettingsAdapter.OnClickListener {
+            override fun onClick(setting: String, position: Int) {
+                when (position) {
+                    0 -> vm.setInterval(interval = FinanceInterval.DAY)
+                    1 -> vm.setInterval(interval = FinanceInterval.WEEK)
+                    2 -> vm.setInterval(interval = FinanceInterval.MONTH)
+                    3 -> vm.setInterval(interval = FinanceInterval.YEAR)
+                }
             }
         }
 
@@ -75,7 +86,15 @@ class FinanceFragment : Fragment() {
             showCurrencyDialog(
                 settingsList = currencyNames,
                 selectedSetting = vm.selectedCurrencyPosition.value!!,
-                onSettingsClickListener = onSettingsClickListener
+                onSettingsClickListener = onCurrencySettingsClickListener
+            )
+        }
+
+        if (vm.isFinanceIntervalDialogOpened.value == true) {
+            showFinanceIntervalDialog(
+                settingsList = financeIntervalNames,
+                selectedSetting = vm.selectedIntervalPosition.value!!,
+                onSettingsClickListener = onIntervalSettingsClickListener
             )
         }
 
@@ -90,10 +109,30 @@ class FinanceFragment : Fragment() {
                         showCurrencyDialog(
                             settingsList = currencyNames,
                             selectedSetting = i,
-                            onSettingsClickListener = onSettingsClickListener
+                            onSettingsClickListener = onCurrencySettingsClickListener
                         )
                     }
                 }
+            }
+        }
+
+        val financeDateIntervalTextView: TextView = view.findViewById(R.id.financeDateIntervalTextView)
+        vm.financeInterval.observe(viewLifecycleOwner) { interval ->
+            var i = 0
+            when (interval) {
+                FinanceInterval.DAY -> i = 0
+                FinanceInterval.WEEK -> i = 1
+                FinanceInterval.MONTH -> i = 2
+                FinanceInterval.YEAR -> i = 3
+            }
+            financeDateIntervalTextView.text = financeIntervalNames[i]
+            financeDateIntervalTextView.setOnClickListener {
+                vm.onIntervalDialogOpen(selectedIntervalPosition = i)
+                showFinanceIntervalDialog(
+                    settingsList = financeIntervalNames,
+                    selectedSetting = i,
+                    onSettingsClickListener = onIntervalSettingsClickListener
+                )
             }
         }
 
@@ -105,6 +144,7 @@ class FinanceFragment : Fragment() {
         vm.isRevenueSwitch.observe(viewLifecycleOwner) { isRevenue ->
             vm.getAllCategoriesWithFinances()
         }
+
 
 //        val listSwitch: CustomSwitchView = view.findViewById(R.id.listSwitch)
 //        listSwitch.setOnClickListener {
@@ -142,6 +182,19 @@ class FinanceFragment : Fragment() {
 //            }
 //        }
 
+        val onUsedFinanceCategoryClickListener =
+            object : UsedFinanceCategoryAdapter.OnUsedFinanceCategoryClickListener {
+                override fun onClick(usedFinance: FinanceCategoryWithFinances) {
+
+                }
+            }
+        usedFinanceCategoryAdapter = UsedFinanceCategoryAdapter(
+            onUsedFinanceCategoryClickListener = onUsedFinanceCategoryClickListener,
+            currency = vm.currency.value!!
+        ).also {
+            categoryRecyclerView.adapter = it
+        }
+
         vm.categoriesWithFinancesList.observe(viewLifecycleOwner) { categoryList ->
             usedFinanceCategoryAdapter.updateUsedFinanceCategoryList(usedFinanceCategoryList = categoryList)
         }
@@ -150,6 +203,45 @@ class FinanceFragment : Fragment() {
         addFinanceButton.setOnClickListener {
             buttonClickListener!!.onAddFinanceButtonClick()
         }
+    }
+
+    private fun showFinanceIntervalDialog(
+        settingsList: List<String>,
+        selectedSetting: Int,
+        onSettingsClickListener: SettingsAdapter.OnClickListener
+    ) {
+        val dialog = BottomSheetDialog(requireContext())
+        dialog.setContentView(R.layout.dialog_setting)
+        dialog.findViewById<TextView>(R.id.settingTitleTextView)!!.text =
+            getString(R.string.select_interval)
+        val settingsRecyclerView = dialog.findViewById<RecyclerView>(R.id.settingsRecyclerView)!!
+        settingsRecyclerView.addItemDecoration(
+            DividerItemDecoration(
+                requireActivity(),
+                DividerItemDecoration.VERTICAL
+            )
+        )
+
+        val onSettingsSelectListener = object : SettingsAdapter.OnSelectListener {
+            override fun onSelect() {
+                dialog.dismiss()
+            }
+        }
+
+        dialog.setOnDismissListener {
+            vm.onIntervalDialogClose()
+        }
+        dialog.setOnCancelListener {
+            vm.onIntervalDialogClose()
+        }
+
+        settingsRecyclerView.adapter = SettingsAdapter(
+            settingsList = settingsList,
+            selectedSetting = selectedSetting,
+            settingsClickListener = onSettingsClickListener,
+            settingsSelectListener = onSettingsSelectListener
+        )
+        dialog.show()
     }
 
     private fun showCurrencyDialog(
