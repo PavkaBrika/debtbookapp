@@ -25,9 +25,7 @@
                 android:fitsSystemWindows="true"
                 app:expandedTitleGravity="bottom"
                 app:expandedTitleMarginStart="16dp"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 app:title="@string/finances"
-                app:titleCollapseMode="scale"
                 app:titleEnabled="true">
 
                 <RelativeLayout
@@ -45,7 +43,6 @@
                         android:layout_alignParentBottom="true"
                         android:foreground="?android:attr/selectableItemBackground"
                         android:textAlignment="viewEnd"
-                        android:textColor="@color/green"
                         android:textSize="18sp" />
 
                 </RelativeLayout>
@@ -79,6 +76,26 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/pastDateImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:src="@drawable/baseline_restore_24"
+                app:layout_constraintBottom_toTopOf="@+id/materialCardView"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/red" />
+
+            <ImageView
+                android:id="@+id/nextDateImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:src="@drawable/baseline_restore_24"
+                app:layout_constraintBottom_toTopOf="@+id/materialCardView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/red" />
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/materialCardView"

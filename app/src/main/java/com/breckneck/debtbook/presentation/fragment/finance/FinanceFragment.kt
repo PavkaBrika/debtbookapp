@@ -119,13 +119,12 @@ class FinanceFragment : Fragment() {
         val financeDateIntervalTextView: TextView = view.findViewById(R.id.financeDateIntervalTextView)
         vm.financeInterval.observe(viewLifecycleOwner) { interval ->
             var i = 0
-            when (interval) {
-                FinanceInterval.DAY -> i = 0
-                FinanceInterval.WEEK -> i = 1
-                FinanceInterval.MONTH -> i = 2
-                FinanceInterval.YEAR -> i = 3
+            i = when (interval) {
+                FinanceInterval.DAY -> 0
+                FinanceInterval.WEEK -> 1
+                FinanceInterval.MONTH -> 2
+                FinanceInterval.YEAR -> 3
             }
-            financeDateIntervalTextView.text = financeIntervalNames[i]
             financeDateIntervalTextView.setOnClickListener {
                 vm.onIntervalDialogOpen(selectedIntervalPosition = i)
                 showFinanceIntervalDialog(
@@ -134,6 +133,9 @@ class FinanceFragment : Fragment() {
                     onSettingsClickListener = onIntervalSettingsClickListener
                 )
             }
+        }
+        vm.financeIntervalString.observe(viewLifecycleOwner) { intervalString ->
+            financeDateIntervalTextView.text = intervalString
         }
 
         val financeSwitch: CustomSwitchView = view.findViewById(R.id.financeSwitch)
