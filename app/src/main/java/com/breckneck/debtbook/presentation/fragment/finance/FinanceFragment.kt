@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
@@ -160,6 +161,16 @@ class FinanceFragment : Fragment() {
                 DividerItemDecoration.VERTICAL
             )
         )
+
+        val pastDateImageView: ImageView = view.findViewById(R.id.pastDateImageView)
+        pastDateImageView.setOnClickListener {
+            vm.getPastFinanceInterval()
+        }
+
+        val nextDateImageView: ImageView = view.findViewById(R.id.nextDateImageView)
+        nextDateImageView.setOnClickListener {
+            vm.getNextFinanceInterval()
+        }
 
 //        vm.financeListState.observe(viewLifecycleOwner) { state ->
 //            when (state) {

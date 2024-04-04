@@ -77,8 +77,7 @@ class FinanceFragmentViewModel(
 
     init {
         getFinanceCurrency()
-        getFinanceInterval()
-        getAllCategoriesWithFinances()
+        updateIntervalWithCategories()
 //        getAllCategoriesWithFinances()
     }
 
@@ -86,6 +85,11 @@ class FinanceFragmentViewModel(
         super.onCleared()
         disposeBag.clear()
         Log.e(TAG, "Cleared")
+    }
+
+    fun updateIntervalWithCategories() {
+        getFinanceInterval()
+        getAllCategoriesWithFinances()
     }
 
     fun getFinanceInterval() {
@@ -115,7 +119,8 @@ class FinanceFragmentViewModel(
             FinanceInterval.MONTH ->  {
                 calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMinimum(Calendar.DAY_OF_MONTH))
                 val leftIntervalBorder = calendar.timeInMillis
-                calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH))
+                calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) + 1)
+                calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMinimum(Calendar.DAY_OF_MONTH))
                 val rightIntervalBorder = calendar.timeInMillis
                 _financeIntervalUnix.value = Pair(leftIntervalBorder, rightIntervalBorder)
                 _financeIntervalString.value = DateFormat.format("MMM yyyy", leftIntervalBorder).toString()
@@ -123,13 +128,110 @@ class FinanceFragmentViewModel(
             FinanceInterval.YEAR -> {
                 calendar.set(Calendar.DAY_OF_YEAR, calendar.getActualMinimum(Calendar.DAY_OF_YEAR))
                 val leftIntervalBorder = calendar.timeInMillis
-                calendar.set(Calendar.DAY_OF_YEAR, calendar.getActualMaximum(Calendar.DAY_OF_YEAR))
+                calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) + 1)
+                calendar.set(Calendar.DAY_OF_YEAR, calendar.getActualMinimum(Calendar.DAY_OF_YEAR))
                 val rightIntervalBorder = calendar.timeInMillis
                 _financeIntervalUnix.value = Pair(leftIntervalBorder, rightIntervalBorder)
                 _financeIntervalString.value = DateFormat.format("yyyy", leftIntervalBorder).toString()
             }
             null -> {}
         }
+    }
+
+    fun getNextFinanceInterval() {
+        val calendar = Calendar.getInstance()
+        when (financeInterval.value) {
+            FinanceInterval.DAY -> {
+                calendar.timeInMillis = financeIntervalUnix.value!!.second
+                val leftIntervalBorder = financeIntervalUnix.value!!.second
+                calendar.set(Calendar.DAY_OF_YEAR, calendar.get(Calendar.DAY_OF_YEAR) + 1)
+                val rightIntervalBorder = calendar.timeInMillis
+                _financeIntervalUnix.value = Pair(leftIntervalBorder, rightIntervalBorder)
+                _financeIntervalString.value = DateFormat.format("dd MMM", leftIntervalBorder).toString()
+            }
+            FinanceInterval.WEEK -> {
+                calendar.timeInMillis = financeIntervalUnix.value!!.second
+                val leftIntervalBorder = financeIntervalUnix.value!!.second
+                calendar.set(Calendar.WEEK_OF_YEAR, calendar.get(Calendar.WEEK_OF_YEAR) + 1)
+                val rightIntervalBorder = calendar.timeInMillis
+                _financeIntervalUnix.value = Pair(leftIntervalBorder, rightIntervalBorder)
+                _financeIntervalString.value = "${DateFormat.format("dd MMM", leftIntervalBorder)} - ${DateFormat.format("dd MMM", rightIntervalBorder)}"
+            }
+            FinanceInterval.MONTH -> {
+                calendar.timeInMillis = financeIntervalUnix.value!!.first
+                calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) + 1)
+                calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMinimum(Calendar.DAY_OF_MONTH))
+                val leftIntervalBorder = calendar.timeInMillis
+                calendar.timeInMillis = financeIntervalUnix.value!!.second
+                calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) + 1)
+                calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMinimum(Calendar.DAY_OF_MONTH))
+                val rightIntervalBorder = calendar.timeInMillis
+                _financeIntervalUnix.value = Pair(leftIntervalBorder, rightIntervalBorder)
+                _financeIntervalString.value = DateFormat.format("MMM yyyy", leftIntervalBorder).toString()
+            }
+            FinanceInterval.YEAR -> {
+                calendar.timeInMillis = financeIntervalUnix.value!!.first
+                calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) + 1)
+                calendar.set(Calendar.DAY_OF_YEAR, calendar.getActualMinimum(Calendar.DAY_OF_YEAR))
+                val leftIntervalBorder = calendar.timeInMillis
+                calendar.timeInMillis = financeIntervalUnix.value!!.second
+                calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) + 1)
+                calendar.set(Calendar.DAY_OF_YEAR, calendar.getActualMinimum(Calendar.DAY_OF_YEAR))
+                val rightIntervalBorder = calendar.timeInMillis
+                _financeIntervalUnix.value = Pair(leftIntervalBorder, rightIntervalBorder)
+                _financeIntervalString.value = DateFormat.format("yyyy", leftIntervalBorder).toString()
+            }
+            null -> {}
+        }
+        getAllCategoriesWithFinances()
+    }
+
+    fun getPastFinanceInterval() {
+        val calendar = Calendar.getInstance()
+        when (financeInterval.value) {
+            FinanceInterval.DAY -> {
+                calendar.timeInMillis = financeIntervalUnix.value!!.first
+                val rightIntervalBorder = financeIntervalUnix.value!!.first
+                calendar.set(Calendar.DAY_OF_YEAR, calendar.get(Calendar.DAY_OF_YEAR) - 1)
+                val leftIntervalBorder = calendar.timeInMillis
+                _financeIntervalUnix.value = Pair(leftIntervalBorder, rightIntervalBorder)
+                _financeIntervalString.value = DateFormat.format("dd MMM", leftIntervalBorder).toString()
+            }
+            FinanceInterval.WEEK -> {
+                calendar.timeInMillis = financeIntervalUnix.value!!.first
+                val rightIntervalBorder = financeIntervalUnix.value!!.first
+                calendar.set(Calendar.WEEK_OF_YEAR, calendar.get(Calendar.WEEK_OF_YEAR) - 1)
+                val leftIntervalBorder = calendar.timeInMillis
+                _financeIntervalUnix.value = Pair(leftIntervalBorder, rightIntervalBorder)
+                _financeIntervalString.value = "${DateFormat.format("dd MMM", leftIntervalBorder)} - ${DateFormat.format("dd MMM", rightIntervalBorder)}"
+            }
+            FinanceInterval.MONTH -> {
+                calendar.timeInMillis = financeIntervalUnix.value!!.first
+                calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) - 1)
+                calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMinimum(Calendar.DAY_OF_MONTH))
+                val leftIntervalBorder = calendar.timeInMillis
+                calendar.timeInMillis = financeIntervalUnix.value!!.second
+                calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) - 1)
+                calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMinimum(Calendar.DAY_OF_MONTH))
+                val rightIntervalBorder = calendar.timeInMillis
+                _financeIntervalUnix.value = Pair(leftIntervalBorder, rightIntervalBorder)
+                _financeIntervalString.value = DateFormat.format("MMM yyyy", leftIntervalBorder).toString()
+            }
+            FinanceInterval.YEAR -> {
+                calendar.timeInMillis = financeIntervalUnix.value!!.first
+                calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) - 1)
+                calendar.set(Calendar.DAY_OF_YEAR, calendar.getActualMinimum(Calendar.DAY_OF_YEAR))
+                val leftIntervalBorder = calendar.timeInMillis
+                calendar.timeInMillis = financeIntervalUnix.value!!.second
+                calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) - 1)
+                calendar.set(Calendar.DAY_OF_YEAR, calendar.getActualMinimum(Calendar.DAY_OF_YEAR))
+                val rightIntervalBorder = calendar.timeInMillis
+                _financeIntervalUnix.value = Pair(leftIntervalBorder, rightIntervalBorder)
+                _financeIntervalString.value = DateFormat.format("yyyy", leftIntervalBorder).toString()
+            }
+            null -> {}
+        }
+        getAllCategoriesWithFinances()
     }
 
     fun getAllCategoriesWithFinances() {
