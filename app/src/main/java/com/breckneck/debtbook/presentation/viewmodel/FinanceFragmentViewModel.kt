@@ -77,19 +77,13 @@ class FinanceFragmentViewModel(
 
     init {
         getFinanceCurrency()
-        updateIntervalWithCategories()
-//        getAllCategoriesWithFinances()
+        getFinanceInterval()
     }
 
     override fun onCleared() {
         super.onCleared()
         disposeBag.clear()
         Log.e(TAG, "Cleared")
-    }
-
-    fun updateIntervalWithCategories() {
-        getFinanceInterval()
-        getAllCategoriesWithFinances()
     }
 
     fun getFinanceInterval() {
@@ -136,6 +130,7 @@ class FinanceFragmentViewModel(
             }
             null -> {}
         }
+        getAllCategoriesWithFinances()
     }
 
     fun getNextFinanceInterval() {
