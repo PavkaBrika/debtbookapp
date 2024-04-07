@@ -23,6 +23,7 @@ import com.breckneck.deptbook.domain.util.FinanceInterval
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.util.Calendar
 
 class FinanceFragment : Fragment() {
 
@@ -33,7 +34,7 @@ class FinanceFragment : Fragment() {
     private lateinit var usedFinanceCategoryAdapter: UsedFinanceCategoryAdapter
 
     interface OnButtonClickListener {
-        fun onAddFinanceButtonClick()
+        fun onAddFinanceButtonClick(isRevenue: Boolean, dayInMillis: Long)
     }
 
     var buttonClickListener: OnButtonClickListener? = null
@@ -120,8 +121,7 @@ class FinanceFragment : Fragment() {
 
         val financeDateIntervalTextView: TextView = view.findViewById(R.id.financeDateIntervalTextView)
         vm.financeInterval.observe(viewLifecycleOwner) { interval ->
-            var i = 0
-            i = when (interval) {
+            val i = when (interval) {
                 FinanceInterval.DAY -> 0
                 FinanceInterval.WEEK -> 1
                 FinanceInterval.MONTH -> 2
@@ -147,6 +147,52 @@ class FinanceFragment : Fragment() {
 
         vm.isRevenueSwitch.observe(viewLifecycleOwner) { isRevenue ->
             vm.getAllCategoriesWithFinances()
+        }
+
+        val backToCurrentDateImageView: ImageView = view.findViewById(R.id.backToCurrentDateImageView)
+        vm.financeIntervalUnix.observe(viewLifecycleOwner) { financeIntervalInMillis ->
+            val beginOfTheDayInSeconds = financeIntervalInMillis.first / 1000
+            when (vm.financeInterval.value) {
+                FinanceInterval.DAY -> {
+                    if (beginOfTheDayInSeconds == vm.currentDayInSeconds.value)
+                        backToCurrentDateImageView.visibility = View.GONE
+                    else
+                        backToCurrentDateImageView.visibility = View.VISIBLE
+                }
+                FinanceInterval.WEEK -> {
+                    val calendar = Calendar.getInstance()
+                    calendar.timeInMillis = vm.currentDayInSeconds.value!! * 1000
+                    calendar.set(Calendar.DAY_OF_YEAR, 0)
+                    calendar.set(Calendar.DAY_OF_MONTH, 0)
+                    calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
+                    if (beginOfTheDayInSeconds == calendar.timeInMillis / 1000)
+                        backToCurrentDateImageView.visibility = View.GONE
+                    else
+                        backToCurrentDateImageView.visibility = View.VISIBLE
+                }
+                FinanceInterval.MONTH -> {
+                    val calendar = Calendar.getInstance()
+                    calendar.timeInMillis = vm.currentDayInSeconds.value!! * 1000
+                    calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMinimum(Calendar.DAY_OF_MONTH))
+                    if (beginOfTheDayInSeconds == calendar.timeInMillis / 1000)
+                        backToCurrentDateImageView.visibility = View.GONE
+                    else
+                        backToCurrentDateImageView.visibility = View.VISIBLE
+                }
+                FinanceInterval.YEAR -> {
+                    val calendar = Calendar.getInstance()
+                    calendar.timeInMillis = vm.currentDayInSeconds.value!! * 1000
+                    calendar.set(Calendar.DAY_OF_YEAR, calendar.getActualMinimum(Calendar.DAY_OF_YEAR))
+                    if (beginOfTheDayInSeconds == calendar.timeInMillis / 1000)
+                        backToCurrentDateImageView.visibility = View.GONE
+                    else
+                        backToCurrentDateImageView.visibility = View.VISIBLE
+                }
+                null -> {}
+            }
+        }
+        backToCurrentDateImageView.setOnClickListener {
+            vm.setInterval(interval = vm.financeInterval.value!!)
         }
 
 
@@ -217,7 +263,10 @@ class FinanceFragment : Fragment() {
 
         val addFinanceButton: FloatingActionButton = view.findViewById(R.id.addFinanceButton)
         addFinanceButton.setOnClickListener {
-            buttonClickListener!!.onAddFinanceButtonClick()
+            if (vm.financeInterval.value == FinanceInterval.DAY)
+                buttonClickListener!!.onAddFinanceButtonClick(isRevenue = financeSwitch.isChecked(), dayInMillis = vm.financeIntervalUnix.value!!.first)
+            else
+                buttonClickListener!!.onAddFinanceButtonClick(isRevenue = financeSwitch.isChecked(), dayInMillis = vm.currentDayInSeconds.value!! * 1000)
         }
     }
 

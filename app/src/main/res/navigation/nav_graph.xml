@@ -154,6 +154,14 @@
             app:exitAnim="@anim/fade_out"
             app:popEnterAnim="@anim/fade_in"
             app:popExitAnim="@anim/slide_down"/>
+        <argument
+            android:name="isRevenue"
+            app:argType="boolean"
+            android:defaultValue="true" />
+        <argument
+            android:name="dayInMillis"
+            app:argType="integer"
+            android:defaultValue="0" />
     </fragment>
     <fragment
         android:id="@+id/createFinanceFragment"

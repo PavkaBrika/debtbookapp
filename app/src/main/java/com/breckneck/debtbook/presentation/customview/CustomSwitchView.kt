@@ -240,7 +240,13 @@ class CustomSwitchView(context: Context, attrs: AttributeSet) : View(context, at
 //        return super.dispatchKeyEvent(event)
 //    }
 
-    public override fun setOnClickListener(l: OnClickListener?) {
+    override fun setOnClickListener(l: OnClickListener?) {
         this.onClickListener = l
+    }
+
+    fun setChecked(checked: Boolean) {
+        isEnabled = checked
+        invalidate()
+        requestLayout()
     }
 }

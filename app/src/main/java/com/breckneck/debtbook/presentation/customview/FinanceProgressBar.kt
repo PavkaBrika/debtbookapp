@@ -4,15 +4,11 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.Path
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffXfermode
 import android.graphics.Rect
 import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.View
 import com.breckneck.debtbook.R
-import com.breckneck.deptbook.domain.model.FinanceCategory
 import com.breckneck.deptbook.domain.model.FinanceCategoryWithFinances
 
 class FinanceProgressBar(context: Context, attrs: AttributeSet): View(context, attrs) {
@@ -52,7 +48,6 @@ class FinanceProgressBar(context: Context, attrs: AttributeSet): View(context, a
     )
 
     private val bodyRect = Rect()
-    private val categoriesRectList: MutableList<Pair<Rect, Int>> = mutableListOf()
 
     private val bodyRectPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val financeProgressPaint = Paint(Paint.ANTI_ALIAS_FLAG)

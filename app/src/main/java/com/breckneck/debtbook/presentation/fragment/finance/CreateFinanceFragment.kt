@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.os.bundleOf
@@ -60,6 +61,14 @@ class CreateFinanceFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val isRevenue = arguments?.getBoolean("isRevenue")
+        val dayInMillis = arguments?.getLong("dayInMillis")
+        if (vm.date.value == null) {
+            val calendar = Calendar.getInstance()
+            calendar.timeInMillis = dayInMillis!!
+            vm.setCurrentDate(calendar.time)
+        }
 
         val currencyNames = listOf(getString(R.string.usd), getString(R.string.eur), getString(R.string.rub),
             getString(R.string.byn), getString(R.string.uah), getString(R.string.kzt),
@@ -117,6 +126,7 @@ class CreateFinanceFragment : Fragment() {
         }
         financeDateTextView.setOnClickListener {
             val calendar = Calendar.getInstance()
+            calendar.timeInMillis = dayInMillis!!
             DatePickerDialog(
                 view.context, dateSetListener,
                 calendar.get(Calendar.YEAR),
@@ -185,6 +195,7 @@ class CreateFinanceFragment : Fragment() {
         }
 
         val customSwitch: CustomSwitchView = view.findViewById(R.id.customSwitch)
+        customSwitch.setChecked(isRevenue!!)
         val setFinanceButton: FloatingActionButton = view.findViewById(R.id.setFinanceButton)
         setFinanceButton.setOnClickListener {
             if (isAllFieldsFilledRight()) {

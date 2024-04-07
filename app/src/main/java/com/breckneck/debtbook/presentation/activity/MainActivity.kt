@@ -373,8 +373,11 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener,
     }
 
     //finance interface
-    override fun onAddFinanceButtonClick() {
-        navController.navigate(R.id.action_financeFragment_to_createFinanceFragment)
+    override fun onAddFinanceButtonClick(isRevenue: Boolean, dayInMillis: Long) {
+        val args = Bundle()
+        args.putBoolean("isRevenue", isRevenue)
+        args.putLong("dayInMillis", dayInMillis)
+        navController.navigate(R.id.action_financeFragment_to_createFinanceFragment, args)
     }
 
     override fun onAddCategoryButtonClick() {

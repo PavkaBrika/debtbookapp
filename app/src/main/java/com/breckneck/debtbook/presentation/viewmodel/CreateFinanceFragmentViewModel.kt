@@ -45,7 +45,7 @@ class CreateFinanceFragmentViewModel(
     init {
         Log.e(TAG, "Initialized")
         getAllFinanceCategories()
-        getCurrentDate()
+//        getCurrentDate()
         getFinanceCurrency()
     }
 
@@ -89,9 +89,9 @@ class CreateFinanceFragmentViewModel(
         _currency.value = getFinanceCurrency.execute()
     }
 
-    fun getCurrentDate() {
-        _date.value = Calendar.getInstance().time
-    }
+//    fun getCurrentDate() {
+//        _date.value = Calendar.getInstance().time
+//    }
 
     fun setCurrentDate(date: Date) {
         _date.value = date

@@ -30,12 +30,6 @@ class FinanceFragmentViewModel(
 
     private val TAG = "FinanceFragmentVM"
 
-//    private val _financeList = MutableLiveData<List<Finance>>()
-//    val financeList: LiveData<List<Finance>>
-//        get() = _financeList
-//    private val _financeCategoryList = MutableLiveData<List<FinanceCategory>>()
-//    val financeCategoryList: LiveData<List<FinanceCategory>>
-//        get() = _financeCategoryList
     private val _categoriesWithFinancesList = MutableLiveData<List<FinanceCategoryWithFinances>>()
     val categoriesWithFinancesList: LiveData<List<FinanceCategoryWithFinances>>
         get() = _categoriesWithFinancesList
@@ -57,7 +51,7 @@ class FinanceFragmentViewModel(
     private val _currency = MutableLiveData<String>()
     val currency: LiveData<String>
         get() = _currency
-    private val _financeInterval = MutableLiveData<FinanceInterval>(FinanceInterval.DAY)
+    private val _financeInterval = MutableLiveData(FinanceInterval.DAY)
     val financeInterval: LiveData<FinanceInterval>
         get() = _financeInterval
     private val _financeIntervalString = MutableLiveData<String>()
@@ -66,18 +60,19 @@ class FinanceFragmentViewModel(
     private val _financeIntervalUnix = MutableLiveData<Pair<Long, Long>>() // 1 - left border in millis, 2 - right border in millis
     val financeIntervalUnix: LiveData<Pair<Long, Long>>
         get() = _financeIntervalUnix
+    private val _currentDayInSeconds = MutableLiveData<Long>()
+    val currentDayInSeconds: LiveData<Long>
+        get() = _currentDayInSeconds
     private val _overallSum = MutableLiveData<Double>(0.0)
     val overallSum: LiveData<Double>
         get() = _overallSum
-//    private val _financeListState= MutableLiveData<FinanceListState>(FinanceListState.CATEGORIES)
-//    val financeListState: LiveData<FinanceListState>
-//        get() = _financeListState
 
     private val disposeBag = CompositeDisposable()
 
     init {
         getFinanceCurrency()
         getFinanceInterval()
+        getCurrentDayInSeconds()
     }
 
     override fun onCleared() {
@@ -86,7 +81,11 @@ class FinanceFragmentViewModel(
         Log.e(TAG, "Cleared")
     }
 
-    fun getFinanceInterval() {
+    private fun getCurrentDayInSeconds() {
+        _currentDayInSeconds.value = financeIntervalUnix.value!!.first!! / 1000
+    }
+
+    private fun getFinanceInterval() {
         val calendar = Calendar.getInstance()
         calendar.set(Calendar.SECOND, 0)
         calendar.set(Calendar.MINUTE, 0)
@@ -105,6 +104,9 @@ class FinanceFragmentViewModel(
                 calendar.set(Calendar.DAY_OF_MONTH, 0)
                 calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
                 val leftIntervalBorder = calendar.timeInMillis
+                calendar.set(Calendar.SECOND, 59)
+                calendar.set(Calendar.MINUTE, 59)
+                calendar.set(Calendar.HOUR, 23)
                 calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY)
                 val rightIntervalBorder = calendar.timeInMillis
                 _financeIntervalUnix.value = Pair(leftIntervalBorder, rightIntervalBorder)
