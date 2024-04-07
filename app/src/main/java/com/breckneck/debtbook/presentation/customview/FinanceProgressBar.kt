@@ -103,19 +103,6 @@ class FinanceProgressBar(context: Context, attrs: AttributeSet): View(context, a
         bodyRect.top = h
         bodyRect.right = w
         bodyRect.bottom = 0
-
-        var marginLeft = 0
-        var marginRight = 0
-        for (category in categoryList) {
-            val categoryRect = Rect()
-            marginRight = marginLeft + (w * category.categoryPercentage) / 100
-            categoryRect.left = marginLeft
-            categoryRect.top = h
-            categoryRect.right = marginRight
-            categoryRect.bottom = 0
-            marginLeft = marginRight
-            categoriesRectList.add(Pair(categoryRect, Color.parseColor(category.financeCategory.color)))
-        }
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -132,9 +119,18 @@ class FinanceProgressBar(context: Context, attrs: AttributeSet): View(context, a
     }
 
     private fun drawFinanceProgressRect(canvas: Canvas) {
-        for (i in categoriesRectList.indices) {
-            financeProgressPaint.color = categoriesRectList[i].second
-            canvas.drawRect(RectF(categoriesRectList[i].first), financeProgressPaint)
+        var marginLeft = 0
+        var marginRight = 0
+        for (category in categoryList) {
+            val categoryRect = Rect()
+            marginRight = marginLeft + (bodyRect.right * category.categoryPercentage) / 100
+            categoryRect.left = marginLeft
+            categoryRect.top = bodyRect.top
+            categoryRect.right = marginRight
+            categoryRect.bottom = 0
+            marginLeft = marginRight
+            financeProgressPaint.color = Color.parseColor(category.financeCategory.color)
+            canvas.drawRect(categoryRect, financeProgressPaint)
             invalidate()
             requestLayout()
         }
@@ -142,6 +138,8 @@ class FinanceProgressBar(context: Context, attrs: AttributeSet): View(context, a
 
     fun setCategoryList(categoryList: List<FinanceCategoryWithFinances>) {
         this.categoryList = categoryList
+        invalidate()
+        requestLayout()
     }
 }
 

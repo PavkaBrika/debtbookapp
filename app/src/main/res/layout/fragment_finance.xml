@@ -78,11 +78,34 @@
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_margin="24dp"
+                app:cardCornerRadius="15dp"
+                app:layout_constraintBottom_toTopOf="@+id/materialCardView"
+                app:layout_constraintEnd_toStartOf="@+id/nextDateImageView"
+                app:layout_constraintStart_toEndOf="@+id/pastDateImageView"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.breckneck.debtbook.presentation.customview.FinanceProgressBar
+                    android:id="@+id/financeProgressBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layout_constraintBottom_toTopOf="@+id/materialCardView"
+                    app:layout_constraintEnd_toStartOf="@+id/nextDateImageView"
+                    app:layout_constraintStart_toEndOf="@+id/pastDateImageView"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </com.google.android.material.card.MaterialCardView>
+
             <ImageView
                 android:id="@+id/pastDateImageView"
                 style="@style/imageViewButton"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
+                android:paddingStart="16dp"
+
                 android:src="@drawable/baseline_arrow_24"
                 app:layout_constraintBottom_toTopOf="@+id/materialCardView"
                 app:layout_constraintStart_toStartOf="parent"
@@ -93,6 +116,7 @@
                 style="@style/imageViewButton"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
+                android:paddingStart="16dp"
                 android:rotation="180"
                 android:src="@drawable/baseline_arrow_24"
                 app:layout_constraintBottom_toTopOf="@+id/materialCardView"

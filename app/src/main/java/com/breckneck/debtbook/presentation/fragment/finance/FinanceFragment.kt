@@ -16,6 +16,7 @@ import com.breckneck.debtbook.R
 import com.breckneck.debtbook.adapter.SettingsAdapter
 import com.breckneck.debtbook.adapter.UsedFinanceCategoryAdapter
 import com.breckneck.debtbook.presentation.customview.CustomSwitchView
+import com.breckneck.debtbook.presentation.customview.FinanceProgressBar
 import com.breckneck.debtbook.presentation.viewmodel.FinanceFragmentViewModel
 import com.breckneck.deptbook.domain.model.FinanceCategoryWithFinances
 import com.breckneck.deptbook.domain.util.FinanceInterval
@@ -208,8 +209,10 @@ class FinanceFragment : Fragment() {
             categoryRecyclerView.adapter = it
         }
 
+        val financeProgressBar: FinanceProgressBar = view.findViewById(R.id.financeProgressBar)
         vm.categoriesWithFinancesList.observe(viewLifecycleOwner) { categoryList ->
             usedFinanceCategoryAdapter.updateUsedFinanceCategoryList(usedFinanceCategoryList = categoryList)
+            financeProgressBar.setCategoryList(categoryList = categoryList)
         }
 
         val addFinanceButton: FloatingActionButton = view.findViewById(R.id.addFinanceButton)
