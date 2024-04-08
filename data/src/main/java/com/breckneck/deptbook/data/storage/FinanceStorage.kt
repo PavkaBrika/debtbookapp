@@ -1,6 +1,5 @@
 package com.breckneck.deptbook.data.storage
 
-import entity.FinanceCategoryData
 import entity.FinanceData
 
 interface FinanceStorage {
@@ -8,4 +7,6 @@ interface FinanceStorage {
     fun setFinance(finance: FinanceData)
 
     fun getAllFinance(): List<FinanceData>
+
+    fun getFinanceByCategoryIdAndRevenue(categoryId: Int, isRevenue: Boolean): List<FinanceData>
 }

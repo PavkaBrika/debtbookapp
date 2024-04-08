@@ -1,4 +1,9 @@
 package com.breckneck.debtbook.presentation.viewmodel
 
-class FinanceDetailsViewModel {
+import androidx.lifecycle.ViewModel
+
+class FinanceDetailsViewModel(
+//    private val getAllFinances
+): ViewModel() {
+
 }
