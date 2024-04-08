@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.adapter.CategoryColorAdapter
 import com.breckneck.debtbook.adapter.CategoryImageAdapter
-import com.breckneck.debtbook.presentation.viewmodel.CreateFinanceCategoryFragmentViewModel
+import com.breckneck.debtbook.presentation.viewmodel.CreateFinanceCategoryViewModel
 import com.breckneck.deptbook.domain.model.FinanceCategory
 import com.breckneck.deptbook.domain.util.categoryColorList
 import com.breckneck.deptbook.domain.util.categoryImageList
@@ -25,7 +25,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class CreateFinanceCategoryFragment : Fragment() {
 
-    private val vm by viewModel<CreateFinanceCategoryFragmentViewModel>()
+    private val vm by viewModel<CreateFinanceCategoryViewModel>()
 
     interface OnClickListener {
         fun onBackButtonClick()

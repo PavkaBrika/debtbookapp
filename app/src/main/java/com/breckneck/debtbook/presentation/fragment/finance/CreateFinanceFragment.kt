@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.os.bundleOf
@@ -22,7 +21,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.adapter.FinanceCategoryAdapter
 import com.breckneck.debtbook.presentation.customview.CustomSwitchView
-import com.breckneck.debtbook.presentation.viewmodel.CreateFinanceFragmentViewModel
+import com.breckneck.debtbook.presentation.viewmodel.CreateFinanceViewModel
 import com.breckneck.deptbook.domain.model.Finance
 import com.breckneck.deptbook.domain.model.FinanceCategory
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -33,7 +32,7 @@ import java.util.Calendar
 
 class CreateFinanceFragment : Fragment() {
 
-    private val vm by viewModel<CreateFinanceFragmentViewModel>()
+    private val vm by viewModel<CreateFinanceViewModel>()
 
     interface OnClickListener {
         fun onBackButtonClick()

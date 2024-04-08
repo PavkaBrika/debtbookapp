@@ -6,8 +6,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.breckneck.deptbook.domain.model.Finance
 import com.breckneck.deptbook.domain.model.FinanceCategory
-import com.breckneck.deptbook.domain.usecase.Debt.GetCurrentDateUseCase
-import com.breckneck.deptbook.domain.usecase.Debt.SetDateUseCase
 import com.breckneck.deptbook.domain.usecase.Finance.SetFinance
 import com.breckneck.deptbook.domain.usecase.FinanceCategory.GetAllFinanceCategories
 import com.breckneck.deptbook.domain.usecase.Settings.GetFinanceCurrency
@@ -16,10 +14,9 @@ import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
-import java.util.Calendar
 import java.util.Date
 
-class CreateFinanceFragmentViewModel(
+class CreateFinanceViewModel(
     private val setFinance: SetFinance,
     private val getAllFinanceCategories: GetAllFinanceCategories,
     private val getFinanceCurrency: GetFinanceCurrency

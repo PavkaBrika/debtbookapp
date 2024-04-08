@@ -11,7 +11,7 @@ import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 
-class CreateFinanceCategoryFragmentViewModel(
+class CreateFinanceCategoryViewModel(
     private val setFinanceCategory: SetFinanceCategory
 ): ViewModel() {
 

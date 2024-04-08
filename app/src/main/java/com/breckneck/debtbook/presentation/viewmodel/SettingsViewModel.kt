@@ -16,10 +16,8 @@ import com.breckneck.deptbook.domain.usecase.Settings.SetAppTheme
 import com.breckneck.deptbook.domain.usecase.Settings.SetDefaultCurrency
 import com.breckneck.deptbook.domain.usecase.Settings.SetFirstMainCurrency
 import com.breckneck.deptbook.domain.usecase.Settings.SetSecondMainCurrency
-import com.google.android.gms.common.GoogleApiAvailability
-import org.koin.android.ext.android.inject
 
-class SettingsFragmentViewModel(
+class SettingsViewModel(
     private val setFirstMainCurrency: SetFirstMainCurrency,
     private val getFirstMainCurrency: GetFirstMainCurrency,
     private val setSecondMainCurrency: SetSecondMainCurrency,

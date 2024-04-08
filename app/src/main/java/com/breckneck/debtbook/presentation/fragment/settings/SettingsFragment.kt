@@ -28,7 +28,7 @@ import com.breckneck.debtbook.BuildConfig
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.adapter.SettingsAdapter
 import com.breckneck.debtbook.presentation.viewmodel.MainActivityViewModel
-import com.breckneck.debtbook.presentation.viewmodel.SettingsFragmentViewModel
+import com.breckneck.debtbook.presentation.viewmodel.SettingsViewModel
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.material.appbar.CollapsingToolbarLayout
@@ -46,7 +46,7 @@ class SettingsFragment : Fragment() {
 
     lateinit var buttonClickListener: OnButtonClickListener
 
-    private val vm by viewModel<SettingsFragmentViewModel>()
+    private val vm by viewModel<SettingsViewModel>()
     private val mainActivityVM by activityViewModel<MainActivityViewModel>()
 
     override fun onAttach(context: Context) {

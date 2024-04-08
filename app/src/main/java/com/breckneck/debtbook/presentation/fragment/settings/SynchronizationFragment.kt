@@ -22,7 +22,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import com.breckneck.debtbook.BuildConfig
 import com.breckneck.debtbook.R
-import com.breckneck.debtbook.presentation.viewmodel.SynchronizationFragmentViewModel
+import com.breckneck.debtbook.presentation.viewmodel.SynchronizationViewModel
 import com.breckneck.debtbook.synchronization.DriveServiceHelper
 import com.breckneck.deptbook.domain.model.AppDataLists
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -50,7 +50,7 @@ class SynchronizationFragment : Fragment() {
     private val TAG = "Sync fragment"
     private val REQUEST_CODE_SIGN_IN = 1
 
-    private val vm by viewModel<SynchronizationFragmentViewModel>()
+    private val vm by viewModel<SynchronizationViewModel>()
     private val fileName = "DebtBookSync.json"
     private var synchronizationInterface: SynchronizationInterface? = null
     private val gson = Gson()

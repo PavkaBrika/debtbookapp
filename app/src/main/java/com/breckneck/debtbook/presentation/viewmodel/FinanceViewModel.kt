@@ -20,7 +20,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.Calendar
 import kotlin.math.roundToInt
 
-class FinanceFragmentViewModel(
+class FinanceViewModel(
     private val getAllFinances: GetAllFinances,
     private val getAllFinanceCategories: GetAllFinanceCategories,
     private val getFinanceCurrency: GetFinanceCurrency,

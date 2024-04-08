@@ -8,7 +8,7 @@ import com.breckneck.deptbook.domain.usecase.Debt.GetCurrentDateUseCase
 import com.breckneck.deptbook.domain.usecase.Debt.SetDateUseCase
 import com.breckneck.deptbook.domain.usecase.Settings.GetDefaultCurrency
 
-class NewDebtFragmentViewModel(
+class NewDebtViewModel(
     private val getDefaultCurrency: GetDefaultCurrency,
     private val getCurrentDateUseCase: GetCurrentDateUseCase,
     private val setDateUseCase: SetDateUseCase

@@ -1,14 +1,14 @@
 package com.breckneck.debtbook.di
 
-import com.breckneck.debtbook.presentation.viewmodel.CreateFinanceCategoryFragmentViewModel
-import com.breckneck.debtbook.presentation.viewmodel.CreateFinanceFragmentViewModel
-import com.breckneck.debtbook.presentation.viewmodel.SynchronizationFragmentViewModel
+import com.breckneck.debtbook.presentation.viewmodel.CreateFinanceCategoryViewModel
+import com.breckneck.debtbook.presentation.viewmodel.CreateFinanceViewModel
+import com.breckneck.debtbook.presentation.viewmodel.SynchronizationViewModel
 import com.breckneck.debtbook.presentation.viewmodel.DebtDetailsViewModel
-import com.breckneck.debtbook.presentation.viewmodel.FinanceFragmentViewModel
+import com.breckneck.debtbook.presentation.viewmodel.FinanceViewModel
 import com.breckneck.debtbook.presentation.viewmodel.MainActivityViewModel
 import com.breckneck.debtbook.presentation.viewmodel.MainFragmentViewModel
-import com.breckneck.debtbook.presentation.viewmodel.NewDebtFragmentViewModel
-import com.breckneck.debtbook.presentation.viewmodel.SettingsFragmentViewModel
+import com.breckneck.debtbook.presentation.viewmodel.NewDebtViewModel
+import com.breckneck.debtbook.presentation.viewmodel.SettingsViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -53,8 +53,8 @@ val appModule = module {
         )
     }
 
-    viewModel<SettingsFragmentViewModel> {
-        SettingsFragmentViewModel(
+    viewModel<SettingsViewModel> {
+        SettingsViewModel(
             setFirstMainCurrency = get(),
             getFirstMainCurrency = get(),
             setSecondMainCurrency = get(),
@@ -70,16 +70,16 @@ val appModule = module {
         )
     }
 
-    viewModel<NewDebtFragmentViewModel> {
-        NewDebtFragmentViewModel(
+    viewModel<NewDebtViewModel> {
+        NewDebtViewModel(
             getDefaultCurrency = get(),
             getCurrentDateUseCase = get(),
             setDateUseCase = get()
         )
     }
 
-    viewModel<SynchronizationFragmentViewModel> {
-        SynchronizationFragmentViewModel(
+    viewModel<SynchronizationViewModel> {
+        SynchronizationViewModel(
             getIsAuthorized = get(),
             setIsAuthorized = get(),
             getAllDebts = get(),
@@ -93,8 +93,8 @@ val appModule = module {
         )
     }
 
-    viewModel<FinanceFragmentViewModel> {
-        FinanceFragmentViewModel(
+    viewModel<FinanceViewModel> {
+        FinanceViewModel(
             getAllFinances = get(),
             getAllFinanceCategories = get(),
             getFinanceCurrency = get(),
@@ -103,15 +103,15 @@ val appModule = module {
         )
     }
 
-    viewModel<CreateFinanceFragmentViewModel> {
-        CreateFinanceFragmentViewModel(
+    viewModel<CreateFinanceViewModel> {
+        CreateFinanceViewModel(
             setFinance = get(),
             getAllFinanceCategories = get(),
             getFinanceCurrency = get()
         )
     }
 
-    viewModel<CreateFinanceCategoryFragmentViewModel> {
-        CreateFinanceCategoryFragmentViewModel(setFinanceCategory = get())
+    viewModel<CreateFinanceCategoryViewModel> {
+        CreateFinanceCategoryViewModel(setFinanceCategory = get())
     }
 }

@@ -27,7 +27,7 @@ import com.breckneck.debtbook.R
 import com.breckneck.debtbook.adapter.ContactsAdapter
 import com.breckneck.debtbook.adapter.SettingsAdapter
 import com.breckneck.debtbook.presentation.customview.CustomSwitchView
-import com.breckneck.debtbook.presentation.viewmodel.NewDebtFragmentViewModel
+import com.breckneck.debtbook.presentation.viewmodel.NewDebtViewModel
 import com.breckneck.deptbook.domain.usecase.Debt.*
 import com.breckneck.deptbook.domain.usecase.Human.AddSumUseCase
 import com.breckneck.deptbook.domain.usecase.Human.GetLastHumanIdUseCase
@@ -79,7 +79,7 @@ class NewDebtFragment: Fragment() {
 //        enterTransition = inflater.inflateTransition(R.transition.slide_up)
     }
 
-    private val vm by viewModel<NewDebtFragmentViewModel>()
+    private val vm by viewModel<NewDebtViewModel>()
 
     private val setHumanUseCase: SetHumanUseCase by inject()
     private val getLastHumanIdUseCase: GetLastHumanIdUseCase by inject()

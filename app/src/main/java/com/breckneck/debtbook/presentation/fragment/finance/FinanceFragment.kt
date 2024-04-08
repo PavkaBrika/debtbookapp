@@ -20,7 +20,7 @@ import com.breckneck.debtbook.adapter.SettingsAdapter
 import com.breckneck.debtbook.adapter.UsedFinanceCategoryAdapter
 import com.breckneck.debtbook.presentation.customview.CustomSwitchView
 import com.breckneck.debtbook.presentation.customview.FinanceProgressBar
-import com.breckneck.debtbook.presentation.viewmodel.FinanceFragmentViewModel
+import com.breckneck.debtbook.presentation.viewmodel.FinanceViewModel
 import com.breckneck.deptbook.domain.model.FinanceCategoryWithFinances
 import com.breckneck.deptbook.domain.util.FinanceInterval
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -34,7 +34,7 @@ class FinanceFragment : Fragment() {
 
     private val TAG = "FinanceFragment"
 
-    private val vm by viewModel<FinanceFragmentViewModel>()
+    private val vm by viewModel<FinanceViewModel>()
 
     private lateinit var usedFinanceCategoryAdapter: UsedFinanceCategoryAdapter
 

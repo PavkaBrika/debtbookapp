@@ -10,12 +10,20 @@ import com.breckneck.debtbook.R
 
 class FinanceDetailsFragment: Fragment() {
 
-    interface OnClickListener {
+    private val TAG = "FinanceDetailsFragment"
 
+
+
+    interface OnClickListener {
+        fun onBackButtonClick()
+
+        fun editFinance()
     }
 
+    var buttonClickListener: OnClickListener? = null
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        buttonClickListener = context as OnClickListener
     }
 
     override fun onCreateView(

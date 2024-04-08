@@ -6,9 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.breckneck.debtbook.synchronization.DriveServiceHelper
 import com.breckneck.deptbook.domain.model.AppDataLists
-import com.breckneck.deptbook.domain.model.HumanDomain
 import com.breckneck.deptbook.domain.usecase.Debt.GetAllDebts
-import com.breckneck.deptbook.domain.usecase.Debt.GetAllDebtsByIdUseCase
 import com.breckneck.deptbook.domain.usecase.Debt.ReplaceAllDebts
 import com.breckneck.deptbook.domain.usecase.Debt.SetDateUseCase
 import com.breckneck.deptbook.domain.usecase.Human.GetAllHumansUseCase
@@ -25,7 +23,7 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.Calendar
 
-class SynchronizationFragmentViewModel(
+class SynchronizationViewModel(
     private val getIsAuthorized: GetIsAuthorized,
     private val setIsAuthorized: SetIsAuthorized,
     private val getAllDebts: GetAllDebts,
