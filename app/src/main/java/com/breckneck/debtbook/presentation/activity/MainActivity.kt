@@ -25,6 +25,7 @@ import com.breckneck.debtbook.presentation.fragment.debt.MainFragment
 import com.breckneck.debtbook.presentation.fragment.debt.NewDebtFragment
 import com.breckneck.debtbook.presentation.fragment.finance.CreateFinanceCategoryFragment
 import com.breckneck.debtbook.presentation.fragment.finance.CreateFinanceFragment
+import com.breckneck.debtbook.presentation.fragment.finance.FinanceDetailsFragment
 import com.breckneck.debtbook.presentation.fragment.finance.FinanceFragment
 import com.breckneck.debtbook.presentation.fragment.settings.SettingsFragment
 import com.breckneck.debtbook.presentation.fragment.settings.SynchronizationFragment
@@ -50,7 +51,8 @@ import kotlin.math.roundToInt
 class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener,
     NewDebtFragment.OnButtonClickListener, DebtDetailsFragment.OnButtonClickListener,
     SettingsFragment.OnButtonClickListener, SynchronizationFragment.SynchronizationInterface,
-    FinanceFragment.OnButtonClickListener, CreateFinanceFragment.OnClickListener, CreateFinanceCategoryFragment.OnClickListener {
+    FinanceFragment.OnButtonClickListener, CreateFinanceFragment.OnClickListener,
+    CreateFinanceCategoryFragment.OnClickListener, FinanceDetailsFragment.OnClickListener {
 
     private var interstitialAd: InterstitialAd? = null
     private var interstitialAdLoader: InterstitialAdLoader? = null
@@ -382,6 +384,19 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener,
 
     override fun onAddCategoryButtonClick() {
         navController.navigate(R.id.action_createFinanceFragment_to_createFinanceCategoryFragment)
+    }
+
+    override fun onFinanceCategoryClick(categoryId: Int, isRevenue: Boolean) {
+        val args = Bundle()
+        args.putInt("categoryId", categoryId)
+        args.putBoolean("isRevenue", isRevenue)
+        navController.navigate(R.id.action_financeFragment_to_financeDetailsFragment, args)
+    }
+
+    //finance details interface
+
+    override fun editFinance() {
+
     }
 
     //synchronization interface

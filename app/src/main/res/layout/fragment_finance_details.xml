@@ -65,28 +65,6 @@
                         android:background="@android:color/transparent"
                         android:foreground="?android:attr/selectableItemBackground" />
 
-                    <ImageView
-                        android:id="@+id/deleteFinanceButton"
-                        style="@style/imageViewButton"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_gravity="end"
-                        android:layout_marginEnd="16dp"
-                        android:src="@drawable/ic_baseline_delete_outline_24"
-                        android:background="@android:color/transparent"
-                        android:foreground="?android:attr/selectableItemBackground" />
-
-                    <ImageView
-                        android:id="@+id/sortButton"
-                        style="@style/imageViewButton"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_gravity="end"
-                        android:layout_marginEnd="16dp"
-                        android:src="@drawable/baseline_sort_24"
-                        android:background="@android:color/transparent"
-                        android:foreground="?android:attr/selectableItemBackground" />
-
                 </androidx.appcompat.widget.Toolbar>
 
             </com.google.android.material.appbar.CollapsingToolbarLayout>

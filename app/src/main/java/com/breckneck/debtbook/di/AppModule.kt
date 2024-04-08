@@ -4,6 +4,7 @@ import com.breckneck.debtbook.presentation.viewmodel.CreateFinanceCategoryViewMo
 import com.breckneck.debtbook.presentation.viewmodel.CreateFinanceViewModel
 import com.breckneck.debtbook.presentation.viewmodel.SynchronizationViewModel
 import com.breckneck.debtbook.presentation.viewmodel.DebtDetailsViewModel
+import com.breckneck.debtbook.presentation.viewmodel.FinanceDetailsViewModel
 import com.breckneck.debtbook.presentation.viewmodel.FinanceViewModel
 import com.breckneck.debtbook.presentation.viewmodel.MainActivityViewModel
 import com.breckneck.debtbook.presentation.viewmodel.MainFragmentViewModel
@@ -35,7 +36,8 @@ val appModule = module {
             setDebtQuantityForAppRateDialogShow = get(),
             getClicksUseCase = get(),
             saveClicks = get(),
-            getAppTheme = get())
+            getAppTheme = get()
+        )
     }
 
     viewModel<DebtDetailsViewModel> {
@@ -113,5 +115,11 @@ val appModule = module {
 
     viewModel<CreateFinanceCategoryViewModel> {
         CreateFinanceCategoryViewModel(setFinanceCategory = get())
+    }
+
+    viewModel<FinanceDetailsViewModel> {
+        FinanceDetailsViewModel(
+            getFinanceByCategoryIdAndRevenue = get()
+        )
     }
 }

@@ -40,6 +40,8 @@ class FinanceFragment : Fragment() {
 
     interface OnButtonClickListener {
         fun onAddFinanceButtonClick(isRevenue: Boolean, dayInMillis: Long)
+
+        fun onFinanceCategoryClick(categoryId: Int, isRevenue: Boolean)
     }
 
     var buttonClickListener: OnButtonClickListener? = null
@@ -289,7 +291,7 @@ class FinanceFragment : Fragment() {
         val onUsedFinanceCategoryClickListener =
             object : UsedFinanceCategoryAdapter.OnUsedFinanceCategoryClickListener {
                 override fun onClick(usedFinance: FinanceCategoryWithFinances) {
-
+                    buttonClickListener!!.onFinanceCategoryClick(categoryId = usedFinance.financeCategory.id, isRevenue = vm.isRevenueSwitch.value!!)
                 }
             }
         usedFinanceCategoryAdapter = UsedFinanceCategoryAdapter(

@@ -162,6 +162,13 @@
             android:name="dayInMillis"
             app:argType="integer"
             android:defaultValue="0" />
+        <action
+            android:id="@+id/action_financeFragment_to_financeDetailsFragment"
+            app:destination="@id/financeDetailsFragment"
+            app:enterAnim="@anim/slide_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/slide_out"/>
     </fragment>
     <fragment
         android:id="@+id/createFinanceFragment"
@@ -181,4 +188,9 @@
         android:name="com.breckneck.debtbook.presentation.fragment.finance.CreateFinanceCategoryFragment"
         android:label="CreateFinanceCategoryFragment"
         tools:layout="@layout/fragment_create_finance_category"/>
+    <fragment
+        android:id="@+id/financeDetailsFragment"
+        android:name="com.breckneck.debtbook.presentation.fragment.finance.FinanceDetailsFragment"
+        android:label="FinanceDetailsFragment"
+        tools:layout="@layout/fragment_finance_details"/>
 </navigation>
