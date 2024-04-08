@@ -1,6 +1,7 @@
 package com.breckneck.debtbook.presentation.fragment.debt
 
 import android.content.Context
+import android.content.pm.ActivityInfo
 import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
@@ -64,6 +65,7 @@ class MainFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         setFragmentResultListener("requestKey") { requestKey, bundle ->
             if (bundle.getBoolean("isListModified"))
                 vm.init()

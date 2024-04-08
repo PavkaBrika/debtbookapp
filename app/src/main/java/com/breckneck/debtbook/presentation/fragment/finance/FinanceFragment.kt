@@ -1,6 +1,7 @@
 package com.breckneck.debtbook.presentation.fragment.finance
 
 import android.content.Context
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -45,11 +46,16 @@ class FinanceFragment : Fragment() {
         buttonClickListener = context as OnButtonClickListener
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setFragmentResultListener("requestKey") { requestKey, bundle ->
             if (bundle.getBoolean("isListModified"))
                 vm.getAllCategoriesWithFinances()

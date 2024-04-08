@@ -25,6 +25,7 @@
                 android:layout_height="180dp"
                 android:fitsSystemWindows="true"
                 app:expandedTitleGravity="bottom"
+                app:layout_scrollFlags="noScroll"
                 app:expandedTitleMarginStart="16dp"
                 app:title="@string/finances"
                 app:titleEnabled="true">

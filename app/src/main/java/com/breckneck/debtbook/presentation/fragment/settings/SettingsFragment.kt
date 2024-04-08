@@ -2,6 +2,7 @@ package com.breckneck.debtbook.presentation.fragment.settings
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
@@ -62,6 +63,7 @@ class SettingsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         setFragmentResultListener("settingsKey") { requestKey, bundle ->
             if (bundle.getBoolean("isAuthorized") != vm.isAuthorized.value)
                 vm.getIsAuthorized()
