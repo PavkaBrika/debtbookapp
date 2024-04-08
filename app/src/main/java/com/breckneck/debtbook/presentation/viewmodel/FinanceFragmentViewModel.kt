@@ -313,6 +313,7 @@ class FinanceFragmentViewModel(
     fun setCurrency(currency: String) {
         _currency.value = currency
         setFinanceCurrency.execute(currency = currency)
+        getAllCategoriesWithFinances()
     }
 
     private fun getFinanceCurrency() {

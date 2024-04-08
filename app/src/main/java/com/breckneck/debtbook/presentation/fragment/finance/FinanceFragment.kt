@@ -26,6 +26,8 @@ import com.breckneck.deptbook.domain.util.FinanceInterval
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
 import java.util.Calendar
 
 class FinanceFragment : Fragment() {
@@ -65,6 +67,11 @@ class FinanceFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val decimalFormat = DecimalFormat("###,###,###.##")
+        val customSymbol: DecimalFormatSymbols = DecimalFormatSymbols()
+        customSymbol.groupingSeparator = ' '
+        decimalFormat.decimalFormatSymbols = customSymbol
 
         val currencyNames = listOf(
             getString(R.string.usd), getString(R.string.eur), getString(R.string.rub),
@@ -127,8 +134,10 @@ class FinanceFragment : Fragment() {
             }
         }
 
-        val financeDateIntervalCardView: CardView = view.findViewById(R.id.financeDateIntervalCardView)
-        val financeDateIntervalTextView: TextView = view.findViewById(R.id.financeDateIntervalTextView)
+        val financeDateIntervalCardView: CardView =
+            view.findViewById(R.id.financeDateIntervalCardView)
+        val financeDateIntervalTextView: TextView =
+            view.findViewById(R.id.financeDateIntervalTextView)
         vm.financeInterval.observe(viewLifecycleOwner) { interval ->
             val i = when (interval) {
                 FinanceInterval.DAY -> 0
@@ -158,13 +167,18 @@ class FinanceFragment : Fragment() {
         vm.isRevenueSwitch.observe(viewLifecycleOwner) { isRevenue ->
             vm.getAllCategoriesWithFinances()
             when (isRevenue) {
-                true -> noNotesTextView.text = getString(R.string.there_are_no_revenues_yet_click_the_button_below_to_add)
-                false -> noNotesTextView.text = getString(R.string.there_are_no_expenses_yet_click_the_button_below_to_add)
+                true -> noNotesTextView.text =
+                    getString(R.string.there_are_no_revenues_yet_click_the_button_below_to_add)
+
+                false -> noNotesTextView.text =
+                    getString(R.string.there_are_no_expenses_yet_click_the_button_below_to_add)
+
                 null -> {}
             }
         }
 
-        val backToCurrentDateImageView: ImageView = view.findViewById(R.id.backToCurrentDateImageView)
+        val backToCurrentDateImageView: ImageView =
+            view.findViewById(R.id.backToCurrentDateImageView)
         vm.financeIntervalUnix.observe(viewLifecycleOwner) { financeIntervalInMillis ->
             val beginOfTheDayInSeconds = financeIntervalInMillis.first / 1000
             when (vm.financeInterval.value) {
@@ -174,6 +188,7 @@ class FinanceFragment : Fragment() {
                     else
                         backToCurrentDateImageView.visibility = View.VISIBLE
                 }
+
                 FinanceInterval.WEEK -> {
                     val calendar = Calendar.getInstance()
                     calendar.timeInMillis = vm.currentDayInSeconds.value!! * 1000
@@ -185,29 +200,43 @@ class FinanceFragment : Fragment() {
                     else
                         backToCurrentDateImageView.visibility = View.VISIBLE
                 }
+
                 FinanceInterval.MONTH -> {
                     val calendar = Calendar.getInstance()
                     calendar.timeInMillis = vm.currentDayInSeconds.value!! * 1000
-                    calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMinimum(Calendar.DAY_OF_MONTH))
+                    calendar.set(
+                        Calendar.DAY_OF_MONTH,
+                        calendar.getActualMinimum(Calendar.DAY_OF_MONTH)
+                    )
                     if (beginOfTheDayInSeconds == calendar.timeInMillis / 1000)
                         backToCurrentDateImageView.visibility = View.GONE
                     else
                         backToCurrentDateImageView.visibility = View.VISIBLE
                 }
+
                 FinanceInterval.YEAR -> {
                     val calendar = Calendar.getInstance()
                     calendar.timeInMillis = vm.currentDayInSeconds.value!! * 1000
-                    calendar.set(Calendar.DAY_OF_YEAR, calendar.getActualMinimum(Calendar.DAY_OF_YEAR))
+                    calendar.set(
+                        Calendar.DAY_OF_YEAR,
+                        calendar.getActualMinimum(Calendar.DAY_OF_YEAR)
+                    )
                     if (beginOfTheDayInSeconds == calendar.timeInMillis / 1000)
                         backToCurrentDateImageView.visibility = View.GONE
                     else
                         backToCurrentDateImageView.visibility = View.VISIBLE
                 }
+
                 null -> {}
             }
         }
         backToCurrentDateImageView.setOnClickListener {
             vm.setInterval(interval = vm.financeInterval.value!!)
+        }
+
+        val overallSumTextView: TextView = view.findViewById(R.id.overallSumTextView)
+        vm.overallSum.observe(viewLifecycleOwner) { sum ->
+            overallSumTextView.text = "${decimalFormat.format(sum)} ${vm.currency.value}"
         }
 
 
@@ -270,7 +299,8 @@ class FinanceFragment : Fragment() {
             categoryRecyclerView.adapter = it
         }
 
-        val categoryNestedScrollView: NestedScrollView = view.findViewById(R.id.categoryNestedScrollView)
+        val categoryNestedScrollView: NestedScrollView =
+            view.findViewById(R.id.categoryNestedScrollView)
         val financeProgressBar: FinanceProgressBar = view.findViewById(R.id.financeProgressBar)
         vm.categoriesWithFinancesList.observe(viewLifecycleOwner) { categoryList ->
             if (categoryList.isEmpty()) {
@@ -279,7 +309,7 @@ class FinanceFragment : Fragment() {
             } else {
                 noNotesTextView.visibility = View.GONE
                 categoryNestedScrollView.visibility = View.VISIBLE
-                usedFinanceCategoryAdapter.updateUsedFinanceCategoryList(usedFinanceCategoryList = categoryList)
+                usedFinanceCategoryAdapter.updateUsedFinanceCategoryList(usedFinanceCategoryList = categoryList, currency = vm.currency.value!!)
             }
             financeProgressBar.setCategoryList(categoryList = categoryList)
         }
@@ -287,9 +317,15 @@ class FinanceFragment : Fragment() {
         val addFinanceButton: FloatingActionButton = view.findViewById(R.id.addFinanceButton)
         addFinanceButton.setOnClickListener {
             if (vm.financeInterval.value == FinanceInterval.DAY)
-                buttonClickListener!!.onAddFinanceButtonClick(isRevenue = financeSwitch.isChecked(), dayInMillis = vm.financeIntervalUnix.value!!.first)
+                buttonClickListener!!.onAddFinanceButtonClick(
+                    isRevenue = financeSwitch.isChecked(),
+                    dayInMillis = vm.financeIntervalUnix.value!!.first
+                )
             else
-                buttonClickListener!!.onAddFinanceButtonClick(isRevenue = financeSwitch.isChecked(), dayInMillis = vm.currentDayInSeconds.value!! * 1000)
+                buttonClickListener!!.onAddFinanceButtonClick(
+                    isRevenue = financeSwitch.isChecked(),
+                    dayInMillis = vm.currentDayInSeconds.value!! * 1000
+                )
         }
     }
 

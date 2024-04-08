@@ -18,7 +18,7 @@ import java.text.DecimalFormatSymbols
 
 class UsedFinanceCategoryAdapter(
     private val onUsedFinanceCategoryClickListener: OnUsedFinanceCategoryClickListener,
-    private val currency: String
+    private var currency: String
 ): RecyclerView.Adapter<UsedFinanceCategoryAdapter.UsedFinanceCategoryViewHolder>() {
 
     private val decimalFormat = DecimalFormat("###,###,###.##")
@@ -30,9 +30,10 @@ class UsedFinanceCategoryAdapter(
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun updateUsedFinanceCategoryList(usedFinanceCategoryList: List<FinanceCategoryWithFinances>) {
+    fun updateUsedFinanceCategoryList(usedFinanceCategoryList: List<FinanceCategoryWithFinances>, currency: String) {
         this.usedFinanceCategoryList.clear()
         this.usedFinanceCategoryList.addAll(usedFinanceCategoryList)
+        this.currency = currency
         notifyDataSetChanged()
     }
 

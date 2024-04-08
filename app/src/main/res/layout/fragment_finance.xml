@@ -25,8 +25,8 @@
                 android:layout_height="180dp"
                 android:fitsSystemWindows="true"
                 app:expandedTitleGravity="bottom"
-                app:layout_scrollFlags="noScroll"
                 app:expandedTitleMarginStart="16dp"
+                app:layout_scrollFlags="noScroll"
                 app:title="@string/finances"
                 app:titleEnabled="true">
 
@@ -38,23 +38,37 @@
                     android:layout_marginEnd="12dp"
                     android:layout_marginBottom="28dp">
 
+                    <TextView
+                        android:id="@+id/overallSumTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_above="@id/financeDateIntervalCardView"
+                        android:layout_alignParentEnd="true"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="4dp"
+                        android:textColor="@color/green"
+                        android:text="Default overall sum"
+                        android:textAlignment="viewEnd"
+                        android:textSize="18sp" />
+
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/financeDateIntervalCardView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:cardCornerRadius="10dp"
-                        app:strokeWidth="1dp"
-                        app:strokeColor="@color/black"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentBottom="true"
                         android:foreground="?android:attr/selectableItemBackground"
-                        android:layout_alignParentBottom="true">
+                        app:cardCornerRadius="10dp"
+                        app:strokeColor="@color/black"
+                        app:strokeWidth="1dp">
 
                         <TextView
                             android:id="@+id/financeDateIntervalTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Default date"
                             android:paddingHorizontal="8dp"
                             android:paddingVertical="4dp"
+                            android:text="Default date"
                             android:textAlignment="viewEnd"
                             android:textSize="18sp" />
 
@@ -75,11 +89,11 @@
                         style="@style/imageViewButton"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
-                        android:visibility="visible"
-                        android:layout_marginEnd="16dp"
-                        android:src="@drawable/baseline_refresh_24"
                         android:layout_gravity="center"
-                        android:foreground="?android:attr/selectableItemBackground" />
+                        android:layout_marginEnd="16dp"
+                        android:foreground="?android:attr/selectableItemBackground"
+                        android:src="@drawable/baseline_refresh_24"
+                        android:visibility="visible" />
 
                     <TextView
                         android:id="@+id/financeCurrencyTextView"
@@ -141,8 +155,8 @@
                 android:layout_height="0dp"
                 android:paddingStart="16dp"
                 android:rotation="180"
-                android:visibility="visible"
                 android:src="@drawable/baseline_arrow_24"
+                android:visibility="visible"
                 app:layout_constraintBottom_toTopOf="@+id/materialCardView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -245,11 +259,11 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical|center_horizontal"
+                        android:layout_marginHorizontal="16dp"
                         android:gravity="center"
                         android:text="@string/there_are_no_revenues_yet_click_the_button_below_to_add"
                         android:textColor="@color/darkgray"
                         android:textSize="25sp"
-                        android:layout_marginHorizontal="16dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
