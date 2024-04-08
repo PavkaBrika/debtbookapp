@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -119,6 +121,7 @@ class FinanceFragment : Fragment() {
             }
         }
 
+        val financeDateIntervalCardView: CardView = view.findViewById(R.id.financeDateIntervalCardView)
         val financeDateIntervalTextView: TextView = view.findViewById(R.id.financeDateIntervalTextView)
         vm.financeInterval.observe(viewLifecycleOwner) { interval ->
             val i = when (interval) {
@@ -127,7 +130,7 @@ class FinanceFragment : Fragment() {
                 FinanceInterval.MONTH -> 2
                 FinanceInterval.YEAR -> 3
             }
-            financeDateIntervalTextView.setOnClickListener {
+            financeDateIntervalCardView.setOnClickListener {
                 vm.onIntervalDialogOpen(selectedIntervalPosition = i)
                 showFinanceIntervalDialog(
                     settingsList = financeIntervalNames,
@@ -145,8 +148,14 @@ class FinanceFragment : Fragment() {
             vm.onChangeIsRevenueSwitch()
         }
 
+        val noNotesTextView: TextView = view.findViewById(R.id.noNotesTextView)
         vm.isRevenueSwitch.observe(viewLifecycleOwner) { isRevenue ->
             vm.getAllCategoriesWithFinances()
+            when (isRevenue) {
+                true -> noNotesTextView.text = getString(R.string.there_are_no_revenues_yet_click_the_button_below_to_add)
+                false -> noNotesTextView.text = getString(R.string.there_are_no_expenses_yet_click_the_button_below_to_add)
+                null -> {}
+            }
         }
 
         val backToCurrentDateImageView: ImageView = view.findViewById(R.id.backToCurrentDateImageView)
@@ -255,9 +264,17 @@ class FinanceFragment : Fragment() {
             categoryRecyclerView.adapter = it
         }
 
+        val categoryNestedScrollView: NestedScrollView = view.findViewById(R.id.categoryNestedScrollView)
         val financeProgressBar: FinanceProgressBar = view.findViewById(R.id.financeProgressBar)
         vm.categoriesWithFinancesList.observe(viewLifecycleOwner) { categoryList ->
-            usedFinanceCategoryAdapter.updateUsedFinanceCategoryList(usedFinanceCategoryList = categoryList)
+            if (categoryList.isEmpty()) {
+                noNotesTextView.visibility = View.VISIBLE
+                categoryNestedScrollView.visibility = View.INVISIBLE
+            } else {
+                noNotesTextView.visibility = View.GONE
+                categoryNestedScrollView.visibility = View.VISIBLE
+                usedFinanceCategoryAdapter.updateUsedFinanceCategoryList(usedFinanceCategoryList = categoryList)
+            }
             financeProgressBar.setCategoryList(categoryList = categoryList)
         }
 

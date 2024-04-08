@@ -42,7 +42,7 @@ class FinanceCategoryAdapter(
     override fun onBindViewHolder(holder: FinanceCategoryViewHolder, position: Int) {
         if (position == financeCategoryList.size) {
             holder.categoryTextView.text = "Add"
-            holder.categoryBackgroundCardView.setCardBackgroundColor(Color.parseColor("#C5E1A5"))
+            holder.categoryBackgroundCardView.setCardBackgroundColor(Color.parseColor("#EEEEEE"))
             holder.categoryImageTextView.text = String(Character.toChars(0x2795))
             holder.categoryRootLayout.setOnClickListener {
                 onFinanceCategoryClickListener.onAddCategoryClick()
