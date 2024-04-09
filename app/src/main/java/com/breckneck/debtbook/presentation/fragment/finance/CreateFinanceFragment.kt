@@ -153,17 +153,10 @@ class CreateFinanceFragment : Fragment() {
             )
         }
 
-        val financeNameEditText: EditText = view.findViewById(R.id.financeNameEditText)
-        val financeNameTextInput: TextInputLayout = view.findViewById(R.id.financeNameTextInput)
         val financeSumTextInput: TextInputLayout = view.findViewById(R.id.financeSumTextInput)
         val financeInfoEditText: EditText = view.findViewById(R.id.financeInfoEditText)
         fun isAllFieldsFilledRight(): Boolean {
             var isFilledRight = true
-            if (financeNameEditText.text.toString().trim().isEmpty()) {
-                financeNameTextInput.error = getString(R.string.youmustentername)
-                isFilledRight = false
-            } else
-                financeNameTextInput.error = ""
 
             if (financeSumEditText.text.toString().trim().isEmpty()) {
                 financeSumTextInput.error = getString(R.string.youmustentername)
@@ -200,7 +193,6 @@ class CreateFinanceFragment : Fragment() {
             if (isAllFieldsFilledRight()) {
                 vm.setFinance(
                     Finance(
-                        name = financeNameEditText.text.toString(),
                         sum = financeSumEditText.text.toString().toDouble(),
                         isRevenue = customSwitch.isChecked(),
                         info = financeInfoEditText.text.toString(),

@@ -16,7 +16,6 @@ import java.util.Date
 data class FinanceData(
     @PrimaryKey(autoGenerate = true)
     var id: Int,
-    var name: String,
     var sum: Double,
     var isRevenue: Boolean,
     var date: Date,

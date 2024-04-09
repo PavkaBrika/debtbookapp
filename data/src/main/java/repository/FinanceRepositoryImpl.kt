@@ -12,7 +12,6 @@ class FinanceRepositoryImpl(private val financeStorage: FinanceStorage) : Financ
         financeStorage.setFinance(
             finance = FinanceData(
                 id = finance.id,
-                name = finance.name,
                 sum = finance.sum,
                 isRevenue = finance.isRevenue,
                 info = finance.info,
@@ -26,7 +25,6 @@ class FinanceRepositoryImpl(private val financeStorage: FinanceStorage) : Financ
         return financeStorage.getAllFinance().map { financeData ->
             Finance(
                 id = financeData.id,
-                name = financeData.name,
                 sum = financeData.sum,
                 isRevenue = financeData.isRevenue,
                 info = financeData.info,
@@ -46,7 +44,6 @@ class FinanceRepositoryImpl(private val financeStorage: FinanceStorage) : Financ
         ).map { financeData ->
             Finance(
                 id = financeData.id,
-                name = financeData.name,
                 sum = financeData.sum,
                 isRevenue = financeData.isRevenue,
                 info = financeData.info,
@@ -60,7 +57,6 @@ class FinanceRepositoryImpl(private val financeStorage: FinanceStorage) : Financ
         financeStorage.deleteFinance(
             financeData = FinanceData(
                 id = finance.id,
-                name = finance.name,
                 sum = finance.sum,
                 isRevenue = finance.isRevenue,
                 date = finance.date,

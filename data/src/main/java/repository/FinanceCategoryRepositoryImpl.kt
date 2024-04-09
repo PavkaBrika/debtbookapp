@@ -23,7 +23,6 @@ class FinanceCategoryRepositoryImpl(private val financeCategoryStorage: FinanceC
                 financeList = financeCategoryWithFinance.financeDataList.map { financeData ->
                     Finance(
                         id = financeData.id,
-                        name = financeData.name,
                         sum = financeData.sum,
                         isRevenue = financeData.isRevenue,
                         info = financeData.info,

@@ -4,7 +4,6 @@ import java.util.Date
 
 data class Finance(
     var id: Int = 0,
-    var name: String,
     var sum: Double,
     var isRevenue: Boolean,
     var date: Date,
