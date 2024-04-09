@@ -2,6 +2,7 @@ package com.breckneck.debtbook.presentation.fragment.finance
 
 import android.content.Context
 import android.content.pm.ActivityInfo
+import android.graphics.Typeface
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -23,6 +24,7 @@ import com.breckneck.debtbook.presentation.customview.FinanceProgressBar
 import com.breckneck.debtbook.presentation.viewmodel.FinanceViewModel
 import com.breckneck.deptbook.domain.model.FinanceCategoryWithFinances
 import com.breckneck.deptbook.domain.util.FinanceInterval
+import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -41,7 +43,7 @@ class FinanceFragment : Fragment() {
     interface OnButtonClickListener {
         fun onAddFinanceButtonClick(isRevenue: Boolean, dayInMillis: Long)
 
-        fun onFinanceCategoryClick(categoryId: Int, isRevenue: Boolean)
+        fun onFinanceCategoryClick(categoryName: String, categoryId: Int, isRevenue: Boolean, currency: String)
     }
 
     var buttonClickListener: OnButtonClickListener? = null
@@ -74,6 +76,12 @@ class FinanceFragment : Fragment() {
         val customSymbol: DecimalFormatSymbols = DecimalFormatSymbols()
         customSymbol.groupingSeparator = ' '
         decimalFormat.decimalFormatSymbols = customSymbol
+
+        val collaps: CollapsingToolbarLayout = view.findViewById(R.id.collaps)
+        collaps.apply {
+            setCollapsedTitleTypeface(Typeface.DEFAULT_BOLD)
+            setExpandedTitleTypeface(Typeface.DEFAULT_BOLD)
+        }
 
         val currencyNames = listOf(
             getString(R.string.usd), getString(R.string.eur), getString(R.string.rub),
@@ -291,7 +299,12 @@ class FinanceFragment : Fragment() {
         val onUsedFinanceCategoryClickListener =
             object : UsedFinanceCategoryAdapter.OnUsedFinanceCategoryClickListener {
                 override fun onClick(usedFinance: FinanceCategoryWithFinances) {
-                    buttonClickListener!!.onFinanceCategoryClick(categoryId = usedFinance.financeCategory.id, isRevenue = vm.isRevenueSwitch.value!!)
+                    buttonClickListener!!.onFinanceCategoryClick(
+                        categoryName = usedFinance.financeCategory.name,
+                        categoryId = usedFinance.financeCategory.id,
+                        isRevenue = vm.isRevenueSwitch.value!!,
+                        currency = vm.currency.value!!
+                    )
                 }
             }
         usedFinanceCategoryAdapter = UsedFinanceCategoryAdapter(

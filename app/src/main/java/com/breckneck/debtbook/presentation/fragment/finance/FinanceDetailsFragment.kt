@@ -1,6 +1,7 @@
 package com.breckneck.debtbook.presentation.fragment.finance
 
 import android.content.Context
+import android.graphics.Typeface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,7 @@ import com.breckneck.debtbook.R
 import com.breckneck.debtbook.adapter.FinanceAdapter
 import com.breckneck.debtbook.presentation.viewmodel.FinanceDetailsViewModel
 import com.breckneck.deptbook.domain.model.Finance
+import com.google.android.material.appbar.CollapsingToolbarLayout
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FinanceDetailsFragment: Fragment() {
@@ -43,9 +45,17 @@ class FinanceDetailsFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val categoryName = arguments?.getString("categoryName")
         val categoryId = arguments?.getInt("categoryId")
         val isRevenue = arguments?.getBoolean("isRevenue")
+        val currency = arguments?.getString("currency")
 
+        val collaps: CollapsingToolbarLayout = view.findViewById(R.id.collaps)
+        collaps.title = categoryName
+        collaps.apply {
+            setCollapsedTitleTypeface(Typeface.DEFAULT_BOLD)
+            setExpandedTitleTypeface(Typeface.DEFAULT_BOLD)
+        }
 
         val backButtonImageView: ImageView = view.findViewById(R.id.backButton)
         backButtonImageView.setOnClickListener {
@@ -61,7 +71,7 @@ class FinanceDetailsFragment: Fragment() {
 
             }
         }
-        val financeAdapter = FinanceAdapter(financeListImmutable = listOf(), financeClickListener = financeClickListener, "RUB")
+        val financeAdapter = FinanceAdapter(financeListImmutable = listOf(), financeClickListener = financeClickListener, currency!!)
         val financeRecyclerView: RecyclerView = view.findViewById(R.id.financeRecyclerView)
         financeRecyclerView.adapter = financeAdapter
         vm.financeList.observe(viewLifecycleOwner) { financeList ->

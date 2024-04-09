@@ -386,10 +386,17 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener,
         navController.navigate(R.id.action_createFinanceFragment_to_createFinanceCategoryFragment)
     }
 
-    override fun onFinanceCategoryClick(categoryId: Int, isRevenue: Boolean) {
+    override fun onFinanceCategoryClick(
+        categoryName: String,
+        categoryId: Int,
+        isRevenue: Boolean,
+        currency: String
+    ) {
         val args = Bundle()
+        args.putString("categoryName", categoryName)
         args.putInt("categoryId", categoryId)
         args.putBoolean("isRevenue", isRevenue)
+        args.putString("currency", currency)
         navController.navigate(R.id.action_financeFragment_to_financeDetailsFragment, args)
     }
 
