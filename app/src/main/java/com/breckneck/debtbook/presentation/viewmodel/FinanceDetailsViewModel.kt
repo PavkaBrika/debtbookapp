@@ -35,7 +35,8 @@ class FinanceDetailsViewModel(
 
     fun getFinanceByCategoryIdAndRevenue(categoryId: Int, isRevenue: Boolean) {
         val result = Single.create {
-            it.onSuccess(getFinanceByCategoryIdAndRevenue.execute(categoryId = categoryId, isRevenue = isRevenue))
+            val financeList = getFinanceByCategoryIdAndRevenue.execute(categoryId = categoryId, isRevenue = isRevenue)
+            it.onSuccess(financeList.sortedByDescending { finance -> finance.date })
         }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
