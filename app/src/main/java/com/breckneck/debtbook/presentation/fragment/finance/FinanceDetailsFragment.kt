@@ -3,10 +3,15 @@ package com.breckneck.debtbook.presentation.fragment.finance
 import android.content.Context
 import android.graphics.Typeface
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
@@ -51,7 +56,15 @@ class FinanceDetailsFragment: Fragment() {
         val currency = arguments?.getString("currency")
 
         val collaps: CollapsingToolbarLayout = view.findViewById(R.id.collaps)
-        collaps.title = categoryName
+        val spannable = if (isRevenue == true)
+            SpannableString("$categoryName - ${getString(R.string.revenues)}")
+        else
+            SpannableString("$categoryName - ${getString(R.string.expenses)}")
+        if (isRevenue == true)
+            spannable.setSpan(ForegroundColorSpan(ContextCompat.getColor(requireContext(), R.color.green)), categoryName!!.length, spannable.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        else
+            spannable.setSpan(ForegroundColorSpan(ContextCompat.getColor(requireContext(), R.color.red)), categoryName!!.length, spannable.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        collaps.title = spannable //TODO SPANNABLE DOESNT WORK IN TITLE NEED FIX
         collaps.apply {
             setCollapsedTitleTypeface(Typeface.DEFAULT_BOLD)
             setExpandedTitleTypeface(Typeface.DEFAULT_BOLD)
@@ -78,4 +91,6 @@ class FinanceDetailsFragment: Fragment() {
             financeAdapter.updateFinanceList(financeList = financeList)
         }
     }
+
+
 }
