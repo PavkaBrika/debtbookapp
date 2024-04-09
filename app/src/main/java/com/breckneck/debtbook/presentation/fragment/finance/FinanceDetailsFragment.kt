@@ -32,9 +32,9 @@ class FinanceDetailsFragment: Fragment() {
     private val vm by viewModel<FinanceDetailsViewModel>()
 
     interface OnClickListener {
-        fun onBackButtonClick()
+        fun onEditFinanceClick(finance: Finance)
 
-        fun editFinance()
+        fun onBackButtonClick()
     }
 
     var buttonClickListener: OnClickListener? = null
@@ -80,7 +80,7 @@ class FinanceDetailsFragment: Fragment() {
         }
 
         if (vm.isSettingsDialogOpened.value == true) {
-//            showDebtSettings(finance = vm.settingsFinance.value!!, currency = currency, name = )
+            showDebtSettings(finance = vm.settingsFinance.value!!, currency = currency!!)
         }
 
         val backButtonImageView: ImageView = view.findViewById(R.id.backButton)
@@ -94,7 +94,7 @@ class FinanceDetailsFragment: Fragment() {
 
         val financeClickListener = object : FinanceAdapter.OnFinanceClickListener {
             override fun onFinanceClick(finance: Finance, position: Int) {
-
+                showDebtSettings(finance = finance, currency = currency!!)
             }
         }
         val financeAdapter = FinanceAdapter(financeListImmutable = listOf(), financeClickListener = financeClickListener, currency!!)
@@ -111,7 +111,7 @@ class FinanceDetailsFragment: Fragment() {
         }
     }
 
-    private fun showDebtSettings(finance: Finance, currency: String, name: String) {
+    private fun showDebtSettings(finance: Finance, currency: String) {
         val dialog = BottomSheetDialog(requireContext())
         dialog.setContentView(R.layout.dialog_extra_functions)
         val formatDebtSum = FormatDebtSum()
@@ -128,7 +128,7 @@ class FinanceDetailsFragment: Fragment() {
         }
 
         dialog.findViewById<Button>(R.id.editButton)!!.setOnClickListener {
-//            buttonClickListener?.editDebt(debtDomain = debtDomain, currency = currency, name = name)
+            buttonClickListener?.onEditFinanceClick(finance = finance)
             dialog.dismiss()
         }
 

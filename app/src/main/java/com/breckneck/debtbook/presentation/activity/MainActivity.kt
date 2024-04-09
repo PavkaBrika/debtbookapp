@@ -31,6 +31,7 @@ import com.breckneck.debtbook.presentation.fragment.settings.SettingsFragment
 import com.breckneck.debtbook.presentation.fragment.settings.SynchronizationFragment
 import com.breckneck.debtbook.presentation.viewmodel.MainActivityViewModel
 import com.breckneck.deptbook.domain.model.DebtDomain
+import com.breckneck.deptbook.domain.model.Finance
 import com.breckneck.deptbook.domain.util.CLICKS_QUANTITY_FOR_AD_SHOW
 import com.breckneck.deptbook.domain.util.DEBT_QUANTITY_FOR_LAST_SHOW_APP_RATE_DIALOG
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -402,8 +403,10 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener,
 
     //finance details interface
 
-    override fun editFinance() {
-
+    override fun onEditFinanceClick(finance: Finance) {
+        val args = Bundle()
+        args.putSerializable("financeEdit", finance)
+        navController.navigate(R.id.action_financeDetailsFragment_to_createFinanceFragment, args)
     }
 
     //synchronization interface

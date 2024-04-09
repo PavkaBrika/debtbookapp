@@ -192,5 +192,9 @@
         android:id="@+id/financeDetailsFragment"
         android:name="com.breckneck.debtbook.presentation.fragment.finance.FinanceDetailsFragment"
         android:label="FinanceDetailsFragment"
-        tools:layout="@layout/fragment_finance_details"/>
+        tools:layout="@layout/fragment_finance_details">
+        <action
+            android:id="@+id/action_financeDetailsFragment_to_createFinanceFragment"
+            app:destination="@id/createFinanceFragment" />
+    </fragment>
 </navigation>

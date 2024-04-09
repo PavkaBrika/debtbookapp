@@ -38,6 +38,15 @@ class CreateFinanceViewModel(
     private val _currency = MutableLiveData<String>()
     val currency: LiveData<String>
         get() = _currency
+    private val _isRevenue = MutableLiveData<Boolean>()
+    val isRevenue: LiveData<Boolean>
+        get() = _isRevenue
+    private val _dayInMillis = MutableLiveData<Long>()
+    val dayInMillis: LiveData<Long>
+        get() = _dayInMillis
+    private val _financeEdit = MutableLiveData<Finance>()
+    val financeEdit: LiveData<Finance>
+        get() = _financeEdit
 
     init {
         Log.e(TAG, "Initialized")
@@ -86,9 +95,17 @@ class CreateFinanceViewModel(
         _currency.value = getFinanceCurrency.execute()
     }
 
-//    fun getCurrentDate() {
-//        _date.value = Calendar.getInstance().time
-//    }
+    fun setFinanceEdit(finance: Finance) {
+        _financeEdit.value = finance
+    }
+
+    fun setIsRevenue(isRevenue: Boolean) {
+        _isRevenue.value = isRevenue
+    }
+
+    fun setDayInMillis(dayInMillis: Long) {
+        _dayInMillis.value = dayInMillis
+    }
 
     fun setCurrentDate(date: Date) {
         _date.value = date

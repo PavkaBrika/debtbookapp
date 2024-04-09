@@ -1,5 +1,6 @@
 package com.breckneck.deptbook.domain.model
 
+import java.io.Serializable
 import java.util.Date
 
 data class Finance(
@@ -9,4 +10,4 @@ data class Finance(
     var date: Date,
     var info: String?,
     var financeCategoryId: Int
-)
+): Serializable

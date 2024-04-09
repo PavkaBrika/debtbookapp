@@ -2,6 +2,7 @@ package com.breckneck.debtbook.presentation.fragment.finance
 
 import android.app.DatePickerDialog
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -61,11 +62,20 @@ class CreateFinanceFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val isRevenue = arguments?.getBoolean("isRevenue")
-        val dayInMillis = arguments?.getLong("dayInMillis")
+        if ((vm.financeEdit.value == null) && (vm.isRevenue.value == null) && (vm.dayInMillis.value == null)) {
+            val financeEdit = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                arguments?.getSerializable("financeEdit", Finance::class.java)
+            } else {
+                arguments?.getSerializable("financeEdit") as Finance?
+            }
+            vm.setFinanceEdit(finance = financeEdit!!)
+            vm.setIsRevenue(isRevenue = arguments?.getBoolean("isRevenue") ?: financeEdit.isRevenue)
+            vm.setDayInMillis(dayInMillis = arguments?.getLong("dayInMillis") ?: financeEdit.date.time)
+        }
+
         if (vm.date.value == null) {
             val calendar = Calendar.getInstance()
-            calendar.timeInMillis = dayInMillis!!
+            calendar.timeInMillis = vm.dayInMillis.value!!
             vm.setCurrentDate(calendar.time)
         }
 
@@ -125,7 +135,7 @@ class CreateFinanceFragment : Fragment() {
         }
         financeDateTextView.setOnClickListener {
             val calendar = Calendar.getInstance()
-            calendar.timeInMillis = dayInMillis!!
+            calendar.timeInMillis = vm.dayInMillis.value!!
             DatePickerDialog(
                 view.context, dateSetListener,
                 calendar.get(Calendar.YEAR),
@@ -186,8 +196,14 @@ class CreateFinanceFragment : Fragment() {
             return isFilledRight
         }
 
+        vm.financeEdit.observe(viewLifecycleOwner) { financeEdit ->
+            financeSumEditText.setText(financeEdit.sum.toString())
+            financeInfoEditText.setText(financeEdit.info)
+
+        }
+
         val customSwitch: CustomSwitchView = view.findViewById(R.id.customSwitch)
-        customSwitch.setChecked(isRevenue!!)
+        customSwitch.setChecked(vm.isRevenue.value!!)
         val setFinanceButton: FloatingActionButton = view.findViewById(R.id.setFinanceButton)
         setFinanceButton.setOnClickListener {
             if (isAllFieldsFilledRight()) {
