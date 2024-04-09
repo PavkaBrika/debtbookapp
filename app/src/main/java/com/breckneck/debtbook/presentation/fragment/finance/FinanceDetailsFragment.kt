@@ -3,23 +3,27 @@ package com.breckneck.debtbook.presentation.fragment.finance
 import android.content.Context
 import android.graphics.Typeface
 import android.os.Bundle
-import android.text.Spannable
 import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.adapter.FinanceAdapter
 import com.breckneck.debtbook.presentation.viewmodel.FinanceDetailsViewModel
+import com.breckneck.deptbook.domain.model.DebtDomain
 import com.breckneck.deptbook.domain.model.Finance
+import com.breckneck.deptbook.domain.usecase.Debt.FormatDebtSum
 import com.google.android.material.appbar.CollapsingToolbarLayout
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
 
 class FinanceDetailsFragment: Fragment() {
 
@@ -50,6 +54,11 @@ class FinanceDetailsFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val decimalFormat = DecimalFormat("###,###,###.##")
+        val customSymbol: DecimalFormatSymbols = DecimalFormatSymbols()
+        customSymbol.groupingSeparator = ' '
+        decimalFormat.decimalFormatSymbols = customSymbol
+
         val categoryName = arguments?.getString("categoryName")
         val categoryId = arguments?.getInt("categoryId")
         val isRevenue = arguments?.getBoolean("isRevenue")
@@ -57,17 +66,21 @@ class FinanceDetailsFragment: Fragment() {
 
         val collaps: CollapsingToolbarLayout = view.findViewById(R.id.collaps)
         val spannable = if (isRevenue == true)
-            SpannableString("$categoryName - ${getString(R.string.revenues)}")
+            SpannableString("$categoryName\n${getString(R.string.revenues)}")
         else
-            SpannableString("$categoryName - ${getString(R.string.expenses)}")
-        if (isRevenue == true)
-            spannable.setSpan(ForegroundColorSpan(ContextCompat.getColor(requireContext(), R.color.green)), categoryName!!.length, spannable.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        else
-            spannable.setSpan(ForegroundColorSpan(ContextCompat.getColor(requireContext(), R.color.red)), categoryName!!.length, spannable.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            SpannableString("$categoryName\n${getString(R.string.expenses)}")
+//        if (isRevenue == true)
+//            spannable.setSpan(ForegroundColorSpan(ContextCompat.getColor(requireContext(), R.color.green)), categoryName!!.length, spannable.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+//        else
+//            spannable.setSpan(ForegroundColorSpan(ContextCompat.getColor(requireContext(), R.color.red)), categoryName!!.length, spannable.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         collaps.title = spannable //TODO SPANNABLE DOESNT WORK IN TITLE NEED FIX
         collaps.apply {
             setCollapsedTitleTypeface(Typeface.DEFAULT_BOLD)
             setExpandedTitleTypeface(Typeface.DEFAULT_BOLD)
+        }
+
+        if (vm.isSettingsDialogOpened.value == true) {
+//            showDebtSettings(finance = vm.settingsFinance.value!!, currency = currency, name = )
         }
 
         val backButtonImageView: ImageView = view.findViewById(R.id.backButton)
@@ -86,10 +99,51 @@ class FinanceDetailsFragment: Fragment() {
         }
         val financeAdapter = FinanceAdapter(financeListImmutable = listOf(), financeClickListener = financeClickListener, currency!!)
         val financeRecyclerView: RecyclerView = view.findViewById(R.id.financeRecyclerView)
+        financeRecyclerView.addItemDecoration(
+            DividerItemDecoration(
+                view.context,
+                DividerItemDecoration.VERTICAL
+            )
+        )
         financeRecyclerView.adapter = financeAdapter
         vm.financeList.observe(viewLifecycleOwner) { financeList ->
             financeAdapter.updateFinanceList(financeList = financeList)
         }
+    }
+
+    private fun showDebtSettings(finance: Finance, currency: String, name: String) {
+        val dialog = BottomSheetDialog(requireContext())
+        dialog.setContentView(R.layout.dialog_extra_functions)
+        val formatDebtSum = FormatDebtSum()
+
+        vm.onFinanceSettingsDialogOpen()
+        vm.onSetSettingFinance(finance = finance)
+
+        dialog.findViewById<TextView>(R.id.extrasTitle)!!.text =
+            "${finance.date} : ${formatDebtSum.execute(finance.sum)} $currency"
+
+        dialog.findViewById<Button>(R.id.deleteButton)!!.setOnClickListener {
+            vm.deleteFinance(finance = finance)
+            dialog.dismiss()
+        }
+
+        dialog.findViewById<Button>(R.id.editButton)!!.setOnClickListener {
+//            buttonClickListener?.editDebt(debtDomain = debtDomain, currency = currency, name = name)
+            dialog.dismiss()
+        }
+
+        dialog.findViewById<Button>(R.id.cancelButton)!!.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.setOnDismissListener {
+            vm.onFinanceSettingsDialogClose()
+        }
+        dialog.setOnCancelListener {
+            vm.onFinanceSettingsDialogClose()
+        }
+
+        dialog.show()
     }
 
 

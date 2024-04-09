@@ -28,4 +28,8 @@ class DataBaseFinanceStorageImpl(context: Context): FinanceStorage {
     ): List<FinanceData> {
         return db.appDao().getFinanceByCategoryIdAndRevenue(categoryId = categoryId, isRevenue = isRevenue)
     }
+
+    override fun deleteFinance(financeData: FinanceData) {
+        db.appDao().deleteFinance(financeData = financeData)
+    }
 }

@@ -55,4 +55,18 @@ class FinanceRepositoryImpl(private val financeStorage: FinanceStorage) : Financ
             )
         }
     }
+
+    override fun deleteFinance(finance: Finance) {
+        financeStorage.deleteFinance(
+            financeData = FinanceData(
+                id = finance.id,
+                name = finance.name,
+                sum = finance.sum,
+                isRevenue = finance.isRevenue,
+                date = finance.date,
+                info = finance.info,
+                financeCategoryId = finance.financeCategoryId
+            )
+        )
+    }
 }

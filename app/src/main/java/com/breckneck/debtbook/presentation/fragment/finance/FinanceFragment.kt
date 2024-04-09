@@ -249,7 +249,6 @@ class FinanceFragment : Fragment() {
             overallSumTextView.text = "${decimalFormat.format(sum)} ${vm.currency.value}"
         }
 
-
 //        val listSwitch: CustomSwitchView = view.findViewById(R.id.listSwitch)
 //        listSwitch.setOnClickListener {
 //            vm.onChangeFinanceListStateSwitch()

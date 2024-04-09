@@ -23,7 +23,7 @@
                 android:layout_height="180dp"
                 android:fitsSystemWindows="true"
                 app:expandedTitleGravity="bottom"
-                app:expandedTitleMarginBottom="64dp"
+                app:title="@string/revenues"
                 app:expandedTitleMarginStart="16dp"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 app:maxLines="3"

@@ -10,4 +10,6 @@ interface FinanceRepository {
     fun getAllFinance(): List<Finance>
 
     fun getFinanceByCategoryIdAndRevenue(categoryId: Int, isRevenue: Boolean): List<Finance>
+
+    fun deleteFinance(finance: Finance)
 }

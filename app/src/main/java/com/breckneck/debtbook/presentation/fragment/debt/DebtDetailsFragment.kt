@@ -257,13 +257,13 @@ class DebtDetailsFragment : Fragment() {
 
     private fun showDebtSettings(debtDomain: DebtDomain, currency: String, name: String) {
         val dialog = BottomSheetDialog(requireContext())
-        dialog.setContentView(R.layout.dialog_debt_extra_functions)
+        dialog.setContentView(R.layout.dialog_extra_functions)
         val formatDebtSum = FormatDebtSum()
 
         vm.onDebtSettingsDialogOpen()
         vm.onSetSettingDebt(debtDomain)
 
-        dialog.findViewById<TextView>(R.id.debtExtrasTitle)!!.text =
+        dialog.findViewById<TextView>(R.id.extrasTitle)!!.text =
             "${debtDomain.date} : ${formatDebtSum.execute(debtDomain.sum)} $currency"
 
         dialog.findViewById<Button>(R.id.deleteButton)!!.setOnClickListener {
