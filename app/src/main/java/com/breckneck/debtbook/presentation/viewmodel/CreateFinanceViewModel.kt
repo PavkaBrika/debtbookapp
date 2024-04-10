@@ -47,9 +47,9 @@ class CreateFinanceViewModel(
     private val _currency = MutableLiveData<String>()
     val currency: LiveData<String>
         get() = _currency
-    private val _isRevenue = MutableLiveData<Boolean>()
-    val isRevenue: LiveData<Boolean>
-        get() = _isRevenue
+    private val _isExpenses = MutableLiveData<Boolean>()
+    val isExpenses: LiveData<Boolean>
+        get() = _isExpenses
     private val _dayInMillis = MutableLiveData<Long>()
     val dayInMillis: LiveData<Long>
         get() = _dayInMillis
@@ -126,8 +126,8 @@ class CreateFinanceViewModel(
         _financeEdit.value = finance
     }
 
-    fun setIsRevenue(isRevenue: Boolean) {
-        _isRevenue.value = isRevenue
+    fun setExpenses(isExpenses: Boolean) {
+        _isExpenses.value = isExpenses
     }
 
     fun setDayInMillis(dayInMillis: Long) {

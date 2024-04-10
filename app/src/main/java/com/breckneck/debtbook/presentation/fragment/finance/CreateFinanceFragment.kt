@@ -78,7 +78,7 @@ class CreateFinanceFragment : Fragment() {
         vm.createFinanceState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 CreateFinanceState.CREATE -> {
-                    vm.setIsRevenue(isRevenue = arguments?.getBoolean("isRevenue")!!)
+                    vm.setExpenses(isExpenses = arguments?.getBoolean("isExpenses")!!)
                     vm.setDayInMillis(dayInMillis = arguments?.getLong("dayInMillis")!!)
                     vm.getAllFinanceCategories()
                 }
@@ -89,7 +89,7 @@ class CreateFinanceFragment : Fragment() {
                         arguments?.getSerializable("financeEdit") as Finance?
                     }
                     vm.setFinanceEdit(finance = financeEdit!!)
-                    vm.setIsRevenue(isRevenue = financeEdit.isExpenses)
+                    vm.setExpenses(isExpenses = financeEdit.isExpenses)
                     vm.setDayInMillis(dayInMillis = financeEdit.date.time)
                     financeSumEditText.setText(financeEdit.sum.toString())
                     financeInfoEditText.setText(financeEdit.info)
@@ -101,7 +101,7 @@ class CreateFinanceFragment : Fragment() {
                 calendar.timeInMillis = vm.dayInMillis.value!!
                 vm.setCurrentDate(calendar.time)
             }
-            customSwitch.setChecked(vm.isRevenue.value!!)
+            customSwitch.setChecked(vm.isExpenses.value!!)
         }
 
         val currencyNames = listOf(getString(R.string.usd), getString(R.string.eur), getString(R.string.rub),
