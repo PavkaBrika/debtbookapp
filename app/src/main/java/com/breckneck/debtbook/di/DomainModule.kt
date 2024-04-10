@@ -5,7 +5,7 @@ import com.breckneck.deptbook.domain.usecase.Ad.GetClicksUseCase
 import com.breckneck.deptbook.domain.usecase.Debt.*
 import com.breckneck.deptbook.domain.usecase.Finance.DeleteFinance
 import com.breckneck.deptbook.domain.usecase.Finance.GetAllFinances
-import com.breckneck.deptbook.domain.usecase.Finance.GetFinanceByCategoryIdAndRevenue
+import com.breckneck.deptbook.domain.usecase.Finance.GetFinanceByCategoryIdAndExpenses
 import com.breckneck.deptbook.domain.usecase.Finance.SetFinance
 import com.breckneck.deptbook.domain.usecase.Finance.UpdateFinance
 import com.breckneck.deptbook.domain.usecase.FinanceCategory.GetAllCategoriesWithFinances
@@ -225,8 +225,8 @@ val domainModule = module {
         GetAllFinances(financeRepository = get())
     }
 
-    single<GetFinanceByCategoryIdAndRevenue> {
-        GetFinanceByCategoryIdAndRevenue(financeRepository = get())
+    single<GetFinanceByCategoryIdAndExpenses> {
+        GetFinanceByCategoryIdAndExpenses(financeRepository = get())
     }
 
     single<DeleteFinance> {

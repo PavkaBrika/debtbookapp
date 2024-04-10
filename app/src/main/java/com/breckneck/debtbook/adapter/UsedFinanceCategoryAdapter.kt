@@ -8,11 +8,13 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.deptbook.domain.model.Finance
 import com.breckneck.deptbook.domain.model.FinanceCategory
 import com.breckneck.deptbook.domain.model.FinanceCategoryWithFinances
+import com.breckneck.deptbook.domain.util.categoryEnglishNameList
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 
@@ -60,7 +62,54 @@ class UsedFinanceCategoryAdapter(
     override fun onBindViewHolder(holder: UsedFinanceCategoryViewHolder, position: Int) {
         val usedFinanceCategory = usedFinanceCategoryList[position]
 
-        holder.nameTextView.text = usedFinanceCategory.financeCategory.name
+        for (i in categoryEnglishNameList.indices) {
+            if (usedFinanceCategory.financeCategory.name == categoryEnglishNameList[i]) {
+                when (i) {
+                    0 -> {
+                        holder.nameTextView.text =
+                            ContextCompat.getString(holder.itemView.context, R.string.health)
+                        break
+                    }
+                    1 -> {
+                        holder.nameTextView.text =
+                            ContextCompat.getString(holder.itemView.context, R.string.entertainment)
+                        break
+                    }
+                    2 -> {
+                        holder.nameTextView.text =
+                            ContextCompat.getString(holder.itemView.context, R.string.home)
+                        break
+                    }
+                    3 -> {
+                        holder.nameTextView.text =
+                            ContextCompat.getString(holder.itemView.context, R.string.education)
+                        break
+                    }
+                    4 -> {
+                        holder.nameTextView.text =
+                            ContextCompat.getString(holder.itemView.context, R.string.presents)
+                        break
+                    }
+                    5 -> {
+                        holder.nameTextView.text =
+                            ContextCompat.getString(holder.itemView.context, R.string.food)
+                        break
+                    }
+                    6 -> {
+                        holder.nameTextView.text =
+                            ContextCompat.getString(holder.itemView.context, R.string.other)
+                        break
+                    }
+                    else -> {
+                        holder.nameTextView.text = usedFinanceCategory.financeCategory.name
+                        break
+                    }
+                }
+            }
+            else
+                holder.nameTextView.text = usedFinanceCategory.financeCategory.name
+        }
+
         holder.sumTextView.text = decimalFormat.format(usedFinanceCategory.categorySum)
         holder.percent.text = "${usedFinanceCategory.categoryPercentage}%"
         holder.currency.text = currency

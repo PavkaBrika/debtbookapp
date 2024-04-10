@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -17,14 +18,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.adapter.FinanceAdapter
 import com.breckneck.debtbook.presentation.viewmodel.FinanceDetailsViewModel
-import com.breckneck.deptbook.domain.model.DebtDomain
 import com.breckneck.deptbook.domain.model.Finance
 import com.breckneck.deptbook.domain.usecase.Debt.FormatDebtSum
+import com.breckneck.deptbook.domain.util.categoryEnglishNameList
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
 import java.text.SimpleDateFormat
 
 class FinanceDetailsFragment: Fragment() {
@@ -52,7 +51,7 @@ class FinanceDetailsFragment: Fragment() {
     ): View? {
         setFragmentResultListener("financeDetailsKey") { requestKey, bundle ->
             if (bundle.getBoolean("isListModified"))
-                vm.getFinanceByCategoryIdAndRevenue(categoryId = vm.categoryId.value!!, isRevenue = vm.isRevenue.value!!)
+                vm.getFinanceByCategoryIdAndExpenses(categoryId = vm.categoryId.value!!, isExpenses = vm.isExpenses.value!!)
         }
         return inflater.inflate(R.layout.fragment_finance_details, container, false)
     }
@@ -60,18 +59,64 @@ class FinanceDetailsFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val categoryName = arguments?.getString("categoryName")
+        var categoryName = arguments?.getString("categoryName")
         if (vm.categoryId.value == null)
             vm.setCategoryId(arguments?.getInt("categoryId")!!)
-        if (vm.isRevenue.value == null)
-            vm.setIsRevenue(arguments?.getBoolean("isRevenue")!!)
+        if (vm.isExpenses.value == null)
+            vm.setExpenses(arguments?.getBoolean("isExpenses")!!)
         val currency = arguments?.getString("currency")
 
         val collaps: CollapsingToolbarLayout = view.findViewById(R.id.collaps)
-        val spannable = if (vm.isRevenue.value == true)
-            SpannableString("$categoryName\n${getString(R.string.revenues)}")
-        else
+
+        for (i in categoryEnglishNameList.indices) {
+            if (categoryName == categoryEnglishNameList[i]) {
+                when (i) {
+                    0 -> {
+                        categoryName =
+                            ContextCompat.getString(requireContext(), R.string.health)
+                        break
+                    }
+                    1 -> {
+                        categoryName =
+                            ContextCompat.getString(requireContext(), R.string.entertainment)
+                        break
+                    }
+                    2 -> {
+                        categoryName =
+                            ContextCompat.getString(requireContext(), R.string.home)
+                        break
+                    }
+                    3 -> {
+                        categoryName =
+                            ContextCompat.getString(requireContext(), R.string.education)
+                        break
+                    }
+                    4 -> {
+                        categoryName =
+                            ContextCompat.getString(requireContext(), R.string.presents)
+                        break
+                    }
+                    5 -> {
+                        categoryName =
+                            ContextCompat.getString(requireContext(), R.string.food)
+                        break
+                    }
+                    6 -> {
+                        categoryName =
+                            ContextCompat.getString(requireContext(), R.string.other)
+                        break
+                    }
+                    else -> {
+                        break
+                    }
+                }
+            }
+        }
+
+        val spannable = if (vm.isExpenses.value == true)
             SpannableString("$categoryName\n${getString(R.string.expenses)}")
+        else
+            SpannableString("$categoryName\n${getString(R.string.revenues)}")
 //        if (isRevenue == true)
 //            spannable.setSpan(ForegroundColorSpan(ContextCompat.getColor(requireContext(), R.color.green)), categoryName!!.length, spannable.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
 //        else
@@ -92,7 +137,7 @@ class FinanceDetailsFragment: Fragment() {
         }
 
         if (vm.financeList.value == null) {
-            vm.getFinanceByCategoryIdAndRevenue(categoryId = vm.categoryId.value!!, isRevenue = vm.isRevenue.value!!)
+            vm.getFinanceByCategoryIdAndExpenses(categoryId = vm.categoryId.value!!, isExpenses = vm.isExpenses.value!!)
         }
 
         val financeClickListener = object : FinanceAdapter.OnFinanceClickListener {

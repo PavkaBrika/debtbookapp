@@ -46,9 +46,9 @@
                         android:layout_alignParentEnd="true"
                         android:paddingHorizontal="8dp"
                         android:paddingVertical="4dp"
-                        android:textColor="@color/red"
                         android:text="Default overall sum"
                         android:textAlignment="viewEnd"
+                        android:textColor="@color/red"
                         android:textSize="18sp" />
 
                     <com.google.android.material.card.MaterialCardView
@@ -142,6 +142,7 @@
                 style="@style/imageViewButton"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
+                android:foreground="?android:attr/selectableItemBackground"
                 android:paddingStart="16dp"
                 android:src="@drawable/baseline_arrow_24"
                 app:layout_constraintBottom_toTopOf="@+id/materialCardView"
@@ -153,6 +154,7 @@
                 style="@style/imageViewButton"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
+                android:foreground="?android:attr/selectableItemBackground"
                 android:paddingStart="16dp"
                 android:rotation="180"
                 android:src="@drawable/baseline_arrow_24"
@@ -185,9 +187,9 @@
                         android:focusable="true"
                         app:disabledBackgroundColor="#59cb72"
                         app:disabledText="@string/revenues"
+                        app:enabled="true"
                         app:enabledBackgroundColor="#e25d56"
                         app:enabledText="@string/expenses"
-                        app:enabled="true"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />

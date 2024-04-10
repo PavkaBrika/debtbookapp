@@ -2,10 +2,7 @@ package database
 
 import android.content.Context
 import androidx.room.Room
-import androidx.room.migration.Migration
-import androidx.sqlite.db.SupportSQLiteDatabase
 import com.breckneck.deptbook.data.storage.FinanceStorage
-import entity.FinanceCategoryData
 import entity.FinanceData
 import util.DATA_BASE_NAME
 
@@ -22,11 +19,11 @@ class DataBaseFinanceStorageImpl(context: Context): FinanceStorage {
         return db.appDao().getAllFinances()
     }
 
-    override fun getFinanceByCategoryIdAndRevenue(
+    override fun getFinanceByCategoryIdAndExpenses(
         categoryId: Int,
-        isRevenue: Boolean
+        isExpenses: Boolean
     ): List<FinanceData> {
-        return db.appDao().getFinanceByCategoryIdAndRevenue(categoryId = categoryId, isRevenue = isRevenue)
+        return db.appDao().getFinanceByCategoryIdAndExpenses(categoryId = categoryId, isExpenses = isExpenses)
     }
 
     override fun deleteFinance(financeData: FinanceData) {

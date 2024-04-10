@@ -86,8 +86,8 @@ interface AppDao {
     @Query("SELECT * from financedata WHERE isExpenses = :isRevenue")
     fun getFinancesByIsRevenue(isRevenue: Boolean): List<FinanceData>
 
-    @Query("SELECT * from financedata WHERE financeCategoryId = :categoryId AND isExpenses = :isRevenue")
-    fun getFinanceByCategoryIdAndRevenue(categoryId: Int, isRevenue: Boolean): List<FinanceData>
+    @Query("SELECT * from financedata WHERE financeCategoryId = :categoryId AND isExpenses = :isExpenses")
+    fun getFinanceByCategoryIdAndExpenses(categoryId: Int, isExpenses: Boolean): List<FinanceData>
 
     @Insert
     fun insertFinance(financeData: FinanceData)

@@ -33,13 +33,13 @@ class FinanceRepositoryImpl(private val financeStorage: FinanceStorage) : Financ
         }
     }
 
-    override fun getFinanceByCategoryIdAndRevenue(
+    override fun getFinanceByCategoryIdAndExpenses(
         categoryId: Int,
-        isRevenue: Boolean
+        isExpenses: Boolean
     ): List<Finance> {
-        return financeStorage.getFinanceByCategoryIdAndRevenue(
+        return financeStorage.getFinanceByCategoryIdAndExpenses(
             categoryId = categoryId,
-            isRevenue = isRevenue
+            isExpenses = isExpenses
         ).map { financeData ->
             Finance(
                 id = financeData.id,
