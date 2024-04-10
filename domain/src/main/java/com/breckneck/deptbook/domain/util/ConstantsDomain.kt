@@ -58,3 +58,13 @@ val categoryImageList = listOf(
     0x1F389, //holiday
     0x1F3AE //game pad
 )
+
+val categoryEnglishNameList = listOf(
+    "Health",
+    "Entertainment",
+    "Home",
+    "Education",
+    "Presents",
+    "Food",
+    "Other"
+)
