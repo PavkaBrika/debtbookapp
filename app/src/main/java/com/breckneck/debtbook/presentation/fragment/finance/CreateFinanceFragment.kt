@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.os.bundleOf
@@ -25,6 +26,7 @@ import com.breckneck.debtbook.presentation.customview.CustomSwitchView
 import com.breckneck.debtbook.presentation.viewmodel.CreateFinanceViewModel
 import com.breckneck.deptbook.domain.model.Finance
 import com.breckneck.deptbook.domain.model.FinanceCategory
+import com.breckneck.deptbook.domain.util.CreateFinanceState
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputLayout
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -62,21 +64,45 @@ class CreateFinanceFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if ((vm.financeEdit.value == null) && (vm.isRevenue.value == null) && (vm.dayInMillis.value == null)) {
-            val financeEdit = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                arguments?.getSerializable("financeEdit", Finance::class.java)
-            } else {
-                arguments?.getSerializable("financeEdit") as Finance?
+        if (vm.createFinanceState.value == null) {
+            when (arguments?.getBoolean("isEditFinance")!!) {
+                true -> vm.setCreateFinanceState(createFinanceState = CreateFinanceState.EDIT)
+                false -> vm.setCreateFinanceState(createFinanceState = CreateFinanceState.CREATE)
             }
-            vm.setFinanceEdit(finance = financeEdit!!)
-            vm.setIsRevenue(isRevenue = arguments?.getBoolean("isRevenue") ?: financeEdit.isRevenue)
-            vm.setDayInMillis(dayInMillis = arguments?.getLong("dayInMillis") ?: financeEdit.date.time)
         }
 
-        if (vm.date.value == null) {
-            val calendar = Calendar.getInstance()
-            calendar.timeInMillis = vm.dayInMillis.value!!
-            vm.setCurrentDate(calendar.time)
+        val customSwitch: CustomSwitchView = view.findViewById(R.id.customSwitch)
+        val financeSumEditText: EditText = view.findViewById(R.id.financeSumEditText)
+        val financeSumTextInput: TextInputLayout = view.findViewById(R.id.financeSumTextInput)
+        val financeInfoEditText: EditText = view.findViewById(R.id.financeInfoEditText)
+        val categoryLinearLayout: LinearLayout = view.findViewById(R.id.categoryLinearLayout)
+        vm.createFinanceState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                CreateFinanceState.CREATE -> {
+                    vm.setIsRevenue(isRevenue = arguments?.getBoolean("isRevenue")!!)
+                    vm.setDayInMillis(dayInMillis = arguments?.getLong("dayInMillis")!!)
+                    vm.getFinanceCurrency()
+                }
+                CreateFinanceState.EDIT -> {
+                    val financeEdit = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        arguments?.getSerializable("financeEdit", Finance::class.java)
+                    } else {
+                        arguments?.getSerializable("financeEdit") as Finance?
+                    }
+                    vm.setFinanceEdit(finance = financeEdit!!)
+                    vm.setIsRevenue(isRevenue = financeEdit.isRevenue)
+                    vm.setDayInMillis(dayInMillis = financeEdit.date.time)
+                    financeSumEditText.setText(financeEdit.sum.toString())
+                    financeInfoEditText.setText(financeEdit.info)
+                    categoryLinearLayout.visibility = View.GONE
+                }
+            }
+            if (vm.date.value == null) {
+                val calendar = Calendar.getInstance()
+                calendar.timeInMillis = vm.dayInMillis.value!!
+                vm.setCurrentDate(calendar.time)
+            }
+            customSwitch.setChecked(vm.isRevenue.value!!)
         }
 
         val currencyNames = listOf(getString(R.string.usd), getString(R.string.eur), getString(R.string.rub),
@@ -85,14 +111,11 @@ class CreateFinanceFragment : Fragment() {
             getString(R.string.cad), getString(R.string.chf), getString(R.string.cny),
             getString(R.string.sek), getString(R.string.mxn))
 
-        val sdf = SimpleDateFormat("d MMM yyyy")
-
         val backButtonImageView: ImageView = view.findViewById(R.id.backButton)
         backButtonImageView.setOnClickListener {
             onClickListener!!.onBackButtonClick()
         }
 
-        val financeSumEditText: EditText = view.findViewById(R.id.financeSumEditText)
         financeSumEditText.addTextChangedListener {
             object : TextWatcher {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -122,8 +145,8 @@ class CreateFinanceFragment : Fragment() {
         }
 
         val financeDateTextView: TextView = view.findViewById(R.id.financeDateTextView)
-        vm.date.observe(viewLifecycleOwner) { date ->
-            financeDateTextView.text = "${sdf.format(date)} ${getString(R.string.year)}"
+        vm.dateString.observe(viewLifecycleOwner) { date ->
+            financeDateTextView.text = "$date ${getString(R.string.year)}"
         }
 
         val dateSetListener = DatePickerDialog.OnDateSetListener { view, year, month, day ->
@@ -163,8 +186,7 @@ class CreateFinanceFragment : Fragment() {
             )
         }
 
-        val financeSumTextInput: TextInputLayout = view.findViewById(R.id.financeSumTextInput)
-        val financeInfoEditText: EditText = view.findViewById(R.id.financeInfoEditText)
+
         fun isAllFieldsFilledRight(): Boolean {
             var isFilledRight = true
 
@@ -196,26 +218,25 @@ class CreateFinanceFragment : Fragment() {
             return isFilledRight
         }
 
-        vm.financeEdit.observe(viewLifecycleOwner) { financeEdit ->
-            financeSumEditText.setText(financeEdit.sum.toString())
-            financeInfoEditText.setText(financeEdit.info)
-
-        }
-
-        val customSwitch: CustomSwitchView = view.findViewById(R.id.customSwitch)
-        customSwitch.setChecked(vm.isRevenue.value!!)
         val setFinanceButton: FloatingActionButton = view.findViewById(R.id.setFinanceButton)
         setFinanceButton.setOnClickListener {
             if (isAllFieldsFilledRight()) {
-                vm.setFinance(
-                    Finance(
-                        sum = financeSumEditText.text.toString().toDouble(),
-                        isRevenue = customSwitch.isChecked(),
-                        info = financeInfoEditText.text.toString(),
-                        financeCategoryId = vm.checkedFinanceCategory.value!!.id,
-                        date = vm.date.value!!
-                    )
-                )
+                when (vm.createFinanceState.value!!) {
+                    CreateFinanceState.CREATE -> {
+                        vm.setFinance(
+                            Finance(
+                                sum = financeSumEditText.text.toString().toDouble(),
+                                isRevenue = customSwitch.isChecked(),
+                                info = financeInfoEditText.text.toString(),
+                                financeCategoryId = vm.checkedFinanceCategory.value!!.id,
+                                date = vm.date.value!!
+                            )
+                        )
+                    }
+                    CreateFinanceState.EDIT -> {
+
+                    }
+                }
                 setFragmentResult("requestKey", bundleOf("isListModified" to true))
                 onClickListener!!.onBackButtonClick()
             }

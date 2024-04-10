@@ -380,6 +380,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener,
         val args = Bundle()
         args.putBoolean("isRevenue", isRevenue)
         args.putLong("dayInMillis", dayInMillis)
+        args.putBoolean("isEditFinance", false)
         navController.navigate(R.id.action_financeFragment_to_createFinanceFragment, args)
     }
 
@@ -406,6 +407,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener,
     override fun onEditFinanceClick(finance: Finance) {
         val args = Bundle()
         args.putSerializable("financeEdit", finance)
+        args.putBoolean("isEditFinance", true)
         navController.navigate(R.id.action_financeDetailsFragment_to_createFinanceFragment, args)
     }
 

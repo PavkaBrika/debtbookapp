@@ -195,6 +195,10 @@
         tools:layout="@layout/fragment_finance_details">
         <action
             android:id="@+id/action_financeDetailsFragment_to_createFinanceFragment"
-            app:destination="@id/createFinanceFragment" />
+            app:destination="@id/createFinanceFragment"
+            app:enterAnim="@anim/slide_up"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/slide_down" />
     </fragment>
 </navigation>

@@ -9,11 +9,13 @@ import com.breckneck.deptbook.domain.model.FinanceCategory
 import com.breckneck.deptbook.domain.usecase.Finance.SetFinance
 import com.breckneck.deptbook.domain.usecase.FinanceCategory.GetAllFinanceCategories
 import com.breckneck.deptbook.domain.usecase.Settings.GetFinanceCurrency
+import com.breckneck.deptbook.domain.util.CreateFinanceState
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
+import java.text.SimpleDateFormat
 import java.util.Date
 
 class CreateFinanceViewModel(
@@ -26,12 +28,17 @@ class CreateFinanceViewModel(
 
     private val disposeBag = CompositeDisposable()
 
+    val sdf = SimpleDateFormat("d MMM yyyy")
+
     private val _financeCategoryList = MutableLiveData<List<FinanceCategory>>()
     val financeCategoryList: LiveData<List<FinanceCategory>>
         get() = _financeCategoryList
     private val _date = MutableLiveData<Date>()
     val date: LiveData<Date>
         get() = _date
+    private val _dateString = MutableLiveData<String>()
+    val dateString: LiveData<String>
+        get() = _dateString
     private val _checkedFinanceCategory = MutableLiveData<FinanceCategory>()
     val checkedFinanceCategory: LiveData<FinanceCategory>
         get() = _checkedFinanceCategory
@@ -47,10 +54,13 @@ class CreateFinanceViewModel(
     private val _financeEdit = MutableLiveData<Finance>()
     val financeEdit: LiveData<Finance>
         get() = _financeEdit
+    private val _createFinanceState = MutableLiveData<CreateFinanceState>()
+    val createFinanceState: LiveData<CreateFinanceState>
+        get() = _createFinanceState
 
     init {
         Log.e(TAG, "Initialized")
-        getAllFinanceCategories()
+//        getAllFinanceCategories()
 //        getCurrentDate()
         getFinanceCurrency()
     }
@@ -109,9 +119,14 @@ class CreateFinanceViewModel(
 
     fun setCurrentDate(date: Date) {
         _date.value = date
+        _dateString.value = sdf.format(date)
     }
 
     fun setCheckedFinanceCategory(financeCategory: FinanceCategory) {
         _checkedFinanceCategory.value = financeCategory
+    }
+
+    fun setCreateFinanceState(createFinanceState: CreateFinanceState) {
+        _createFinanceState.value = createFinanceState
     }
 }

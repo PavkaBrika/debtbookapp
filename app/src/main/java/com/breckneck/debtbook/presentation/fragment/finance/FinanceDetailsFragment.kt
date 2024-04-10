@@ -24,6 +24,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
+import java.text.SimpleDateFormat
 
 class FinanceDetailsFragment: Fragment() {
 
@@ -53,11 +54,6 @@ class FinanceDetailsFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val decimalFormat = DecimalFormat("###,###,###.##")
-        val customSymbol: DecimalFormatSymbols = DecimalFormatSymbols()
-        customSymbol.groupingSeparator = ' '
-        decimalFormat.decimalFormatSymbols = customSymbol
 
         val categoryName = arguments?.getString("categoryName")
         val categoryId = arguments?.getInt("categoryId")
@@ -115,12 +111,13 @@ class FinanceDetailsFragment: Fragment() {
         val dialog = BottomSheetDialog(requireContext())
         dialog.setContentView(R.layout.dialog_extra_functions)
         val formatDebtSum = FormatDebtSum()
+        val sdf = SimpleDateFormat("d MMM yyyy")
 
         vm.onFinanceSettingsDialogOpen()
         vm.onSetSettingFinance(finance = finance)
 
         dialog.findViewById<TextView>(R.id.extrasTitle)!!.text =
-            "${finance.date} : ${formatDebtSum.execute(finance.sum)} $currency"
+            "${sdf.format(finance.date)} : ${formatDebtSum.execute(finance.sum)} $currency"
 
         dialog.findViewById<Button>(R.id.deleteButton)!!.setOnClickListener {
             vm.deleteFinance(finance = finance)
