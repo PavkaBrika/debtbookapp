@@ -12,7 +12,7 @@ class FinanceRepositoryImpl(private val financeStorage: FinanceStorage) : Financ
             finance = FinanceData(
                 id = finance.id,
                 sum = finance.sum,
-                isRevenue = finance.isRevenue,
+                isExpenses = finance.isExpenses,
                 info = finance.info,
                 financeCategoryId = finance.financeCategoryId,
                 date = finance.date
@@ -25,7 +25,7 @@ class FinanceRepositoryImpl(private val financeStorage: FinanceStorage) : Financ
             Finance(
                 id = financeData.id,
                 sum = financeData.sum,
-                isRevenue = financeData.isRevenue,
+                isExpenses = financeData.isExpenses,
                 info = financeData.info,
                 financeCategoryId = financeData.financeCategoryId,
                 date = financeData.date
@@ -44,7 +44,7 @@ class FinanceRepositoryImpl(private val financeStorage: FinanceStorage) : Financ
             Finance(
                 id = financeData.id,
                 sum = financeData.sum,
-                isRevenue = financeData.isRevenue,
+                isExpenses = financeData.isExpenses,
                 info = financeData.info,
                 financeCategoryId = financeData.financeCategoryId,
                 date = financeData.date
@@ -57,7 +57,7 @@ class FinanceRepositoryImpl(private val financeStorage: FinanceStorage) : Financ
             financeData = FinanceData(
                 id = finance.id,
                 sum = finance.sum,
-                isRevenue = finance.isRevenue,
+                isExpenses = finance.isExpenses,
                 date = finance.date,
                 info = finance.info,
                 financeCategoryId = finance.financeCategoryId
@@ -70,7 +70,7 @@ class FinanceRepositoryImpl(private val financeStorage: FinanceStorage) : Financ
             financeData = FinanceData(
                 id = finance.id,
                 sum = finance.sum,
-                isRevenue = finance.isRevenue,
+                isExpenses = finance.isExpenses,
                 date = finance.date,
                 info = finance.info,
                 financeCategoryId = finance.financeCategoryId

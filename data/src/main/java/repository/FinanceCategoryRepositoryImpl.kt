@@ -5,7 +5,6 @@ import com.breckneck.deptbook.domain.model.Finance
 import com.breckneck.deptbook.domain.model.FinanceCategory
 import com.breckneck.deptbook.domain.model.FinanceCategoryWithFinances
 import com.breckneck.deptbook.domain.repository.FinanceCategoryRepository
-import com.breckneck.deptbook.domain.repository.FinanceRepository
 import entity.FinanceCategoryData
 
 class FinanceCategoryRepositoryImpl(private val financeCategoryStorage: FinanceCategoryStorage) :
@@ -24,7 +23,7 @@ class FinanceCategoryRepositoryImpl(private val financeCategoryStorage: FinanceC
                     Finance(
                         id = financeData.id,
                         sum = financeData.sum,
-                        isRevenue = financeData.isRevenue,
+                        isExpenses = financeData.isExpenses,
                         info = financeData.info,
                         financeCategoryId = financeData.financeCategoryId,
                         date = financeData.date

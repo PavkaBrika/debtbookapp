@@ -36,7 +36,7 @@
                     android:layout_gravity="end"
                     android:layout_marginTop="?attr/actionBarSize"
                     android:layout_marginEnd="12dp"
-                    android:layout_marginBottom="28dp">
+                    android:layout_marginBottom="22dp">
 
                     <TextView
                         android:id="@+id/overallSumTextView"
@@ -46,7 +46,7 @@
                         android:layout_alignParentEnd="true"
                         android:paddingHorizontal="8dp"
                         android:paddingVertical="4dp"
-                        android:textColor="@color/green"
+                        android:textColor="@color/red"
                         android:text="Default overall sum"
                         android:textAlignment="viewEnd"
                         android:textSize="18sp" />
@@ -70,7 +70,7 @@
                             android:paddingVertical="4dp"
                             android:text="Default date"
                             android:textAlignment="viewEnd"
-                            android:textSize="18sp" />
+                            android:textSize="22sp" />
 
                     </com.google.android.material.card.MaterialCardView>
 
@@ -183,11 +183,11 @@
                         android:layout_marginHorizontal="8dp"
                         android:clickable="true"
                         android:focusable="true"
-                        app:disabledBackgroundColor="#e25d56"
-                        app:disabledText="@string/expenses"
+                        app:disabledBackgroundColor="#59cb72"
+                        app:disabledText="@string/revenues"
+                        app:enabledBackgroundColor="#e25d56"
+                        app:enabledText="@string/expenses"
                         app:enabled="true"
-                        app:enabledBackgroundColor="#59cb72"
-                        app:enabledText="@string/revenues"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -261,7 +261,7 @@
                         android:layout_gravity="center_vertical|center_horizontal"
                         android:layout_marginHorizontal="16dp"
                         android:gravity="center"
-                        android:text="@string/there_are_no_revenues_yet_click_the_button_below_to_add"
+                        android:text="@string/there_are_no_expenses_yet_click_the_button_below_to_add"
                         android:textColor="@color/darkgray"
                         android:textSize="25sp"
                         app:layout_constraintBottom_toBottomOf="parent"

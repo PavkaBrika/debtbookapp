@@ -113,4 +113,8 @@
     <string name="food">Lebensmittel</string>
     <string name="other">Andere</string>
     <string name="add">hinzufügen</string>
+    <string name="day">Tag</string>
+    <string name="week">Woche</string>
+    <string name="month">Monat</string>
+    <string name="year_full">Jahr</string>
 </resources>

@@ -33,9 +33,9 @@ class FinanceViewModel(
     private val _categoriesWithFinancesList = MutableLiveData<List<FinanceCategoryWithFinances>>()
     val categoriesWithFinancesList: LiveData<List<FinanceCategoryWithFinances>>
         get() = _categoriesWithFinancesList
-    private val _isRevenueSwitch = MutableLiveData<Boolean>(true)
-    val isRevenueSwitch: LiveData<Boolean>
-        get() = _isRevenueSwitch
+    private val _isExpensesSwitch = MutableLiveData<Boolean>(true)
+    val isExpensesSwitch: LiveData<Boolean>
+        get() = _isExpensesSwitch
     private val _isCurrencyDialogOpened = MutableLiveData<Boolean>(false)
     val isCurrencyDialogOpened: LiveData<Boolean>
         get() = _isCurrencyDialogOpened
@@ -242,7 +242,7 @@ class FinanceViewModel(
                     deleteCategoriesList.add(categoriesWithFinances)
                 else {
                     for (finance in categoriesWithFinances.financeList) {
-                        if (isRevenueSwitch.value != finance.isRevenue)
+                        if (isExpensesSwitch.value != finance.isExpenses)
                             deleteFinancesList.add(finance)
                         else if ((finance.date.time < financeIntervalUnix.value!!.first) || (finance.date.time > financeIntervalUnix.value!!.second))
                             deleteFinancesList.add(finance)
@@ -320,8 +320,8 @@ class FinanceViewModel(
         _currency.value = getFinanceCurrency.execute()
     }
 
-    fun onChangeIsRevenueSwitch() {
-        _isRevenueSwitch.value = !(_isRevenueSwitch.value)!!
+    fun onChangeIsExpensesSwitch() {
+        _isExpensesSwitch.value = !(_isExpensesSwitch.value)!!
     }
 
     fun setInterval(interval: FinanceInterval) {

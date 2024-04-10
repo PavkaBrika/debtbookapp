@@ -11,15 +11,15 @@ import util.DATA_BASE_NAME
 
 class DataBaseHumanStorageImpl(context: Context) : HumanStorage {
 
-    val MIGRATION_5_11 = object : Migration(5 ,11) {
+    private val MIGRATION_5_11 = object : Migration(5 ,11) {
         override fun migrate(database: SupportSQLiteDatabase) {
             database.execSQL("CREATE TABLE IF NOT EXISTS 'FinanceCategoryData' ('id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 'name' TEXT NOT NULL, 'color' TEXT NOT NULL, 'image' INTEGER NOT NULL)")
-            database.execSQL("CREATE TABLE IF NOT EXISTS 'FinanceData' ('id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 'sum' REAL NOT NULL, 'isRevenue' INTEGER NOT NULL, 'date' INTEGER NOT NULL, 'info' TEXT, FOREIGN KEY('financeCategoryId') REFERENCES 'FinanceCategoryData'('id') ON UPDATE NO ACTION ON DELETE CASCADE)")
+            database.execSQL("CREATE TABLE IF NOT EXISTS 'FinanceData' ('id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 'sum' REAL NOT NULL, 'isExpenses' INTEGER NOT NULL, 'date' INTEGER NOT NULL, 'info' TEXT, FOREIGN KEY('financeCategoryId') REFERENCES 'FinanceCategoryData'('id') ON UPDATE NO ACTION ON DELETE CASCADE)")
             insertInitialFinanceCategoryData(database = database)
         }
     }
 
-    val MIGRATION_11_12 = object: Migration(11, 12) {
+    private val MIGRATION_11_12 = object: Migration(11, 12) {
         override fun migrate(database: SupportSQLiteDatabase) {
             database.execSQL("CREATE TABLE IF NOT EXISTS 'Debt_new'('id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 'sum' REAL NOT NULL, 'idHuman' INTEGER NOT NULL, 'info' TEXT, 'date' TEXT NOT NULL)")
             database.execSQL("INSERT INTO 'Debt_new' SELECT * FROM 'Debt'")
@@ -28,7 +28,7 @@ class DataBaseHumanStorageImpl(context: Context) : HumanStorage {
         }
     }
 
-    val MIGRATION_12_13 = object: Migration(12, 13) {
+    private val MIGRATION_12_13 = object: Migration(12, 13) {
         override fun migrate(database: SupportSQLiteDatabase) {
             database.execSQL("CREATE TABLE IF NOT EXISTS 'Human_new'('id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 'name' TEXT NOT NULL, 'sumDebt' REAL NOT NULL, 'currency' TEXT NOT NULL)")
             database.execSQL("INSERT INTO 'Human_new' SELECT * FROM 'Human'")
@@ -37,7 +37,7 @@ class DataBaseHumanStorageImpl(context: Context) : HumanStorage {
         }
     }
 
-    val roomDatabaseCallback = object: RoomDatabase.Callback() {
+    private val roomDatabaseCallback = object: RoomDatabase.Callback() {
         override fun onCreate(database: SupportSQLiteDatabase) {
             insertInitialFinanceCategoryData(database = database)
             super.onCreate(database)

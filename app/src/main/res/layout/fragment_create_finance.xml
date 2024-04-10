@@ -79,11 +79,11 @@
                     android:layout_marginTop="48dp"
                     android:layout_marginBottom="20dp"
                     android:layout_marginHorizontal="8dp"
-                    app:disabledBackgroundColor="#e25d56"
-                    app:disabledText="@string/expenses"
-                    app:enabled="true"
-                    app:enabledBackgroundColor="#59cb72"
-                    app:enabledText="@string/revenues" />
+                    app:disabledBackgroundColor="#59cb72"
+                    app:disabledText="@string/revenues"
+                    app:enabledBackgroundColor="#e25d56"
+                    app:enabledText="@string/expenses"
+                    app:enabled="true"/>
 
                 <TextView
                     style="@style/addNewHumanLines"

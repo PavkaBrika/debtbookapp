@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
@@ -41,9 +42,9 @@ class FinanceFragment : Fragment() {
     private lateinit var usedFinanceCategoryAdapter: UsedFinanceCategoryAdapter
 
     interface OnButtonClickListener {
-        fun onAddFinanceButtonClick(isRevenue: Boolean, dayInMillis: Long)
+        fun onAddFinanceButtonClick(isExpenses: Boolean, dayInMillis: Long)
 
-        fun onFinanceCategoryClick(categoryName: String, categoryId: Int, isRevenue: Boolean, currency: String)
+        fun onFinanceCategoryClick(categoryName: String, categoryId: Int, isExpenses: Boolean, currency: String)
     }
 
     var buttonClickListener: OnButtonClickListener? = null
@@ -91,7 +92,8 @@ class FinanceFragment : Fragment() {
             getString(R.string.sek), getString(R.string.mxn)
         )
 
-        val financeIntervalNames = listOf("Day", "Week", "Month", "Year")
+        val financeIntervalNames = listOf(getString(R.string.day),
+            getString(R.string.week), getString(R.string.month), getString(R.string.year_full))
 
         val onCurrencySettingsClickListener = object : SettingsAdapter.OnClickListener {
             override fun onClick(setting: String, position: Int) {
@@ -170,18 +172,29 @@ class FinanceFragment : Fragment() {
 
         val financeSwitch: CustomSwitchView = view.findViewById(R.id.financeSwitch)
         financeSwitch.setOnClickListener {
-            vm.onChangeIsRevenueSwitch()
+            vm.onChangeIsExpensesSwitch()
+        }
+
+        val overallSumTextView: TextView = view.findViewById(R.id.overallSumTextView)
+        vm.overallSum.observe(viewLifecycleOwner) { sum ->
+            overallSumTextView.text = "${decimalFormat.format(sum)} ${vm.currency.value}"
         }
 
         val noNotesTextView: TextView = view.findViewById(R.id.noNotesTextView)
-        vm.isRevenueSwitch.observe(viewLifecycleOwner) { isRevenue ->
+        vm.isExpensesSwitch.observe(viewLifecycleOwner) { isExpenses ->
             vm.getAllCategoriesWithFinances()
-            when (isRevenue) {
-                true -> noNotesTextView.text =
-                    getString(R.string.there_are_no_revenues_yet_click_the_button_below_to_add)
+            when (isExpenses) {
+                true -> {
+                    noNotesTextView.text =
+                        getString(R.string.there_are_no_expenses_yet_click_the_button_below_to_add)
+                    overallSumTextView.setTextColor(ContextCompat.getColor(requireContext(), R.color.red))
+                }
 
-                false -> noNotesTextView.text =
-                    getString(R.string.there_are_no_expenses_yet_click_the_button_below_to_add)
+                false -> {
+                    noNotesTextView.text =
+                        getString(R.string.there_are_no_revenues_yet_click_the_button_below_to_add)
+                    overallSumTextView.setTextColor(ContextCompat.getColor(requireContext(), R.color.green))
+                }
 
                 null -> {}
             }
@@ -244,11 +257,6 @@ class FinanceFragment : Fragment() {
             vm.setInterval(interval = vm.financeInterval.value!!)
         }
 
-        val overallSumTextView: TextView = view.findViewById(R.id.overallSumTextView)
-        vm.overallSum.observe(viewLifecycleOwner) { sum ->
-            overallSumTextView.text = "${decimalFormat.format(sum)} ${vm.currency.value}"
-        }
-
 //        val listSwitch: CustomSwitchView = view.findViewById(R.id.listSwitch)
 //        listSwitch.setOnClickListener {
 //            vm.onChangeFinanceListStateSwitch()
@@ -301,7 +309,7 @@ class FinanceFragment : Fragment() {
                     buttonClickListener!!.onFinanceCategoryClick(
                         categoryName = usedFinance.financeCategory.name,
                         categoryId = usedFinance.financeCategory.id,
-                        isRevenue = vm.isRevenueSwitch.value!!,
+                        isExpenses = vm.isExpensesSwitch.value!!,
                         currency = vm.currency.value!!
                     )
                 }
@@ -332,12 +340,12 @@ class FinanceFragment : Fragment() {
         addFinanceButton.setOnClickListener {
             if (vm.financeInterval.value == FinanceInterval.DAY)
                 buttonClickListener!!.onAddFinanceButtonClick(
-                    isRevenue = financeSwitch.isChecked(),
+                    isExpenses = financeSwitch.isChecked(),
                     dayInMillis = vm.financeIntervalUnix.value!!.first
                 )
             else
                 buttonClickListener!!.onAddFinanceButtonClick(
-                    isRevenue = financeSwitch.isChecked(),
+                    isExpenses = financeSwitch.isChecked(),
                     dayInMillis = vm.currentDayInSeconds.value!! * 1000
                 )
         }

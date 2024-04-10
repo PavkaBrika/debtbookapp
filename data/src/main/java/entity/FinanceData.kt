@@ -17,7 +17,7 @@ data class FinanceData(
     @PrimaryKey(autoGenerate = true)
     var id: Int,
     var sum: Double,
-    var isRevenue: Boolean,
+    var isExpenses: Boolean,
     var date: Date,
     var info: String?,
     var financeCategoryId: Int

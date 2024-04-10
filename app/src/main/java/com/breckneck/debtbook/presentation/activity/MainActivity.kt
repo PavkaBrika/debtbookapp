@@ -376,9 +376,9 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener,
     }
 
     //finance interface
-    override fun onAddFinanceButtonClick(isRevenue: Boolean, dayInMillis: Long) {
+    override fun onAddFinanceButtonClick(isExpenses: Boolean, dayInMillis: Long) {
         val args = Bundle()
-        args.putBoolean("isRevenue", isRevenue)
+        args.putBoolean("isRevenue", isExpenses)
         args.putLong("dayInMillis", dayInMillis)
         args.putBoolean("isEditFinance", false)
         navController.navigate(R.id.action_financeFragment_to_createFinanceFragment, args)
@@ -391,13 +391,13 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener,
     override fun onFinanceCategoryClick(
         categoryName: String,
         categoryId: Int,
-        isRevenue: Boolean,
+        isExpenses: Boolean,
         currency: String
     ) {
         val args = Bundle()
         args.putString("categoryName", categoryName)
         args.putInt("categoryId", categoryId)
-        args.putBoolean("isRevenue", isRevenue)
+        args.putBoolean("isExpenses", isExpenses)
         args.putString("currency", currency)
         navController.navigate(R.id.action_financeFragment_to_financeDetailsFragment, args)
     }

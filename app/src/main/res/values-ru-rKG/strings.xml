@@ -113,4 +113,8 @@
     <string name="food">Еда</string>
     <string name="other">Прочее</string>
     <string name="add">Добавить</string>
+    <string name="day">День</string>
+    <string name="week">Неделя</string>
+    <string name="month">Месяц</string>
+    <string name="year_full">Год</string>
 </resources>

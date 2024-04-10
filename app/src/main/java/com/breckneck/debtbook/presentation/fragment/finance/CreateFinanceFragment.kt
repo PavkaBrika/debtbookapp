@@ -30,7 +30,6 @@ import com.breckneck.deptbook.domain.util.CreateFinanceState
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputLayout
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.text.SimpleDateFormat
 import java.util.Calendar
 
 class CreateFinanceFragment : Fragment() {
@@ -90,7 +89,7 @@ class CreateFinanceFragment : Fragment() {
                         arguments?.getSerializable("financeEdit") as Finance?
                     }
                     vm.setFinanceEdit(finance = financeEdit!!)
-                    vm.setIsRevenue(isRevenue = financeEdit.isRevenue)
+                    vm.setIsRevenue(isRevenue = financeEdit.isExpenses)
                     vm.setDayInMillis(dayInMillis = financeEdit.date.time)
                     financeSumEditText.setText(financeEdit.sum.toString())
                     financeInfoEditText.setText(financeEdit.info)
@@ -228,7 +227,7 @@ class CreateFinanceFragment : Fragment() {
                         vm.setFinance(
                             Finance(
                                 sum = financeSumEditText.text.toString().toDouble(),
-                                isRevenue = customSwitch.isChecked(),
+                                isExpenses = customSwitch.isChecked(),
                                 info = financeInfoEditText.text.toString(),
                                 financeCategoryId = vm.checkedFinanceCategory.value!!.id,
                                 date = vm.date.value!!
@@ -240,7 +239,7 @@ class CreateFinanceFragment : Fragment() {
                             Finance(
                                 id = vm.financeEdit.value!!.id,
                                 sum = financeSumEditText.text.toString().toDouble(),
-                                isRevenue = customSwitch.isChecked(),
+                                isExpenses = customSwitch.isChecked(),
                                 info = financeInfoEditText.text.toString(),
                                 financeCategoryId = vm.financeEdit.value!!.financeCategoryId,
                                 date = vm.date.value!!
