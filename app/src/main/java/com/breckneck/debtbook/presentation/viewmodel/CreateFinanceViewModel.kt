@@ -101,6 +101,10 @@ class CreateFinanceViewModel(
         disposeBag.add(result)
     }
 
+    fun editFinance(finance: Finance) {
+
+    }
+
     fun getFinanceCurrency() {
         _currency.value = getFinanceCurrency.execute()
     }

@@ -32,4 +32,8 @@ class DataBaseFinanceStorageImpl(context: Context): FinanceStorage {
     override fun deleteFinance(financeData: FinanceData) {
         db.appDao().deleteFinance(financeData = financeData)
     }
+
+    override fun updateFinance(financeData: FinanceData) {
+        db.appDao().updateFinance(financeData = financeData)
+    }
 }

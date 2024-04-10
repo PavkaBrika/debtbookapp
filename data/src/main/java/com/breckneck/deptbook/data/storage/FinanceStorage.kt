@@ -11,4 +11,6 @@ interface FinanceStorage {
     fun getFinanceByCategoryIdAndRevenue(categoryId: Int, isRevenue: Boolean): List<FinanceData>
 
     fun deleteFinance(financeData: FinanceData)
+
+    fun updateFinance(financeData: FinanceData)
 }

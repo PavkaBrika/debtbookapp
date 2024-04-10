@@ -2,7 +2,6 @@ package repository
 
 import com.breckneck.deptbook.data.storage.FinanceStorage
 import com.breckneck.deptbook.domain.model.Finance
-import com.breckneck.deptbook.domain.model.FinanceCategory
 import com.breckneck.deptbook.domain.repository.FinanceRepository
 import entity.FinanceData
 
@@ -55,6 +54,19 @@ class FinanceRepositoryImpl(private val financeStorage: FinanceStorage) : Financ
 
     override fun deleteFinance(finance: Finance) {
         financeStorage.deleteFinance(
+            financeData = FinanceData(
+                id = finance.id,
+                sum = finance.sum,
+                isRevenue = finance.isRevenue,
+                date = finance.date,
+                info = finance.info,
+                financeCategoryId = finance.financeCategoryId
+            )
+        )
+    }
+
+    override fun updateFinance(finance: Finance) {
+        financeStorage.updateFinance(
             financeData = FinanceData(
                 id = finance.id,
                 sum = finance.sum,
