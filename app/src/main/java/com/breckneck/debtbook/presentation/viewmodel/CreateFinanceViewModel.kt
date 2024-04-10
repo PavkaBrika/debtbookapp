@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.breckneck.deptbook.domain.model.Finance
 import com.breckneck.deptbook.domain.model.FinanceCategory
 import com.breckneck.deptbook.domain.usecase.Finance.SetFinance
+import com.breckneck.deptbook.domain.usecase.Finance.UpdateFinance
 import com.breckneck.deptbook.domain.usecase.FinanceCategory.GetAllFinanceCategories
 import com.breckneck.deptbook.domain.usecase.Settings.GetFinanceCurrency
 import com.breckneck.deptbook.domain.util.CreateFinanceState
@@ -21,7 +22,8 @@ import java.util.Date
 class CreateFinanceViewModel(
     private val setFinance: SetFinance,
     private val getAllFinanceCategories: GetAllFinanceCategories,
-    private val getFinanceCurrency: GetFinanceCurrency
+    private val getFinanceCurrency: GetFinanceCurrency,
+    private val updateFinance: UpdateFinance
     ): ViewModel() {
 
     private val TAG = "CreateFinanceFragmentVM"
@@ -102,7 +104,18 @@ class CreateFinanceViewModel(
     }
 
     fun editFinance(finance: Finance) {
-
+        val result = Completable.create {
+            updateFinance.execute(finance = finance)
+            it.onComplete()
+        }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                Log.e(TAG, "finance updated")
+            }, {
+                Log.e(TAG, it.message.toString())
+            })
+        disposeBag.add(result)
     }
 
     fun getFinanceCurrency() {

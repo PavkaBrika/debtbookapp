@@ -29,6 +29,15 @@ class FinanceDetailsViewModel(
     private val _settingsFinance = MutableLiveData<Finance>()
     val settingsFinance: LiveData<Finance>
         get() = _settingsFinance
+    private val _categoryName = MutableLiveData<String>()
+    val categoryName: LiveData<String>
+        get() = _categoryName
+    private val _categoryId = MutableLiveData<Int>()
+    val categoryId: LiveData<Int>
+        get() = _categoryId
+    private val _isRevenue = MutableLiveData<Boolean>()
+    val isRevenue: LiveData<Boolean>
+        get() = _isRevenue
 
     private val disposeBag = CompositeDisposable()
 
@@ -66,6 +75,7 @@ class FinanceDetailsViewModel(
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
+                getFinanceByCategoryIdAndRevenue(categoryId = categoryId.value!!, isRevenue = isRevenue.value!!)
                 Log.e(TAG, "Finance delete success")
             }, {
                 Log.e(TAG, it.message.toString())
@@ -83,5 +93,13 @@ class FinanceDetailsViewModel(
 
     fun onFinanceSettingsDialogClose() {
         _isSettingsDialogOpened.value = false
+    }
+
+    fun setCategoryId(categoryId: Int) {
+        _categoryId.value = categoryId
+    }
+
+    fun setIsRevenue(isRevenue: Boolean) {
+        _isRevenue.value = isRevenue
     }
 }

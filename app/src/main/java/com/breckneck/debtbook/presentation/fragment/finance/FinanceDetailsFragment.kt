@@ -11,6 +11,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
@@ -49,6 +50,10 @@ class FinanceDetailsFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        setFragmentResultListener("requestKey") { requestKey, bundle ->
+            if (bundle.getBoolean("isListModified"))
+                vm.getFinanceByCategoryIdAndRevenue(categoryId = vm.categoryId.value!!, isRevenue = vm.isRevenue.value!!)
+        }
         return inflater.inflate(R.layout.fragment_finance_details, container, false)
     }
 
@@ -56,12 +61,14 @@ class FinanceDetailsFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val categoryName = arguments?.getString("categoryName")
-        val categoryId = arguments?.getInt("categoryId")
-        val isRevenue = arguments?.getBoolean("isRevenue")
+        if (vm.categoryId.value == null)
+            vm.setCategoryId(arguments?.getInt("categoryId")!!)
+        if (vm.isRevenue.value == null)
+            vm.setIsRevenue(arguments?.getBoolean("isRevenue")!!)
         val currency = arguments?.getString("currency")
 
         val collaps: CollapsingToolbarLayout = view.findViewById(R.id.collaps)
-        val spannable = if (isRevenue == true)
+        val spannable = if (vm.isRevenue.value == true)
             SpannableString("$categoryName\n${getString(R.string.revenues)}")
         else
             SpannableString("$categoryName\n${getString(R.string.expenses)}")
@@ -85,7 +92,7 @@ class FinanceDetailsFragment: Fragment() {
         }
 
         if (vm.financeList.value == null) {
-            vm.getFinanceByCategoryIdAndRevenue(categoryId = categoryId!!, isRevenue = isRevenue!!)
+            vm.getFinanceByCategoryIdAndRevenue(categoryId = vm.categoryId.value!!, isRevenue = vm.isRevenue.value!!)
         }
 
         val financeClickListener = object : FinanceAdapter.OnFinanceClickListener {

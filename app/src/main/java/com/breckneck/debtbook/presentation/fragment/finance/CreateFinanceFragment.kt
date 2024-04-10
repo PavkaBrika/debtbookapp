@@ -81,7 +81,7 @@ class CreateFinanceFragment : Fragment() {
                 CreateFinanceState.CREATE -> {
                     vm.setIsRevenue(isRevenue = arguments?.getBoolean("isRevenue")!!)
                     vm.setDayInMillis(dayInMillis = arguments?.getLong("dayInMillis")!!)
-                    vm.getFinanceCurrency()
+                    vm.getAllFinanceCategories()
                 }
                 CreateFinanceState.EDIT -> {
                     val financeEdit = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -207,12 +207,14 @@ class CreateFinanceFragment : Fragment() {
                 }
             }
 
-            if (vm.checkedFinanceCategory.value == null) {
-                Toast.makeText(
-                    requireActivity(),
-                    getString(R.string.you_must_select_category), Toast.LENGTH_SHORT
-                ).show()
-                isFilledRight = false
+            if (vm.createFinanceState.value == CreateFinanceState.CREATE) {
+                if (vm.checkedFinanceCategory.value == null) {
+                    Toast.makeText(
+                        requireActivity(),
+                        getString(R.string.you_must_select_category), Toast.LENGTH_SHORT
+                    ).show()
+                    isFilledRight = false
+                }
             }
 
             return isFilledRight
@@ -234,7 +236,17 @@ class CreateFinanceFragment : Fragment() {
                         )
                     }
                     CreateFinanceState.EDIT -> {
-
+                        vm.editFinance(
+                            Finance(
+                                id = vm.financeEdit.value!!.id,
+                                sum = financeSumEditText.text.toString().toDouble(),
+                                isRevenue = customSwitch.isChecked(),
+                                info = financeInfoEditText.text.toString(),
+                                financeCategoryId = vm.financeEdit.value!!.financeCategoryId,
+                                date = vm.date.value!!
+                            )
+                        )
+                        setFragmentResult("financeDetailsKey", bundleOf("isListModified" to true))
                     }
                 }
                 setFragmentResult("requestKey", bundleOf("isListModified" to true))

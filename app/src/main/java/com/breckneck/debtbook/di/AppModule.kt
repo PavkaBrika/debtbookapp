@@ -109,7 +109,8 @@ val appModule = module {
         CreateFinanceViewModel(
             setFinance = get(),
             getAllFinanceCategories = get(),
-            getFinanceCurrency = get()
+            getFinanceCurrency = get(),
+            updateFinance = get()
         )
     }
 
