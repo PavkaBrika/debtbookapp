@@ -62,7 +62,7 @@ class FinanceFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        setFragmentResultListener("requestKey") { requestKey, bundle ->
+        setFragmentResultListener("financeFragmentKey") { requestKey, bundle ->
             if (bundle.getBoolean("isListModified"))
                 vm.getAllCategoriesWithFinances()
         }

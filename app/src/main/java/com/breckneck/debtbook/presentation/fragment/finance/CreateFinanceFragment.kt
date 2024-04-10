@@ -54,7 +54,7 @@ class CreateFinanceFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        setFragmentResultListener("requestKey2") { requestKey, bundle ->
+        setFragmentResultListener("createFinanceFragmentKey") { requestKey, bundle ->
             if (bundle.getBoolean("isListModified"))
                 vm.getAllFinanceCategories()
         }
@@ -249,7 +249,7 @@ class CreateFinanceFragment : Fragment() {
                         setFragmentResult("financeDetailsKey", bundleOf("isListModified" to true))
                     }
                 }
-                setFragmentResult("requestKey", bundleOf("isListModified" to true))
+                setFragmentResult("financeFragmentKey", bundleOf("isListModified" to true))
                 onClickListener!!.onBackButtonClick()
             }
         }

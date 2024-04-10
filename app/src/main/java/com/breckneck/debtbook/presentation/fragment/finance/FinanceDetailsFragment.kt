@@ -50,7 +50,7 @@ class FinanceDetailsFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        setFragmentResultListener("requestKey") { requestKey, bundle ->
+        setFragmentResultListener("financeDetailsKey") { requestKey, bundle ->
             if (bundle.getBoolean("isListModified"))
                 vm.getFinanceByCategoryIdAndRevenue(categoryId = vm.categoryId.value!!, isRevenue = vm.isRevenue.value!!)
         }

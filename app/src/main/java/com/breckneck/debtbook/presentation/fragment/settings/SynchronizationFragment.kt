@@ -237,7 +237,7 @@ class SynchronizationFragment : Fragment() {
             .addOnSuccessListener { googleAccount ->
                 onSuccessSignIn(googleAccount = googleAccount)
                 vm.setIsAuthorized(isAuthorized = true)
-                setFragmentResult("requestKey", bundleOf("isAuthorized" to true))
+                setFragmentResult("settingsFragmentKey", bundleOf("isAuthorized" to true))
             }
             .addOnFailureListener {
                 Toast.makeText(requireActivity(), getString(R.string.something_went_wrong), Toast.LENGTH_SHORT)

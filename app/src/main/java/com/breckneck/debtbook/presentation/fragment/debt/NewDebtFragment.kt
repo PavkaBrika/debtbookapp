@@ -222,7 +222,7 @@ class NewDebtFragment: Fragment() {
         val debtSumTextInput: TextInputLayout = view.findViewById(R.id.debtSumTextInput)
         val setButton : FloatingActionButton = view.findViewById(R.id.setFinanceButton)
         setButton.setOnClickListener{
-            setFragmentResult("requestKey", bundleOf("isListModified" to true))
+            setFragmentResult("mainFragmentKey", bundleOf("isListModified" to true))
             buttonClickListener.onSetButtonClick()
             val name = humanNameEditText.text.toString()
             var sum = debtSumEditText.text.toString()

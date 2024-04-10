@@ -235,7 +235,7 @@ class DebtDetailsFragment : Fragment() {
         vm.onHumanDeleteDialogOpen()
 
         dialog.findViewById<Button>(R.id.okButton)!!.setOnClickListener {
-            setFragmentResult("requestKey", bundleOf("isListModified" to true))
+            setFragmentResult("mainFragmentKey", bundleOf("isListModified" to true))
             vm.deleteHuman()
             buttonClickListener?.deleteHuman()
             dialog.dismiss()

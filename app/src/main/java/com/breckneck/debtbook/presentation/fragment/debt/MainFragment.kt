@@ -66,7 +66,7 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-        setFragmentResultListener("requestKey") { requestKey, bundle ->
+        setFragmentResultListener("mainFragmentKey") { requestKey, bundle ->
             if (bundle.getBoolean("isListModified"))
                 vm.init()
             else if (mainActivityVM.isNeedDebtDataUpdate.value == true)

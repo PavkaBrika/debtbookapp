@@ -64,7 +64,7 @@ class SettingsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-        setFragmentResultListener("settingsKey") { requestKey, bundle ->
+        setFragmentResultListener("settingsFragmentKey") { requestKey, bundle ->
             if (bundle.getBoolean("isAuthorized") != vm.isAuthorized.value)
                 vm.getIsAuthorized()
             if (bundle.getBoolean("isListModified"))
@@ -357,7 +357,7 @@ class SettingsFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
-        setFragmentResult("requestKey", bundleOf("isListModified" to vm.isListModified.value))
+        setFragmentResult("mainFragmentKey", bundleOf("isListModified" to vm.isListModified.value))
     }
 
 }
