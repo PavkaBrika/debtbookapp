@@ -116,6 +116,13 @@
     <string name="you_must_select_color">You must select color!</string>
     <string name="you_must_select_image">You must select image!</string>
     <string name="select_interval">Select interval</string>
-    <string name="there_are_no_revenues_yet_click_the_button_below_to_add">There are no revenues yet.\nClick the button below to add.</string>
+    <string name="there_are_no_revenues_yet_click_the_button_below_to_add">There are no incomes yet.\nClick the button below to add.</string>
     <string name="there_are_no_expenses_yet_click_the_button_below_to_add">There are no expenses yet.\nClick the button below to add.</string>
+    <string name="health">Health</string>
+    <string name="entertainment">Entertainment</string>
+    <string name="home">Home</string>
+    <string name="education">Education</string>
+    <string name="presents">Gifts</string>
+    <string name="food">Food</string>
+    <string name="other">Other</string>
 </resources>

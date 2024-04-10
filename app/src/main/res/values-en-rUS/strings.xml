@@ -88,4 +88,27 @@
     <string name="recover_all_data_from_the_cloud_this_will_delete_the_current_application_data">Restore all data from the cloud? This will delete the current application data.</string>
     <string name="do_you_really_want_to_log_out">Do you really want to log out?</string>
     <string name="last_synchronization">Last synchronization:</string>
+    <string name="finances">Finances</string>
+    <string name="category">Category</string>
+    <string name="you_must_select_category">You must select category!</string>
+    <string name="revenues">Incomes</string>
+    <string name="expenses">Expenses</string>
+    <string name="categories">Categories</string>
+    <string name="history">History</string>
+    <string name="create_new_category">Create new category</string>
+    <string name="adding">Adding</string>
+    <string name="image">Image</string>
+    <string name="color">Color</string>
+    <string name="you_must_select_color">You must select color!</string>
+    <string name="you_must_select_image">You must select image!</string>
+    <string name="select_interval">Select interval</string>
+    <string name="there_are_no_revenues_yet_click_the_button_below_to_add">Доходов пока нет.\nНажмите на кнопку ниже, чтобы добавить.</string>
+    <string name="there_are_no_expenses_yet_click_the_button_below_to_add">Расходов пока нет.\nНажмите на кнопку ниже, чтобы добавить.</string>
+    <string name="health">Santé</string>
+    <string name="entertainment">Entertainment</string>
+    <string name="home">Home</string>
+    <string name="education">Education</string>
+    <string name="presents">Gifts</string>
+    <string name="food">Food</string>
+    <string name="other">Other</string>
 </resources>
