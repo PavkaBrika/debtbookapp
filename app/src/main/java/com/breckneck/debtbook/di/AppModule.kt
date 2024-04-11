@@ -121,7 +121,7 @@ val appModule = module {
 
     viewModel<FinanceDetailsViewModel> {
         FinanceDetailsViewModel(
-            getFinanceByCategoryIdAndExpenses = get(),
+            getFinanceByCategoryId = get(),
             deleteFinance = get()
         )
     }

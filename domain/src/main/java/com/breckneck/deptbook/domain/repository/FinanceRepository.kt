@@ -8,7 +8,7 @@ interface FinanceRepository {
 
     fun getAllFinance(): List<Finance>
 
-    fun getFinanceByCategoryIdAndExpenses(categoryId: Int, isExpenses: Boolean): List<Finance>
+    fun getFinanceByCategoryId(categoryId: Int): List<Finance>
 
     fun deleteFinance(finance: Finance)
 

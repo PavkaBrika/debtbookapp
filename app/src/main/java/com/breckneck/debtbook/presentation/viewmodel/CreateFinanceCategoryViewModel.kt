@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.breckneck.deptbook.domain.model.FinanceCategory
 import com.breckneck.deptbook.domain.usecase.FinanceCategory.SetFinanceCategory
+import com.breckneck.deptbook.domain.util.FinanceCategoryState
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -31,6 +32,9 @@ class CreateFinanceCategoryViewModel(
     private val _checkedColorPosition = MutableLiveData<Int>()
     val checkedColorPosition: LiveData<Int>
         get() = _checkedColorPosition
+    private val _financeCategoryState = MutableLiveData<FinanceCategoryState>()
+    val financeCategoryState: LiveData<FinanceCategoryState>
+        get() = _financeCategoryState
 
     init {
         Log.e(TAG, "Initialized")
@@ -71,5 +75,9 @@ class CreateFinanceCategoryViewModel(
                 Log.e(TAG, it.message.toString())
             })
         disposeBag.add(result)
+    }
+
+    fun setFinanceCategoryState(financeCategoryState: FinanceCategoryState) {
+        _financeCategoryState.value = financeCategoryState
     }
 }

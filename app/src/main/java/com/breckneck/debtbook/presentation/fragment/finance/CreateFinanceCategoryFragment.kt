@@ -17,6 +17,7 @@ import com.breckneck.debtbook.adapter.CategoryColorAdapter
 import com.breckneck.debtbook.adapter.CategoryImageAdapter
 import com.breckneck.debtbook.presentation.viewmodel.CreateFinanceCategoryViewModel
 import com.breckneck.deptbook.domain.model.FinanceCategory
+import com.breckneck.deptbook.domain.util.FinanceCategoryState
 import com.breckneck.deptbook.domain.util.categoryColorList
 import com.breckneck.deptbook.domain.util.categoryImageList
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -47,6 +48,16 @@ class CreateFinanceCategoryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        if (vm.financeCategoryState.value == null)
+            vm.setFinanceCategoryState(
+                financeCategoryState =
+                when (arguments?.getString("categoryState").toString()) {
+                    FinanceCategoryState.EXPENSE.toString() -> FinanceCategoryState.EXPENSE
+                    FinanceCategoryState.INCOME.toString() -> FinanceCategoryState.INCOME
+                    else -> FinanceCategoryState.EXPENSE
+                }
+            )
 
         val backButtonImageView: ImageView = view.findViewById(R.id.backButton)
         backButtonImageView.setOnClickListener {
@@ -119,6 +130,7 @@ class CreateFinanceCategoryFragment : Fragment() {
                     FinanceCategory(
                         name = financeNameEditText.text.toString(),
                         color = vm.checkedColor.value!!,
+                        state = vm.financeCategoryState.value!!,
                         image = vm.checkedImage.value!!
                     )
                 )

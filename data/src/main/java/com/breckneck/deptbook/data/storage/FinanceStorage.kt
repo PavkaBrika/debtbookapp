@@ -8,7 +8,7 @@ interface FinanceStorage {
 
     fun getAllFinance(): List<FinanceData>
 
-    fun getFinanceByCategoryIdAndExpenses(categoryId: Int, isExpenses: Boolean): List<FinanceData>
+    fun getFinanceByCategoryId(categoryId: Int): List<FinanceData>
 
     fun deleteFinance(financeData: FinanceData)
 

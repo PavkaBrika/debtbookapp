@@ -12,6 +12,7 @@ import com.breckneck.deptbook.domain.usecase.FinanceCategory.GetAllCategoriesWit
 import com.breckneck.deptbook.domain.usecase.FinanceCategory.GetAllFinanceCategories
 import com.breckneck.deptbook.domain.usecase.Settings.GetFinanceCurrency
 import com.breckneck.deptbook.domain.usecase.Settings.SetFinanceCurrency
+import com.breckneck.deptbook.domain.util.FinanceCategoryState
 import com.breckneck.deptbook.domain.util.FinanceInterval
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
@@ -33,9 +34,9 @@ class FinanceViewModel(
     private val _categoriesWithFinancesList = MutableLiveData<List<FinanceCategoryWithFinances>>()
     val categoriesWithFinancesList: LiveData<List<FinanceCategoryWithFinances>>
         get() = _categoriesWithFinancesList
-    private val _isExpensesSwitch = MutableLiveData<Boolean>(true)
-    val isExpensesSwitch: LiveData<Boolean>
-        get() = _isExpensesSwitch
+    private val _financeCategoryState = MutableLiveData<FinanceCategoryState>(FinanceCategoryState.EXPENSE)
+    val financeCategoryState: LiveData<FinanceCategoryState>
+        get() = _financeCategoryState
     private val _isCurrencyDialogOpened = MutableLiveData<Boolean>(false)
     val isCurrencyDialogOpened: LiveData<Boolean>
         get() = _isCurrencyDialogOpened
@@ -238,23 +239,25 @@ class FinanceViewModel(
             val deleteFinancesList: MutableList<Finance> = mutableListOf()
             val deleteCategoriesList: MutableList<FinanceCategoryWithFinances> = mutableListOf()
             for (categoriesWithFinances in categoriesWithFinancesList) {
-                if (categoriesWithFinances.financeList.isEmpty())
-                    deleteCategoriesList.add(categoriesWithFinances)
-                else {
-                    for (finance in categoriesWithFinances.financeList) {
-                        if (isExpensesSwitch.value != finance.isExpenses)
-                            deleteFinancesList.add(finance)
-                        else if ((finance.date.time < financeIntervalUnix.value!!.first) || (finance.date.time > financeIntervalUnix.value!!.second))
-                            deleteFinancesList.add(finance)
-                        else {
-                            overallSum += finance.sum
-                            categoriesWithFinances.categorySum += finance.sum
-                        }
-                    }
-                    categoriesWithFinances.financeList.removeAll(deleteFinancesList)
+                if (categoriesWithFinances.financeCategory.state == financeCategoryState.value) {
                     if (categoriesWithFinances.financeList.isEmpty())
                         deleteCategoriesList.add(categoriesWithFinances)
-                    deleteFinancesList.clear()
+                    else {
+                        for (finance in categoriesWithFinances.financeList) {
+                            if ((finance.date.time < financeIntervalUnix.value!!.first) || (finance.date.time > financeIntervalUnix.value!!.second))
+                                deleteFinancesList.add(finance)
+                            else {
+                                overallSum += finance.sum
+                                categoriesWithFinances.categorySum += finance.sum
+                            }
+                        }
+                        categoriesWithFinances.financeList.removeAll(deleteFinancesList)
+                        if (categoriesWithFinances.financeList.isEmpty())
+                            deleteCategoriesList.add(categoriesWithFinances)
+                        deleteFinancesList.clear()
+                    }
+                } else {
+                    deleteCategoriesList.add(categoriesWithFinances)
                 }
             }
             categoriesWithFinancesList.removeAll(deleteCategoriesList)
@@ -320,8 +323,11 @@ class FinanceViewModel(
         _currency.value = getFinanceCurrency.execute()
     }
 
-    fun onChangeIsExpensesSwitch() {
-        _isExpensesSwitch.value = !(_isExpensesSwitch.value)!!
+    fun onChangeFinanceCategoryState() {
+        when (_financeCategoryState.value!!) {
+            FinanceCategoryState.EXPENSE -> FinanceCategoryState.INCOME
+            FinanceCategoryState.INCOME -> FinanceCategoryState.EXPENSE
+        }
     }
 
     fun setInterval(interval: FinanceInterval) {

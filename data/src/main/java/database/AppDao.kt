@@ -6,6 +6,7 @@ import entity.FinanceCategoryData
 import entity.FinanceData
 import entity.Human
 import entity.relations.FinanceCategoryDataWithFinanceData
+import util.FinanceCategoryStateData
 
 
 @Dao
@@ -83,11 +84,8 @@ interface AppDao {
     @Query("SELECT * from financedata")
     fun getAllFinances(): List<FinanceData>
 
-    @Query("SELECT * from financedata WHERE isExpenses = :isRevenue")
-    fun getFinancesByIsRevenue(isRevenue: Boolean): List<FinanceData>
-
-    @Query("SELECT * from financedata WHERE financeCategoryId = :categoryId AND isExpenses = :isExpenses")
-    fun getFinanceByCategoryIdAndExpenses(categoryId: Int, isExpenses: Boolean): List<FinanceData>
+    @Query("SELECT * from financedata WHERE financeCategoryId = :categoryId")
+    fun getFinanceByCategoryId(categoryId: Int): List<FinanceData>
 
     @Insert
     fun insertFinance(financeData: FinanceData)
@@ -101,6 +99,10 @@ interface AppDao {
     //Finance category
     @Query("SELECT * FROM financecategorydata")
     fun getAllFinanceCategories(): List<FinanceCategoryData>
+
+    @Transaction
+    @Query("SELECT * FROM financecategorydata WHERE state = :financeCategoryStateData")
+    fun getFinanceCategoriesWithFinancesByState(financeCategoryStateData: FinanceCategoryStateData): List<FinanceCategoryDataWithFinanceData>
 
     @Transaction
     @Query("SELECT * FROM financecategorydata")

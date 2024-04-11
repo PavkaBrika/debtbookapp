@@ -12,6 +12,7 @@ import com.breckneck.deptbook.domain.usecase.FinanceCategory.DeleteFinanceCatego
 import com.breckneck.deptbook.domain.usecase.FinanceCategory.GetAllFinanceCategories
 import com.breckneck.deptbook.domain.usecase.Settings.GetFinanceCurrency
 import com.breckneck.deptbook.domain.util.CreateFinanceState
+import com.breckneck.deptbook.domain.util.FinanceCategoryState
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
@@ -49,9 +50,9 @@ class CreateFinanceViewModel(
     private val _currency = MutableLiveData<String>()
     val currency: LiveData<String>
         get() = _currency
-    private val _isExpenses = MutableLiveData<Boolean>()
-    val isExpenses: LiveData<Boolean>
-        get() = _isExpenses
+    private val _financeCategoryState = MutableLiveData<FinanceCategoryState>()
+    val financeCategoryState: LiveData<FinanceCategoryState>
+        get() = _financeCategoryState
     private val _dayInMillis = MutableLiveData<Long>()
     val dayInMillis: LiveData<Long>
         get() = _dayInMillis
@@ -150,8 +151,8 @@ class CreateFinanceViewModel(
         _financeEdit.value = finance
     }
 
-    fun setExpenses(isExpenses: Boolean) {
-        _isExpenses.value = isExpenses
+    fun setFinanceCategoryState(financeCategoryState: FinanceCategoryState) {
+        _financeCategoryState.value = financeCategoryState
     }
 
     fun setDayInMillis(dayInMillis: Long) {

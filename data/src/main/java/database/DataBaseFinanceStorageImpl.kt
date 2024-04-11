@@ -19,11 +19,10 @@ class DataBaseFinanceStorageImpl(context: Context): FinanceStorage {
         return db.appDao().getAllFinances()
     }
 
-    override fun getFinanceByCategoryIdAndExpenses(
-        categoryId: Int,
-        isExpenses: Boolean
+    override fun getFinanceByCategoryId(
+        categoryId: Int
     ): List<FinanceData> {
-        return db.appDao().getFinanceByCategoryIdAndExpenses(categoryId = categoryId, isExpenses = isExpenses)
+        return db.appDao().getFinanceByCategoryId(categoryId = categoryId)
     }
 
     override fun deleteFinance(financeData: FinanceData) {

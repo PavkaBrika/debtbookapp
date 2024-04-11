@@ -34,6 +34,7 @@ import com.breckneck.deptbook.domain.model.DebtDomain
 import com.breckneck.deptbook.domain.model.Finance
 import com.breckneck.deptbook.domain.util.CLICKS_QUANTITY_FOR_AD_SHOW
 import com.breckneck.deptbook.domain.util.DEBT_QUANTITY_FOR_LAST_SHOW_APP_RATE_DIALOG
+import com.breckneck.deptbook.domain.util.FinanceCategoryState
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -391,13 +392,13 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener,
     override fun onFinanceCategoryClick(
         categoryName: String,
         categoryId: Int,
-        isExpenses: Boolean,
+        financeCategoryState: FinanceCategoryState,
         currency: String
     ) {
         val args = Bundle()
         args.putString("categoryName", categoryName)
         args.putInt("categoryId", categoryId)
-        args.putBoolean("isExpenses", isExpenses)
+        args.putString("categoryState", financeCategoryState.toString())
         args.putString("currency", currency)
         navController.navigate(R.id.action_financeFragment_to_financeDetailsFragment, args)
     }

@@ -5,7 +5,9 @@ import com.breckneck.deptbook.domain.model.Finance
 import com.breckneck.deptbook.domain.model.FinanceCategory
 import com.breckneck.deptbook.domain.model.FinanceCategoryWithFinances
 import com.breckneck.deptbook.domain.repository.FinanceCategoryRepository
+import com.breckneck.deptbook.domain.util.FinanceCategoryState
 import entity.FinanceCategoryData
+import util.FinanceCategoryStateData
 
 class FinanceCategoryRepositoryImpl(private val financeCategoryStorage: FinanceCategoryStorage) :
     FinanceCategoryRepository {
@@ -17,6 +19,10 @@ class FinanceCategoryRepositoryImpl(private val financeCategoryStorage: FinanceC
                     financeCategory = FinanceCategory(
                         id = financeCategoryWithFinance.financeCategoryData.id,
                         name = financeCategoryWithFinance.financeCategoryData.name,
+                        state = when (financeCategoryWithFinance.financeCategoryData.state) {
+                            FinanceCategoryStateData.INCOME -> FinanceCategoryState.INCOME
+                            FinanceCategoryStateData.EXPENSE -> FinanceCategoryState.EXPENSE
+                        },
                         color = financeCategoryWithFinance.financeCategoryData.color,
                         image = financeCategoryWithFinance.financeCategoryData.image
                     ),
@@ -24,7 +30,6 @@ class FinanceCategoryRepositoryImpl(private val financeCategoryStorage: FinanceC
                         Finance(
                             id = financeData.id,
                             sum = financeData.sum,
-                            isExpenses = financeData.isExpenses,
                             info = financeData.info,
                             financeCategoryId = financeData.financeCategoryId,
                             date = financeData.date
@@ -39,6 +44,10 @@ class FinanceCategoryRepositoryImpl(private val financeCategoryStorage: FinanceC
             FinanceCategory(
                 id = financeCategoryData.id,
                 name = financeCategoryData.name,
+                state = when (financeCategoryData.state) {
+                    FinanceCategoryStateData.INCOME -> FinanceCategoryState.INCOME
+                    FinanceCategoryStateData.EXPENSE -> FinanceCategoryState.EXPENSE
+                },
                 color = financeCategoryData.color,
                 image = financeCategoryData.image
             )
@@ -50,6 +59,10 @@ class FinanceCategoryRepositoryImpl(private val financeCategoryStorage: FinanceC
             FinanceCategoryData(
                 id = category.id,
                 name = category.name,
+                state = when (category.state) {
+                    FinanceCategoryState.INCOME -> FinanceCategoryStateData.INCOME
+                    FinanceCategoryState.EXPENSE -> FinanceCategoryStateData.EXPENSE
+                },
                 color = category.color,
                 image = category.image
             )
@@ -61,6 +74,10 @@ class FinanceCategoryRepositoryImpl(private val financeCategoryStorage: FinanceC
             category = FinanceCategoryData(
                 id = category.id,
                 name = category.name,
+                state = when (category.state) {
+                    FinanceCategoryState.INCOME -> FinanceCategoryStateData.INCOME
+                    FinanceCategoryState.EXPENSE -> FinanceCategoryStateData.EXPENSE
+                },
                 color = category.color,
                 image = category.image
             )

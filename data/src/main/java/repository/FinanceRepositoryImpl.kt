@@ -12,7 +12,6 @@ class FinanceRepositoryImpl(private val financeStorage: FinanceStorage) : Financ
             finance = FinanceData(
                 id = finance.id,
                 sum = finance.sum,
-                isExpenses = finance.isExpenses,
                 info = finance.info,
                 financeCategoryId = finance.financeCategoryId,
                 date = finance.date
@@ -25,7 +24,6 @@ class FinanceRepositoryImpl(private val financeStorage: FinanceStorage) : Financ
             Finance(
                 id = financeData.id,
                 sum = financeData.sum,
-                isExpenses = financeData.isExpenses,
                 info = financeData.info,
                 financeCategoryId = financeData.financeCategoryId,
                 date = financeData.date
@@ -33,18 +31,15 @@ class FinanceRepositoryImpl(private val financeStorage: FinanceStorage) : Financ
         }
     }
 
-    override fun getFinanceByCategoryIdAndExpenses(
-        categoryId: Int,
-        isExpenses: Boolean
+    override fun getFinanceByCategoryId(
+        categoryId: Int
     ): List<Finance> {
-        return financeStorage.getFinanceByCategoryIdAndExpenses(
+        return financeStorage.getFinanceByCategoryId(
             categoryId = categoryId,
-            isExpenses = isExpenses
         ).map { financeData ->
             Finance(
                 id = financeData.id,
                 sum = financeData.sum,
-                isExpenses = financeData.isExpenses,
                 info = financeData.info,
                 financeCategoryId = financeData.financeCategoryId,
                 date = financeData.date
@@ -57,7 +52,6 @@ class FinanceRepositoryImpl(private val financeStorage: FinanceStorage) : Financ
             financeData = FinanceData(
                 id = finance.id,
                 sum = finance.sum,
-                isExpenses = finance.isExpenses,
                 date = finance.date,
                 info = finance.info,
                 financeCategoryId = finance.financeCategoryId
@@ -70,7 +64,6 @@ class FinanceRepositoryImpl(private val financeStorage: FinanceStorage) : Financ
             financeData = FinanceData(
                 id = finance.id,
                 sum = finance.sum,
-                isExpenses = finance.isExpenses,
                 date = finance.date,
                 info = finance.info,
                 financeCategoryId = finance.financeCategoryId

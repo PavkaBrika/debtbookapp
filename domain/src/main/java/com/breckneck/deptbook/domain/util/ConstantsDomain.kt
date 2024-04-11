@@ -13,6 +13,9 @@ const val CLICKS_QUANTITY_FOR_AD_SHOW = 9
 
 const val LAST_CHECKED_POSITION_NOT_EXISTS = -1
 
+const val SWITCH_STATE_REVENUES = true
+const val SWITCH_STATE_INCOMES = false
+
 val categoryColorList = listOf(
     "#EF9A9A",
     "#F48FB1",
@@ -67,4 +70,11 @@ val revenuesCategoryEnglishNameList = listOf(
     "Gifts",
     "Food",
     "Other"
+)
+
+val incomesCategoryEnglishNameList = listOf(
+    "Salary",
+    "Gifts",
+    "Investments",
+    "Other",
 )

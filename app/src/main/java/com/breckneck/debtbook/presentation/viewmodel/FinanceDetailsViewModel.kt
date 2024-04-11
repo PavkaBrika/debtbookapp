@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.breckneck.deptbook.domain.model.Finance
 import com.breckneck.deptbook.domain.usecase.Finance.DeleteFinance
-import com.breckneck.deptbook.domain.usecase.Finance.GetFinanceByCategoryIdAndExpenses
+import com.breckneck.deptbook.domain.usecase.Finance.GetFinanceByCategoryId
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
@@ -14,7 +14,7 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 
 class FinanceDetailsViewModel(
-    private val getFinanceByCategoryIdAndExpenses: GetFinanceByCategoryIdAndExpenses,
+    private val getFinanceByCategoryId: GetFinanceByCategoryId,
     private val deleteFinance: DeleteFinance
 ): ViewModel() {
 
@@ -51,9 +51,9 @@ class FinanceDetailsViewModel(
         Log.e(TAG, "Cleared")
     }
 
-    fun getFinanceByCategoryIdAndExpenses(categoryId: Int, isExpenses: Boolean) {
+    fun getFinanceByCategoryId(categoryId: Int) {
         val result = Single.create {
-            val financeList = getFinanceByCategoryIdAndExpenses.execute(categoryId = categoryId, isExpenses = isExpenses)
+            val financeList = getFinanceByCategoryId.execute(categoryId = categoryId)
             it.onSuccess(financeList.sortedByDescending { finance -> finance.date })
         }
             .subscribeOn(Schedulers.io())
@@ -75,7 +75,7 @@ class FinanceDetailsViewModel(
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                getFinanceByCategoryIdAndExpenses(categoryId = categoryId.value!!, isExpenses = isExpenses.value!!)
+                getFinanceByCategoryId(categoryId = categoryId.value!!)
                 Log.e(TAG, "Finance delete success")
             }, {
                 Log.e(TAG, it.message.toString())

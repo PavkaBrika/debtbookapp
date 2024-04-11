@@ -24,6 +24,7 @@ import com.breckneck.debtbook.presentation.customview.CustomSwitchView
 import com.breckneck.debtbook.presentation.customview.FinanceProgressBar
 import com.breckneck.debtbook.presentation.viewmodel.FinanceViewModel
 import com.breckneck.deptbook.domain.model.FinanceCategoryWithFinances
+import com.breckneck.deptbook.domain.util.FinanceCategoryState
 import com.breckneck.deptbook.domain.util.FinanceInterval
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -44,7 +45,7 @@ class FinanceFragment : Fragment() {
     interface OnButtonClickListener {
         fun onAddFinanceButtonClick(isExpenses: Boolean, dayInMillis: Long)
 
-        fun onFinanceCategoryClick(categoryName: String, categoryId: Int, isExpenses: Boolean, currency: String)
+        fun onFinanceCategoryClick(categoryName: String, categoryId: Int, financeCategoryState: FinanceCategoryState, currency: String)
     }
 
     var buttonClickListener: OnButtonClickListener? = null
@@ -172,7 +173,7 @@ class FinanceFragment : Fragment() {
 
         val financeSwitch: CustomSwitchView = view.findViewById(R.id.financeSwitch)
         financeSwitch.setOnClickListener {
-            vm.onChangeIsExpensesSwitch()
+            vm.onChangeFinanceCategoryState()
         }
 
         val overallSumTextView: TextView = view.findViewById(R.id.overallSumTextView)
@@ -181,22 +182,20 @@ class FinanceFragment : Fragment() {
         }
 
         val noNotesTextView: TextView = view.findViewById(R.id.noNotesTextView)
-        vm.isExpensesSwitch.observe(viewLifecycleOwner) { isExpenses ->
+        vm.financeCategoryState.observe(viewLifecycleOwner) { state ->
             vm.getAllCategoriesWithFinances()
-            when (isExpenses) {
-                true -> {
+            when (state) {
+                FinanceCategoryState.EXPENSE -> {
                     noNotesTextView.text =
                         getString(R.string.there_are_no_expenses_yet_click_the_button_below_to_add)
                     overallSumTextView.setTextColor(ContextCompat.getColor(requireContext(), R.color.red))
                 }
 
-                false -> {
+                FinanceCategoryState.INCOME -> {
                     noNotesTextView.text =
                         getString(R.string.there_are_no_revenues_yet_click_the_button_below_to_add)
                     overallSumTextView.setTextColor(ContextCompat.getColor(requireContext(), R.color.green))
                 }
-
-                null -> {}
             }
         }
 
@@ -309,7 +308,7 @@ class FinanceFragment : Fragment() {
                     buttonClickListener!!.onFinanceCategoryClick(
                         categoryName = usedFinance.financeCategory.name,
                         categoryId = usedFinance.financeCategory.id,
-                        isExpenses = vm.isExpensesSwitch.value!!,
+                        financeCategoryState = vm.financeCategoryState.value!!,
                         currency = vm.currency.value!!
                     )
                 }

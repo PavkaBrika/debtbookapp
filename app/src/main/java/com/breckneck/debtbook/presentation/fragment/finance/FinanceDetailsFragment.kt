@@ -52,7 +52,7 @@ class FinanceDetailsFragment: Fragment() {
     ): View? {
         setFragmentResultListener("financeDetailsKey") { requestKey, bundle ->
             if (bundle.getBoolean("isListModified"))
-                vm.getFinanceByCategoryIdAndExpenses(categoryId = vm.categoryId.value!!, isExpenses = vm.isExpenses.value!!)
+                vm.getFinanceByCategoryId(categoryId = vm.categoryId.value!!)
         }
         return inflater.inflate(R.layout.fragment_finance_details, container, false)
     }
@@ -138,7 +138,7 @@ class FinanceDetailsFragment: Fragment() {
         }
 
         if (vm.financeList.value == null) {
-            vm.getFinanceByCategoryIdAndExpenses(categoryId = vm.categoryId.value!!, isExpenses = vm.isExpenses.value!!)
+            vm.getFinanceByCategoryId(categoryId = vm.categoryId.value!!)
         }
 
         val financeClickListener = object : FinanceAdapter.OnFinanceClickListener {
