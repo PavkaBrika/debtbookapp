@@ -117,4 +117,6 @@
     <string name="month">Month</string>
     <string name="year_full">Year</string>
     <string name="delete_category">Delete category</string>
+    <string name="there_are_no_incomes_yet">There are no incomes yet</string>
+    <string name="there_are_no_expenses_yet">There are no expenses yet</string>
 </resources>

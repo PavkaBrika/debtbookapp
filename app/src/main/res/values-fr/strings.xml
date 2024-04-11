@@ -118,4 +118,6 @@
     <string name="month">Mois</string>
     <string name="year_full">Année</string>
     <string name="delete_category">Supprimer une catégorie</string>
+    <string name="there_are_no_incomes_yet">Il n\'y a pas encore de revenus</string>
+    <string name="there_are_no_expenses_yet">Il n\'y a pas encore de dépenses</string>
 </resources>

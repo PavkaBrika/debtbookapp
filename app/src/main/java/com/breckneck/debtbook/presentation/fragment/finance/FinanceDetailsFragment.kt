@@ -11,6 +11,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -154,8 +155,22 @@ class FinanceDetailsFragment: Fragment() {
             )
         )
         financeRecyclerView.adapter = financeAdapter
+        val noNotesTextView: TextView = view.findViewById(R.id.noNotesTextView)
+        val nestedScrollView: NestedScrollView = view.findViewById(R.id.nestedScroll)
         vm.financeList.observe(viewLifecycleOwner) { financeList ->
             financeAdapter.updateFinanceList(financeList = financeList)
+            if (financeList.isEmpty()) {
+                nestedScrollView.visibility = View.GONE
+                noNotesTextView.visibility = View.VISIBLE
+                if (vm.isExpenses.value!!) {
+                    noNotesTextView.text = getString(R.string.there_are_no_expenses_yet)
+                } else {
+                    noNotesTextView.text = getString(R.string.there_are_no_incomes_yet)
+                }
+            } else {
+                nestedScrollView.visibility = View.VISIBLE
+                noNotesTextView.visibility = View.GONE
+            }
         }
     }
 

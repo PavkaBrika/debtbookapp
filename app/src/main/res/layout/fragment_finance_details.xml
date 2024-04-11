@@ -23,7 +23,7 @@
                 android:layout_height="180dp"
                 android:fitsSystemWindows="true"
                 app:expandedTitleGravity="bottom"
-                app:title="@string/revenues"
+                app:title="@string/expenses"
                 app:expandedTitleMarginStart="16dp"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 app:maxLines="3"
@@ -77,6 +77,18 @@
             android:layout_height="1dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
+        <TextView
+            android:id="@+id/noNotesTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:layout_marginHorizontal="16dp"
+            android:gravity="center"
+            android:visibility="gone"
+            android:text="@string/there_are_no_expenses_yet"
+            android:textColor="@color/darkgray"
+            android:textSize="25sp" />
+
         <androidx.core.widget.NestedScrollView
             android:id="@+id/nestedScroll"
             android:layout_width="match_parent"
@@ -99,7 +111,6 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
-
 
                 <TextView
                     android:id="@+id/financeRecyclerViewHintTextView"

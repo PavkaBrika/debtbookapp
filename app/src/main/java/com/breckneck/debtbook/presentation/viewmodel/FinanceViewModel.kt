@@ -248,7 +248,7 @@ class FinanceViewModel(
                             deleteFinancesList.add(finance)
                         else {
                             overallSum += finance.sum
-                            categoriesWithFinances.categorySum += categoriesWithFinances.categorySum + finance.sum
+                            categoriesWithFinances.categorySum += finance.sum
                         }
                     }
                     categoriesWithFinances.financeList.removeAll(deleteFinancesList)

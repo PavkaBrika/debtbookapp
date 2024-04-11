@@ -118,4 +118,6 @@
     <string name="month">Месяц</string>
     <string name="year_full">Год</string>
     <string name="delete_category">Удалить категорию</string>
+    <string name="there_are_no_incomes_yet">Доходов пока нет</string>
+    <string name="there_are_no_expenses_yet">Расходов пока нет</string>
 </resources>
