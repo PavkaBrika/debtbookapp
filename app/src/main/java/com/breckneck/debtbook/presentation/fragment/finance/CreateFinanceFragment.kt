@@ -87,7 +87,13 @@ class CreateFinanceFragment : Fragment() {
             when (state) {
                 CreateFinanceState.CREATE -> {
                     vm.setExpenses(isExpenses = arguments?.getBoolean("isExpenses")!!)
-                    vm.setDayInMillis(dayInMillis = arguments?.getLong("dayInMillis")!!)
+                    val calendarCurrentTime = Calendar.getInstance()
+                    val calendarFinanceTime = Calendar.getInstance()
+                    calendarFinanceTime.timeInMillis = arguments?.getLong("dayInMillis")!!
+                    calendarFinanceTime.set(Calendar.HOUR, calendarCurrentTime.get(Calendar.HOUR))
+                    calendarFinanceTime.set(Calendar.MINUTE, calendarCurrentTime.get(Calendar.MINUTE))
+                    calendarFinanceTime.set(Calendar.SECOND, calendarCurrentTime.get(Calendar.SECOND))
+                    vm.setDayInMillis(dayInMillis = calendarFinanceTime.timeInMillis)
                     vm.getAllFinanceCategories()
                 }
                 CreateFinanceState.EDIT -> {
