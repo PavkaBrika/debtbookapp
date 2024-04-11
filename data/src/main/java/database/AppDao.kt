@@ -106,10 +106,6 @@ interface AppDao {
     @Query("SELECT * FROM financecategorydata")
     fun getAllFinanceCategoriesWithFinances(): List<FinanceCategoryDataWithFinanceData>
 
-//    @Transaction
-//    @Query("SELECT * FROM financecategorydata WHERE")
-//    fun getAllFinanceCategoriesWithFinancesByIsRevenue(): List<FinanceCategoryDataWithFinanceData>
-
     @Insert
     fun insertFinanceCategory(financeCategoryData: FinanceCategoryData)
 

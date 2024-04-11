@@ -11,26 +11,27 @@ class FinanceCategoryRepositoryImpl(private val financeCategoryStorage: FinanceC
     FinanceCategoryRepository {
 
     override fun getAllCategoriesWithFinances(): List<FinanceCategoryWithFinances> {
-        return financeCategoryStorage.getAllCategoriesWithFinances().map { financeCategoryWithFinance ->
-            FinanceCategoryWithFinances(
-                financeCategory = FinanceCategory(
-                    id = financeCategoryWithFinance.financeCategoryData.id,
-                    name = financeCategoryWithFinance.financeCategoryData.name,
-                    color = financeCategoryWithFinance.financeCategoryData.color,
-                    image = financeCategoryWithFinance.financeCategoryData.image
-                ),
-                financeList = financeCategoryWithFinance.financeDataList.map { financeData ->
-                    Finance(
-                        id = financeData.id,
-                        sum = financeData.sum,
-                        isExpenses = financeData.isExpenses,
-                        info = financeData.info,
-                        financeCategoryId = financeData.financeCategoryId,
-                        date = financeData.date
-                    )
-                }.toMutableList()
-            )
-        }
+        return financeCategoryStorage.getAllCategoriesWithFinances()
+            .map { financeCategoryWithFinance ->
+                FinanceCategoryWithFinances(
+                    financeCategory = FinanceCategory(
+                        id = financeCategoryWithFinance.financeCategoryData.id,
+                        name = financeCategoryWithFinance.financeCategoryData.name,
+                        color = financeCategoryWithFinance.financeCategoryData.color,
+                        image = financeCategoryWithFinance.financeCategoryData.image
+                    ),
+                    financeList = financeCategoryWithFinance.financeDataList.map { financeData ->
+                        Finance(
+                            id = financeData.id,
+                            sum = financeData.sum,
+                            isExpenses = financeData.isExpenses,
+                            info = financeData.info,
+                            financeCategoryId = financeData.financeCategoryId,
+                            date = financeData.date
+                        )
+                    }.toMutableList()
+                )
+            }
     }
 
     override fun getAllFinanceCategories(): List<FinanceCategory> {
@@ -47,6 +48,17 @@ class FinanceCategoryRepositoryImpl(private val financeCategoryStorage: FinanceC
     override fun setFinanceCategory(category: FinanceCategory) {
         financeCategoryStorage.setFinanceCategory(
             FinanceCategoryData(
+                id = category.id,
+                name = category.name,
+                color = category.color,
+                image = category.image
+            )
+        )
+    }
+
+    override fun deleteFinanceCategory(category: FinanceCategory) {
+        financeCategoryStorage.deleteFinanceCategory(
+            category = FinanceCategoryData(
                 id = category.id,
                 name = category.name,
                 color = category.color,

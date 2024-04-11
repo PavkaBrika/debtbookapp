@@ -8,6 +8,7 @@ import com.breckneck.deptbook.domain.usecase.Finance.GetAllFinances
 import com.breckneck.deptbook.domain.usecase.Finance.GetFinanceByCategoryIdAndExpenses
 import com.breckneck.deptbook.domain.usecase.Finance.SetFinance
 import com.breckneck.deptbook.domain.usecase.Finance.UpdateFinance
+import com.breckneck.deptbook.domain.usecase.FinanceCategory.DeleteFinanceCategory
 import com.breckneck.deptbook.domain.usecase.FinanceCategory.GetAllCategoriesWithFinances
 import com.breckneck.deptbook.domain.usecase.FinanceCategory.GetAllFinanceCategories
 import com.breckneck.deptbook.domain.usecase.FinanceCategory.SetFinanceCategory
@@ -249,6 +250,10 @@ val domainModule = module {
 
     single<GetAllCategoriesWithFinances> {
         GetAllCategoriesWithFinances(financeCategoryRepository = get())
+    }
+
+    single<DeleteFinanceCategory> {
+        DeleteFinanceCategory(financeCategoryRepository = get())
     }
 
     //ADS

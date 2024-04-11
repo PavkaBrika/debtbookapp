@@ -11,4 +11,6 @@ interface FinanceCategoryStorage {
 
     fun setFinanceCategory(category: FinanceCategoryData)
 
+    fun deleteFinanceCategory(category: FinanceCategoryData)
+
 }

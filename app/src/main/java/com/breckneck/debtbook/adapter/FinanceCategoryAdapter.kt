@@ -3,6 +3,7 @@ package com.breckneck.debtbook.adapter
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnLongClickListener
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
@@ -25,6 +26,8 @@ class FinanceCategoryAdapter(
 
     interface OnFinanceCategoryClickListener {
         fun onCategoryClick(financeCategory: FinanceCategory)
+
+        fun onCategoryLongClick(financeCategory: FinanceCategory)
 
         fun onAddCategoryClick()
     }
@@ -111,6 +114,11 @@ class FinanceCategoryAdapter(
                 notifyItemChanged(lastCheckedPosition)
                 financeCategory.isChecked = true
                 onFinanceCategoryClickListener.onCategoryClick(financeCategory = financeCategory)
+            }
+
+            holder.categoryRootLayout.setOnLongClickListener {
+                onFinanceCategoryClickListener.onCategoryLongClick(financeCategory = financeCategory)
+                return@setOnLongClickListener true
             }
         }
     }

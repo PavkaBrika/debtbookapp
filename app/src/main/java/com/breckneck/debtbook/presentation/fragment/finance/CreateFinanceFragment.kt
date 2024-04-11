@@ -9,11 +9,13 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
@@ -27,6 +29,8 @@ import com.breckneck.debtbook.presentation.viewmodel.CreateFinanceViewModel
 import com.breckneck.deptbook.domain.model.Finance
 import com.breckneck.deptbook.domain.model.FinanceCategory
 import com.breckneck.deptbook.domain.util.CreateFinanceState
+import com.breckneck.deptbook.domain.util.categoryEnglishNameList
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputLayout
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -68,6 +72,10 @@ class CreateFinanceFragment : Fragment() {
                 true -> vm.setCreateFinanceState(createFinanceState = CreateFinanceState.EDIT)
                 false -> vm.setCreateFinanceState(createFinanceState = CreateFinanceState.CREATE)
             }
+        }
+
+        if (vm.isDeleteCategoryDialogOpened.value == true) {
+            showDeleteFinanceDialog(vm.deleteFinanceCategory.value!!)
         }
 
         val customSwitch: CustomSwitchView = view.findViewById(R.id.customSwitch)
@@ -175,6 +183,10 @@ class CreateFinanceFragment : Fragment() {
                 override fun onAddCategoryClick() {
                     onClickListener!!.onAddCategoryButtonClick()
                 }
+
+                override fun onCategoryLongClick(financeCategory: FinanceCategory) {
+                    showDeleteFinanceDialog(financeCategory = financeCategory)
+                }
             }
 
         val categoryRecyclerView: RecyclerView = view.findViewById(R.id.categoryRecyclerView)
@@ -252,6 +264,83 @@ class CreateFinanceFragment : Fragment() {
                 onClickListener!!.onBackButtonClick()
             }
         }
+    }
+
+    private fun showDeleteFinanceDialog(financeCategory: FinanceCategory) {
+        val dialog = BottomSheetDialog(requireContext())
+        dialog.setContentView(R.layout.dialog_are_you_sure)
+        vm.setDeleteCategoryDialogOpened(isOpened = true)
+        vm.setDeleteCategory(financeCategory = financeCategory)
+
+        dialog.findViewById<Button>(R.id.okButton)!!.setOnClickListener {
+            vm.deleteFinanceCategory()
+            dialog.dismiss()
+        }
+
+        var financeName = financeCategory.name
+        for (i in categoryEnglishNameList.indices) {
+            if (financeName == categoryEnglishNameList[i]) {
+                when (i) {
+                    0 -> {
+                        financeName =
+                            ContextCompat.getString(requireContext(), R.string.health)
+                        break
+                    }
+                    1 -> {
+                        financeName =
+                            ContextCompat.getString(requireContext(), R.string.entertainment)
+                        break
+                    }
+                    2 -> {
+                        financeName =
+                            ContextCompat.getString(requireContext(), R.string.home)
+                        break
+                    }
+                    3 -> {
+                        financeName =
+                            ContextCompat.getString(requireContext(), R.string.education)
+                        break
+                    }
+                    4 -> {
+                        financeName =
+                            ContextCompat.getString(requireContext(), R.string.presents)
+                        break
+                    }
+                    5 -> {
+                        financeName =
+                            ContextCompat.getString(requireContext(), R.string.food)
+                        break
+                    }
+                    6 -> {
+                        financeName =
+                            ContextCompat.getString(requireContext(), R.string.other)
+                        break
+                    }
+                    else -> {
+                        financeName = financeCategory.name
+                        break
+                    }
+                }
+            }
+            else
+                financeName = financeCategory.name
+        }
+
+        dialog.findViewById<TextView>(R.id.dialogMessage)!!.text =
+            "${getString(R.string.delete_category)} $financeName"
+
+        dialog.findViewById<Button>(R.id.cancelButton)!!.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.setOnDismissListener {
+            vm.setDeleteCategoryDialogOpened(isOpened = false)
+        }
+        dialog.setOnCancelListener {
+            vm.setDeleteCategoryDialogOpened(isOpened = false)
+        }
+
+        dialog.show()
     }
 }
 

@@ -23,4 +23,8 @@ class DataBaseFinanceCategoryStorageImpl(context: Context) : FinanceCategoryStor
     override fun setFinanceCategory(category: FinanceCategoryData) {
         return db.appDao().insertFinanceCategory(financeCategoryData = category)
     }
+
+    override fun deleteFinanceCategory(category: FinanceCategoryData) {
+        return db.appDao().deleteFinanceCategory(financeCategoryData = category)
+    }
 }

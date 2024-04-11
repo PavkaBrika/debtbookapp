@@ -8,6 +8,7 @@ import com.breckneck.deptbook.domain.model.Finance
 import com.breckneck.deptbook.domain.model.FinanceCategory
 import com.breckneck.deptbook.domain.usecase.Finance.SetFinance
 import com.breckneck.deptbook.domain.usecase.Finance.UpdateFinance
+import com.breckneck.deptbook.domain.usecase.FinanceCategory.DeleteFinanceCategory
 import com.breckneck.deptbook.domain.usecase.FinanceCategory.GetAllFinanceCategories
 import com.breckneck.deptbook.domain.usecase.Settings.GetFinanceCurrency
 import com.breckneck.deptbook.domain.util.CreateFinanceState
@@ -23,7 +24,8 @@ class CreateFinanceViewModel(
     private val setFinance: SetFinance,
     private val getAllFinanceCategories: GetAllFinanceCategories,
     private val getFinanceCurrency: GetFinanceCurrency,
-    private val updateFinance: UpdateFinance
+    private val updateFinance: UpdateFinance,
+    private val deleteFinanceCategoryUseCase: DeleteFinanceCategory
     ): ViewModel() {
 
     private val TAG = "CreateFinanceFragmentVM"
@@ -59,6 +61,12 @@ class CreateFinanceViewModel(
     private val _createFinanceState = MutableLiveData<CreateFinanceState>()
     val createFinanceState: LiveData<CreateFinanceState>
         get() = _createFinanceState
+    private val _isDeleteCategoryDialogOpened = MutableLiveData<Boolean>(false)
+    val isDeleteCategoryDialogOpened: LiveData<Boolean>
+        get() = _isDeleteCategoryDialogOpened
+    private val _deleteFinanceCategory = MutableLiveData<FinanceCategory>()
+    val deleteFinanceCategory: LiveData<FinanceCategory>
+        get() = _deleteFinanceCategory
 
     init {
         Log.e(TAG, "Initialized")
@@ -118,6 +126,22 @@ class CreateFinanceViewModel(
         disposeBag.add(result)
     }
 
+    fun deleteFinanceCategory() {
+        val result = Completable.create {
+            deleteFinanceCategoryUseCase.execute(financeCategory = deleteFinanceCategory.value!!)
+            it.onComplete()
+        }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                Log.e(TAG, "Category deleted")
+                getAllFinanceCategories()
+            }, {
+                Log.e(TAG, it.message.toString())
+            })
+        disposeBag.add(result)
+    }
+
     fun getFinanceCurrency() {
         _currency.value = getFinanceCurrency.execute()
     }
@@ -145,5 +169,13 @@ class CreateFinanceViewModel(
 
     fun setCreateFinanceState(createFinanceState: CreateFinanceState) {
         _createFinanceState.value = createFinanceState
+    }
+
+    fun setDeleteCategoryDialogOpened(isOpened: Boolean) {
+        _isDeleteCategoryDialogOpened.value = isOpened
+    }
+
+    fun setDeleteCategory(financeCategory: FinanceCategory) {
+        _deleteFinanceCategory.value = financeCategory
     }
 }

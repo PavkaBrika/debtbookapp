@@ -117,4 +117,5 @@
     <string name="week">Woche</string>
     <string name="month">Monat</string>
     <string name="year_full">Jahr</string>
+    <string name="delete_category">Kategorie löschen</string>
 </resources>
