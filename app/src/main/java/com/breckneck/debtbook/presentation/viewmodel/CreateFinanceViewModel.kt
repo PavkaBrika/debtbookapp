@@ -10,6 +10,7 @@ import com.breckneck.deptbook.domain.usecase.Finance.SetFinance
 import com.breckneck.deptbook.domain.usecase.Finance.UpdateFinance
 import com.breckneck.deptbook.domain.usecase.FinanceCategory.DeleteFinanceCategory
 import com.breckneck.deptbook.domain.usecase.FinanceCategory.GetAllFinanceCategories
+import com.breckneck.deptbook.domain.usecase.FinanceCategory.GetFinanceCategoriesByState
 import com.breckneck.deptbook.domain.usecase.Settings.GetFinanceCurrency
 import com.breckneck.deptbook.domain.util.CreateFinanceState
 import com.breckneck.deptbook.domain.util.FinanceCategoryState
@@ -26,8 +27,9 @@ class CreateFinanceViewModel(
     private val getAllFinanceCategories: GetAllFinanceCategories,
     private val getFinanceCurrency: GetFinanceCurrency,
     private val updateFinance: UpdateFinance,
-    private val deleteFinanceCategoryUseCase: DeleteFinanceCategory
-    ): ViewModel() {
+    private val deleteFinanceCategoryUseCase: DeleteFinanceCategory,
+    private val getFinanceCategoriesByState: GetFinanceCategoriesByState
+) : ViewModel() {
 
     private val TAG = "CreateFinanceFragmentVM"
 
@@ -97,6 +99,21 @@ class CreateFinanceViewModel(
         disposeBag.add(result)
     }
 
+    fun getFinanceCategoriesByState() {
+        val result = Single.create {
+            it.onSuccess(getFinanceCategoriesByState.execute(financeCategoryState = financeCategoryState.value!!))
+        }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                Log.e(TAG, "Finance categories loaded")
+                _financeCategoryList.value = it
+            }, {
+                Log.e(TAG, it.message.toString())
+            })
+        disposeBag.add(result)
+    }
+
     fun setFinance(finance: Finance) {
         val result = Completable.create {
             setFinance.execute(finance = finance)
@@ -136,7 +153,7 @@ class CreateFinanceViewModel(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 Log.e(TAG, "Category deleted")
-                getAllFinanceCategories()
+                getFinanceCategoriesByState()
             }, {
                 Log.e(TAG, it.message.toString())
             })

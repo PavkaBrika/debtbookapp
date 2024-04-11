@@ -63,7 +63,7 @@ class CreateFinanceFragment : Fragment() {
     ): View? {
         setFragmentResultListener("createFinanceFragmentKey") { requestKey, bundle ->
             if (bundle.getBoolean("isListModified"))
-                vm.getAllFinanceCategories()
+                vm.getFinanceCategoriesByState()
         }
         return inflater.inflate(R.layout.fragment_create_finance, container, false)
     }
@@ -97,7 +97,7 @@ class CreateFinanceFragment : Fragment() {
                     calendarFinanceTime.set(Calendar.MINUTE, calendarCurrentTime.get(Calendar.MINUTE))
                     calendarFinanceTime.set(Calendar.SECOND, calendarCurrentTime.get(Calendar.SECOND))
                     vm.setDayInMillis(dayInMillis = calendarFinanceTime.timeInMillis)
-                    vm.getAllFinanceCategories()
+                    vm.getFinanceCategoriesByState()
                 }
                 CreateFinanceState.EDIT -> {
                     val financeEdit = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {

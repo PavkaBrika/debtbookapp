@@ -43,7 +43,7 @@ class FinanceFragment : Fragment() {
     private lateinit var usedFinanceCategoryAdapter: UsedFinanceCategoryAdapter
 
     interface OnButtonClickListener {
-        fun onAddFinanceButtonClick(isExpenses: Boolean, dayInMillis: Long)
+        fun onAddFinanceButtonClick(financeCategoryState: FinanceCategoryState, dayInMillis: Long)
 
         fun onFinanceCategoryClick(categoryName: String, categoryId: Int, financeCategoryState: FinanceCategoryState, currency: String)
     }
@@ -339,12 +339,12 @@ class FinanceFragment : Fragment() {
         addFinanceButton.setOnClickListener {
             if (vm.financeInterval.value == FinanceInterval.DAY)
                 buttonClickListener!!.onAddFinanceButtonClick(
-                    isExpenses = financeSwitch.isChecked(),
+                    financeCategoryState = vm.financeCategoryState.value!!,
                     dayInMillis = vm.financeIntervalUnix.value!!.first
                 )
             else
                 buttonClickListener!!.onAddFinanceButtonClick(
-                    isExpenses = financeSwitch.isChecked(),
+                    financeCategoryState = vm.financeCategoryState.value!!,
                     dayInMillis = vm.currentDayInSeconds.value!! * 1000
                 )
         }

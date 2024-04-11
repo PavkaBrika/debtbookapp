@@ -100,6 +100,9 @@ interface AppDao {
     @Query("SELECT * FROM financecategorydata")
     fun getAllFinanceCategories(): List<FinanceCategoryData>
 
+    @Query("SELECT * FROM financecategorydata WHERE state = :financeCategoryStateData")
+    fun getFinanceCategoriesByState(financeCategoryStateData: FinanceCategoryStateData): List<FinanceCategoryData>
+
     @Transaction
     @Query("SELECT * FROM financecategorydata WHERE state = :financeCategoryStateData")
     fun getFinanceCategoriesWithFinancesByState(financeCategoryStateData: FinanceCategoryStateData): List<FinanceCategoryDataWithFinanceData>

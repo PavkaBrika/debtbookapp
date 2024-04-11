@@ -2,6 +2,7 @@ package com.breckneck.deptbook.data.storage
 
 import entity.FinanceCategoryData
 import entity.relations.FinanceCategoryDataWithFinanceData
+import util.FinanceCategoryStateData
 
 interface FinanceCategoryStorage {
 
@@ -13,4 +14,5 @@ interface FinanceCategoryStorage {
 
     fun deleteFinanceCategory(category: FinanceCategoryData)
 
+    fun getFinanceCategoriesByState(financeCategoryStateData: FinanceCategoryStateData): List<FinanceCategoryData>
 }

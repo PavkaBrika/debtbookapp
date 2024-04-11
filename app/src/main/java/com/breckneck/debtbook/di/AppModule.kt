@@ -111,7 +111,8 @@ val appModule = module {
             getAllFinanceCategories = get(),
             getFinanceCurrency = get(),
             updateFinance = get(),
-            deleteFinanceCategoryUseCase = get()
+            deleteFinanceCategoryUseCase = get(),
+            getFinanceCategoriesByState = get()
         )
     }
 

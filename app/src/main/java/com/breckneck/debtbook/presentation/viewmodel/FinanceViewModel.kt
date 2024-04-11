@@ -324,7 +324,7 @@ class FinanceViewModel(
     }
 
     fun onChangeFinanceCategoryState() {
-        when (_financeCategoryState.value!!) {
+        _financeCategoryState.value = when (_financeCategoryState.value!!) {
             FinanceCategoryState.EXPENSE -> FinanceCategoryState.INCOME
             FinanceCategoryState.INCOME -> FinanceCategoryState.EXPENSE
         }

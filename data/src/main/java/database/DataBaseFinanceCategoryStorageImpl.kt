@@ -6,6 +6,7 @@ import com.breckneck.deptbook.data.storage.FinanceCategoryStorage
 import entity.FinanceCategoryData
 import entity.relations.FinanceCategoryDataWithFinanceData
 import util.DATA_BASE_NAME
+import util.FinanceCategoryStateData
 
 class DataBaseFinanceCategoryStorageImpl(context: Context) : FinanceCategoryStorage {
 
@@ -26,5 +27,9 @@ class DataBaseFinanceCategoryStorageImpl(context: Context) : FinanceCategoryStor
 
     override fun deleteFinanceCategory(category: FinanceCategoryData) {
         return db.appDao().deleteFinanceCategory(financeCategoryData = category)
+    }
+
+    override fun getFinanceCategoriesByState(financeCategoryStateData: FinanceCategoryStateData): List<FinanceCategoryData> {
+        return db.appDao().getFinanceCategoriesByState(financeCategoryStateData = financeCategoryStateData)
     }
 }
