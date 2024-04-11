@@ -21,7 +21,7 @@ import com.breckneck.debtbook.adapter.FinanceAdapter
 import com.breckneck.debtbook.presentation.viewmodel.FinanceDetailsViewModel
 import com.breckneck.deptbook.domain.model.Finance
 import com.breckneck.deptbook.domain.usecase.Debt.FormatDebtSum
-import com.breckneck.deptbook.domain.util.categoryEnglishNameList
+import com.breckneck.deptbook.domain.util.revenuesCategoryEnglishNameList
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -69,8 +69,8 @@ class FinanceDetailsFragment: Fragment() {
 
         val collaps: CollapsingToolbarLayout = view.findViewById(R.id.collaps)
 
-        for (i in categoryEnglishNameList.indices) {
-            if (categoryName == categoryEnglishNameList[i]) {
+        for (i in revenuesCategoryEnglishNameList.indices) {
+            if (categoryName == revenuesCategoryEnglishNameList[i]) {
                 when (i) {
                     0 -> {
                         categoryName =

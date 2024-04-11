@@ -13,8 +13,8 @@ class DataBaseHumanStorageImpl(context: Context) : HumanStorage {
 
     private val MIGRATION_5_11 = object : Migration(5 ,11) {
         override fun migrate(database: SupportSQLiteDatabase) {
-            database.execSQL("CREATE TABLE IF NOT EXISTS 'FinanceCategoryData' ('id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 'name' TEXT NOT NULL, 'color' TEXT NOT NULL, 'image' INTEGER NOT NULL)")
-            database.execSQL("CREATE TABLE IF NOT EXISTS 'FinanceData' ('id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 'sum' REAL NOT NULL, 'isExpenses' INTEGER NOT NULL, 'date' INTEGER NOT NULL, 'info' TEXT, FOREIGN KEY('financeCategoryId') REFERENCES 'FinanceCategoryData'('id') ON UPDATE NO ACTION ON DELETE CASCADE)")
+            database.execSQL("CREATE TABLE IF NOT EXISTS 'FinanceCategoryData' ('id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 'name' TEXT NOT NULL, 'state' INT NOT NULL, 'color' TEXT NOT NULL, 'image' INTEGER NOT NULL)")
+            database.execSQL("CREATE TABLE IF NOT EXISTS 'FinanceData' ('id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 'sum' REAL NOT NULL, 'date' INTEGER NOT NULL, 'info' TEXT, FOREIGN KEY('financeCategoryId') REFERENCES 'FinanceCategoryData'('id') ON UPDATE NO ACTION ON DELETE CASCADE)")
             insertInitialFinanceCategoryData(database = database)
         }
     }
@@ -44,14 +44,28 @@ class DataBaseHumanStorageImpl(context: Context) : HumanStorage {
         }
     }
 
+    /**
+     *USE EMOJIS UNICODE  FOR IMAGES, 'U+' REPLACED WITH '0x'
+
+     * USEFUL PAGES:
+
+     * https://emojidb.org/education-emojis
+
+     * https://emojis.wiki/ru/kontroller-dlya-videoigr/
+     */
     fun insertInitialFinanceCategoryData(database: SupportSQLiteDatabase) {
-        database.execSQL("INSERT OR IGNORE INTO 'FinanceCategoryData' ('id', 'name', 'color', 'image') VALUES ('1', 'Health', '#EF9A9A', '0x2764')")
-        database.execSQL("INSERT OR IGNORE INTO 'FinanceCategoryData' ('id', 'name', 'color', 'image') VALUES ('2', 'Entertainment', '#CE93D8', '0x1F3AC')")
-        database.execSQL("INSERT OR IGNORE INTO 'FinanceCategoryData' ('id', 'name', 'color', 'image') VALUES ('3', 'Home', '#9FA8DA', '0x1F3E0')")
-        database.execSQL("INSERT OR IGNORE INTO 'FinanceCategoryData' ('id', 'name', 'color', 'image') VALUES ('4', 'Education', '#81D4FA', '0x1F393')")
-        database.execSQL("INSERT OR IGNORE INTO 'FinanceCategoryData' ('id', 'name', 'color', 'image') VALUES ('5', 'Presents', '#80CBC4', '0x1F381')")
-        database.execSQL("INSERT OR IGNORE INTO 'FinanceCategoryData' ('id', 'name', 'color', 'image') VALUES ('6', 'Food', '#C5E1A5', '0x1F37D')")
-        database.execSQL("INSERT OR IGNORE INTO 'FinanceCategoryData' ('id', 'name', 'color', 'image') VALUES ('7', 'Other', '#FFF59D', '0x1F36D')")
+        database.execSQL("INSERT OR IGNORE INTO 'FinanceCategoryData' ('id', 'name', 'state', 'color', 'image') VALUES ('1', 'Health', '1', '#EF9A9A', '0x2764')")
+        database.execSQL("INSERT OR IGNORE INTO 'FinanceCategoryData' ('id', 'name', 'state', 'color', 'image') VALUES ('2', 'Entertainment', '1', '#CE93D8', '0x1F3AC')")
+        database.execSQL("INSERT OR IGNORE INTO 'FinanceCategoryData' ('id', 'name', 'state', 'color', 'image') VALUES ('3', 'Home', '1', '#9FA8DA', '0x1F3E0')")
+        database.execSQL("INSERT OR IGNORE INTO 'FinanceCategoryData' ('id', 'name', 'state', 'color', 'image') VALUES ('4', 'Education', '1', '#81D4FA', '0x1F393')")
+        database.execSQL("INSERT OR IGNORE INTO 'FinanceCategoryData' ('id', 'name', 'state', 'color', 'image') VALUES ('5', 'Gifts', '1', '#80CBC4', '0x1F381')")
+        database.execSQL("INSERT OR IGNORE INTO 'FinanceCategoryData' ('id', 'name', 'state', 'color', 'image') VALUES ('6', 'Food', '1', '#C5E1A5', '0x1F37D')")
+        database.execSQL("INSERT OR IGNORE INTO 'FinanceCategoryData' ('id', 'name', 'state', 'color', 'image') VALUES ('7', 'Other', '1', '#FFF59D', '0x1F36D')")
+
+        database.execSQL("INSERT OR IGNORE INTO 'FinanceCategoryData' ('id', 'name', 'state', 'color', 'image') VALUES ('8', 'Salary', '2', '#EF9A9A', '0x1F4B5')")
+        database.execSQL("INSERT OR IGNORE INTO 'FinanceCategoryData' ('id', 'name', 'state', 'color', 'image') VALUES ('9', 'Gifts', '2', '#CE93D8', '0x1F381')")
+        database.execSQL("INSERT OR IGNORE INTO 'FinanceCategoryData' ('id', 'name', 'state', 'color', 'image') VALUES ('10', 'Investments', '2', '#CE93D8', '0x1F4BC')")
+        database.execSQL("INSERT OR IGNORE INTO 'FinanceCategoryData' ('id', 'name', 'state', 'color', 'image') VALUES ('11', 'Other', '2', '#FFF59D', '0x1F4CB')")
     }
 
     val db = Room.databaseBuilder(context, AppDataBase::class.java, DATA_BASE_NAME)

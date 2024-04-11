@@ -59,12 +59,12 @@ val categoryImageList = listOf(
     0x1F3AE //game pad
 )
 
-val categoryEnglishNameList = listOf(
+val revenuesCategoryEnglishNameList = listOf(
     "Health",
     "Entertainment",
     "Home",
     "Education",
-    "Presents",
+    "Gifts",
     "Food",
     "Other"
 )

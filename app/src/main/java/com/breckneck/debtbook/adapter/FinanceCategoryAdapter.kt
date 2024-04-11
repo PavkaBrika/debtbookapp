@@ -3,9 +3,7 @@ package com.breckneck.debtbook.adapter
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.OnLongClickListener
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -15,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.deptbook.domain.model.FinanceCategory
 import com.breckneck.deptbook.domain.util.LAST_CHECKED_POSITION_NOT_EXISTS
-import com.breckneck.deptbook.domain.util.categoryEnglishNameList
+import com.breckneck.deptbook.domain.util.revenuesCategoryEnglishNameList
 
 class FinanceCategoryAdapter(
     private val financeCategoryList: List<FinanceCategory>,
@@ -55,8 +53,8 @@ class FinanceCategoryAdapter(
         } else {
             val financeCategory = financeCategoryList[position]
 
-            for (i in categoryEnglishNameList.indices) {
-                if (financeCategory.name == categoryEnglishNameList[i]) {
+            for (i in revenuesCategoryEnglishNameList.indices) {
+                if (financeCategory.name == revenuesCategoryEnglishNameList[i]) {
                      when (i) {
                         0 -> {
                             holder.categoryTextView.text = getString(holder.itemView.context, R.string.health)

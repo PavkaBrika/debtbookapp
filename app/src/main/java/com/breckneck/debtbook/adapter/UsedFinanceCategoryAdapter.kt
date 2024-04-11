@@ -11,10 +11,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
-import com.breckneck.deptbook.domain.model.Finance
-import com.breckneck.deptbook.domain.model.FinanceCategory
 import com.breckneck.deptbook.domain.model.FinanceCategoryWithFinances
-import com.breckneck.deptbook.domain.util.categoryEnglishNameList
+import com.breckneck.deptbook.domain.util.revenuesCategoryEnglishNameList
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 
@@ -62,8 +60,8 @@ class UsedFinanceCategoryAdapter(
     override fun onBindViewHolder(holder: UsedFinanceCategoryViewHolder, position: Int) {
         val usedFinanceCategory = usedFinanceCategoryList[position]
 
-        for (i in categoryEnglishNameList.indices) {
-            if (usedFinanceCategory.financeCategory.name == categoryEnglishNameList[i]) {
+        for (i in revenuesCategoryEnglishNameList.indices) {
+            if (usedFinanceCategory.financeCategory.name == revenuesCategoryEnglishNameList[i]) {
                 when (i) {
                     0 -> {
                         holder.nameTextView.text =

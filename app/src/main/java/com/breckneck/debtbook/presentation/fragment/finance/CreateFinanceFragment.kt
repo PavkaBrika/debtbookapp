@@ -29,7 +29,7 @@ import com.breckneck.debtbook.presentation.viewmodel.CreateFinanceViewModel
 import com.breckneck.deptbook.domain.model.Finance
 import com.breckneck.deptbook.domain.model.FinanceCategory
 import com.breckneck.deptbook.domain.util.CreateFinanceState
-import com.breckneck.deptbook.domain.util.categoryEnglishNameList
+import com.breckneck.deptbook.domain.util.revenuesCategoryEnglishNameList
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputLayout
@@ -284,8 +284,8 @@ class CreateFinanceFragment : Fragment() {
         }
 
         var financeName = financeCategory.name
-        for (i in categoryEnglishNameList.indices) {
-            if (financeName == categoryEnglishNameList[i]) {
+        for (i in revenuesCategoryEnglishNameList.indices) {
+            if (financeName == revenuesCategoryEnglishNameList[i]) {
                 when (i) {
                     0 -> {
                         financeName =
