@@ -344,8 +344,10 @@ class CreateFinanceFragment : Fragment() {
             context = requireContext()
         )
 
+        dialog.findViewById<TextView>(R.id.dialogTitle)!!.text = "${getString(R.string.delete_category)} $financeName?"
+
         dialog.findViewById<TextView>(R.id.dialogMessage)!!.text =
-            "${getString(R.string.delete_category)} $financeName"
+            getString(R.string.this_action_will_delete_the_category_and_all_data_associated_with_it)
 
         dialog.findViewById<Button>(R.id.cancelButton)!!.setOnClickListener {
             dialog.dismiss()

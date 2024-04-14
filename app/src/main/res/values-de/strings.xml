@@ -122,4 +122,5 @@
     <string name="there_are_no_expenses_yet">Es sind noch keine Ausgaben vorhanden</string>
     <string name="salary">Gehalt</string>
     <string name="investments">Investitionen</string>
+    <string name="this_action_will_delete_the_category_and_all_data_associated_with_it">Diese Aktion löscht diese Kategorie und alle zugehörigen Daten</string>
 </resources>

@@ -13,4 +13,6 @@ interface FinanceRepository {
     fun deleteFinance(finance: Finance)
 
     fun updateFinance(finance: Finance)
+
+    fun deleteFinanceByCategoryId(financeCategoryId: Int)
 }

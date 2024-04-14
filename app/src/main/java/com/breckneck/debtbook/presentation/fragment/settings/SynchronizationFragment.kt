@@ -23,7 +23,7 @@ import androidx.fragment.app.setFragmentResult
 import com.breckneck.debtbook.BuildConfig
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.presentation.viewmodel.SynchronizationViewModel
-import com.breckneck.debtbook.synchronization.DriveServiceHelper
+import com.breckneck.debtbook.util.DriveServiceHelper
 import com.breckneck.deptbook.domain.model.AppDataLists
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount

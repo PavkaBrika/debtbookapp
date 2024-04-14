@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.breckneck.debtbook.synchronization.DriveServiceHelper
+import com.breckneck.debtbook.util.DriveServiceHelper
 import com.breckneck.deptbook.domain.model.AppDataLists
 import com.breckneck.deptbook.domain.usecase.Debt.GetAllDebts
 import com.breckneck.deptbook.domain.usecase.Debt.ReplaceAllDebts

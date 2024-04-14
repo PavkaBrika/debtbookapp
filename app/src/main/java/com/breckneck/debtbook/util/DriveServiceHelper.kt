@@ -1,4 +1,4 @@
-package com.breckneck.debtbook.synchronization
+package com.breckneck.debtbook.util
 
 import android.content.ContentResolver
 import android.content.Intent

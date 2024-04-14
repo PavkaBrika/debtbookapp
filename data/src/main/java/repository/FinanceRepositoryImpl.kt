@@ -70,4 +70,8 @@ class FinanceRepositoryImpl(private val financeStorage: FinanceStorage) : Financ
             )
         )
     }
+
+    override fun deleteFinanceByCategoryId(financeCategoryId: Int) {
+        financeStorage.deleteAllFinancesByCategoryId(financeCategoryId = financeCategoryId)
+    }
 }

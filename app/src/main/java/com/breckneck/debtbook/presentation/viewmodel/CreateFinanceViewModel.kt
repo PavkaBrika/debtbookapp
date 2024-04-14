@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.breckneck.debtbook.util.GetFinanceCategoryNameInLocalLanguage
 import com.breckneck.deptbook.domain.model.Finance
 import com.breckneck.deptbook.domain.model.FinanceCategory
+import com.breckneck.deptbook.domain.usecase.Finance.DeleteAllFinancesByCategoryId
 import com.breckneck.deptbook.domain.usecase.Finance.SetFinance
 import com.breckneck.deptbook.domain.usecase.Finance.UpdateFinance
 import com.breckneck.deptbook.domain.usecase.FinanceCategory.DeleteFinanceCategory
@@ -30,6 +31,7 @@ class CreateFinanceViewModel(
     private val updateFinance: UpdateFinance,
     private val deleteFinanceCategoryUseCase: DeleteFinanceCategory,
     private val getFinanceCategoriesByState: GetFinanceCategoriesByState,
+    private val deleteAllFinancesByCategoryId: DeleteAllFinancesByCategoryId
 ) : ViewModel() {
 
     private val TAG = "CreateFinanceFragmentVM"
@@ -148,6 +150,7 @@ class CreateFinanceViewModel(
     fun deleteFinanceCategory() {
         val result = Completable.create {
             deleteFinanceCategoryUseCase.execute(financeCategory = deleteFinanceCategory.value!!)
+            deleteAllFinancesByCategoryId.execute(financeCategoryId = deleteFinanceCategory.value!!.id)
             it.onComplete()
         }
             .subscribeOn(Schedulers.io())
@@ -161,7 +164,7 @@ class CreateFinanceViewModel(
         disposeBag.add(result)
     }
 
-    fun getFinanceCurrency() {
+    private fun getFinanceCurrency() {
         _currency.value = getFinanceCurrency.execute()
     }
 
