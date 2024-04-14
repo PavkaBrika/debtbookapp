@@ -120,4 +120,6 @@
     <string name="delete_category">Удалить категорию</string>
     <string name="there_are_no_incomes_yet">Доходов пока нет</string>
     <string name="there_are_no_expenses_yet">Расходов пока нет</string>
+    <string name="salary">Зарплата</string>
+    <string name="investments">Инвестиции</string>
 </resources>

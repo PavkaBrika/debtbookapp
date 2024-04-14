@@ -119,4 +119,6 @@
     <string name="delete_category">Delete category</string>
     <string name="there_are_no_incomes_yet">There are no incomes yet</string>
     <string name="there_are_no_expenses_yet">There are no expenses yet</string>
+    <string name="salary">Salary</string>
+    <string name="investments">Investments</string>
 </resources>

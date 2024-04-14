@@ -125,6 +125,8 @@
     <string name="presents">Gifts</string>
     <string name="food">Food</string>
     <string name="other">Other</string>
+    <string name="salary">Salary</string>
+    <string name="investments">Investments</string>
     <string name="add">Add</string>
     <string name="day">Day</string>
     <string name="week">Week</string>

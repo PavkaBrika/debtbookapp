@@ -27,6 +27,7 @@ import com.breckneck.debtbook.R
 import com.breckneck.debtbook.adapter.FinanceCategoryAdapter
 import com.breckneck.debtbook.presentation.customview.CustomSwitchView
 import com.breckneck.debtbook.presentation.viewmodel.CreateFinanceViewModel
+import com.breckneck.debtbook.util.GetFinanceCategoryNameInLocalLanguage
 import com.breckneck.deptbook.domain.model.Finance
 import com.breckneck.deptbook.domain.model.FinanceCategory
 import com.breckneck.deptbook.domain.util.CreateFinanceState
@@ -65,8 +66,14 @@ class CreateFinanceFragment : Fragment() {
     ): View? {
         setFragmentResultListener("createFinanceFragmentKey") { requestKey, bundle ->
             when (bundle.getString("categoryState")) {
-                FinanceCategoryState.EXPENSE.toString() -> vm.setFinanceCategoryState(financeCategoryState = FinanceCategoryState.EXPENSE)
-                FinanceCategoryState.INCOME.toString() -> vm.setFinanceCategoryState(financeCategoryState = FinanceCategoryState.INCOME)
+                FinanceCategoryState.EXPENSE.toString() -> vm.setFinanceCategoryState(
+                    financeCategoryState = FinanceCategoryState.EXPENSE
+                )
+
+                FinanceCategoryState.INCOME.toString() -> vm.setFinanceCategoryState(
+                    financeCategoryState = FinanceCategoryState.INCOME
+                )
+
                 else -> {}
             }
             if (bundle.getBoolean("isListModified"))
@@ -107,11 +114,18 @@ class CreateFinanceFragment : Fragment() {
                     val calendarFinanceTime = Calendar.getInstance()
                     calendarFinanceTime.timeInMillis = arguments?.getLong("dayInMillis")!!
                     calendarFinanceTime.set(Calendar.HOUR, calendarCurrentTime.get(Calendar.HOUR))
-                    calendarFinanceTime.set(Calendar.MINUTE, calendarCurrentTime.get(Calendar.MINUTE))
-                    calendarFinanceTime.set(Calendar.SECOND, calendarCurrentTime.get(Calendar.SECOND))
+                    calendarFinanceTime.set(
+                        Calendar.MINUTE,
+                        calendarCurrentTime.get(Calendar.MINUTE)
+                    )
+                    calendarFinanceTime.set(
+                        Calendar.SECOND,
+                        calendarCurrentTime.get(Calendar.SECOND)
+                    )
                     vm.setDayInMillis(dayInMillis = calendarFinanceTime.timeInMillis)
                     vm.getFinanceCategoriesByState()
                 }
+
                 CreateFinanceState.EDIT -> {
                     val financeEdit = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                         arguments?.getSerializable("financeEdit", Finance::class.java)
@@ -127,12 +141,14 @@ class CreateFinanceFragment : Fragment() {
                     collaps.title = getString(R.string.edit)
                 }
             }
-            
-            vm.setFinanceCategoryState(financeCategoryState = when (arguments?.getString("categoryState").toString()) {
-                FinanceCategoryState.EXPENSE.toString() -> FinanceCategoryState.EXPENSE
-                FinanceCategoryState.INCOME.toString() -> FinanceCategoryState.INCOME
-                else -> FinanceCategoryState.EXPENSE
-            })
+
+            vm.setFinanceCategoryState(
+                financeCategoryState = when (arguments?.getString("categoryState").toString()) {
+                    FinanceCategoryState.EXPENSE.toString() -> FinanceCategoryState.EXPENSE
+                    FinanceCategoryState.INCOME.toString() -> FinanceCategoryState.INCOME
+                    else -> FinanceCategoryState.EXPENSE
+                }
+            )
 
             if (vm.date.value == null) {
                 val calendar = Calendar.getInstance()
@@ -140,17 +156,21 @@ class CreateFinanceFragment : Fragment() {
                 vm.setCurrentDate(calendar.time)
             }
 
-            customSwitch.setChecked(checked = when (vm.financeCategoryState.value!!) {
-                FinanceCategoryState.EXPENSE -> SWITCH_STATE_REVENUES
-                FinanceCategoryState.INCOME -> SWITCH_STATE_INCOMES
-            })
+            customSwitch.setChecked(
+                checked = when (vm.financeCategoryState.value!!) {
+                    FinanceCategoryState.EXPENSE -> SWITCH_STATE_REVENUES
+                    FinanceCategoryState.INCOME -> SWITCH_STATE_INCOMES
+                }
+            )
         }
 
-        val currencyNames = listOf(getString(R.string.usd), getString(R.string.eur), getString(R.string.rub),
+        val currencyNames = listOf(
+            getString(R.string.usd), getString(R.string.eur), getString(R.string.rub),
             getString(R.string.byn), getString(R.string.uah), getString(R.string.kzt),
             getString(R.string.jpy), getString(R.string.gpb), getString(R.string.aud),
             getString(R.string.cad), getString(R.string.chf), getString(R.string.cny),
-            getString(R.string.sek), getString(R.string.mxn))
+            getString(R.string.sek), getString(R.string.mxn)
+        )
 
         val backButtonImageView: ImageView = view.findViewById(R.id.backButton)
         backButtonImageView.setOnClickListener {
@@ -287,6 +307,7 @@ class CreateFinanceFragment : Fragment() {
                             )
                         )
                     }
+
                     CreateFinanceState.EDIT -> {
                         vm.editFinance(
                             Finance(
@@ -317,92 +338,11 @@ class CreateFinanceFragment : Fragment() {
             dialog.dismiss()
         }
 
-        var financeName = financeCategory.name
-        when (financeCategory.state) {
-            FinanceCategoryState.EXPENSE -> {
-                for (i in revenuesCategoryEnglishNameList.indices) {
-                    if (financeName == revenuesCategoryEnglishNameList[i]) {
-                        when (i) {
-                            0 -> {
-                                financeName =
-                                    ContextCompat.getString(requireContext(), R.string.health)
-                                break
-                            }
-                            1 -> {
-                                financeName =
-                                    ContextCompat.getString(requireContext(), R.string.entertainment)
-                                break
-                            }
-                            2 -> {
-                                financeName =
-                                    ContextCompat.getString(requireContext(), R.string.home)
-                                break
-                            }
-                            3 -> {
-                                financeName =
-                                    ContextCompat.getString(requireContext(), R.string.education)
-                                break
-                            }
-                            4 -> {
-                                financeName =
-                                    ContextCompat.getString(requireContext(), R.string.presents)
-                                break
-                            }
-                            5 -> {
-                                financeName =
-                                    ContextCompat.getString(requireContext(), R.string.food)
-                                break
-                            }
-                            6 -> {
-                                financeName =
-                                    ContextCompat.getString(requireContext(), R.string.other)
-                                break
-                            }
-                            else -> {
-                                financeName = financeCategory.name
-                                break
-                            }
-                        }
-                    }
-                    else
-                        financeName = financeCategory.name
-                }
-            }
-            FinanceCategoryState.INCOME -> {
-                for (i in incomesCategoryEnglishNameList.indices) {
-                    if (financeName == incomesCategoryEnglishNameList[i]) {
-                        when (i) {
-                            0 -> {
-                                financeName =
-                                    ContextCompat.getString(requireContext(), R.string.health)
-                                break
-                            }
-                            1 -> {
-                                financeName =
-                                    ContextCompat.getString(requireContext(), R.string.entertainment)
-                                break
-                            }
-                            2 -> {
-                                financeName =
-                                    ContextCompat.getString(requireContext(), R.string.home)
-                                break
-                            }
-                            3 -> {
-                                financeName =
-                                    ContextCompat.getString(requireContext(), R.string.education)
-                                break
-                            }
-                            else -> {
-                                financeName = financeCategory.name
-                                break
-                            }
-                        }
-                    }
-                    else
-                        financeName = financeCategory.name
-                }
-            }
-        }
+        val financeName = GetFinanceCategoryNameInLocalLanguage().execute(
+            financeName = financeCategory.name,
+            state = financeCategory.state,
+            context = requireContext()
+        )
 
         dialog.findViewById<TextView>(R.id.dialogMessage)!!.text =
             "${getString(R.string.delete_category)} $financeName"

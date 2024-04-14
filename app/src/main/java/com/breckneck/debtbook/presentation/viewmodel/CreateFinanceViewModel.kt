@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.breckneck.debtbook.util.GetFinanceCategoryNameInLocalLanguage
 import com.breckneck.deptbook.domain.model.Finance
 import com.breckneck.deptbook.domain.model.FinanceCategory
 import com.breckneck.deptbook.domain.usecase.Finance.SetFinance
@@ -28,7 +29,7 @@ class CreateFinanceViewModel(
     private val getFinanceCurrency: GetFinanceCurrency,
     private val updateFinance: UpdateFinance,
     private val deleteFinanceCategoryUseCase: DeleteFinanceCategory,
-    private val getFinanceCategoriesByState: GetFinanceCategoriesByState
+    private val getFinanceCategoriesByState: GetFinanceCategoriesByState,
 ) : ViewModel() {
 
     private val TAG = "CreateFinanceFragmentVM"

@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getString
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
+import com.breckneck.debtbook.util.GetFinanceCategoryNameInLocalLanguage
 import com.breckneck.deptbook.domain.model.FinanceCategory
 import com.breckneck.deptbook.domain.util.LAST_CHECKED_POSITION_NOT_EXISTS
 import com.breckneck.deptbook.domain.util.revenuesCategoryEnglishNameList
@@ -18,9 +19,10 @@ import com.breckneck.deptbook.domain.util.revenuesCategoryEnglishNameList
 class FinanceCategoryAdapter(
     private val financeCategoryList: List<FinanceCategory>,
     private val onFinanceCategoryClickListener: OnFinanceCategoryClickListener
-): RecyclerView.Adapter<FinanceCategoryAdapter.FinanceCategoryViewHolder>() {
+) : RecyclerView.Adapter<FinanceCategoryAdapter.FinanceCategoryViewHolder>() {
 
     var lastCheckedPosition = LAST_CHECKED_POSITION_NOT_EXISTS
+    val getFinanceCategoryNameInLocalLanguage = GetFinanceCategoryNameInLocalLanguage()
 
     interface OnFinanceCategoryClickListener {
         fun onCategoryClick(financeCategory: FinanceCategory)
@@ -32,13 +34,15 @@ class FinanceCategoryAdapter(
 
     class FinanceCategoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val categoryRootLayout: ConstraintLayout = itemView.findViewById(R.id.rootLayout)
-        val categoryBackgroundCardView: CardView = itemView.findViewById(R.id.categoryBackgroundCardView)
+        val categoryBackgroundCardView: CardView =
+            itemView.findViewById(R.id.categoryBackgroundCardView)
         val categoryTextView: TextView = itemView.findViewById(R.id.categoryTextView)
         val categoryImageTextView: TextView = itemView.findViewById(R.id.categoryImageTextView)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FinanceCategoryViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_finance_category, parent, false)
+        val itemView = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_finance_category, parent, false)
         return FinanceCategoryViewHolder(itemView)
     }
 
@@ -53,55 +57,30 @@ class FinanceCategoryAdapter(
         } else {
             val financeCategory = financeCategoryList[position]
 
-            for (i in revenuesCategoryEnglishNameList.indices) {
-                if (financeCategory.name == revenuesCategoryEnglishNameList[i]) {
-                     when (i) {
-                        0 -> {
-                            holder.categoryTextView.text = getString(holder.itemView.context, R.string.health)
-                            break
-                        }
-                        1 -> {
-                            holder.categoryTextView.text = getString(holder.itemView.context, R.string.entertainment)
-                            break
-                        }
-                        2 -> {
-                            holder.categoryTextView.text = getString(holder.itemView.context, R.string.home)
-                            break
-                        }
-                        3 -> {
-                            holder.categoryTextView.text = getString(holder.itemView.context, R.string.education)
-                            break
-                        }
-                        4 -> {
-                            holder.categoryTextView.text = getString(holder.itemView.context, R.string.presents)
-                            break
-                        }
-                        5 -> {
-                            holder.categoryTextView.text = getString(holder.itemView.context, R.string.food)
-                            break
-                        }
-                        6 -> {
-                            holder.categoryTextView.text = getString(holder.itemView.context, R.string.other)
-                            break
-                        }
-                        else -> {
-                            holder.categoryTextView.text = financeCategory.name
-                            break
-                        }
-                    }
-                }
-                else
-                    holder.categoryTextView.text = financeCategory.name
-            }
+            holder.categoryTextView.text = getFinanceCategoryNameInLocalLanguage.execute(
+                financeName = financeCategory.name,
+                state = financeCategory.state,
+                context = holder.itemView.context
+            )
 
-            holder.categoryBackgroundCardView.setCardBackgroundColor(Color.parseColor(financeCategory.color))
+            holder.categoryBackgroundCardView.setCardBackgroundColor(
+                Color.parseColor(
+                    financeCategory.color
+                )
+            )
             holder.categoryImageTextView.text = String(Character.toChars(financeCategory.image))
 
             if (financeCategory.isChecked) {
-                holder.categoryRootLayout.background = ContextCompat.getDrawable(holder.itemView.context, R.drawable.custom_border_filled)
+                holder.categoryRootLayout.background = ContextCompat.getDrawable(
+                    holder.itemView.context,
+                    R.drawable.custom_border_filled
+                )
                 lastCheckedPosition = position
             } else
-                holder.categoryRootLayout.background = ContextCompat.getDrawable(holder.itemView.context, R.drawable.custom_border_outline)
+                holder.categoryRootLayout.background = ContextCompat.getDrawable(
+                    holder.itemView.context,
+                    R.drawable.custom_border_outline
+                )
 
             holder.categoryRootLayout.setOnClickListener {
                 if (lastCheckedPosition != LAST_CHECKED_POSITION_NOT_EXISTS) {

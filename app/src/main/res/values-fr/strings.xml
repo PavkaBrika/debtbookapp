@@ -120,4 +120,6 @@
     <string name="delete_category">Supprimer une catégorie</string>
     <string name="there_are_no_incomes_yet">Il n\'y a pas encore de revenus</string>
     <string name="there_are_no_expenses_yet">Il n\'y a pas encore de dépenses</string>
+    <string name="salary">Salaire</string>
+    <string name="investments">Investissements</string>
 </resources>

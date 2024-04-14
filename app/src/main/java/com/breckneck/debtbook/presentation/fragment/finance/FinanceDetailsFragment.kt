@@ -19,8 +19,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.adapter.FinanceAdapter
 import com.breckneck.debtbook.presentation.viewmodel.FinanceDetailsViewModel
+import com.breckneck.debtbook.util.GetFinanceCategoryNameInLocalLanguage
 import com.breckneck.deptbook.domain.model.Finance
 import com.breckneck.deptbook.domain.usecase.Debt.FormatDebtSum
+import com.breckneck.deptbook.domain.util.FinanceCategoryState
 import com.breckneck.deptbook.domain.util.revenuesCategoryEnglishNameList
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -68,52 +70,13 @@ class FinanceDetailsFragment: Fragment() {
         val currency = arguments?.getString("currency")
 
         val collaps: CollapsingToolbarLayout = view.findViewById(R.id.collaps)
-
-        for (i in revenuesCategoryEnglishNameList.indices) {
-            if (categoryName == revenuesCategoryEnglishNameList[i]) {
-                when (i) {
-                    0 -> {
-                        categoryName =
-                            ContextCompat.getString(requireContext(), R.string.health)
-                        break
-                    }
-                    1 -> {
-                        categoryName =
-                            ContextCompat.getString(requireContext(), R.string.entertainment)
-                        break
-                    }
-                    2 -> {
-                        categoryName =
-                            ContextCompat.getString(requireContext(), R.string.home)
-                        break
-                    }
-                    3 -> {
-                        categoryName =
-                            ContextCompat.getString(requireContext(), R.string.education)
-                        break
-                    }
-                    4 -> {
-                        categoryName =
-                            ContextCompat.getString(requireContext(), R.string.presents)
-                        break
-                    }
-                    5 -> {
-                        categoryName =
-                            ContextCompat.getString(requireContext(), R.string.food)
-                        break
-                    }
-                    6 -> {
-                        categoryName =
-                            ContextCompat.getString(requireContext(), R.string.other)
-                        break
-                    }
-                    else -> {
-                        break
-                    }
-                }
-            }
-        }
-
+        categoryName = GetFinanceCategoryNameInLocalLanguage().execute(
+            financeName = categoryName!!,
+            state = when (vm.isExpenses.value!!) {
+                true -> FinanceCategoryState.EXPENSE
+                false -> FinanceCategoryState.INCOME
+            },
+            context = requireContext())
         val spannable = if (vm.isExpenses.value == true)
             SpannableString("$categoryName\n${getString(R.string.expenses)}")
         else
@@ -123,6 +86,7 @@ class FinanceDetailsFragment: Fragment() {
 //        else
 //            spannable.setSpan(ForegroundColorSpan(ContextCompat.getColor(requireContext(), R.color.red)), categoryName!!.length, spannable.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         collaps.title = spannable //TODO SPANNABLE DOESNT WORK IN TITLE NEED FIX
+
         collaps.apply {
             setCollapsedTitleTypeface(Typeface.DEFAULT_BOLD)
             setExpandedTitleTypeface(Typeface.DEFAULT_BOLD)

@@ -11,6 +11,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
+import com.breckneck.debtbook.util.GetFinanceCategoryNameInLocalLanguage
 import com.breckneck.deptbook.domain.model.FinanceCategoryWithFinances
 import com.breckneck.deptbook.domain.util.revenuesCategoryEnglishNameList
 import java.text.DecimalFormat
@@ -19,25 +20,29 @@ import java.text.DecimalFormatSymbols
 class UsedFinanceCategoryAdapter(
     private val onUsedFinanceCategoryClickListener: OnUsedFinanceCategoryClickListener,
     private var currency: String
-): RecyclerView.Adapter<UsedFinanceCategoryAdapter.UsedFinanceCategoryViewHolder>() {
+) : RecyclerView.Adapter<UsedFinanceCategoryAdapter.UsedFinanceCategoryViewHolder>() {
 
     private val decimalFormat = DecimalFormat("###,###,###.##")
     private val customSymbol: DecimalFormatSymbols = DecimalFormatSymbols()
     private val usedFinanceCategoryList: MutableList<FinanceCategoryWithFinances> = mutableListOf()
+    val getFinanceCategoryNameInLocalLanguage = GetFinanceCategoryNameInLocalLanguage()
 
     interface OnUsedFinanceCategoryClickListener {
         fun onClick(usedFinance: FinanceCategoryWithFinances)
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun updateUsedFinanceCategoryList(usedFinanceCategoryList: List<FinanceCategoryWithFinances>, currency: String) {
+    fun updateUsedFinanceCategoryList(
+        usedFinanceCategoryList: List<FinanceCategoryWithFinances>,
+        currency: String
+    ) {
         this.usedFinanceCategoryList.clear()
         this.usedFinanceCategoryList.addAll(usedFinanceCategoryList)
         this.currency = currency
         notifyDataSetChanged()
     }
 
-    class UsedFinanceCategoryViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+    class UsedFinanceCategoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val nameTextView: TextView = itemView.findViewById(R.id.usedCategoryNameTextView)
         val sumTextView: TextView = itemView.findViewById(R.id.usedCategorySumTextView)
         val percent: TextView = itemView.findViewById(R.id.usedCategoryPercent)
@@ -53,66 +58,26 @@ class UsedFinanceCategoryAdapter(
     ): UsedFinanceCategoryViewHolder {
         customSymbol.groupingSeparator = ' '
         decimalFormat.decimalFormatSymbols = customSymbol
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_used_category, parent, false)
+        val itemView =
+            LayoutInflater.from(parent.context).inflate(R.layout.item_used_category, parent, false)
         return UsedFinanceCategoryViewHolder(itemView)
     }
 
     override fun onBindViewHolder(holder: UsedFinanceCategoryViewHolder, position: Int) {
         val usedFinanceCategory = usedFinanceCategoryList[position]
 
-        for (i in revenuesCategoryEnglishNameList.indices) {
-            if (usedFinanceCategory.financeCategory.name == revenuesCategoryEnglishNameList[i]) {
-                when (i) {
-                    0 -> {
-                        holder.nameTextView.text =
-                            ContextCompat.getString(holder.itemView.context, R.string.health)
-                        break
-                    }
-                    1 -> {
-                        holder.nameTextView.text =
-                            ContextCompat.getString(holder.itemView.context, R.string.entertainment)
-                        break
-                    }
-                    2 -> {
-                        holder.nameTextView.text =
-                            ContextCompat.getString(holder.itemView.context, R.string.home)
-                        break
-                    }
-                    3 -> {
-                        holder.nameTextView.text =
-                            ContextCompat.getString(holder.itemView.context, R.string.education)
-                        break
-                    }
-                    4 -> {
-                        holder.nameTextView.text =
-                            ContextCompat.getString(holder.itemView.context, R.string.presents)
-                        break
-                    }
-                    5 -> {
-                        holder.nameTextView.text =
-                            ContextCompat.getString(holder.itemView.context, R.string.food)
-                        break
-                    }
-                    6 -> {
-                        holder.nameTextView.text =
-                            ContextCompat.getString(holder.itemView.context, R.string.other)
-                        break
-                    }
-                    else -> {
-                        holder.nameTextView.text = usedFinanceCategory.financeCategory.name
-                        break
-                    }
-                }
-            }
-            else
-                holder.nameTextView.text = usedFinanceCategory.financeCategory.name
-        }
+        holder.nameTextView.text = getFinanceCategoryNameInLocalLanguage.execute(
+            financeName = usedFinanceCategory.financeCategory.name,
+            state = usedFinanceCategory.financeCategory.state,
+            context = holder.itemView.context
+        )
 
         holder.sumTextView.text = decimalFormat.format(usedFinanceCategory.categorySum)
         holder.percent.text = "${usedFinanceCategory.categoryPercentage}%"
         holder.currency.text = currency
         holder.backgroundCardView.setCardBackgroundColor(Color.parseColor(usedFinanceCategory.financeCategory.color))
-        holder.imageTextView.text = String(Character.toChars(usedFinanceCategory.financeCategory.image))
+        holder.imageTextView.text =
+            String(Character.toChars(usedFinanceCategory.financeCategory.image))
 
         holder.rootLayout.setOnClickListener {
             onUsedFinanceCategoryClickListener.onClick(usedFinance = usedFinanceCategory)
