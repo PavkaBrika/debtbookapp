@@ -20,8 +20,8 @@
     <string name="sek" translatable="false">&#127480;&#127466; SEK</string>
     <string name="mxn" translatable="false">&#127474;&#127485; MXN</string>
     <string name="youmustentername">You didn\'t enter all the information</string>
-    <string name="deletedebt">Delete</string>
-    <string name="editdebt">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
     <string name="give">Give</string>
     <string name="take">Take</string>
     <string name="zerodebt">This field cannot be zero</string>

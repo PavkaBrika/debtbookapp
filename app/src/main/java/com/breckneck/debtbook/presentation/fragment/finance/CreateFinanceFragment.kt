@@ -2,6 +2,7 @@ package com.breckneck.debtbook.presentation.fragment.finance
 
 import android.app.DatePickerDialog
 import android.content.Context
+import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
@@ -34,6 +35,7 @@ import com.breckneck.deptbook.domain.util.SWITCH_STATE_INCOMES
 import com.breckneck.deptbook.domain.util.SWITCH_STATE_REVENUES
 import com.breckneck.deptbook.domain.util.incomesCategoryEnglishNameList
 import com.breckneck.deptbook.domain.util.revenuesCategoryEnglishNameList
+import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputLayout
@@ -47,7 +49,7 @@ class CreateFinanceFragment : Fragment() {
     interface OnClickListener {
         fun onBackButtonClick()
 
-        fun onAddCategoryButtonClick()
+        fun onAddCategoryButtonClick(financeCategoryState: FinanceCategoryState)
     }
 
     private var onClickListener: OnClickListener? = null
@@ -62,6 +64,11 @@ class CreateFinanceFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         setFragmentResultListener("createFinanceFragmentKey") { requestKey, bundle ->
+            when (bundle.getString("categoryState")) {
+                FinanceCategoryState.EXPENSE.toString() -> vm.setFinanceCategoryState(financeCategoryState = FinanceCategoryState.EXPENSE)
+                FinanceCategoryState.INCOME.toString() -> vm.setFinanceCategoryState(financeCategoryState = FinanceCategoryState.INCOME)
+                else -> {}
+            }
             if (bundle.getBoolean("isListModified"))
                 vm.getFinanceCategoriesByState()
         }
@@ -80,6 +87,12 @@ class CreateFinanceFragment : Fragment() {
 
         if (vm.isDeleteCategoryDialogOpened.value == true) {
             showDeleteFinanceDialog(vm.deleteFinanceCategory.value!!)
+        }
+
+        val collaps: CollapsingToolbarLayout = view.findViewById(R.id.collaps)
+        collaps.apply {
+            setCollapsedTitleTypeface(Typeface.DEFAULT_BOLD)
+            setExpandedTitleTypeface(Typeface.DEFAULT_BOLD)
         }
 
         val customSwitch: CustomSwitchView = view.findViewById(R.id.customSwitch)
@@ -110,20 +123,24 @@ class CreateFinanceFragment : Fragment() {
                     financeSumEditText.setText(financeEdit.sum.toString())
                     financeInfoEditText.setText(financeEdit.info)
                     categoryLinearLayout.visibility = View.GONE
+                    customSwitch.visibility = View.GONE
+                    collaps.title = getString(R.string.edit)
                 }
             }
-            val financeCategoryState = when (arguments?.getString("categoryState").toString()) {
+            
+            vm.setFinanceCategoryState(financeCategoryState = when (arguments?.getString("categoryState").toString()) {
                 FinanceCategoryState.EXPENSE.toString() -> FinanceCategoryState.EXPENSE
                 FinanceCategoryState.INCOME.toString() -> FinanceCategoryState.INCOME
                 else -> FinanceCategoryState.EXPENSE
-            }
-            vm.setFinanceCategoryState(financeCategoryState = financeCategoryState)
+            })
+
             if (vm.date.value == null) {
                 val calendar = Calendar.getInstance()
                 calendar.timeInMillis = vm.dayInMillis.value!!
                 vm.setCurrentDate(calendar.time)
             }
-            customSwitch.setChecked(checked = when (financeCategoryState) {
+
+            customSwitch.setChecked(checked = when (vm.financeCategoryState.value!!) {
                 FinanceCategoryState.EXPENSE -> SWITCH_STATE_REVENUES
                 FinanceCategoryState.INCOME -> SWITCH_STATE_INCOMES
             })
@@ -198,7 +215,7 @@ class CreateFinanceFragment : Fragment() {
                 }
 
                 override fun onAddCategoryClick() {
-                    onClickListener!!.onAddCategoryButtonClick()
+                    onClickListener!!.onAddCategoryButtonClick(financeCategoryState = vm.financeCategoryState.value!!)
                 }
 
                 override fun onCategoryLongClick(financeCategory: FinanceCategory) {
@@ -212,6 +229,14 @@ class CreateFinanceFragment : Fragment() {
                 financeCategoryList = financeCategoryList,
                 onFinanceCategoryClickListener = onFinanceCategoryClickListener
             )
+        }
+
+        vm.financeCategoryState.observe(viewLifecycleOwner) {
+            vm.getFinanceCategoriesByState()
+        }
+
+        customSwitch.setOnClickListener {
+            vm.onChangeFinanceCategoryState()
         }
 
 

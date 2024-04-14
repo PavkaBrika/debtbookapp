@@ -196,4 +196,11 @@ class CreateFinanceViewModel(
     fun setDeleteCategory(financeCategory: FinanceCategory) {
         _deleteFinanceCategory.value = financeCategory
     }
+
+    fun onChangeFinanceCategoryState() {
+        _financeCategoryState.value = when (_financeCategoryState.value!!) {
+            FinanceCategoryState.EXPENSE -> FinanceCategoryState.INCOME
+            FinanceCategoryState.INCOME -> FinanceCategoryState.EXPENSE
+        }
+    }
 }

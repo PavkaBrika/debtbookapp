@@ -385,8 +385,10 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener,
         navController.navigate(R.id.action_financeFragment_to_createFinanceFragment, args)
     }
 
-    override fun onAddCategoryButtonClick() {
-        navController.navigate(R.id.action_createFinanceFragment_to_createFinanceCategoryFragment)
+    override fun onAddCategoryButtonClick(financeCategoryState: FinanceCategoryState) {
+        val args = Bundle()
+        args.putString("categoryState", financeCategoryState.toString())
+        navController.navigate(R.id.action_createFinanceFragment_to_createFinanceCategoryFragment, args)
     }
 
     override fun onFinanceCategoryClick(

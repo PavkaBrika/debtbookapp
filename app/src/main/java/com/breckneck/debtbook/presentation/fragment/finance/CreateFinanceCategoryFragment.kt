@@ -1,6 +1,7 @@
 package com.breckneck.debtbook.presentation.fragment.finance
 
 import android.content.Context
+import android.graphics.Typeface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -20,6 +21,7 @@ import com.breckneck.deptbook.domain.model.FinanceCategory
 import com.breckneck.deptbook.domain.util.FinanceCategoryState
 import com.breckneck.deptbook.domain.util.categoryColorList
 import com.breckneck.deptbook.domain.util.categoryImageList
+import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputLayout
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -62,6 +64,12 @@ class CreateFinanceCategoryFragment : Fragment() {
         val backButtonImageView: ImageView = view.findViewById(R.id.backButton)
         backButtonImageView.setOnClickListener {
             onClickListener!!.onBackButtonClick()
+        }
+
+        val collaps: CollapsingToolbarLayout = view.findViewById(R.id.collaps)
+        collaps.apply {
+            setCollapsedTitleTypeface(Typeface.DEFAULT_BOLD)
+            setExpandedTitleTypeface(Typeface.DEFAULT_BOLD)
         }
 
         val categoryImageRecyclerView: RecyclerView =
@@ -134,7 +142,7 @@ class CreateFinanceCategoryFragment : Fragment() {
                         image = vm.checkedImage.value!!
                     )
                 )
-                setFragmentResult("createFinanceFragmentKey", bundleOf("isListModified" to true))
+                setFragmentResult("createFinanceFragmentKey", bundleOf("isListModified" to true, "categoryState" to vm.financeCategoryState.value!!.toString()))
                 onClickListener!!.onBackButtonClick()
             }
         }

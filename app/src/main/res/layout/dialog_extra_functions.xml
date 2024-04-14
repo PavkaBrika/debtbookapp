@@ -21,7 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="@string/deletedebt"
+        android:text="@string/delete"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/extrasTitle" />
@@ -31,7 +31,7 @@
         style="@style/FilledButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/editdebt"
+        android:text="@string/edit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/deleteButton" />

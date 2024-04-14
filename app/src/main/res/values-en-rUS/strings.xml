@@ -6,8 +6,8 @@
     <string name="year">y.</string>
     <string name="date">Date</string>
     <string name="youmustentername">You didn\'t enter all the information</string>
-    <string name="deletedebt">Delete</string>
-    <string name="editdebt">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
     <string name="give">Give</string>
     <string name="take">Take</string>
     <string name="zerodebt">Debt cannot be zero</string>

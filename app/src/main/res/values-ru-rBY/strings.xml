@@ -7,8 +7,8 @@
     <string name="year">г.</string>
     <string name="date">Дата</string>
     <string name="youmustentername">Вы ввели не всю информацию</string>
-    <string name="deletedebt">Удалить</string>
-    <string name="editdebt">Изменить</string>
+    <string name="delete">Удалить</string>
+    <string name="edit">Изменить</string>
     <string name="give">Дать</string>
     <string name="take">Взять</string>
     <string name="zerodebt">Долг не может быть равен нулю</string>

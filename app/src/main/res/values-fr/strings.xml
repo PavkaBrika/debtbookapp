@@ -7,8 +7,8 @@
     <string name="year">a</string>
     <string name="date">Date</string>
     <string name="youmustentername">Vous n\'avez pas saisi toutes les informations</string>
-    <string name="deletedebt">Supprimer</string>
-    <string name="editdebt">Editer</string>
+    <string name="delete">Supprimer</string>
+    <string name="edit">Editer</string>
     <string name="give">Donner</string>
     <string name="take">Prendre</string>
     <string name="zerodebt">La dette ne peut être nulle</string>

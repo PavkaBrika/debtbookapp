@@ -19,12 +19,12 @@
             android:fitsSystemWindows="true">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
-                android:id="@+id/collapsNewFinance"
+                android:id="@+id/collaps"
                 style="@style/collapsContentScrim"
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
                 android:fitsSystemWindows="true"
-                app:expandedTitleGravity="center_vertical"
+                app:expandedTitleGravity="bottom"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 app:maxLines="3"
                 app:title="@string/create_new_category"

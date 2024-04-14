@@ -19,12 +19,12 @@
             android:fitsSystemWindows="true">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
-                android:id="@+id/collapsNewFinance"
+                android:id="@+id/collaps"
                 style="@style/collapsContentScrim"
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
                 android:fitsSystemWindows="true"
-                app:expandedTitleGravity="center_vertical"
+                app:expandedTitleGravity="bottom"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 app:maxLines="3"
                 app:title="@string/adding"
@@ -71,19 +71,22 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="32dp" />
+
                 <com.breckneck.debtbook.presentation.customview.CustomSwitchView
                     android:id="@+id/customSwitch"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_gravity="center"
-                    android:layout_marginTop="48dp"
-                    android:layout_marginBottom="20dp"
+                    android:layout_marginVertical="16dp"
                     android:layout_marginHorizontal="8dp"
                     app:disabledBackgroundColor="#59cb72"
                     app:disabledText="@string/revenues"
                     app:enabledBackgroundColor="#e25d56"
                     app:enabledText="@string/expenses"
-                    app:enabled="true"/>
+                    app:enabled="true" />
 
                 <TextView
                     style="@style/addNewHumanLines"
