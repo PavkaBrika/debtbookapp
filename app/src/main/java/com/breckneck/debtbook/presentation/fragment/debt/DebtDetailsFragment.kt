@@ -157,11 +157,16 @@ class DebtDetailsFragment : Fragment() {
             if ((isDebtSettingsDialogShown.value != null) && (isDebtSettingsDialogShown.value == true))
                 showDebtSettings(vm.settingDebt.value!!, currency = currency, name = humanName!!)
 
+            val noDebtTextView: TextView = view.findViewById(R.id.noDebtTextView)
             resultDebtList.observe(viewLifecycleOwner) {
                 if (it.isNotEmpty()) {
+                    recyclerView.visibility = View.VISIBLE
                     debtRecyclerViewHintTextView.visibility = View.VISIBLE
+                    noDebtTextView.visibility = View.GONE
                     debtAdapter.updateDebtList(debtList = it)
                 } else {
+                    noDebtTextView.visibility = View.VISIBLE
+                    recyclerView.visibility = View.GONE
                     debtRecyclerViewHintTextView.visibility = View.INVISIBLE
                 }
             }

@@ -181,13 +181,13 @@ class DebtDetailsViewModel(
             deleteDebtUseCase.execute(debtDomain)
             addSumUseCase.execute(humanId = _humanId.value!!, sum = (debtDomain.sum * (-1.0)))
             getOverallSum()
+            getAllDebts()
             Log.e(TAG, "Debt delete success")
             it.onComplete()
         }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                getAllDebts()
                 Log.e(TAG, "Debts load success")
             },{
                 Log.e(TAG, it.message.toString())
