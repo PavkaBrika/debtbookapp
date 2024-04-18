@@ -25,7 +25,7 @@
                 android:fitsSystemWindows="true"
                 app:expandedTitleGravity="bottom"
                 app:expandedTitleMarginStart="16dp"
-                app:layout_scrollFlags="scroll"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 app:title="@string/debts"
                 app:titleCollapseMode="scale"
                 app:titleEnabled="true">

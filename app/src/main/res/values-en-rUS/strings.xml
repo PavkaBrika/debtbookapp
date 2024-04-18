@@ -122,4 +122,5 @@
     <string name="salary">Salary</string>
     <string name="investments">Investments</string>
     <string name="this_action_will_delete_the_category_and_all_data_associated_with_it">This action will delete this category and all associated data</string>
+    <string name="support_us">Support us</string>
 </resources>
