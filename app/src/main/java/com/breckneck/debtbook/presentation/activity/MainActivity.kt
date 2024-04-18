@@ -383,12 +383,14 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener,
         args.putLong("dayInMillis", dayInMillis)
         args.putBoolean("isEditFinance", false)
         navController.navigate(R.id.action_financeFragment_to_createFinanceFragment, args)
+        vm.onActionClick()
     }
 
     override fun onAddCategoryButtonClick(financeCategoryState: FinanceCategoryState) {
         val args = Bundle()
         args.putString("categoryState", financeCategoryState.toString())
         navController.navigate(R.id.action_createFinanceFragment_to_createFinanceCategoryFragment, args)
+        vm.onActionClick()
     }
 
     override fun onFinanceCategoryClick(
@@ -403,6 +405,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener,
         args.putString("categoryState", financeCategoryState.toString())
         args.putString("currency", currency)
         navController.navigate(R.id.action_financeFragment_to_financeDetailsFragment, args)
+        vm.onActionClick()
     }
 
     //finance details interface
@@ -412,6 +415,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener,
         args.putSerializable("financeEdit", finance)
         args.putBoolean("isEditFinance", true)
         navController.navigate(R.id.action_financeDetailsFragment_to_createFinanceFragment, args)
+        vm.onActionClick()
     }
 
     //synchronization interface

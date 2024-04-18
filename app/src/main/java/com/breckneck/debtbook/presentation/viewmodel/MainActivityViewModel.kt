@@ -36,7 +36,7 @@ class MainActivityViewModel(
     private val _isAppReviewDialogFromSettings = MutableLiveData<Boolean>()
     val isAppReviewDialogFromSettings: LiveData<Boolean>
         get() = _isAppReviewDialogFromSettings
-    private val _debtQuantity = MutableLiveData<Int>()
+    private val _debtQuantity = MutableLiveData<Int>(0)
     val debtQuantity: LiveData<Int>
         get() = _debtQuantity
     private val _appRate = MutableLiveData<Int>()
