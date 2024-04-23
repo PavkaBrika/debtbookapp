@@ -15,4 +15,6 @@ interface FinanceStorage {
     fun updateFinance(financeData: FinanceData)
 
     fun deleteAllFinancesByCategoryId(financeCategoryId: Int)
+
+    fun replaceAllFinances(financeDataList: List<FinanceData>)
 }

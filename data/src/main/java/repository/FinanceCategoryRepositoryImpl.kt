@@ -103,4 +103,20 @@ class FinanceCategoryRepositoryImpl(private val financeCategoryStorage: FinanceC
             )
         }
     }
+
+    override fun replaceAllFinanceCategories(financeCategoriesList: List<FinanceCategory>) {
+        financeCategoryStorage.replaceAllFinanceCategories(
+            financeCategoryDataList = financeCategoriesList.map { category ->
+                FinanceCategoryData(
+                    id = category.id,
+                    name = category.name,
+                    state = when (category.state) {
+                        FinanceCategoryState.INCOME -> FinanceCategoryStateData.INCOME
+                        FinanceCategoryState.EXPENSE -> FinanceCategoryStateData.EXPENSE
+                    },
+                    color = category.color,
+                    image = category.image
+                )
+        })
+    }
 }

@@ -22,14 +22,19 @@ class DataBaseFinanceCategoryStorageImpl(context: Context) : FinanceCategoryStor
     }
 
     override fun setFinanceCategory(category: FinanceCategoryData) {
-        return db.appDao().insertFinanceCategory(financeCategoryData = category)
+        db.appDao().insertFinanceCategory(financeCategoryData = category)
     }
 
     override fun deleteFinanceCategory(category: FinanceCategoryData) {
-        return db.appDao().deleteFinanceCategory(financeCategoryData = category)
+        db.appDao().deleteFinanceCategory(financeCategoryData = category)
     }
 
     override fun getFinanceCategoriesByState(financeCategoryStateData: FinanceCategoryStateData): List<FinanceCategoryData> {
         return db.appDao().getFinanceCategoriesByState(financeCategoryStateData = financeCategoryStateData)
+    }
+
+    override fun replaceAllFinanceCategories(financeCategoryDataList: List<FinanceCategoryData>) {
+        db.appDao().deleteAllFinanceCategories()
+        db.appDao().insertAllFinanceCategories(financeCategoryDataList = financeCategoryDataList)
     }
 }

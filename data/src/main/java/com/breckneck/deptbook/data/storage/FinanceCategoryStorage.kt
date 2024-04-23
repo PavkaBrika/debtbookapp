@@ -15,4 +15,6 @@ interface FinanceCategoryStorage {
     fun deleteFinanceCategory(category: FinanceCategoryData)
 
     fun getFinanceCategoriesByState(financeCategoryStateData: FinanceCategoryStateData): List<FinanceCategoryData>
+
+    fun replaceAllFinanceCategories(financeCategoryDataList: List<FinanceCategoryData>)
 }

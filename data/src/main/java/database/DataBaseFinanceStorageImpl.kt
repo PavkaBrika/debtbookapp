@@ -36,4 +36,9 @@ class DataBaseFinanceStorageImpl(context: Context): FinanceStorage {
     override fun deleteAllFinancesByCategoryId(financeCategoryId: Int) {
         db.appDao().deleteAllFinancesByCategoryId(financeCategoryId = financeCategoryId)
     }
+
+    override fun replaceAllFinances(financeDataList: List<FinanceData>) {
+        db.appDao().deleteAllFinances()
+        db.appDao().insertAllFinances(financeDataList = financeDataList)
+    }
 }

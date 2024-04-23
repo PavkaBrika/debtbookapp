@@ -74,4 +74,17 @@ class FinanceRepositoryImpl(private val financeStorage: FinanceStorage) : Financ
     override fun deleteFinanceByCategoryId(financeCategoryId: Int) {
         financeStorage.deleteAllFinancesByCategoryId(financeCategoryId = financeCategoryId)
     }
+
+    override fun replaceAllFinances(financeList: List<Finance>) {
+        financeStorage.replaceAllFinances(
+            financeDataList = financeList.map { finance ->
+                FinanceData(
+                    id = finance.id,
+                    sum = finance.sum,
+                    date = finance.date,
+                    info = finance.info,
+                    financeCategoryId = finance.financeCategoryId
+                )
+            })
+    }
 }

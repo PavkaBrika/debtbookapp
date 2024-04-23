@@ -90,6 +90,12 @@ interface AppDao {
     @Query("DELETE FROM financeData WHERE financeCategoryId = :financeCategoryId")
     fun deleteAllFinancesByCategoryId(financeCategoryId: Int)
 
+    @Query("DELETE FROM financedata")
+    fun deleteAllFinances()
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAllFinances(financeDataList: List<FinanceData>)
+
     @Insert
     fun insertFinance(financeData: FinanceData)
 
@@ -113,6 +119,12 @@ interface AppDao {
     @Transaction
     @Query("SELECT * FROM financecategorydata")
     fun getAllFinanceCategoriesWithFinances(): List<FinanceCategoryDataWithFinanceData>
+
+    @Query("DELETE FROM financecategorydata")
+    fun deleteAllFinanceCategories()
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAllFinanceCategories(financeCategoryDataList: List<FinanceCategoryData>)
 
     @Insert
     fun insertFinanceCategory(financeCategoryData: FinanceCategoryData)

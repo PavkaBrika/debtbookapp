@@ -9,6 +9,10 @@ import com.breckneck.deptbook.domain.model.AppDataLists
 import com.breckneck.deptbook.domain.usecase.Debt.GetAllDebts
 import com.breckneck.deptbook.domain.usecase.Debt.ReplaceAllDebts
 import com.breckneck.deptbook.domain.usecase.Debt.SetDateUseCase
+import com.breckneck.deptbook.domain.usecase.Finance.GetAllFinances
+import com.breckneck.deptbook.domain.usecase.Finance.ReplaceAllFinances
+import com.breckneck.deptbook.domain.usecase.FinanceCategory.GetAllFinanceCategories
+import com.breckneck.deptbook.domain.usecase.FinanceCategory.ReplaceAllFinanceCategories
 import com.breckneck.deptbook.domain.usecase.Human.GetAllHumansUseCase
 import com.breckneck.deptbook.domain.usecase.Human.ReplaceAllHumans
 import com.breckneck.deptbook.domain.usecase.Settings.GetIsAuthorized
@@ -33,7 +37,11 @@ class SynchronizationViewModel(
     private val setUserData: SetUserData,
     private val setDateUseCase: SetDateUseCase,
     private val setLastSyncDate: SetLastSyncDate,
-    private val getLastSyncDate: GetLastSyncDate
+    private val getLastSyncDate: GetLastSyncDate,
+    private val getAllFinances: GetAllFinances,
+    private val getAllFinanceCategories: GetAllFinanceCategories,
+    private val replaceAllFinances: ReplaceAllFinances,
+    private val replaceAllFinanceCategories: ReplaceAllFinanceCategories
 ) : ViewModel() {
 
     private val TAG = "SyncFragmentVM"
@@ -136,9 +144,14 @@ class SynchronizationViewModel(
 
     fun getAppDataForSync() {
         val disposable = Single.create {
-            val humanList = getAllHumansUseCase.execute()
-            val debtList = getAllDebts.execute()
-            it.onSuccess(AppDataLists(humanList, debtList))
+            it.onSuccess(
+                AppDataLists(
+                    humanList = getAllHumansUseCase.execute(),
+                    debtList = getAllDebts.execute(),
+                    financeList = getAllFinances.execute(),
+                    financeCategoryList = getAllFinanceCategories.execute()
+                )
+            )
         }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -154,6 +167,8 @@ class SynchronizationViewModel(
         val disposable = Completable.create {
             replaceAllHumans.execute(appDataLists.humanList)
             replaceAllDebts.execute(appDataLists.debtList)
+            replaceAllFinances.execute(appDataLists.financeList)
+            replaceAllFinanceCategories.execute(appDataLists.financeCategoryList)
             it.onComplete()
         }
             .subscribeOn(Schedulers.io())
