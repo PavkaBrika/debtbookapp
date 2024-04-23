@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.cardview.widget.CardView
@@ -54,6 +55,8 @@ class SynchronizationFragment : Fragment() {
     private val fileName = "DebtBookSync.json"
     private var synchronizationInterface: SynchronizationInterface? = null
     private val gson = Gson()
+    private lateinit var synchronizationProgressBar: ProgressBar
+
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -124,8 +127,10 @@ class SynchronizationFragment : Fragment() {
         }
 
         val googleButtonCardView: CardView = view.findViewById(R.id.googleButtonCardView)
+        synchronizationProgressBar = view.findViewById(R.id.synchronizationProgressBar)
         googleButtonCardView.setOnClickListener {
             requestGoogleSignIn()
+            synchronizationProgressBar.visibility = View.VISIBLE
         }
 
         val synchronizeButtonLayout: ConstraintLayout = view.findViewById(R.id.synchronizeButtonLayout)
@@ -243,6 +248,9 @@ class SynchronizationFragment : Fragment() {
                 Toast.makeText(requireActivity(), getString(R.string.something_went_wrong), Toast.LENGTH_SHORT)
                     .show()
                 throw it
+            }
+            .addOnCompleteListener {
+                synchronizationProgressBar.visibility = View.GONE
             }
     }
 

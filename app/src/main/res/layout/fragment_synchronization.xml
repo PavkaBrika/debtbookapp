@@ -23,7 +23,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
                 android:fitsSystemWindows="true"
-                app:expandedTitleGravity="center_vertical"
+                app:expandedTitleGravity="bottom"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 app:maxLines="3"
                 app:title="@string/authorization"
@@ -345,6 +345,16 @@
             android:src="@drawable/ic_baseline_check_24"
             app:layout_anchor="@id/app_bar"
             app:layout_anchorGravity="bottom|end" />
+
+        <ProgressBar
+            android:id="@+id/synchronizationProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:visibility="gone"
+            android:indeterminateTint="@color/green"
+            android:indeterminateTintMode="src_in" />
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </RelativeLayout>
