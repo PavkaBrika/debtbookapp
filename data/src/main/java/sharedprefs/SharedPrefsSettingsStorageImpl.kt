@@ -132,12 +132,12 @@ class SharedPrefsSettingsStorageImpl(val context: Context): SettingsStorage {
         return sharedPreferences.getBoolean(IS_AUTHORIZED, false)
     }
 
-    override fun setLastSyncDate(lastSyncDate: String) {
-        sharedPreferences.edit().putString(LAST_SYNC_DATE, lastSyncDate).apply()
+    override fun setLastSyncDate(lastSyncDateInMillis: Long) {
+        sharedPreferences.edit().putLong(LAST_SYNC_DATE, lastSyncDateInMillis).apply()
     }
 
-    override fun getLastSyncDate(): String {
-        return sharedPreferences.getString(LAST_SYNC_DATE, "")!!
+    override fun getLastSyncDate(): Long {
+        return sharedPreferences.getLong(LAST_SYNC_DATE, 0)
     }
 
     override fun setFinanceCurrency(currency: String) {

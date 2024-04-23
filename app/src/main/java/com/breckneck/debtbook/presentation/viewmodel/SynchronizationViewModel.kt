@@ -90,17 +90,24 @@ class SynchronizationViewModel(
 
     fun setLastSyncDate() {
         val calendar = Calendar.getInstance()
+        setLastSyncDate.execute(calendar.timeInMillis)
         val date = setDateUseCase.execute(
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
             calendar.get(Calendar.DAY_OF_MONTH)
         )
-        setLastSyncDate.execute(date)
         _lastSyncDate.value = date
     }
 
     private fun getLastSyncDate() {
-        _lastSyncDate.value = getLastSyncDate.execute()
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = getLastSyncDate.execute()
+        val date = setDateUseCase.execute(
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        )
+        _lastSyncDate.value = date
     }
 
     private fun getIsAuthorized() {

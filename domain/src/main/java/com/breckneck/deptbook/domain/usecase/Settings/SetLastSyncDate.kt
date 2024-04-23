@@ -4,7 +4,7 @@ import com.breckneck.deptbook.domain.repository.SettingsRepository
 
 class SetLastSyncDate(private val settingsRepository: SettingsRepository) {
 
-    fun execute(lastSyncDate: String) {
-        settingsRepository.setLastSyncDate(lastSyncDate = lastSyncDate)
+    fun execute(lastSyncDateInMillis: Long) {
+        settingsRepository.setLastSyncDate(lastSyncDateInMillis = lastSyncDateInMillis)
     }
 }

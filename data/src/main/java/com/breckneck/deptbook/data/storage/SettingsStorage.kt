@@ -48,9 +48,9 @@ interface SettingsStorage {
 
     fun getIsAuthorized(): Boolean
 
-    fun setLastSyncDate(lastSyncDate: String)
+    fun setLastSyncDate(lastSyncDateInMillis: Long)
 
-    fun getLastSyncDate(): String
+    fun getLastSyncDate(): Long
 
     fun setFinanceCurrency(currency: String)
 

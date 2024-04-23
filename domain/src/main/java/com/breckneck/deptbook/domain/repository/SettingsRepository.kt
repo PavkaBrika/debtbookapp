@@ -50,9 +50,9 @@ interface SettingsRepository {
 
     fun getUserData(): User
 
-    fun setLastSyncDate(lastSyncDate: String)
+    fun setLastSyncDate(lastSyncDateInMillis: Long)
 
-    fun getLastSyncDate(): String
+    fun getLastSyncDate(): Long
 
     fun setFinanceCurrency(currency: String)
 
