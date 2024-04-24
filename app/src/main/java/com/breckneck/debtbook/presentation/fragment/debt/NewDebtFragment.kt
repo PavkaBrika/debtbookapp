@@ -64,6 +64,7 @@ class NewDebtFragment: Fragment() {
         fun onBackButtonClick()
         fun onSetButtonClick()
         fun onAddDebt()
+        fun onTickVibration()
     }
 
     lateinit var buttonClickListener: OnButtonClickListener
@@ -164,6 +165,9 @@ class NewDebtFragment: Fragment() {
         }
 
         val customSwitch: CustomSwitchView = view.findViewById(R.id.customSwitch)
+        customSwitch.setOnClickListener {
+            buttonClickListener.onTickVibration()
+        }
 
         debtSumEditText.addTextChangedListener { object: TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {

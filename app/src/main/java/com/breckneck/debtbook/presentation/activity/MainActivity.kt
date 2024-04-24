@@ -341,7 +341,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener,
     }
 
     //DebtDetailsFragment interfaces
-    override fun onChangeOrderButtonClick() {
+    override fun onTickVibration() {
         startTickVibration()
     }
 

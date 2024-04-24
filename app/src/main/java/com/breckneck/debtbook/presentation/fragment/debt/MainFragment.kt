@@ -13,7 +13,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.adapter.HumanAdapter
@@ -46,7 +45,7 @@ class MainFragment : Fragment() {
 
         fun onAddButtonClick()
 
-        fun onChangeOrderButtonClick()
+        fun onTickVibration()
     }
 
     var buttonClickListener: OnButtonClickListener? = null
@@ -203,7 +202,7 @@ class MainFragment : Fragment() {
             sortImageView!!.rotationY = ROTATE_DEGREE_HUMAN_IMAGE_VIEW_BY_DECREASE
 
         bottomSheetDialogFilter.findViewById<CardView>(R.id.sortButtonCard)!!.setOnClickListener {
-            buttonClickListener!!.onChangeOrderButtonClick()
+            buttonClickListener!!.onTickVibration()
             if (sortImageView.rotationY == ROTATE_DEGREE_HUMAN_IMAGE_VIEW_BY_INCREASE) {
                 sortImageView.rotationY = ROTATE_DEGREE_HUMAN_IMAGE_VIEW_BY_DECREASE
                 sortByIncrease = false

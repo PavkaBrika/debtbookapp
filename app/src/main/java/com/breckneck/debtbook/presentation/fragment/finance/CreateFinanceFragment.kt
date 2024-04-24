@@ -51,6 +51,8 @@ class CreateFinanceFragment : Fragment() {
         fun onBackButtonClick()
 
         fun onAddCategoryButtonClick(financeCategoryState: FinanceCategoryState)
+
+        fun onTickVibration()
     }
 
     private var onClickListener: OnClickListener? = null
@@ -257,8 +259,8 @@ class CreateFinanceFragment : Fragment() {
 
         customSwitch.setOnClickListener {
             vm.onChangeFinanceCategoryState()
+            onClickListener!!.onTickVibration()
         }
-
 
         fun isAllFieldsFilledRight(): Boolean {
             var isFilledRight = true

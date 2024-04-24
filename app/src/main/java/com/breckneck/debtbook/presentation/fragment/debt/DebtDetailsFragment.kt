@@ -26,7 +26,6 @@ import androidx.core.os.bundleOf
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.adapter.DebtAdapter
@@ -63,7 +62,7 @@ class DebtDetailsFragment : Fragment() {
 
         fun onBackButtonClick()
 
-        fun onChangeOrderButtonClick()
+        fun onTickVibration()
     }
 
     var buttonClickListener: OnButtonClickListener? = null
@@ -391,7 +390,7 @@ class DebtDetailsFragment : Fragment() {
         }
 
         orderDialog.findViewById<CardView>(R.id.sortButtonCard)!!.setOnClickListener {
-            buttonClickListener!!.onChangeOrderButtonClick()
+            buttonClickListener!!.onTickVibration()
             if (sortImageView.rotationY == ROTATE_DEGREE_DEBT_IMAGE_VIEW_BY_INCREASE) {
                 sortImageView.rotationY = ROTATE_DEGREE_DEBT_IMAGE_VIEW_BY_DECREASE
                 sortByIncrease = false
