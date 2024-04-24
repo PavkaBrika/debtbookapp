@@ -97,12 +97,12 @@ class MainFragment : Fragment() {
         }
 
         val recyclerView: RecyclerView = view.findViewById(R.id.categoryRecyclerView)
-        recyclerView.addItemDecoration(
-            DividerItemDecoration(
-                view.context,
-                DividerItemDecoration.VERTICAL
-            )
-        )
+//        recyclerView.addItemDecoration(
+//            DividerItemDecoration(
+//                view.context,
+//                DividerItemDecoration.VERTICAL
+//            )
+//        )
         recyclerView.doOnPreDraw {
             startPostponedEnterTransition()
         }

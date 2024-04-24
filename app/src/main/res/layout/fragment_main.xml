@@ -106,6 +106,7 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:scrollbars="vertical"
+                    android:paddingVertical="4dp"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_behavior="@string/appbar_scrolling_view_behavior"
                     app:layout_constraintEnd_toEndOf="parent"
