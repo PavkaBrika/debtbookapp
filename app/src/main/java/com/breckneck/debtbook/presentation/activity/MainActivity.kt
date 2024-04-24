@@ -491,6 +491,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener,
             rateStar3ImageView.clearColorFilter()
             rateStar4ImageView.clearColorFilter()
             rateStar5ImageView.clearColorFilter()
+            onTickVibration()
             vm.setAppRate(1)
         }
         rateStar2ImageView.setOnClickListener {
@@ -499,6 +500,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener,
             rateStar3ImageView.clearColorFilter()
             rateStar4ImageView.clearColorFilter()
             rateStar5ImageView.clearColorFilter()
+            onTickVibration()
             vm.setAppRate(2)
         }
         rateStar3ImageView.setOnClickListener {
@@ -507,6 +509,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener,
             rateStar3ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.yellow))
             rateStar4ImageView.clearColorFilter()
             rateStar5ImageView.clearColorFilter()
+            onTickVibration()
             vm.setAppRate(3)
         }
         rateStar4ImageView.setOnClickListener {
@@ -515,6 +518,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener,
             rateStar3ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.yellow))
             rateStar4ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.yellow))
             rateStar5ImageView.clearColorFilter()
+            onTickVibration()
             vm.setAppRate(4)
         }
         rateStar5ImageView.setOnClickListener {
@@ -523,6 +527,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener,
             rateStar3ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.yellow))
             rateStar4ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.yellow))
             rateStar5ImageView.setColorFilter(ContextCompat.getColor(it.context, R.color.yellow))
+            onTickVibration()
             vm.setAppRate(5)
         }
 

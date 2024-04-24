@@ -477,6 +477,7 @@ class NewDebtFragment: Fragment() {
 
         val onSettingsSelectListener = object: SettingsAdapter.OnSelectListener {
             override fun onSelect() {
+                buttonClickListener.onTickVibration()
                 dialog.dismiss()
             }
         }

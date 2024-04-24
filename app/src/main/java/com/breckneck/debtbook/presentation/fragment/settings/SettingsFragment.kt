@@ -42,6 +42,8 @@ class SettingsFragment : Fragment() {
         fun onRateAppButtonClick()
 
         fun onAuthorizationButtonClick()
+
+        fun onTickVibration()
     }
 
     lateinit var buttonClickListener: OnButtonClickListener
@@ -229,6 +231,7 @@ class SettingsFragment : Fragment() {
         addSumShareInTextSwitch.setOnCheckedChangeListener(object : OnCheckedChangeListener {
             override fun onCheckedChanged(p0: CompoundButton?, p1: Boolean) {
                 vm.setSumInShareText(value = p1)
+                buttonClickListener.onTickVibration()
             }
         })
 
@@ -339,6 +342,7 @@ class SettingsFragment : Fragment() {
 
         val onSettingsSelectListener = object: SettingsAdapter.OnSelectListener {
             override fun onSelect() {
+                buttonClickListener.onTickVibration()
                 dialog.dismiss()
             }
         }
