@@ -38,6 +38,10 @@
         <item name="android:tint">@color/white</item>
     </style>
 
+    <style name="actionArrowImageView">
+        <item name="android:tint">@color/darkgray</item>
+    </style>
+
     <style name="defaultRadioButtons">
         <item name="android:buttonTint">@color/white</item>
     </style>

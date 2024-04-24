@@ -99,12 +99,6 @@ class DebtDetailsFragment : Fragment() {
         postponeEnterTransition()
 
         val recyclerView: RecyclerView = view.findViewById(R.id.debtsRecyclerView)
-        recyclerView.addItemDecoration(
-            DividerItemDecoration(
-                view.context,
-                DividerItemDecoration.VERTICAL
-            )
-        )
         recyclerView.doOnPreDraw {
             startPostponedEnterTransition()
         }
