@@ -267,6 +267,7 @@ class DebtDetailsFragment : Fragment() {
 
         dialog.findViewById<Button>(R.id.deleteButton)!!.setOnClickListener {
             vm.deleteDebt(debtDomain = debtDomain)
+            setFragmentResult("mainFragmentKey", bundleOf("isListModified" to true))
             dialog.dismiss()
         }
 
