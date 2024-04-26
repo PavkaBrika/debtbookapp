@@ -26,6 +26,10 @@
         <item name="contentScrim">@color/white</item>
     </style>
 
+    <style name="nestedScrollRounded">
+        <item name="android:background">@drawable/rounded_collapsing_toolbar_day</item>
+    </style>
+
     <style name="addNewHumanLines">
         <item name="android:background">@color/gray</item>
     </style>

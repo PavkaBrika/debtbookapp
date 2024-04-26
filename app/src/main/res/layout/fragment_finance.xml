@@ -9,14 +9,15 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/coordinator"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar"
             style="@style/appBarLayoutStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fitsSystemWindows="true">
+            app:elevation="0dp" >
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:id="@+id/collaps"
@@ -24,7 +25,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
                 android:fitsSystemWindows="true"
-                app:expandedTitleGravity="bottom"
+                app:expandedTitleGravity="center_vertical"
                 app:expandedTitleMarginStart="16dp"
                 app:layout_scrollFlags="noScroll"
                 app:title="@string/finances"
@@ -36,7 +37,7 @@
                     android:layout_gravity="end"
                     android:layout_marginTop="?attr/actionBarSize"
                     android:layout_marginEnd="12dp"
-                    android:layout_marginBottom="22dp">
+                    android:layout_marginBottom="36dp">
 
                     <TextView
                         android:id="@+id/overallSumTextView"
@@ -114,6 +115,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            style="@style/nestedScrollRounded"
+            android:elevation="10dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <com.google.android.material.card.MaterialCardView
@@ -253,7 +256,7 @@
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toBottomOf="@+id/categoryRecyclerView" />
-                            
+
                             <Space
                                 android:layout_width="match_parent"
                                 android:layout_height="100dp" />

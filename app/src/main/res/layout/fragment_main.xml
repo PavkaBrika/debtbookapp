@@ -8,14 +8,15 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/coordinator"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar"
             style="@style/appBarLayoutStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fitsSystemWindows="true">
+            app:elevation="0dp">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:id="@+id/collaps"
@@ -23,7 +24,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
                 android:fitsSystemWindows="true"
-                app:expandedTitleGravity="bottom"
+                app:expandedTitleGravity="center_vertical"
                 app:expandedTitleMarginStart="16dp"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 app:title="@string/debts"
@@ -36,7 +37,7 @@
                     android:layout_gravity="end"
                     android:layout_marginTop="?attr/actionBarSize"
                     android:layout_marginEnd="12dp"
-                    android:layout_marginBottom="24dp">
+                    android:layout_marginBottom="36dp">
 
                     <TextView
                         android:id="@+id/overallPositiveSumTextView"
@@ -64,7 +65,8 @@
                     android:layout_height="?attr/actionBarSize"
                     android:background="@android:color/transparent"
                     android:fitsSystemWindows="true"
-                    app:layout_collapseMode="pin">
+                    app:layout_collapseMode="pin"
+                    app:elevation="0dp" >
 
                     <ImageView
                         android:id="@+id/filterHumanButton"
@@ -83,72 +85,66 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <TextView
-            style="@style/collapsLines"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/nestedScroll"
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            app:cardElevation="10dp"
+            android:scrollbars="vertical"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:cardCornerRadius="20dp"
+            android:layout_marginBottom="-20dp" >
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/nestedScroll"
+                style="@style/nestedScrollRounded"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent" >
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/categoryRecyclerView"
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:scrollbars="vertical"
-                    android:paddingVertical="4dp"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:layout_height="match_parent">
 
-                <TextView
-                    android:id="@+id/mainRecyclerViewHintTextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical|center_horizontal"
-                    android:layout_marginHorizontal="16dp"
-                    android:layout_marginVertical="32dp"
-                    android:gravity="center"
-                    android:text="@string/main_recycler_view_hint"
-                    android:textColor="@color/darkgray"
-                    android:textSize="16sp"
-                    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/categoryRecyclerView" />
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/categoryRecyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:paddingVertical="4dp"
+                        android:scrollbars="vertical"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:id="@+id/mainRecyclerViewSecondHintTextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical|center_horizontal"
-                    android:layout_marginHorizontal="16dp"
-                    android:layout_marginTop="22dp"
-                    android:gravity="center"
-                    android:text="@string/long_tap_to_change_the_name_of_the_debt"
-                    android:textColor="@color/darkgray"
-                    android:textSize="16sp"
-                    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/mainRecyclerViewHintTextView" />
+                    <TextView
+                        android:id="@+id/mainRecyclerViewSecondHintTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|center_horizontal"
+                        android:layout_marginHorizontal="16dp"
+                        android:layout_marginVertical="32dp"
+                        android:gravity="center"
+                        android:text="@string/long_tap_to_change_the_name_of_the_debt"
+                        android:textColor="@color/darkgray"
+                        android:textSize="16sp"
+                        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/categoryRecyclerView" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    <Space
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/mainRecyclerViewSecondHintTextView" />
 
-        </androidx.core.widget.NestedScrollView>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.core.widget.NestedScrollView>
+
+        </androidx.cardview.widget.CardView>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/addHumanButton"
@@ -160,6 +156,7 @@
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
             android:src="@drawable/ic_baseline_add_24"
+            app:elevation="11dp"
             app:layout_anchor="@id/nestedScroll"
             app:layout_anchorGravity="bottom|center"
             app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior" />
@@ -169,6 +166,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|center_horizontal"
+            android:elevation="11dp"
             android:gravity="center"
             android:text="@string/nodebts"
             android:textColor="@color/darkgray"

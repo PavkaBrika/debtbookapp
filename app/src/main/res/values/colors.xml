@@ -11,6 +11,7 @@
     <color name="lightgray">#E0E0E0</color>
     <color name="super_light_gray">#EEEEEE</color>
     <color name="darkgray">#9E9E9E</color>
+    <color name="super_dark_gray">#424242</color>
     <color name="green">#59CB72</color>
     <color name="red">#E25D56</color>
     <color name="nightCollapsLine">#303030</color>

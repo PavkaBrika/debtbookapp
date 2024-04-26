@@ -117,8 +117,6 @@ class MainFragment : Fragment() {
         recyclerView.adapter = humanAdapter
 
         val noDebtsTextView: TextView = view.findViewById(R.id.noDebtTextView)
-        val mainRecyclerViewHintTextView: TextView =
-            view.findViewById(R.id.mainRecyclerViewHintTextView)
         val mainRecyclerViewSecondHintTextView: TextView = view.findViewById(R.id.mainRecyclerViewSecondHintTextView)
 
         val addButton: FloatingActionButton = view.findViewById(R.id.addHumanButton)
@@ -137,11 +135,9 @@ class MainFragment : Fragment() {
 
         vm.resultHumanList.observe(viewLifecycleOwner) {
             if (it.isNotEmpty()) {
-                mainRecyclerViewHintTextView.visibility = View.VISIBLE
                 mainRecyclerViewSecondHintTextView.visibility = View.VISIBLE
                 noDebtsTextView.visibility = View.INVISIBLE
             } else {
-                mainRecyclerViewHintTextView.visibility = View.INVISIBLE
                 mainRecyclerViewSecondHintTextView.visibility = View.INVISIBLE
                 noDebtsTextView.visibility = View.VISIBLE
             }

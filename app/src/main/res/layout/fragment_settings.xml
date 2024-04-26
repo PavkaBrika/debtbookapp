@@ -8,14 +8,15 @@
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar"
             style="@style/appBarLayoutStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fitsSystemWindows="true">
+            app:elevation="0dp">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:id="@+id/collapsSettings"
@@ -23,10 +24,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
                 android:fitsSystemWindows="true"
-                app:expandedTitleGravity="bottom"
+                app:expandedTitleGravity="center_vertical"
+                app:expandedTitleMarginStart="16dp"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 app:maxLines="3"
-                app:expandedTitleMarginStart="16dp"
                 app:title="@string/settings"
                 app:titleCollapseMode="scale"
                 app:titleEnabled="true">
@@ -44,532 +45,537 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <TextView
-            style="@style/collapsLines"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-        <androidx.core.widget.NestedScrollView
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            app:cardElevation="10dp"
             android:scrollbars="vertical"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:cardCornerRadius="20dp"
+            android:layout_marginBottom="-20dp">
 
-            <LinearLayout
+            <androidx.core.widget.NestedScrollView
+                style="@style/nestedScrollRounded"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:orientation="vertical">
+                android:layout_height="match_parent">
 
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/synchronizationCardView"
-                    style="@style/CardViewStyle"
-                    android:visibility="gone"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="8dp">
+                    android:layout_marginTop="16dp"
+                    android:orientation="vertical">
 
-                    <LinearLayout
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/synchronizationCardView"
+                        style="@style/CardViewStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginVertical="16dp"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="8dp"
-                            android:text="@string/synchronization"
-                            android:textAlignment="center"
-                            android:textSize="28sp"
-                            android:textStyle="bold" />
+                        android:layout_marginHorizontal="8dp"
+                        android:visibility="gone">
 
                         <LinearLayout
-                            android:id="@+id/authorizationLayout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginVertical="16dp"
                             android:orientation="vertical">
 
                             <TextView
-                                android:id="@+id/syncHintTextView"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="8dp"
+                                android:text="@string/synchronization"
+                                android:textAlignment="center"
+                                android:textSize="28sp"
+                                android:textStyle="bold" />
+
+                            <LinearLayout
+                                android:id="@+id/authorizationLayout"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/syncHintTextView"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:paddingHorizontal="12dp"
+                                    android:paddingVertical="8dp"
+                                    android:text="@string/authorize_to_avoid_losing_your_data"
+                                    android:textAlignment="center" />
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/authorizationButton"
+                                    style="@style/FilledButton"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="12dp"
+                                    android:text="@string/authorization" />
+
+                            </LinearLayout>
+
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:id="@+id/accountInfoLayout"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="?android:attr/selectableItemBackground"
+                                android:padding="12dp"
+                                android:visibility="gone">
+
+                                <ImageView
+                                    android:id="@+id/accountImageView"
+                                    style="@style/imageViewButton"
+                                    android:layout_width="40dp"
+                                    android:layout_height="40dp"
+                                    android:src="@drawable/outline_account_circle_24"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <TextView
+                                    android:id="@+id/userNameTextView"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="16dp"
+                                    android:text="User Name"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toEndOf="@+id/accountImageView"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <TextView
+                                    android:id="@+id/userEmailAddressTextView"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="16dp"
+                                    android:layout_marginTop="8dp"
+                                    android:text="useremailaddress@mail.com"
+                                    android:textColor="@android:color/darker_gray"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toEndOf="@+id/accountImageView"
+                                    app:layout_constraintTop_toBottomOf="@+id/userNameTextView" />
+
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+
+                    <com.google.android.material.card.MaterialCardView
+                        style="@style/CardViewStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="8dp"
+                        android:layout_marginTop="16dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="16dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="8dp"
+                                android:text="@string/application"
+                                android:textAlignment="center"
+                                android:textSize="28sp"
+                                android:textStyle="bold" />
+
+                            <LinearLayout
+                                android:id="@+id/firstCurrencyLayout"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="?android:attr/selectableItemBackground"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:orientation="horizontal"
+                                android:paddingHorizontal="12dp"
+                                android:paddingVertical="12dp">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="2"
+                                    android:background="@android:color/transparent"
+                                    android:text="@string/first_main_currency"
+                                    android:textSize="16sp"
+                                    app:autoSizeTextType="uniform"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toStartOf="@+id/firstCurrencyTextView"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <TextView
+                                    android:id="@+id/firstCurrencyTextView"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="4"
+                                    android:textAlignment="center"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/secondCurrencyLayout"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="?android:attr/selectableItemBackground"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:orientation="horizontal"
+                                android:paddingHorizontal="12dp"
+                                android:paddingVertical="12dp">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="2"
+                                    android:background="@android:color/transparent"
+                                    android:text="@string/second_main_currency"
+                                    android:textSize="16sp"
+                                    app:autoSizeTextType="uniform" />
+
+                                <TextView
+                                    android:id="@+id/secondCurrencyTextView"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="4"
+                                    android:textAlignment="center" />
+
+                            </LinearLayout>
+
+                            <TextView
+                                android:id="@+id/mainCurrenciesHint"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:paddingHorizontal="12dp"
                                 android:paddingVertical="8dp"
-                                android:text="@string/authorize_to_avoid_losing_your_data"
-                                android:textAlignment="center" />
-
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/authorizationButton"
-                                style="@style/FilledButton"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_margin="12dp"
-                                android:text="@string/authorization" />
-
-                        </LinearLayout>
-
-                        <androidx.constraintlayout.widget.ConstraintLayout
-                            android:id="@+id/accountInfoLayout"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:visibility="gone"
-                            android:background="?android:attr/selectableItemBackground"
-                            android:padding="12dp">
-
-                            <ImageView
-                                android:id="@+id/accountImageView"
-                                android:layout_width="40dp"
-                                android:layout_height="40dp"
-                                style="@style/imageViewButton"
-                                android:src="@drawable/outline_account_circle_24"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
-
-                            <TextView
-                                android:id="@+id/userNameTextView"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="16dp"
-                                android:text="User Name"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toEndOf="@+id/accountImageView"
-                                app:layout_constraintTop_toTopOf="parent" />
-
-                            <TextView
-                                android:id="@+id/userEmailAddressTextView"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="16dp"
-                                android:layout_marginTop="8dp"
-                                android:text="useremailaddress@mail.com"
-                                android:textColor="@android:color/darker_gray"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toEndOf="@+id/accountImageView"
-                                app:layout_constraintTop_toBottomOf="@+id/userNameTextView" />
-
-                        </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    </LinearLayout>
-
-                </com.google.android.material.card.MaterialCardView>
-
-
-                <com.google.android.material.card.MaterialCardView
-                    style="@style/CardViewStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="8dp"
-                    android:layout_marginTop="16dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginVertical="16dp"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="8dp"
-                            android:text="@string/application"
-                            android:textAlignment="center"
-                            android:textSize="28sp"
-                            android:textStyle="bold" />
-
-                        <LinearLayout
-                            android:id="@+id/firstCurrencyLayout"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="?android:attr/selectableItemBackground"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:orientation="horizontal"
-                            android:paddingHorizontal="12dp"
-                            android:paddingVertical="12dp">
+                                android:text="@string/main_currencies_hint"
+                                android:textColor="@android:color/darker_gray" />
 
                             <TextView
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="2"
-                                android:background="@android:color/transparent"
-                                android:text="@string/first_main_currency"
-                                android:textSize="16sp"
-                                app:autoSizeTextType="uniform"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toStartOf="@+id/firstCurrencyTextView"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
+                                android:layout_height="1dp"
+                                android:layout_marginHorizontal="16dp"
+                                android:layout_marginVertical="8dp"
+                                android:background="@color/gray" />
 
-                            <TextView
-                                android:id="@+id/firstCurrencyTextView"
+                            <LinearLayout
+                                android:id="@+id/defaultCurrencyLayout"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="4"
-                                android:textAlignment="center"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
+                                android:background="?android:attr/selectableItemBackground"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:orientation="horizontal"
+                                android:paddingHorizontal="12dp"
+                                android:paddingVertical="8dp">
 
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/secondCurrencyLayout"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="?android:attr/selectableItemBackground"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:orientation="horizontal"
-                            android:paddingHorizontal="12dp"
-                            android:paddingVertical="12dp">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="2"
-                                android:background="@android:color/transparent"
-                                android:text="@string/second_main_currency"
-                                android:textSize="16sp"
-                                app:autoSizeTextType="uniform" />
-
-                            <TextView
-                                android:id="@+id/secondCurrencyTextView"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="4"
-                                android:textAlignment="center" />
-
-                        </LinearLayout>
-
-                        <TextView
-                            android:id="@+id/mainCurrenciesHint"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingHorizontal="12dp"
-                            android:paddingVertical="8dp"
-                            android:text="@string/main_currencies_hint"
-                            android:textColor="@android:color/darker_gray" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:layout_marginHorizontal="16dp"
-                            android:layout_marginVertical="8dp"
-                            android:background="@color/gray" />
-
-                        <LinearLayout
-                            android:id="@+id/defaultCurrencyLayout"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="?android:attr/selectableItemBackground"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:orientation="horizontal"
-                            android:paddingHorizontal="12dp"
-                            android:paddingVertical="8dp">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="2"
-                                android:background="@android:color/transparent"
-                                android:text="@string/default_currency"
-                                android:textSize="16sp"
-                                app:autoSizeTextType="uniform" />
-
-                            <TextView
-                                android:id="@+id/defaultCurrencyTextView"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="4"
-                                android:textAlignment="center" />
-
-                        </LinearLayout>
-
-                        <TextView
-                            android:id="@+id/mainCurrencyHint"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingHorizontal="12dp"
-                            android:paddingVertical="8dp"
-                            android:text="@string/default_currencies_hint"
-                            android:textColor="@android:color/darker_gray" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:layout_marginHorizontal="16dp"
-                            android:layout_marginVertical="8dp"
-                            android:background="@color/gray" />
-
-                        <LinearLayout
-                            android:id="@+id/addSumShareTextLayout"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="?android:attr/selectableItemBackground"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:orientation="horizontal"
-                            android:paddingHorizontal="12dp"
-                            android:paddingVertical="8dp">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_vertical"
-                                android:layout_weight="2"
-                                android:background="@android:color/transparent"
-                                android:text="@string/more_detailed_share_text"
-                                android:textSize="16sp" />
-
-                            <RelativeLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_horizontal"
-                                android:layout_weight="4"
-                                android:background="@android:color/transparent">
-
-                                <androidx.appcompat.widget.SwitchCompat
-                                    android:id="@+id/balanceShareTextSwitch"
-                                    android:layout_width="wrap_content"
+                                <TextView
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_centerInParent="true"
-                                    android:layout_gravity="center"
-                                    android:checked="true"
-                                    android:gravity="center"
-                                    android:theme="@style/SwitchTheme" />
+                                    android:layout_weight="2"
+                                    android:background="@android:color/transparent"
+                                    android:text="@string/default_currency"
+                                    android:textSize="16sp"
+                                    app:autoSizeTextType="uniform" />
 
-                            </RelativeLayout>
+                                <TextView
+                                    android:id="@+id/defaultCurrencyTextView"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="4"
+                                    android:textAlignment="center" />
 
-                        </LinearLayout>
+                            </LinearLayout>
 
-                        <TextView
-                            android:id="@+id/balanceShareHint"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:paddingHorizontal="12dp"
-                            android:text="@string/detailed_share_text_hint"
-                            android:textColor="@android:color/darker_gray" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:layout_marginHorizontal="16dp"
-                            android:layout_marginVertical="8dp"
-                            android:background="@color/gray" />
-
-                        <LinearLayout
-                            android:id="@+id/appThemeLayout"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="?android:attr/selectableItemBackground"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:orientation="horizontal"
-                            android:paddingHorizontal="12dp"
-                            android:paddingVertical="12dp">
+                            <TextView
+                                android:id="@+id/mainCurrencyHint"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:paddingHorizontal="12dp"
+                                android:paddingVertical="8dp"
+                                android:text="@string/default_currencies_hint"
+                                android:textColor="@android:color/darker_gray" />
 
                             <TextView
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="2"
-                                android:background="@android:color/transparent"
-                                android:text="@string/app_theme"
-                                android:textSize="16sp" />
+                                android:layout_height="1dp"
+                                android:layout_marginHorizontal="16dp"
+                                android:layout_marginVertical="8dp"
+                                android:background="@color/gray" />
 
-                            <TextView
-                                android:id="@+id/appThemeTextView"
+                            <LinearLayout
+                                android:id="@+id/addSumShareTextLayout"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="4"
-                                android:textAlignment="center" />
+                                android:background="?android:attr/selectableItemBackground"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:orientation="horizontal"
+                                android:paddingHorizontal="12dp"
+                                android:paddingVertical="8dp">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center_vertical"
+                                    android:layout_weight="2"
+                                    android:background="@android:color/transparent"
+                                    android:text="@string/more_detailed_share_text"
+                                    android:textSize="16sp" />
+
+                                <RelativeLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center_horizontal"
+                                    android:layout_weight="4"
+                                    android:background="@android:color/transparent">
+
+                                    <androidx.appcompat.widget.SwitchCompat
+                                        android:id="@+id/balanceShareTextSwitch"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_centerInParent="true"
+                                        android:layout_gravity="center"
+                                        android:checked="true"
+                                        android:gravity="center"
+                                        android:theme="@style/SwitchTheme" />
+
+                                </RelativeLayout>
+
+                            </LinearLayout>
+
+                            <TextView
+                                android:id="@+id/balanceShareHint"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:paddingHorizontal="12dp"
+                                android:text="@string/detailed_share_text_hint"
+                                android:textColor="@android:color/darker_gray" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="1dp"
+                                android:layout_marginHorizontal="16dp"
+                                android:layout_marginVertical="8dp"
+                                android:background="@color/gray" />
+
+                            <LinearLayout
+                                android:id="@+id/appThemeLayout"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="?android:attr/selectableItemBackground"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:orientation="horizontal"
+                                android:paddingHorizontal="12dp"
+                                android:paddingVertical="12dp">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="2"
+                                    android:background="@android:color/transparent"
+                                    android:text="@string/app_theme"
+                                    android:textSize="16sp" />
+
+                                <TextView
+                                    android:id="@+id/appThemeTextView"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="4"
+                                    android:textAlignment="center" />
+
+                            </LinearLayout>
 
                         </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
 
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.card.MaterialCardView
-                    style="@style/CardViewStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="8dp"
-                    android:layout_marginTop="16dp">
-
-                    <LinearLayout
+                    <com.google.android.material.card.MaterialCardView
+                        style="@style/CardViewStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginVertical="16dp"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="8dp"
-                            android:text="@string/support"
-                            android:textAlignment="center"
-                            android:textSize="28sp"
-                            android:textStyle="bold" />
+                        android:layout_marginHorizontal="8dp"
+                        android:layout_marginTop="16dp">
 
                         <LinearLayout
-                            android:id="@+id/rateAppLayout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:background="?android:attr/selectableItemBackground"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:orientation="horizontal"
-                            android:paddingHorizontal="12dp"
-                            android:paddingVertical="12dp">
+                            android:layout_marginVertical="16dp"
+                            android:orientation="vertical">
 
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="2"
-                                android:background="@android:color/transparent"
-                                android:text="@string/rate_app"
-                                android:textSize="16sp" />
+                                android:layout_marginBottom="8dp"
+                                android:text="@string/support"
+                                android:textAlignment="center"
+                                android:textSize="28sp"
+                                android:textStyle="bold" />
 
-                        </LinearLayout>
+                            <LinearLayout
+                                android:id="@+id/rateAppLayout"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="?android:attr/selectableItemBackground"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:orientation="horizontal"
+                                android:paddingHorizontal="12dp"
+                                android:paddingVertical="12dp">
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:layout_marginHorizontal="16dp"
-                            android:layout_marginVertical="8dp"
-                            android:background="@color/gray" />
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="2"
+                                    android:background="@android:color/transparent"
+                                    android:text="@string/rate_app"
+                                    android:textSize="16sp" />
 
-                        <LinearLayout
-                            android:id="@+id/writeEmailLayout"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="?android:attr/selectableItemBackground"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:orientation="horizontal"
-                            android:paddingHorizontal="12dp"
-                            android:paddingVertical="12dp">
+                            </LinearLayout>
 
                             <TextView
                                 android:layout_width="match_parent"
+                                android:layout_height="1dp"
+                                android:layout_marginHorizontal="16dp"
+                                android:layout_marginVertical="8dp"
+                                android:background="@color/gray" />
+
+                            <LinearLayout
+                                android:id="@+id/writeEmailLayout"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:background="@android:color/transparent"
-                                android:text="@string/write_email_to_developer"
-                                android:textSize="16sp" />
+                                android:background="?android:attr/selectableItemBackground"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:orientation="horizontal"
+                                android:paddingHorizontal="12dp"
+                                android:paddingVertical="12dp">
 
-                        </LinearLayout>
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@android:color/transparent"
+                                    android:text="@string/write_email_to_developer"
+                                    android:textSize="16sp" />
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:layout_marginHorizontal="16dp"
-                            android:layout_marginVertical="8dp"
-                            android:background="@color/gray" />
-
-                        <LinearLayout
-                            android:id="@+id/supportUsLayout"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="?android:attr/selectableItemBackground"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:orientation="horizontal"
-                            android:paddingHorizontal="12dp"
-                            android:paddingVertical="12dp">
+                            </LinearLayout>
 
                             <TextView
                                 android:layout_width="match_parent"
+                                android:layout_height="1dp"
+                                android:layout_marginHorizontal="16dp"
+                                android:layout_marginVertical="8dp"
+                                android:background="@color/gray" />
+
+                            <LinearLayout
+                                android:id="@+id/supportUsLayout"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:background="@android:color/transparent"
-                                android:text="@string/support_us"
-                                android:textSize="16sp" />
+                                android:background="?android:attr/selectableItemBackground"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:orientation="horizontal"
+                                android:paddingHorizontal="12dp"
+                                android:paddingVertical="12dp">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@android:color/transparent"
+                                    android:text="@string/support_us"
+                                    android:textSize="16sp" />
+
+                            </LinearLayout>
 
                         </LinearLayout>
 
-                    </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
 
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.card.MaterialCardView
-                    style="@style/CardViewStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="8dp"
-                    android:layout_marginTop="16dp">
-
-                    <LinearLayout
+                    <com.google.android.material.card.MaterialCardView
+                        style="@style/CardViewStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginVertical="16dp"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="8dp"
-                            android:text="@string/info"
-                            android:textAlignment="center"
-                            android:textSize="28sp"
-                            android:textStyle="bold" />
-
-                        <LinearLayout
-                            android:id="@+id/privacyPolicyLayout"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="?android:attr/selectableItemBackground"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:orientation="horizontal"
-                            android:paddingHorizontal="12dp"
-                            android:paddingVertical="12dp">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="@string/privacy_policy"
-                                android:textSize="16sp" />
-
-                        </LinearLayout>
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:layout_marginHorizontal="16dp"
-                            android:layout_marginVertical="8dp"
-                            android:background="@color/gray" />
+                        android:layout_marginHorizontal="8dp"
+                        android:layout_marginTop="16dp">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:paddingHorizontal="12dp"
-                            android:paddingVertical="12dp">
+                            android:layout_marginVertical="16dp"
+                            android:orientation="vertical">
 
                             <TextView
-                                android:id="@+id/appVersionTextView"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="@string/app_version"
-                                android:textSize="16sp" />
+                                android:layout_marginBottom="8dp"
+                                android:text="@string/info"
+                                android:textAlignment="center"
+                                android:textSize="28sp"
+                                android:textStyle="bold" />
+
+                            <LinearLayout
+                                android:id="@+id/privacyPolicyLayout"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="?android:attr/selectableItemBackground"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:orientation="horizontal"
+                                android:paddingHorizontal="12dp"
+                                android:paddingVertical="12dp">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/privacy_policy"
+                                    android:textSize="16sp" />
+
+                            </LinearLayout>
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="1dp"
+                                android:layout_marginHorizontal="16dp"
+                                android:layout_marginVertical="8dp"
+                                android:background="@color/gray" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:paddingHorizontal="12dp"
+                                android:paddingVertical="12dp">
+
+                                <TextView
+                                    android:id="@+id/appVersionTextView"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/app_version"
+                                    android:textSize="16sp" />
+
+                            </LinearLayout>
 
                         </LinearLayout>
 
-                    </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
 
-                </com.google.android.material.card.MaterialCardView>
+                    <Space
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp" />
 
-                <Space
-                    android:layout_width="match_parent"
-                    android:layout_height="16dp" />
+                </LinearLayout>
 
-            </LinearLayout>
+            </androidx.core.widget.NestedScrollView>
 
-        </androidx.core.widget.NestedScrollView>
+        </com.google.android.material.card.MaterialCardView>
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </RelativeLayout>
