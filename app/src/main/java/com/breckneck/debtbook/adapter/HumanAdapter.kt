@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.deptbook.domain.model.HumanDomain
@@ -42,6 +43,7 @@ class HumanAdapter(
         val name: TextView = itemView.findViewById(R.id.name)
         val debt: TextView = itemView.findViewById(R.id.debt)
         val currency: TextView = itemView.findViewById(R.id.currency)
+        val humanCardView: CardView = itemView.findViewById(R.id.humanCardView)
         val greenColor = itemView.resources.getColor(R.color.green)
         val redColor = itemView.resources.getColor(R.color.red)
         val grayColor = itemView.resources.getColor(R.color.darkgray)
@@ -74,10 +76,10 @@ class HumanAdapter(
         }
 
 
-        holder.itemView.setOnClickListener{
+        holder.humanCardView.setOnClickListener{
             humanClickListener.onHumanClick(humanDomain = humanDomain, position = position)
         }
-        holder.itemView.setOnLongClickListener {
+        holder.humanCardView.setOnLongClickListener {
             humanClickListener.onHumanLongClick(humanDomain = humanDomain, position = position)
             return@setOnLongClickListener true
         }

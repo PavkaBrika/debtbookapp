@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.deptbook.domain.model.DebtDomain
@@ -34,6 +35,7 @@ class DebtAdapter(private val debtDomainListImmutable: List<DebtDomain>, private
         val date: TextView = itemView.findViewById(R.id.dateTextView)
         val info: TextView = itemView.findViewById(R.id.infoTextView)
         val currency: TextView = itemView.findViewById(R.id.currencyTextVew)
+        val debtCardView: CardView = itemView.findViewById(R.id.debtCardView)
         val infoLayout: LinearLayout = itemView.findViewById(R.id.infoLayout)
         val greenColor = itemView.resources.getColor(R.color.green)
         val redColor = itemView.resources.getColor(R.color.red)
@@ -63,7 +65,7 @@ class DebtAdapter(private val debtDomainListImmutable: List<DebtDomain>, private
         if (holder.info.text.equals("")) {
             holder.infoLayout.visibility = View.GONE
         }
-        holder.itemView.setOnClickListener{
+        holder.debtCardView.setOnClickListener{
             debtClickListener.onDebtClick(debtDomain = debtDomain, position = position)
         }
     }
