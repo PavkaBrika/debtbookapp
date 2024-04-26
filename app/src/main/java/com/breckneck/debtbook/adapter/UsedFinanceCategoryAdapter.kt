@@ -49,7 +49,7 @@ class UsedFinanceCategoryAdapter(
         val currency: TextView = itemView.findViewById(R.id.usedCategoryCurrencyTextView)
         val backgroundCardView: CardView = itemView.findViewById(R.id.categoryBackgroundCardView)
         val imageTextView: TextView = itemView.findViewById(R.id.categoryImageTextView)
-        val rootLayout: ConstraintLayout = itemView.findViewById(R.id.rootLayout)
+        val usedFinanceCategoryCardView: CardView = itemView.findViewById(R.id.usedFinanceCategoryCardView)
     }
 
     override fun onCreateViewHolder(
@@ -79,7 +79,7 @@ class UsedFinanceCategoryAdapter(
         holder.imageTextView.text =
             String(Character.toChars(usedFinanceCategory.financeCategory.image))
 
-        holder.rootLayout.setOnClickListener {
+        holder.usedFinanceCategoryCardView.setOnClickListener {
             onUsedFinanceCategoryClickListener.onClick(usedFinance = usedFinanceCategory)
         }
     }

@@ -112,12 +112,6 @@ class FinanceDetailsFragment: Fragment() {
         }
         val financeAdapter = FinanceAdapter(financeListImmutable = listOf(), financeClickListener = financeClickListener, currency!!)
         val financeRecyclerView: RecyclerView = view.findViewById(R.id.financeRecyclerView)
-        financeRecyclerView.addItemDecoration(
-            DividerItemDecoration(
-                view.context,
-                DividerItemDecoration.VERTICAL
-            )
-        )
         financeRecyclerView.adapter = financeAdapter
         val noNotesTextView: TextView = view.findViewById(R.id.noNotesTextView)
         val nestedScrollView: NestedScrollView = view.findViewById(R.id.nestedScroll)

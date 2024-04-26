@@ -262,12 +262,6 @@ class FinanceFragment : Fragment() {
 //        }
 
         val categoryRecyclerView: RecyclerView = view.findViewById(R.id.categoryRecyclerView)
-        categoryRecyclerView.addItemDecoration(
-            DividerItemDecoration(
-                view.context,
-                DividerItemDecoration.VERTICAL
-            )
-        )
 
         val pastDateImageView: ImageView = view.findViewById(R.id.pastDateImageView)
         pastDateImageView.setOnClickListener {

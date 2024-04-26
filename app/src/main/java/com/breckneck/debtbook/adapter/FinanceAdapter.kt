@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.deptbook.domain.model.DebtDomain
@@ -42,6 +43,7 @@ class FinanceAdapter(
         val info: TextView = itemView.findViewById(R.id.infoTextView)
         val currency: TextView = itemView.findViewById(R.id.currencyTextVew)
         val infoLayout: LinearLayout = itemView.findViewById(R.id.infoLayout)
+        val financeCardView: CardView = itemView.findViewById(R.id.financeCardView)
         val greenColor = itemView.resources.getColor(R.color.green)
         val redColor = itemView.resources.getColor(R.color.red)
     }
@@ -69,10 +71,12 @@ class FinanceAdapter(
         holder.date.text = sdf.format(finance.date)
         holder.info.text = finance.info
         holder.currency.text = currencyText
-        if (holder.info.text.equals("")) {
+        if (finance.info.equals("")) {
             holder.infoLayout.visibility = View.GONE
+        } else {
+            holder.infoLayout.visibility = View.VISIBLE
         }
-        holder.itemView.setOnClickListener {
+        holder.financeCardView.setOnClickListener {
             financeClickListener.onFinanceClick(finance = finance, position = position)
         }
     }
