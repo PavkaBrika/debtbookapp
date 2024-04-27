@@ -9,14 +9,15 @@
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar"
             style="@style/appBarLayoutStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fitsSystemWindows="true">
+            app:elevation="0dp">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:id="@+id/collaps"
@@ -35,6 +36,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     android:fitsSystemWindows="true"
+                    app:elevation="0dp"
                     app:layout_collapseMode="pin">
 
                     <ImageView
@@ -53,178 +55,184 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <TextView
-            style="@style/collapsLines"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-        <androidx.core.widget.NestedScrollView
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="1dp"
+            android:layout_marginBottom="-20dp"
             android:scrollbars="vertical"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="10dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <LinearLayout
+            <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <Space
-                    android:layout_width="match_parent"
-                    android:layout_height="32dp" />
-
-                <com.breckneck.debtbook.presentation.customview.CustomSwitchView
-                    android:id="@+id/customSwitch"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center"
-                    android:layout_marginVertical="16dp"
-                    android:layout_marginHorizontal="8dp"
-                    app:disabledBackgroundColor="#59cb72"
-                    app:disabledText="@string/revenues"
-                    app:enabledBackgroundColor="#e25d56"
-                    app:enabledText="@string/expenses"
-                    app:enabled="true" />
-
-                <TextView
-                    style="@style/addNewHumanLines"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp" />
+                android:layout_height="match_parent"
+                android:layout_marginTop="1dp"
+                android:scrollbars="vertical"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/financeSumTextInput"
-                        style="?attr/textInputOutlinedStyle"
-                        android:theme="@style/TextInputLayoutTheme"
+                    <Space
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginEnd="8dp"
-                        android:layout_weight="1"
-                        android:hint="@string/sum"
-                        app:endIconMode="clear_text"
-                        app:errorEnabled="true">
+                        android:layout_height="32dp" />
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/financeSumEditText"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="numberDecimal"
-                            android:maxLength="10"
-                            android:maxLines="1" />
-
-                    </com.google.android.material.textfield.TextInputLayout>
+                    <com.breckneck.debtbook.presentation.customview.CustomSwitchView
+                        android:id="@+id/customSwitch"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center"
+                        android:layout_marginHorizontal="8dp"
+                        android:layout_marginVertical="16dp"
+                        app:disabledBackgroundColor="#59cb72"
+                        app:disabledText="@string/revenues"
+                        app:enabled="true"
+                        app:enabledBackgroundColor="#e25d56"
+                        app:enabledText="@string/expenses" />
 
                     <TextView
                         style="@style/addNewHumanLines"
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent" />
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/financeSumTextInput"
+                            style="?attr/textInputOutlinedStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_weight="1"
+                            android:hint="@string/sum"
+                            android:theme="@style/TextInputLayoutTheme"
+                            app:endIconMode="clear_text"
+                            app:errorEnabled="true">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/financeSumEditText"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="numberDecimal"
+                                android:maxLength="10"
+                                android:maxLines="1" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <TextView
+                            style="@style/addNewHumanLines"
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent" />
+
+                        <TextView
+                            android:id="@+id/financeCurrencyTextView"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="2"
+                            android:background="?android:attr/selectableItemBackground"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:gravity="center"
+                            android:paddingEnd="8dp"
+                            android:text="CUR"
+                            android:textSize="20sp"
+                            android:visibility="visible" />
+
+                    </LinearLayout>
 
                     <TextView
-                        android:id="@+id/financeCurrencyTextView"
+                        style="@style/addNewHumanLines"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center_vertical"
-                        android:paddingEnd="8dp"
-                        android:background="?android:attr/selectableItemBackground"
+                        android:layout_height="1dp" />
+
+                    <TextView
+                        android:id="@+id/financeDateTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:clickable="true"
                         android:focusable="true"
-                        android:layout_weight="2"
-                        android:gravity="center"
-                        android:text="CUR"
-                        android:textSize="20sp"
-                        android:visibility="visible" />
-
-                </LinearLayout>
-
-                <TextView
-                    style="@style/addNewHumanLines"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp" />
-
-                <TextView
-                    android:id="@+id/financeDateTextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingHorizontal="4dp"
-                    android:paddingVertical="16dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?android:attr/selectableItemBackground"
-                    android:text="date"
-                    android:textAlignment="center"
-                    android:textSize="26sp" />
-
-                <TextView
-                    style="@style/addNewHumanLines"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp" />
-
-                <LinearLayout
-                    android:id="@+id/categoryLinearLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingVertical="16dp"
-                    android:orientation="vertical">
+                        android:foreground="?android:attr/selectableItemBackground"
+                        android:paddingHorizontal="4dp"
+                        android:paddingVertical="16dp"
+                        android:text="date"
+                        android:textAlignment="center"
+                        android:textSize="26sp" />
 
                     <TextView
+                        style="@style/addNewHumanLines"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/category"
-                        android:textSize="24sp"
-                        android:paddingHorizontal="8dp" />
+                        android:layout_height="1dp" />
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/categoryRecyclerView"
+                    <LinearLayout
+                        android:id="@+id/categoryLinearLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingTop="16dp"
-                        tools:listitem="@layout/item_finance_category"
                         android:orientation="vertical"
-                        app:spanCount="3"
-                        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager" />
+                        android:paddingVertical="16dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingHorizontal="8dp"
+                            android:text="@string/category"
+                            android:textSize="24sp" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/categoryRecyclerView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:paddingTop="16dp"
+                            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                            app:spanCount="3"
+                            tools:listitem="@layout/item_finance_category" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        style="@style/addNewHumanLines"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/financeInfoTextInput"
+                        style="?attr/textInputOutlinedStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginHorizontal="8dp"
+                        android:layout_marginVertical="16dp"
+                        android:layout_weight="1"
+                        android:hint="@string/comment"
+                        android:theme="@style/TextInputLayoutTheme"
+                        app:endIconMode="clear_text"
+                        app:errorEnabled="false">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/financeInfoEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <Space
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp" />
 
                 </LinearLayout>
 
-                <TextView
-                    style="@style/addNewHumanLines"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp" />
+            </androidx.core.widget.NestedScrollView>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/financeInfoTextInput"
-                    style="?attr/textInputOutlinedStyle"
-                    android:theme="@style/TextInputLayoutTheme"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_marginHorizontal="8dp"
-                    android:layout_marginVertical="16dp"
-                    android:layout_weight="1"
-                    android:hint="@string/comment"
-                    app:endIconMode="clear_text"
-                    app:errorEnabled="false">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/financeInfoEditText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <Space
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp" />
-
-            </LinearLayout>
-
-        </androidx.core.widget.NestedScrollView>
+        </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/setFinanceButton"
@@ -233,6 +241,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="24dp"
             android:src="@drawable/ic_baseline_check_24"
+            app:elevation="11dp"
             app:layout_anchor="@id/app_bar"
             app:layout_anchorGravity="bottom|end" />
 
