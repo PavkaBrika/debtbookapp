@@ -25,7 +25,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
                 android:fitsSystemWindows="true"
-                app:expandedTitleGravity="bottom"
+                app:expandedTitleGravity="center_vertical"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 app:maxLines="3"
                 app:title="@string/adding"
@@ -55,7 +55,6 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -66,11 +65,10 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <androidx.core.widget.NestedScrollView
+                style="@style/nestedScrollRounded"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="1dp"
-                android:scrollbars="vertical"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+                android:scrollbars="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
