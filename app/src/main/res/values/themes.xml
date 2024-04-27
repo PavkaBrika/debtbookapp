@@ -164,4 +164,10 @@
         <item name="rippleColor">@color/white</item>
     </style>
 
+    <style name="CustomSwitchViewTheme">
+        <item name="backgroundColor">@color/lightgray</item>
+        <item name="enabledTextColor">@color/black</item>
+        <item name="disabledTextColor">@color/black</item>
+    </style>
+
 </resources>

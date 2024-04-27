@@ -74,18 +74,28 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <com.breckneck.debtbook.presentation.customview.CustomSwitchView
-                        android:id="@+id/customSwitch"
-                        android:layout_width="275dp"
-                        android:layout_height="50dp"
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center"
+                        android:layout_marginHorizontal="16dp"
                         android:layout_marginTop="48dp"
                         android:layout_marginBottom="20dp"
-                        app:disabledBackgroundColor="#e25d56"
-                        app:disabledText="@string/take"
-                        app:enabled="true"
-                        app:enabledBackgroundColor="#59cb72"
-                        app:enabledText="@string/give" />
+                        app:cardCornerRadius="10dp"
+                        app:cardElevation="20dp">
+
+                        <com.breckneck.debtbook.presentation.customview.CustomSwitchView
+                            android:id="@+id/customSwitch"
+                            style="@style/CustomSwitchViewTheme"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            app:disabledBackgroundColor="#e25d56"
+                            app:disabledText="@string/take"
+                            app:enabled="true"
+                            app:enabledBackgroundColor="#59cb72"
+                            app:enabledText="@string/give" />
+
+                    </androidx.cardview.widget.CardView>
 
                     <LinearLayout
                         android:layout_width="match_parent"

@@ -15,7 +15,7 @@ class CustomSwitchView(context: Context, attrs: AttributeSet) : View(context, at
 
     private val DEFAULT_WIDTH = 300
     private val DEFAULT_HEIGHT = 50
-    private val DEFAULT_BACKGROUND_COLOR = Color.parseColor("#D9D9D9")
+    private val DEFAULT_BACKGROUND_COLOR = Color.parseColor("#E0E0E0")
     private val DEFAULT_ENABLED_BACKGROUND_COLOR = Color.parseColor("#4dba34")
     private val DEFAULT_DISABLED_BACKGROUND_COLOR = Color.parseColor("#b04c4c")
     private val DEFAULT_TEXT_COLOR = Color.parseColor("#ffffff")
@@ -102,15 +102,15 @@ class CustomSwitchView(context: Context, attrs: AttributeSet) : View(context, at
         bodyRect.bottom = 0
 
         if (isEnabled) {
-            stateRect.left = 0
-            stateRect.top = 0
-            stateRect.right = w / 2
-            stateRect.bottom = h
+            stateRect.left = 10
+            stateRect.top = 10
+            stateRect.right = (w / 2) - 10
+            stateRect.bottom = h - 10
         } else {
-            stateRect.left = w / 2
-            stateRect.top = 0
-            stateRect.right = w
-            stateRect.bottom = h
+            stateRect.left = (w / 2) + 10
+            stateRect.top = 10
+            stateRect.right = w - 10
+            stateRect.bottom = h - 10
         }
     }
 
@@ -147,12 +147,12 @@ class CustomSwitchView(context: Context, attrs: AttributeSet) : View(context, at
         enabledTextPaint.textSize = height * 0.5F
         val offsetY = (enabledTextPaint.descent() + enabledTextPaint.ascent())
         canvas.drawText(enabledText,
-            (bodyRect.right / 4).toFloat(), stateRect.bottom + offsetY, enabledTextPaint)
+            (bodyRect.right / 4).toFloat(), (bodyRect.top / 2F) - (offsetY / 2F), enabledTextPaint)
         disabledTextPaint.color = disabledTextColor
         disabledTextPaint.textAlign = Paint.Align.CENTER
         disabledTextPaint.textSize = height * 0.5F
         canvas.drawText(disabledText,
-            (bodyRect.right - bodyRect.right / 4).toFloat(), stateRect.bottom + offsetY, disabledTextPaint)
+            (bodyRect.right - bodyRect.right / 4).toFloat(), (bodyRect.top / 2F) - (offsetY / 2F), disabledTextPaint)
     }
 
     override fun onSaveInstanceState(): Parcelable? {

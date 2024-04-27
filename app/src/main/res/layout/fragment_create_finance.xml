@@ -79,18 +79,29 @@
                         android:layout_width="match_parent"
                         android:layout_height="32dp" />
 
-                    <com.breckneck.debtbook.presentation.customview.CustomSwitchView
-                        android:id="@+id/customSwitch"
+                    <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
-                        android:layout_height="50dp"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_marginHorizontal="8dp"
-                        android:layout_marginVertical="16dp"
-                        app:disabledBackgroundColor="#59cb72"
-                        app:disabledText="@string/revenues"
-                        app:enabled="true"
-                        app:enabledBackgroundColor="#e25d56"
-                        app:enabledText="@string/expenses" />
+                        android:layout_marginHorizontal="16dp"
+                        android:layout_marginTop="48dp"
+                        android:layout_marginBottom="20dp"
+                        app:cardCornerRadius="10dp"
+                        app:cardElevation="20dp">
+
+                        <com.breckneck.debtbook.presentation.customview.CustomSwitchView
+                            android:id="@+id/customSwitch"
+                            style="@style/CustomSwitchViewTheme"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:layout_gravity="center"
+                            app:disabledBackgroundColor="#59cb72"
+                            app:disabledText="@string/revenues"
+                            app:enabled="true"
+                            app:enabledBackgroundColor="#e25d56"
+                            app:enabledText="@string/expenses" />
+
+                    </androidx.cardview.widget.CardView>
 
                     <TextView
                         style="@style/addNewHumanLines"
