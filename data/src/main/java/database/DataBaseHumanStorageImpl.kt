@@ -40,7 +40,8 @@ class DataBaseHumanStorageImpl(context: Context) : HumanStorage {
     private val roomDatabaseCallback = object: RoomDatabase.Callback() {
         override fun onCreate(database: SupportSQLiteDatabase) {
             insertInitialFinanceCategoryData(database = database)
-            super.onCreate(database)
+//            insertInitialScreenshotsData(database = database)
+            super.onCreate(database )
         }
     }
 
@@ -66,6 +67,71 @@ class DataBaseHumanStorageImpl(context: Context) : HumanStorage {
         database.execSQL("INSERT OR IGNORE INTO 'FinanceCategoryData' ('id', 'name', 'state', 'color', 'image') VALUES ('9', 'Gifts', '2', '#CE93D8', '0x1F381')")
         database.execSQL("INSERT OR IGNORE INTO 'FinanceCategoryData' ('id', 'name', 'state', 'color', 'image') VALUES ('10', 'Investments', '2', '#CE93D8', '0x1F4BC')")
         database.execSQL("INSERT OR IGNORE INTO 'FinanceCategoryData' ('id', 'name', 'state', 'color', 'image') VALUES ('11', 'Other', '2', '#FFF59D', '0x1F4CB')")
+    }
+
+    fun insertInitialScreenshotsData(database: SupportSQLiteDatabase) {
+        //RUSSIAN
+//        database.execSQL("INSERT OR IGNORE INTO 'Human' ('id', 'name', 'sumDebt', 'currency') VALUES ('1', 'Алексей', '500', 'RUB')")
+//        database.execSQL("INSERT OR IGNORE INTO 'Human' ('id', 'name', 'sumDebt', 'currency') VALUES ('2', 'Игорь', '10000', 'RUB')")
+//        database.execSQL("INSERT OR IGNORE INTO 'Human' ('id', 'name', 'sumDebt', 'currency') VALUES ('3', 'София', '-3200', 'RUB')")
+//        database.execSQL("INSERT OR IGNORE INTO 'Human' ('id', 'name', 'sumDebt', 'currency') VALUES ('4', 'Мама', '-5000', 'RUB')")
+//        database.execSQL("INSERT OR IGNORE INTO 'Human' ('id', 'name', 'sumDebt', 'currency') VALUES ('5', 'Джон', '-350', 'USD')")
+//        database.execSQL("INSERT OR IGNORE INTO 'Human' ('id', 'name', 'sumDebt', 'currency') VALUES ('6', 'Серега', '200', 'RUB')")
+//        database.execSQL("INSERT OR IGNORE INTO 'Human' ('id', 'name', 'sumDebt', 'currency') VALUES ('7', 'Максим', '17000', 'RUB')")
+//
+//        database.execSQL("INSERT OR IGNORE INTO 'Debt' ('id', 'sum', 'idHuman', 'info', 'date') VALUES ('1', '25000', '7', '', '5 февр. 2024 г.')")
+//        database.execSQL("INSERT OR IGNORE INTO 'Debt' ('id', 'sum', 'idHuman', 'info', 'date') VALUES ('2', '-1000', '7', '', '1 февр. 2024 г.')")
+//        database.execSQL("INSERT OR IGNORE INTO 'Debt' ('id', 'sum', 'idHuman', 'info', 'date') VALUES ('3', '-5000', '7', '', '18 янв. 2024 г.')")
+//        database.execSQL("INSERT OR IGNORE INTO 'Debt' ('id', 'sum', 'idHuman', 'info', 'date') VALUES ('4', '-3000', '7', 'на вечеринку', '11 янв. 2024 г.')")
+//        database.execSQL("INSERT OR IGNORE INTO 'Debt' ('id', 'sum', 'idHuman', 'info', 'date') VALUES ('5', '1000', '7', '', '3 янв. 2024 г.')")
+
+        //ENGLISH
+//        database.execSQL("INSERT OR IGNORE INTO 'Human' ('id', 'name', 'sumDebt', 'currency') VALUES ('1', 'Sophia', '950', 'USD')")
+//        database.execSQL("INSERT OR IGNORE INTO 'Human' ('id', 'name', 'sumDebt', 'currency') VALUES ('2', 'Mother', '-565', 'USD')")
+//        database.execSQL("INSERT OR IGNORE INTO 'Human' ('id', 'name', 'sumDebt', 'currency') VALUES ('3', 'Zack', '-200', 'USD')")
+//        database.execSQL("INSERT OR IGNORE INTO 'Human' ('id', 'name', 'sumDebt', 'currency') VALUES ('4', 'Emma', '-350', 'EUR')")
+//        database.execSQL("INSERT OR IGNORE INTO 'Human' ('id', 'name', 'sumDebt', 'currency') VALUES ('5', 'Michael', '970', 'USD')")
+//        database.execSQL("INSERT OR IGNORE INTO 'Human' ('id', 'name', 'sumDebt', 'currency') VALUES ('6', 'Jacob', '400', 'USD')")
+//        database.execSQL("INSERT OR IGNORE INTO 'Human' ('id', 'name', 'sumDebt', 'currency') VALUES ('7', 'John', '50', 'USD')")
+//
+//        database.execSQL("INSERT OR IGNORE INTO 'Debt' ('id', 'sum', 'idHuman', 'info', 'date') VALUES ('1', '-100', '5', '', '5 Feb 2024 y.')")
+//        database.execSQL("INSERT OR IGNORE INTO 'Debt' ('id', 'sum', 'idHuman', 'info', 'date') VALUES ('2', '200', '5', '', '1 Feb 2024 y.')")
+//        database.execSQL("INSERT OR IGNORE INTO 'Debt' ('id', 'sum', 'idHuman', 'info', 'date') VALUES ('3', '-50', '5', 'Finally took at least 50 dollars', '30 Jan 2024 y.')")
+//        database.execSQL("INSERT OR IGNORE INTO 'Debt' ('id', 'sum', 'idHuman', 'info', 'date') VALUES ('4', '420', '5', '', '22 Jan 2024 y.')")
+//        database.execSQL("INSERT OR IGNORE INTO 'Debt' ('id', 'sum', 'idHuman', 'info', 'date') VALUES ('5', '300', '5', '', '13 Jan 2024 y.')")
+//        database.execSQL("INSERT OR IGNORE INTO 'Debt' ('id', 'sum', 'idHuman', 'info', 'date') VALUES ('6', '200', '5', '', '2 Jan 2024 y.')")
+
+        //FRENCH
+//        database.execSQL("INSERT OR IGNORE INTO 'Human' ('id', 'name', 'sumDebt', 'currency') VALUES ('1', 'Charlotte', '950', 'EUR')")
+//        database.execSQL("INSERT OR IGNORE INTO 'Human' ('id', 'name', 'sumDebt', 'currency') VALUES ('2', 'Charles', '-565', 'EUR')")
+//        database.execSQL("INSERT OR IGNORE INTO 'Human' ('id', 'name', 'sumDebt', 'currency') VALUES ('3', 'Alexandre', '-200', 'EUR')")
+//        database.execSQL("INSERT OR IGNORE INTO 'Human' ('id', 'name', 'sumDebt', 'currency') VALUES ('4', 'Colette', '-350', 'USD')")
+//        database.execSQL("INSERT OR IGNORE INTO 'Human' ('id', 'name', 'sumDebt', 'currency') VALUES ('5', 'Antoine', '970', 'EUR')")
+//        database.execSQL("INSERT OR IGNORE INTO 'Human' ('id', 'name', 'sumDebt', 'currency') VALUES ('6', 'Louis', '400', 'EUR')")
+//        database.execSQL("INSERT OR IGNORE INTO 'Human' ('id', 'name', 'sumDebt', 'currency') VALUES ('7', 'Gabriel', '50', 'EUR')")
+//
+//        database.execSQL("INSERT OR IGNORE INTO 'Debt' ('id', 'sum', 'idHuman', 'info', 'date') VALUES ('1', '-100', '5', '', '5 févr. 2024 a')")
+//        database.execSQL("INSERT OR IGNORE INTO 'Debt' ('id', 'sum', 'idHuman', 'info', 'date') VALUES ('2', '200', '5', '', '1 févr. 2024 a')")
+//        database.execSQL("INSERT OR IGNORE INTO 'Debt' ('id', 'sum', 'idHuman', 'info', 'date') VALUES ('3', '-50', '5', 'Finalement, il a fallu au moins 50 euros', '30 janv. 2024 a')")
+//        database.execSQL("INSERT OR IGNORE INTO 'Debt' ('id', 'sum', 'idHuman', 'info', 'date') VALUES ('4', '420', '5', '', '22 janv. 2024 a')")
+//        database.execSQL("INSERT OR IGNORE INTO 'Debt' ('id', 'sum', 'idHuman', 'info', 'date') VALUES ('5', '300', '5', '', '13 janv. 2024 a')")
+//        database.execSQL("INSERT OR IGNORE INTO 'Debt' ('id', 'sum', 'idHuman', 'info', 'date') VALUES ('6', '200', '5', '', '2 janv. 2024 a')")
+
+        //DEUTSCH
+//        database.execSQL("INSERT OR IGNORE INTO 'Human' ('id', 'name', 'sumDebt', 'currency') VALUES ('1', 'Bertha', '950', 'EUR')")
+//        database.execSQL("INSERT OR IGNORE INTO 'Human' ('id', 'name', 'sumDebt', 'currency') VALUES ('2', 'Noah', '-565', 'EUR')")
+//        database.execSQL("INSERT OR IGNORE INTO 'Human' ('id', 'name', 'sumDebt', 'currency') VALUES ('3', 'Leo', '-200', 'EUR')")
+//        database.execSQL("INSERT OR IGNORE INTO 'Human' ('id', 'name', 'sumDebt', 'currency') VALUES ('4', 'Emma', '-350', 'USD')")
+//        database.execSQL("INSERT OR IGNORE INTO 'Human' ('id', 'name', 'sumDebt', 'currency') VALUES ('5', 'Paul', '970', 'EUR')")
+//        database.execSQL("INSERT OR IGNORE INTO 'Human' ('id', 'name', 'sumDebt', 'currency') VALUES ('6', 'Matteo', '400', 'EUR')")
+//        database.execSQL("INSERT OR IGNORE INTO 'Human' ('id', 'name', 'sumDebt', 'currency') VALUES ('7', 'Elijah', '50', 'EUR')")
+//
+//        database.execSQL("INSERT OR IGNORE INTO 'Debt' ('id', 'sum', 'idHuman', 'info', 'date') VALUES ('1', '-100', '5', '', '5 Feb 2024 j.')")
+//        database.execSQL("INSERT OR IGNORE INTO 'Debt' ('id', 'sum', 'idHuman', 'info', 'date') VALUES ('2', '200', '5', '', '1 Feb 2024 j.')")
+//        database.execSQL("INSERT OR IGNORE INTO 'Debt' ('id', 'sum', 'idHuman', 'info', 'date') VALUES ('3', '-50', '5', 'Hat schließlich mindestens 50 Euro gekostet', '30 Jan 2024 j.')")
+//        database.execSQL("INSERT OR IGNORE INTO 'Debt' ('id', 'sum', 'idHuman', 'info', 'date') VALUES ('4', '420', '5', '', '22 Jan 2024 j.')")
+//        database.execSQL("INSERT OR IGNORE INTO 'Debt' ('id', 'sum', 'idHuman', 'info', 'date') VALUES ('5', '300', '5', '', '13 Jan 2024 j.')")
+//        database.execSQL("INSERT OR IGNORE INTO 'Debt' ('id', 'sum', 'idHuman', 'info', 'date') VALUES ('6', '200', '5', '', '2 Jan 2024 j.')")
     }
 
     val db = Room.databaseBuilder(context, AppDataBase::class.java, DATA_BASE_NAME)

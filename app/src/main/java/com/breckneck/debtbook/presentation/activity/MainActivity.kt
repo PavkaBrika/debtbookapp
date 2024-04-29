@@ -48,6 +48,7 @@ import com.yandex.mobile.ads.interstitial.InterstitialAdEventListener
 import com.yandex.mobile.ads.interstitial.InterstitialAdLoadListener
 import com.yandex.mobile.ads.interstitial.InterstitialAdLoader
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.util.Locale
 import kotlin.math.roundToInt
 
 class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener,
@@ -69,6 +70,14 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+//        val config = resources.configuration
+//        val lang = "fr" // your language code
+//        val locale = Locale(lang)
+//        Locale.setDefault(locale)
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
+//            config.setLocale(locale)
+//        else
+//            config.locale = locale
         setContentView(R.layout.activity_main)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
