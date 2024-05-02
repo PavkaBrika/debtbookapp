@@ -171,8 +171,8 @@ class SynchronizationViewModel(
         val disposable = Completable.create {
             replaceAllHumans.execute(appDataLists.humanList)
             replaceAllDebts.execute(appDataLists.debtList)
-            replaceAllFinances.execute(appDataLists.financeList)
             replaceAllFinanceCategories.execute(appDataLists.financeCategoryList)
+            replaceAllFinances.execute(appDataLists.financeList)
             it.onComplete()
         }
             .subscribeOn(Schedulers.io())

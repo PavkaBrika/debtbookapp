@@ -274,6 +274,7 @@ class FinanceViewModel(
             .subscribe({
                 _categoriesWithFinancesList.value = it.first!!
                 _overallSum.value = it.second!!
+                Log.e(TAG, "Categories with finances load success")
             }, {
                 Log.e(TAG, it.message.toString())
             })

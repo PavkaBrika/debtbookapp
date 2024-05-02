@@ -229,6 +229,7 @@ class SynchronizationFragment : Fragment() {
 
     private fun requestGoogleSignIn() {
         val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken("656437719397-2o429amjok2vdf3d59nliukvv6aeku0p.apps.googleusercontent.com")
             .requestEmail()
             .requestProfile()
             .requestScopes(Scope(DriveScopes.DRIVE_APPDATA))
@@ -433,7 +434,7 @@ class SynchronizationFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
-        setFragmentResult("settingsKey", bundleOf("isAuthorized" to vm.isAuthorized.value, "isListModified" to vm.isListModified.value))
+        setFragmentResult("settingsFragmentKey", bundleOf("isAuthorized" to vm.isAuthorized.value, "isListModified" to vm.isListModified.value))
     }
 
 }
