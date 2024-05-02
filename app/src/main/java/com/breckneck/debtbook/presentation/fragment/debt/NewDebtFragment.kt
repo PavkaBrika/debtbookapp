@@ -112,6 +112,7 @@ class NewDebtFragment: Fragment() {
         val infoArgs = arguments?.getString("info")
         val nameArgs = arguments?.getString("name")
 
+        val humanNameCardView: CardView = view.findViewById(R.id.humanNameCardView)
         val humanNameEditText: EditText = view.findViewById(R.id.humanNameEditText)
         val contactsLayout: RelativeLayout = view.findViewById(R.id.contactsLayout)
         val infoEditText: EditText = view.findViewById(R.id.debtInfoEditText)
@@ -216,9 +217,7 @@ class NewDebtFragment: Fragment() {
         }
 
         if (idHuman != -1) {
-            humanNameEditText.visibility = View.GONE
-            contactsLayout.visibility = View.GONE
-            humanNameEditText.setText(nameArgs)
+            humanNameCardView.visibility = View.GONE
             currencyTextView.isClickable = false
             currencyTextView.isFocusable = false
             currencyTextView.isEnabled = false
