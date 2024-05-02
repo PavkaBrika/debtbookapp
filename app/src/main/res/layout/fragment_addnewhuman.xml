@@ -97,143 +97,175 @@
 
                     </androidx.cardview.widget.CardView>
 
-                    <LinearLayout
+                    <com.google.android.material.card.MaterialCardView
+                        style="@style/CardViewStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="8dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/humanNameTextInput"
+                                style="?attr/textInputOutlinedStyle"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_marginEnd="8dp"
+                                android:layout_weight="1"
+                                android:layout_marginStart="8dp"
+                                android:hint="@string/name"
+                                android:paddingTop="16dp"
+                                android:theme="@style/TextInputLayoutTheme"
+                                app:endIconMode="clear_text"
+                                app:errorEnabled="true">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/humanNameEditText"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:lines="1"
+                                    android:maxLength="20" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <TextView
+                                style="@style/addNewHumanLines"
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent" />
+
+                            <RelativeLayout
+                                android:id="@+id/contactsLayout"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="3"
+                                android:foreground="?android:attr/selectableItemBackground">
+
+                                <ImageView
+                                    android:id="@+id/contactsImageView"
+                                    style="@style/imageViewButton"
+                                    android:layout_width="40dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_centerInParent="true"
+                                    android:layout_marginStart="4dp"
+                                    android:src="@drawable/outline_contacts_24" />
+
+                            </RelativeLayout>
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        style="@style/CardViewStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginHorizontal="8dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/debtSumTextInput"
+                                style="?attr/textInputOutlinedStyle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="16dp"
+                                android:layout_marginEnd="8dp"
+                                android:layout_weight="1"
+                                android:layout_marginStart="8dp"
+                                android:hint="@string/sum"
+                                android:theme="@style/TextInputLayoutTheme"
+                                app:endIconMode="clear_text"
+                                app:errorEnabled="true">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/debtSumEditText"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:inputType="numberDecimal"
+                                    android:maxLength="10"
+                                    android:maxLines="1" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <TextView
+                                style="@style/addNewHumanLines"
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent" />
+
+                            <TextView
+                                android:id="@+id/debtCurrencyTextView"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center_vertical"
+                                android:layout_weight="3"
+                                android:background="?android:attr/selectableItemBackground"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:gravity="center"
+                                android:text="CUR"
+                                android:textSize="20sp"
+                                android:visibility="visible" />
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/debtDateCardView"
+                        style="@style/CardViewStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="8dp"
-                        android:orientation="horizontal">
+                        android:layout_marginTop="8dp"
+                        android:clickable="true"
+                        android:focusable="true">
 
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/humanNameTextInput"
-                            style="?attr/textInputOutlinedStyle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_marginEnd="4dp"
-                            android:layout_weight="20"
-                            android:hint="@string/name"
-                            android:theme="@style/TextInputLayoutTheme"
-                            app:endIconMode="clear_text"
-                            app:errorEnabled="true">
+                        <TextView
+                            android:id="@+id/debtDateTextView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingHorizontal="4dp"
+                            android:paddingVertical="16dp"
+                            android:text="date"
+                            android:textAlignment="center"
+                            android:textSize="26sp" />
 
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/humanNameEditText"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:lines="1"
-                                android:maxLength="20" />
+                    </com.google.android.material.card.MaterialCardView>
 
-                        </com.google.android.material.textfield.TextInputLayout>
-
-                        <ImageView
-                            android:id="@+id/contactsImageView"
-                            style="@style/imageViewButton"
-                            android:layout_width="40dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginStart="4dp"
-                            android:layout_marginBottom="20dp"
-                            android:layout_weight="1"
-                            android:foreground="?android:attr/selectableItemBackground"
-                            android:src="@drawable/outline_contacts_24" />
-
-                    </LinearLayout>
-
-                    <TextView
-                        style="@style/addNewHumanLines"
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp" />
-
-                    <LinearLayout
+                    <com.google.android.material.card.MaterialCardView
+                        style="@style/CardViewStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:orientation="horizontal">
+                        android:layout_marginHorizontal="8dp"
+                        android:layout_marginVertical="8dp">
 
                         <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/debtSumTextInput"
+                            android:id="@+id/debtInfoTextInput"
                             style="?attr/textInputOutlinedStyle"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="16dp"
-                            android:layout_marginEnd="8dp"
-                            android:layout_weight="1"
-                            android:hint="@string/sum"
+                            android:paddingHorizontal="8dp"
+                            android:paddingVertical="8dp"
+                            android:hint="@string/comment"
                             android:theme="@style/TextInputLayoutTheme"
                             app:endIconMode="clear_text"
-                            app:errorEnabled="true">
+                            app:errorEnabled="false">
 
                             <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/debtSumEditText"
+                                android:id="@+id/debtInfoEditText"
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:inputType="numberDecimal"
-                                android:maxLength="10"
-                                android:maxLines="1" />
+                                android:layout_height="wrap_content" />
 
                         </com.google.android.material.textfield.TextInputLayout>
 
-                        <TextView
-                            style="@style/addNewHumanLines"
-                            android:layout_width="1dp"
-                            android:layout_height="match_parent" />
-
-                        <TextView
-                            android:id="@+id/debtCurrencyTextView"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_gravity="center_vertical"
-                            android:layout_weight="2"
-                            android:background="?android:attr/selectableItemBackground"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:gravity="center"
-                            android:text="CUR"
-                            android:textSize="20sp"
-                            android:visibility="visible" />
-
-                    </LinearLayout>
-
-                    <TextView
-                        style="@style/addNewHumanLines"
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp" />
-
-                    <TextView
-                        android:id="@+id/debtDateTextView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:foreground="?android:attr/selectableItemBackground"
-                        android:paddingHorizontal="4dp"
-                        android:paddingVertical="16dp"
-                        android:text="date"
-                        android:textAlignment="center"
-                        android:textSize="26sp" />
-
-                    <TextView
-                        style="@style/addNewHumanLines"
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp" />
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/debtInfoTextInput"
-                        style="?attr/textInputOutlinedStyle"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_marginHorizontal="8dp"
-                        android:layout_marginVertical="16dp"
-                        android:layout_weight="1"
-                        android:hint="@string/comment"
-                        android:theme="@style/TextInputLayoutTheme"
-                        app:endIconMode="clear_text"
-                        app:errorEnabled="false">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/debtInfoEditText"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
-
-                    </com.google.android.material.textfield.TextInputLayout>
+                    </com.google.android.material.card.MaterialCardView>
 
                 </LinearLayout>
 

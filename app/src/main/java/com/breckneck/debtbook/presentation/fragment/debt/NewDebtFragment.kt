@@ -16,6 +16,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.widget.addTextChangedListener
@@ -112,9 +113,10 @@ class NewDebtFragment: Fragment() {
         val nameArgs = arguments?.getString("name")
 
         val humanNameEditText: EditText = view.findViewById(R.id.humanNameEditText)
-        val contactsImageView: ImageView = view.findViewById(R.id.contactsImageView)
+        val contactsLayout: RelativeLayout = view.findViewById(R.id.contactsLayout)
         val infoEditText: EditText = view.findViewById(R.id.debtInfoEditText)
         val debtDateTextView: TextView = view.findViewById(R.id.debtDateTextView)
+        val debtDateCardView: CardView = view.findViewById(R.id.debtDateCardView)
         val debtSumEditText : EditText = view.findViewById(R.id.debtSumEditText)
         val currencyTextView: TextView = view.findViewById(R.id.debtCurrencyTextView)
         val collapsed: CollapsingToolbarLayout = view.findViewById(R.id.collapsNewDebt)
@@ -195,7 +197,7 @@ class NewDebtFragment: Fragment() {
         val dateSetListener = DatePickerDialog.OnDateSetListener{view, year, month, day ->
             vm.setCurrentDate(year = year, month = month, day = day)
         }
-        debtDateTextView.setOnClickListener{
+        debtDateCardView.setOnClickListener{
             val calendar = Calendar.getInstance()
             DatePickerDialog(view.context, dateSetListener,
                 calendar.get(Calendar.YEAR),
@@ -215,7 +217,7 @@ class NewDebtFragment: Fragment() {
 
         if (idHuman != -1) {
             humanNameEditText.visibility = View.GONE
-            contactsImageView.visibility = View.GONE
+            contactsLayout.visibility = View.GONE
             humanNameEditText.setText(nameArgs)
             currencyTextView.isClickable = false
             currencyTextView.isFocusable = false
@@ -429,7 +431,7 @@ class NewDebtFragment: Fragment() {
             }
         }
 
-        contactsImageView.setOnClickListener {
+        contactsLayout.setOnClickListener {
             if (ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
                 showContacts()
             }
