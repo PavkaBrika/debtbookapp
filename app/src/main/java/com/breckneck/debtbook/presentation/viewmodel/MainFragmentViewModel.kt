@@ -12,6 +12,7 @@ import com.breckneck.deptbook.domain.usecase.Settings.GetHumanOrder
 import com.breckneck.deptbook.domain.usecase.Settings.GetSecondMainCurrency
 import com.breckneck.deptbook.domain.usecase.Settings.SetHumanOrder
 import com.breckneck.deptbook.domain.util.HumanOrderAttribute
+import com.breckneck.deptbook.domain.util.ListState
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
@@ -57,6 +58,9 @@ class MainFragmentViewModel(
     private val _changedHumanPosition = MutableLiveData<Int>()
     val changedHumanPosition: LiveData<Int>
         get() = _changedHumanPosition
+    private val _debtListState = MutableLiveData<ListState>(ListState.LOADING)
+    val debtListState: LiveData<ListState>
+        get() = _debtListState
     private val sortHumans by lazy { SortHumans() }
     private val disposeBag = CompositeDisposable()
 
@@ -87,8 +91,15 @@ class MainFragmentViewModel(
             }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe {
+                    _debtListState.value = ListState.LOADING
+                }
                 .subscribe({
                     _resultHumanList.value = it
+                    if (_resultHumanList.value!!.isEmpty())
+                        _debtListState.value = ListState.EMPTY
+                    else
+                        _debtListState.value = ListState.FILLED
                 }, {
                     Log.e(TAG, it.message.toString())
                 })
@@ -116,6 +127,9 @@ class MainFragmentViewModel(
         }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe {
+                _debtListState.value = ListState.LOADING
+            }
             .subscribe({
                 _humanList.value = it
                 Log.e(TAG, "humans loaded in VM")

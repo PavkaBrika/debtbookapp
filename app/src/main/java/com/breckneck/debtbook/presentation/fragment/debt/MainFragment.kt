@@ -1,14 +1,20 @@
 package com.breckneck.debtbook.presentation.fragment.debt
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.content.Context
 import android.content.pm.ActivityInfo
 import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
+import android.transition.Fade
+import android.transition.TransitionManager
 import android.util.Log
 import android.view.*
+import android.view.animation.Animation.AnimationListener
 import android.widget.*
 import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
@@ -119,6 +125,10 @@ class MainFragment : Fragment() {
         val noDebtsTextView: TextView = view.findViewById(R.id.noDebtTextView)
         val mainRecyclerViewSecondHintTextView: TextView = view.findViewById(R.id.mainRecyclerViewSecondHintTextView)
 
+        val emptyDebtsLayout: ConstraintLayout = view.findViewById(R.id.emptyDebtsLayout)
+        val debtsLayout: ConstraintLayout = view.findViewById(R.id.debtsLayout)
+        val debtProgressBar: ProgressBar = view.findViewById(R.id.debtProgressBar)
+
         val addButton: FloatingActionButton = view.findViewById(R.id.addHumanButton)
         addButton.setOnClickListener {
             buttonClickListener?.onAddButtonClick()
@@ -135,18 +145,41 @@ class MainFragment : Fragment() {
 
         vm.resultHumanList.observe(viewLifecycleOwner) {
             if (it.isNotEmpty()) {
-                mainRecyclerViewSecondHintTextView.visibility = View.VISIBLE
-                noDebtsTextView.visibility = View.INVISIBLE
-            } else {
-                mainRecyclerViewSecondHintTextView.visibility = View.INVISIBLE
-                noDebtsTextView.visibility = View.VISIBLE
+                humanAdapter.updateHumansList(it)
+                Log.e(TAG, "adapter link success")
             }
-            humanAdapter.updateHumansList(it)
-            Log.e(TAG, "adapter link success")
         }
 
         vm.humanOrder.observe(viewLifecycleOwner) {
             vm.sortHumans()
+        }
+
+        vm.debtListState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                ListState.LOADING -> {
+                    debtsLayout.visibility = View.GONE
+                    emptyDebtsLayout.visibility = View.GONE
+                    debtProgressBar.visibility = View.VISIBLE
+                }
+                ListState.FILLED -> {
+                    val transition = Fade()
+                    transition.duration = 200
+                    transition.addTarget(debtsLayout)
+                    TransitionManager.beginDelayedTransition(view as ViewGroup?, transition)
+                    debtsLayout.visibility = View.VISIBLE
+                    emptyDebtsLayout.visibility = View.GONE
+                    debtProgressBar.visibility = View.GONE
+                }
+                ListState.EMPTY -> {
+                    val transition = Fade()
+                    transition.duration = 200
+                    transition.addTarget(emptyDebtsLayout)
+                    TransitionManager.beginDelayedTransition(view as ViewGroup?, transition)
+                    emptyDebtsLayout.visibility = View.VISIBLE
+                    debtsLayout.visibility = View.GONE
+                    debtProgressBar.visibility = View.GONE
+                }
+            }
         }
 
         val overallPositiveSumTextView: TextView =
