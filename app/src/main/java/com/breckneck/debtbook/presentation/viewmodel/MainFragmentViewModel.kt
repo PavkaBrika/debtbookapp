@@ -49,6 +49,9 @@ class MainFragmentViewModel(
     private val _humanOrder = MutableLiveData<Pair<HumanOrderAttribute, Boolean>>()
     val humanOrder: LiveData<Pair<HumanOrderAttribute, Boolean>>
         get() = _humanOrder
+    private val _isHumanSorted = MutableLiveData<Boolean>(false)
+    val isHumanSorted: LiveData<Boolean>
+        get() = _isHumanSorted
     private val _isChangeDebtNameDialogOpened = MutableLiveData<Boolean>()
     val isChangeDebtNameDialogOpened: LiveData<Boolean>
         get() = _isChangeDebtNameDialogOpened
@@ -81,7 +84,7 @@ class MainFragmentViewModel(
     }
 
     fun sortHumans() {
-        if (_humanList.value != null) {
+        if ((_humanList.value != null) && (_isHumanSorted.value == false)) {
             val result = Single.create {
                 when (humanFilter.value!!) {
                     Filter.All -> it.onSuccess(sortHumans.execute(_humanList.value!!, _humanOrder.value!!))
@@ -96,6 +99,7 @@ class MainFragmentViewModel(
                 }
                 .subscribe({
                     _resultHumanList.value = it
+                    _isHumanSorted.value = true
                     if (_resultHumanList.value!!.isEmpty())
                         _debtListState.value = ListState.EMPTY
                     else
@@ -109,8 +113,15 @@ class MainFragmentViewModel(
     }
 
     fun onSetHumanFilter(filter: Filter) {
+        _isHumanSorted.value = false
         _humanFilter.value = filter
         Log.e(TAG, "Human filter set ${filter}")
+    }
+
+    fun onSetHumanOrder(order: Pair<HumanOrderAttribute, Boolean>) {
+        _isHumanSorted.value = false
+        _humanOrder.value = order
+        Log.e(TAG, "Human order set ${order.first}, ${order.second}")
     }
 
     private fun getHumanOrder() {
@@ -180,11 +191,6 @@ class MainFragmentViewModel(
 
     fun onHumanSortDialogClose() {
         _isSortDialogOpened.value = false
-    }
-
-    fun onSetHumanOrder(order: Pair<HumanOrderAttribute, Boolean>) {
-        _humanOrder.value = order
-        Log.e(TAG, "Human order set ${order.first}, ${order.second}")
     }
 
     fun onChangeDebtNameDialogOpen(humanDomain: HumanDomain, position: Int) {
