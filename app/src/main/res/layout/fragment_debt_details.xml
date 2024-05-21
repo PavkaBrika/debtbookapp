@@ -126,55 +126,103 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/debtsRecyclerView"
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/debtsLayout"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:paddingVertical="4dp"
-                        android:scrollbars="vertical"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                        android:visibility="gone"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/debtsRecyclerView"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:paddingVertical="4dp"
+                            android:scrollbars="vertical"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
 
 
-                    <TextView
-                        android:id="@+id/debtRecyclerViewHintTextView"
+                        <TextView
+                            android:id="@+id/debtRecyclerViewHintTextView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical|center_horizontal"
+                            android:layout_marginHorizontal="16dp"
+                            android:layout_marginVertical="32dp"
+                            android:gravity="center"
+                            android:text="@string/details_recycler_view_hint"
+                            android:textColor="@color/darkgray"
+                            android:textSize="16sp"
+                            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/debtsRecyclerView" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/emptyDebtsLayout"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical|center_horizontal"
-                        android:layout_marginHorizontal="16dp"
-                        android:layout_marginVertical="32dp"
-                        android:gravity="center"
-                        android:text="@string/details_recycler_view_hint"
-                        android:textColor="@color/darkgray"
-                        android:textSize="16sp"
-                        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                        android:layout_height="match_parent"
+                        android:visibility="gone"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/debtsRecyclerView" />
+                        app:layout_constraintTop_toTopOf="parent" >
+
+                        <Space
+                            android:id="@+id/space3"
+                            android:layout_width="match_parent"
+                            android:layout_height="100dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageView
+                            android:id="@+id/emptyDebtsImageView"
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
+                            android:layout_gravity="center"
+                            android:layout_margin="24dp"
+                            android:elevation="11dp"
+                            android:src="@drawable/empty_list"
+                            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/space3" />
+
+                        <TextView
+                            android:id="@+id/noDebtTextView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical|center_horizontal"
+                            android:layout_marginTop="24dp"
+                            android:elevation="11dp"
+                            android:gravity="center"
+                            android:text="@string/nodebts"
+                            android:textColor="@color/darkgray"
+                            android:textSize="25sp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/emptyDebtsImageView" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.core.widget.NestedScrollView>
 
         </androidx.cardview.widget.CardView>
-
-        <TextView
-            android:id="@+id/noDebtTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|center_horizontal"
-            android:gravity="center"
-            android:text="@string/nodebts"
-            android:textColor="@color/darkgray"
-            android:textSize="25sp"
-            android:visibility="gone"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/addDebtButton"
@@ -190,6 +238,16 @@
             app:layout_anchor="@id/nestedScroll"
             app:layout_anchorGravity="bottom|center"
             app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior" />
+
+        <ProgressBar
+            android:id="@+id/debtProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:indeterminateTint="@color/green"
+            android:indeterminateTintMode="src_in"
+            android:visibility="visible"
+            android:elevation="11dp"/>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

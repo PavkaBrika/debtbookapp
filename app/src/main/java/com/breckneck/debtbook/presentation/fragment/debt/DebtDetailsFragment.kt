@@ -8,6 +8,8 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.transition.Fade
+import android.transition.TransitionManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -15,11 +17,13 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.os.bundleOf
@@ -35,6 +39,7 @@ import com.breckneck.deptbook.domain.usecase.Debt.*
 import com.breckneck.deptbook.domain.usecase.Settings.GetAddSumInShareText
 import com.breckneck.deptbook.domain.util.DebtOrderAttribute
 import com.breckneck.deptbook.domain.util.Filter
+import com.breckneck.deptbook.domain.util.ListState
 import com.breckneck.deptbook.domain.util.ROTATE_DEGREE_DEBT_IMAGE_VIEW_BY_DECREASE
 import com.breckneck.deptbook.domain.util.ROTATE_DEGREE_DEBT_IMAGE_VIEW_BY_INCREASE
 import com.google.android.material.appbar.CollapsingToolbarLayout
@@ -94,16 +99,12 @@ class DebtDetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         postponeEnterTransition()
 
         val recyclerView: RecyclerView = view.findViewById(R.id.debtsRecyclerView)
         recyclerView.doOnPreDraw {
             startPostponedEnterTransition()
         }
-
-        val debtRecyclerViewHintTextView: TextView =
-            view.findViewById(R.id.debtRecyclerViewHintTextView)
 
         val humanId = arguments?.getInt("idHuman", 0)
         val newHuman = arguments?.getBoolean("newHuman", false)
@@ -150,17 +151,41 @@ class DebtDetailsFragment : Fragment() {
             if ((isDebtSettingsDialogShown.value != null) && (isDebtSettingsDialogShown.value == true))
                 showDebtSettings(vm.settingDebt.value!!, currency = currency, name = humanName!!)
 
-            val noDebtTextView: TextView = view.findViewById(R.id.noDebtTextView)
+            val debtsLayout: ConstraintLayout = view.findViewById(R.id.debtsLayout)
+            val emptyDebtsLayout: ConstraintLayout = view.findViewById(R.id.emptyDebtsLayout)
+            val debtProgressBar: ProgressBar = view.findViewById(R.id.debtProgressBar)
+
             resultDebtList.observe(viewLifecycleOwner) {
                 if (it.isNotEmpty()) {
-                    recyclerView.visibility = View.VISIBLE
-                    debtRecyclerViewHintTextView.visibility = View.VISIBLE
-                    noDebtTextView.visibility = View.GONE
                     debtAdapter.updateDebtList(debtList = it)
-                } else {
-                    noDebtTextView.visibility = View.VISIBLE
-                    recyclerView.visibility = View.GONE
-                    debtRecyclerViewHintTextView.visibility = View.INVISIBLE
+                }
+            }
+
+            debtListState.observe(viewLifecycleOwner) { state ->
+                when (state) {
+                    ListState.LOADING -> {
+                        debtsLayout.visibility = View.GONE
+                        emptyDebtsLayout.visibility = View.GONE
+                        debtProgressBar.visibility = View.VISIBLE
+                    }
+                    ListState.FILLED -> {
+                        val transition = Fade()
+                        transition.duration = 200
+                        transition.addTarget(debtsLayout)
+                        TransitionManager.beginDelayedTransition(view as ViewGroup?, transition)
+                        debtsLayout.visibility = View.VISIBLE
+                        emptyDebtsLayout.visibility = View.GONE
+                        debtProgressBar.visibility = View.GONE
+                    }
+                    ListState.EMPTY -> {
+                        val transition = Fade()
+                        transition.duration = 200
+                        transition.addTarget(emptyDebtsLayout)
+                        TransitionManager.beginDelayedTransition(view as ViewGroup?, transition)
+                        emptyDebtsLayout.visibility = View.VISIBLE
+                        debtsLayout.visibility = View.GONE
+                        debtProgressBar.visibility = View.GONE
+                    }
                 }
             }
 

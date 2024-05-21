@@ -1,7 +1,5 @@
 package com.breckneck.debtbook.presentation.fragment.debt
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.content.Context
 import android.content.pm.ActivityInfo
 import android.graphics.Typeface
@@ -11,12 +9,11 @@ import android.transition.Fade
 import android.transition.TransitionManager
 import android.util.Log
 import android.view.*
-import android.view.animation.Animation.AnimationListener
 import android.widget.*
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.core.view.doOnPreDraw
+import androidx.core.view.doOnAttach
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.recyclerview.widget.RecyclerView
@@ -85,7 +82,7 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        postponeEnterTransition()
+//        postponeEnterTransition()
 
         if (vm.isSortDialogOpened.value == true)
             showHumanSortDialog()
@@ -102,8 +99,10 @@ class MainFragment : Fragment() {
         }
 
         val recyclerView: RecyclerView = view.findViewById(R.id.categoryRecyclerView)
-        recyclerView.doOnPreDraw {
+        recyclerView.doOnAttach {
+            //TODO FIX LAG AFTER SWITCHING BETWEEN FRAGMENTS
             startPostponedEnterTransition()
+//            vm.onSetListState(ListState.LOADING)
         }
         val humanClickListener = object : HumanAdapter.OnHumanClickListener {
             override fun onHumanClick(humanDomain: HumanDomain, position: Int) {
@@ -122,12 +121,9 @@ class MainFragment : Fragment() {
         humanAdapter = HumanAdapter(listOf(), humanClickListener)
         recyclerView.adapter = humanAdapter
 
-        val noDebtsTextView: TextView = view.findViewById(R.id.noDebtTextView)
-        val mainRecyclerViewSecondHintTextView: TextView = view.findViewById(R.id.mainRecyclerViewSecondHintTextView)
-
-        val emptyDebtsLayout: ConstraintLayout = view.findViewById(R.id.emptyDebtsLayout)
-        val debtsLayout: ConstraintLayout = view.findViewById(R.id.debtsLayout)
-        val debtProgressBar: ProgressBar = view.findViewById(R.id.debtProgressBar)
+        val emptyHumansLayout: ConstraintLayout = view.findViewById(R.id.emptyHumansLayout)
+        val humansLayout: ConstraintLayout = view.findViewById(R.id.humansLayout)
+        val humanProgressBar: ProgressBar = view.findViewById(R.id.humanProgressBar)
 
         val addButton: FloatingActionButton = view.findViewById(R.id.addHumanButton)
         addButton.setOnClickListener {
@@ -154,30 +150,30 @@ class MainFragment : Fragment() {
             vm.sortHumans()
         }
 
-        vm.debtListState.observe(viewLifecycleOwner) { state ->
+        vm.humanListState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 ListState.LOADING -> {
-                    debtsLayout.visibility = View.GONE
-                    emptyDebtsLayout.visibility = View.GONE
-                    debtProgressBar.visibility = View.VISIBLE
+                    humansLayout.visibility = View.GONE
+                    emptyHumansLayout.visibility = View.GONE
+                    humanProgressBar.visibility = View.VISIBLE
                 }
                 ListState.FILLED -> {
                     val transition = Fade()
                     transition.duration = 200
-                    transition.addTarget(debtsLayout)
+                    transition.addTarget(humansLayout)
                     TransitionManager.beginDelayedTransition(view as ViewGroup?, transition)
-                    debtsLayout.visibility = View.VISIBLE
-                    emptyDebtsLayout.visibility = View.GONE
-                    debtProgressBar.visibility = View.GONE
+                    humansLayout.visibility = View.VISIBLE
+                    emptyHumansLayout.visibility = View.GONE
+                    humanProgressBar.visibility = View.GONE
                 }
                 ListState.EMPTY -> {
                     val transition = Fade()
                     transition.duration = 200
-                    transition.addTarget(emptyDebtsLayout)
+                    transition.addTarget(emptyHumansLayout)
                     TransitionManager.beginDelayedTransition(view as ViewGroup?, transition)
-                    emptyDebtsLayout.visibility = View.VISIBLE
-                    debtsLayout.visibility = View.GONE
-                    debtProgressBar.visibility = View.GONE
+                    emptyHumansLayout.visibility = View.VISIBLE
+                    humansLayout.visibility = View.GONE
+                    humanProgressBar.visibility = View.GONE
                 }
             }
         }

@@ -18,6 +18,7 @@ import com.breckneck.deptbook.domain.usecase.Settings.GetDebtOrder
 import com.breckneck.deptbook.domain.usecase.Settings.SetDebtOrder
 import com.breckneck.deptbook.domain.util.DebtOrderAttribute
 import com.breckneck.deptbook.domain.util.Filter
+import com.breckneck.deptbook.domain.util.ListState
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
@@ -70,6 +71,10 @@ class DebtDetailsViewModel(
     private val _debtFilter = MutableLiveData<Filter>(Filter.All)
     val debtFilter: LiveData<Filter>
         get() = _debtFilter
+    private val _debtListState = MutableLiveData<ListState>(ListState.LOADING)
+    val debtListState: LiveData<ListState>
+        get() = _debtListState
+    private val _isDebtsSorted = MutableLiveData<Boolean>(false)
     private val disposeBag = CompositeDisposable()
     private val sortDebtsUseCase by lazy { SortDebts() }
 
@@ -98,6 +103,9 @@ class DebtDetailsViewModel(
         }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe {
+                _debtListState.value = ListState.LOADING
+            }
             .subscribe({
                 _debtList.value = it
                 sortDebts()
@@ -109,7 +117,7 @@ class DebtDetailsViewModel(
     }
 
     fun sortDebts() {
-        if (_debtList.value != null) {
+        if ((_debtList.value != null) && (_isDebtsSorted.value == false)) {
             val result = Single.create {
                 when (debtFilter.value!!) {
                     Filter.All -> it.onSuccess(sortDebtsUseCase.execute(debtList = _debtList.value!!, order = debtOrder.value!!))
@@ -119,8 +127,16 @@ class DebtDetailsViewModel(
             }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe {
+                    _debtListState.value = ListState.LOADING
+                }
                 .subscribe({
                     _resultDebtList.value = it
+                    _isDebtsSorted.value = true
+                    if (_resultDebtList.value!!.isEmpty())
+                        _debtListState.value = ListState.EMPTY
+                    else
+                        _debtListState.value = ListState.FILLED
                 }, {
                     Log.e(TAG, it.message.toString())
                 })
@@ -236,10 +252,12 @@ class DebtDetailsViewModel(
     }
 
     fun onSetDebtOrder(order: Pair<DebtOrderAttribute, Boolean>) {
+        _isDebtsSorted.value = false
         _debtOrder.value = order
     }
 
     fun onSetDebtFilter(filter: Filter) {
+        _isDebtsSorted.value = false
         _debtFilter.value = filter
     }
 }

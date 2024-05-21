@@ -50,8 +50,6 @@ class MainFragmentViewModel(
     val humanOrder: LiveData<Pair<HumanOrderAttribute, Boolean>>
         get() = _humanOrder
     private val _isHumanSorted = MutableLiveData<Boolean>(false)
-    val isHumanSorted: LiveData<Boolean>
-        get() = _isHumanSorted
     private val _isChangeDebtNameDialogOpened = MutableLiveData<Boolean>()
     val isChangeDebtNameDialogOpened: LiveData<Boolean>
         get() = _isChangeDebtNameDialogOpened
@@ -61,9 +59,9 @@ class MainFragmentViewModel(
     private val _changedHumanPosition = MutableLiveData<Int>()
     val changedHumanPosition: LiveData<Int>
         get() = _changedHumanPosition
-    private val _debtListState = MutableLiveData<ListState>(ListState.LOADING)
-    val debtListState: LiveData<ListState>
-        get() = _debtListState
+    private val _humanListState = MutableLiveData<ListState>(ListState.LOADING)
+    val humanListState: LiveData<ListState>
+        get() = _humanListState
     private val sortHumans by lazy { SortHumans() }
     private val disposeBag = CompositeDisposable()
 
@@ -95,15 +93,15 @@ class MainFragmentViewModel(
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe {
-                    _debtListState.value = ListState.LOADING
+                    _humanListState.value = ListState.LOADING
                 }
                 .subscribe({
                     _resultHumanList.value = it
                     _isHumanSorted.value = true
                     if (_resultHumanList.value!!.isEmpty())
-                        _debtListState.value = ListState.EMPTY
+                        _humanListState.value = ListState.EMPTY
                     else
-                        _debtListState.value = ListState.FILLED
+                        _humanListState.value = ListState.FILLED
                 }, {
                     Log.e(TAG, it.message.toString())
                 })
@@ -124,6 +122,10 @@ class MainFragmentViewModel(
         Log.e(TAG, "Human order set ${order.first}, ${order.second}")
     }
 
+//    fun onSetListState(state: ListState) {
+//        _debtListState.value = state
+//    }
+
     private fun getHumanOrder() {
         _humanOrder.value = getHumanOrder.execute()
     }
@@ -139,7 +141,7 @@ class MainFragmentViewModel(
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe {
-                _debtListState.value = ListState.LOADING
+                _humanListState.value = ListState.LOADING
             }
             .subscribe({
                 _humanList.value = it

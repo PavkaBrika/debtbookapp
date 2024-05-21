@@ -108,7 +108,7 @@
                     android:layout_height="match_parent">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/debtsLayout"
+                        android:id="@+id/humansLayout"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:visibility="gone"
@@ -156,7 +156,7 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/emptyDebtsLayout"
+                        android:id="@+id/emptyHumansLayout"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:visibility="gone"
@@ -225,7 +225,7 @@
             app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior" />
 
         <ProgressBar
-            android:id="@+id/debtProgressBar"
+            android:id="@+id/humanProgressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|center_horizontal"
