@@ -14,6 +14,7 @@ import com.breckneck.deptbook.domain.usecase.Settings.GetFinanceCurrency
 import com.breckneck.deptbook.domain.usecase.Settings.SetFinanceCurrency
 import com.breckneck.deptbook.domain.util.FinanceCategoryState
 import com.breckneck.deptbook.domain.util.FinanceInterval
+import com.breckneck.deptbook.domain.util.ListState
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -22,8 +23,6 @@ import java.util.Calendar
 import kotlin.math.roundToInt
 
 class FinanceViewModel(
-    private val getAllFinances: GetAllFinances,
-    private val getAllFinanceCategories: GetAllFinanceCategories,
     private val getFinanceCurrency: GetFinanceCurrency,
     private val setFinanceCurrency: SetFinanceCurrency,
     private val getAllCategoriesWithFinances: GetAllCategoriesWithFinances
@@ -67,6 +66,9 @@ class FinanceViewModel(
     private val _overallSum = MutableLiveData<Double>(0.0)
     val overallSum: LiveData<Double>
         get() = _overallSum
+    private val _financeListState = MutableLiveData<ListState>(ListState.LOADING)
+    val financeListState: LiveData<ListState>
+        get() = _financeListState
 
     private val disposeBag = CompositeDisposable()
 
@@ -271,9 +273,16 @@ class FinanceViewModel(
         }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe {
+                _financeListState.value = ListState.LOADING
+            }
             .subscribe({
                 _categoriesWithFinancesList.value = it.first!!
                 _overallSum.value = it.second!!
+                if (_categoriesWithFinancesList.value!!.isEmpty())
+                    _financeListState.value = ListState.EMPTY
+                else
+                    _financeListState.value = ListState.FILLED
                 Log.e(TAG, "Categories with finances load success")
             }, {
                 Log.e(TAG, it.message.toString())

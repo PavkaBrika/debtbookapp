@@ -4,13 +4,18 @@ import android.content.Context
 import android.content.pm.ActivityInfo
 import android.graphics.Typeface
 import android.os.Bundle
+import android.transition.Fade
+import android.transition.TransitionManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
@@ -26,6 +31,7 @@ import com.breckneck.debtbook.presentation.viewmodel.FinanceViewModel
 import com.breckneck.deptbook.domain.model.FinanceCategoryWithFinances
 import com.breckneck.deptbook.domain.util.FinanceCategoryState
 import com.breckneck.deptbook.domain.util.FinanceInterval
+import com.breckneck.deptbook.domain.util.ListState
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -314,19 +320,43 @@ class FinanceFragment : Fragment() {
             categoryRecyclerView.adapter = it
         }
 
-        val categoryNestedScrollView: NestedScrollView =
-            view.findViewById(R.id.categoryNestedScrollView)
+        val notesProgressBar: ProgressBar = view.findViewById(R.id.notesProgressBar)
+        val categoryLayout: LinearLayout = view.findViewById(R.id.categoryLayout)
+        val emptyNotesLayout: ConstraintLayout = view.findViewById(R.id.emptyNotesLayout)
+
         val financeProgressBar: FinanceProgressBar = view.findViewById(R.id.financeProgressBar)
         vm.categoriesWithFinancesList.observe(viewLifecycleOwner) { categoryList ->
-            if (categoryList.isEmpty()) {
-                noNotesTextView.visibility = View.VISIBLE
-                categoryNestedScrollView.visibility = View.INVISIBLE
-            } else {
-                noNotesTextView.visibility = View.GONE
-                categoryNestedScrollView.visibility = View.VISIBLE
+            if (categoryList.isNotEmpty())
                 usedFinanceCategoryAdapter.updateUsedFinanceCategoryList(usedFinanceCategoryList = categoryList, currency = vm.currency.value!!)
-            }
             financeProgressBar.setCategoryList(categoryList = categoryList)
+        }
+
+        vm.financeListState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                ListState.LOADING -> {
+                    categoryLayout.visibility = View.GONE
+                    emptyNotesLayout.visibility = View.GONE
+                    notesProgressBar.visibility = View.VISIBLE
+                }
+                ListState.FILLED -> {
+                    val transition = Fade()
+                    transition.duration = 200
+                    transition.addTarget(categoryLayout)
+                    TransitionManager.beginDelayedTransition(view as ViewGroup?, transition)
+                    categoryLayout.visibility = View.VISIBLE
+                    emptyNotesLayout.visibility = View.GONE
+                    notesProgressBar.visibility = View.GONE
+                }
+                ListState.EMPTY -> {
+                    val transition = Fade()
+                    transition.duration = 200
+                    transition.addTarget(emptyNotesLayout)
+                    TransitionManager.beginDelayedTransition(view as ViewGroup?, transition)
+                    categoryLayout.visibility = View.GONE
+                    emptyNotesLayout.visibility = View.VISIBLE
+                    notesProgressBar.visibility = View.GONE
+                }
+            }
         }
 
         val addFinanceButton: FloatingActionButton = view.findViewById(R.id.addFinanceButton)
