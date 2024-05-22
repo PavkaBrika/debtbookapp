@@ -41,7 +41,7 @@ class DataBaseHumanStorageImpl(context: Context) : HumanStorage {
         override fun onCreate(database: SupportSQLiteDatabase) {
             insertInitialFinanceCategoryData(database = database)
 //            insertInitialScreenshotsData(database = database)
-            insertTestData(database = database)
+//            insertTestData(database = database)
             super.onCreate(database)
         }
     }

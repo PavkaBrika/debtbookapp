@@ -107,6 +107,11 @@ class MainFragmentViewModel(
                 })
             disposeBag.add(result)
             Log.e(TAG, "Humans sorted")
+        } else if (_humanList.value != null) {
+            _resultHumanList.value = _humanList.value
+            _isHumanSorted.value = true
+            if (_resultHumanList.value!!.isEmpty())
+                _humanListState.value = ListState.EMPTY
         }
     }
 
@@ -122,7 +127,7 @@ class MainFragmentViewModel(
         Log.e(TAG, "Human order set ${order.first}, ${order.second}")
     }
 
-    fun onSetListState(state: ListState) {
+    fun setListState(state: ListState) {
         _humanListState.value = state
     }
 

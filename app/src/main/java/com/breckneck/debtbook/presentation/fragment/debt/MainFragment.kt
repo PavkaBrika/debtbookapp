@@ -80,7 +80,7 @@ class MainFragment : Fragment() {
                 vm.getMainSums()
         }
         Log.e(TAG, "MainFragment create view")
-        vm.onSetListState(ListState.LOADING)
+        vm.setListState(ListState.LOADING)
         return inflater.inflate(R.layout.fragment_main, container, false)
     }
 
@@ -206,7 +206,9 @@ class MainFragment : Fragment() {
                 if (it.isNotEmpty()) {
                     humanAdapter.updateHumansList(it)
                     Log.e(TAG, "data in adapter link success")
-                    vm.onSetListState(ListState.FILLED)
+                    vm.setListState(ListState.FILLED)
+                } else {
+                    vm.setListState(ListState.EMPTY)
                 }
             }
         }, 400)
