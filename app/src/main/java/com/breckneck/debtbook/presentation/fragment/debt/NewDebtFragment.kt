@@ -293,7 +293,7 @@ class NewDebtFragment: Fragment() {
                                     .subscribeOn(Schedulers.io())
                                     .observeOn(AndroidSchedulers.mainThread())
                                     .subscribe({
-                                        buttonClickListener.DebtDetailsExistHuman(idHuman = idHuman!!, currency = currency, name = name)
+                                        buttonClickListener.DebtDetailsExistHuman(idHuman = idHuman!!, currency = currency, name = nameArgs!!)
                                     }, {
                                         showErrorToast(it)
                                     })
