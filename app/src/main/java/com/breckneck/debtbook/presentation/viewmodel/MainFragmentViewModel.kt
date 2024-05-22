@@ -100,8 +100,8 @@ class MainFragmentViewModel(
                     _isHumanSorted.value = true
                     if (_resultHumanList.value!!.isEmpty())
                         _humanListState.value = ListState.EMPTY
-                    else
-                        _humanListState.value = ListState.FILLED
+//                    else
+//                        _humanListState.value = ListState.FILLED
                 }, {
                     Log.e(TAG, it.message.toString())
                 })

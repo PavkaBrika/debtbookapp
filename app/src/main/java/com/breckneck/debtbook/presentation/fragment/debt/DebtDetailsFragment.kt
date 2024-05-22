@@ -8,6 +8,8 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.os.Handler
+import android.os.Looper
 import android.transition.Fade
 import android.transition.TransitionManager
 import android.util.Log
@@ -94,17 +96,19 @@ class DebtDetailsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         return inflater.inflate(R.layout.fragment_debt_details, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        postponeEnterTransition()
+//        postponeEnterTransition()
+        vm.onSetListState(ListState.LOADING)
 
         val recyclerView: RecyclerView = view.findViewById(R.id.debtsRecyclerView)
-        recyclerView.doOnPreDraw {
-            startPostponedEnterTransition()
-        }
+//        recyclerView.doOnPreDraw {
+//            startPostponedEnterTransition()
+//        }
 
         val humanId = arguments?.getInt("idHuman", 0)
         val newHuman = arguments?.getBoolean("newHuman", false)
@@ -155,12 +159,6 @@ class DebtDetailsFragment : Fragment() {
             val emptyDebtsLayout: ConstraintLayout = view.findViewById(R.id.emptyDebtsLayout)
             val debtProgressBar: ProgressBar = view.findViewById(R.id.debtProgressBar)
 
-            resultDebtList.observe(viewLifecycleOwner) {
-                if (it.isNotEmpty()) {
-                    debtAdapter.updateDebtList(debtList = it)
-                }
-            }
-
             debtListState.observe(viewLifecycleOwner) { state ->
                 when (state) {
                     ListState.LOADING -> {
@@ -182,8 +180,8 @@ class DebtDetailsFragment : Fragment() {
                         transition.duration = 200
                         transition.addTarget(emptyDebtsLayout)
                         TransitionManager.beginDelayedTransition(view as ViewGroup?, transition)
-                        emptyDebtsLayout.visibility = View.VISIBLE
                         debtsLayout.visibility = View.GONE
+                        emptyDebtsLayout.visibility = View.VISIBLE
                         debtProgressBar.visibility = View.GONE
                     }
                 }
@@ -232,6 +230,28 @@ class DebtDetailsFragment : Fragment() {
         backButton.setOnClickListener {
             buttonClickListener?.onBackButtonClick()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            vm.resultDebtList.observe(viewLifecycleOwner) {
+                if (it.isNotEmpty()) {
+                    debtAdapter.updateDebtList(debtList = it)
+                    vm.onSetListState(ListState.FILLED)
+                }
+            }
+        }, 400)
+
+
+//        vm.resultDebtList.observe(viewLifecycleOwner) {
+//            if (it.isNotEmpty()) {
+//                debtAdapter.updateDebtList(debtList = it)
+//                vm.onSetListState(ListState.FILLED)
+//            }
+//        }
     }
 
     fun setOverallSumText(sum: Double, currency: String, view: View) {

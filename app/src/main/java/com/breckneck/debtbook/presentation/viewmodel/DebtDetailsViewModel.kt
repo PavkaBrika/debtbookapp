@@ -135,8 +135,8 @@ class DebtDetailsViewModel(
                     _isDebtsSorted.value = true
                     if (_resultDebtList.value!!.isEmpty())
                         _debtListState.value = ListState.EMPTY
-                    else
-                        _debtListState.value = ListState.FILLED
+//                    else
+//                        _debtListState.value = ListState.FILLED
                 }, {
                     Log.e(TAG, it.message.toString())
                 })
@@ -213,6 +213,10 @@ class DebtDetailsViewModel(
 
     fun onSetHumanId(id: Int) {
         _humanId.value = id
+    }
+
+    fun onSetListState(state: ListState) {
+        _debtListState.value = state
     }
 
     fun onHumanDeleteDialogOpen() {

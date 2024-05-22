@@ -97,4 +97,7 @@ dependencies {
     implementation "io.insert-koin:koin-android:$koin_version"
     //Testing
     testImplementation "io.insert-koin:koin-test:$koin_version"
+
+    //Shimmer (pre-loading recycler view effect)
+    implementation "com.facebook.shimmer:shimmer:0.1.0@aar"
 }

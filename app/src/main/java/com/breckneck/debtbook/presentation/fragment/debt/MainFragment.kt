@@ -25,6 +25,7 @@ import com.breckneck.debtbook.presentation.viewmodel.MainFragmentViewModel
 import com.breckneck.deptbook.domain.model.HumanDomain
 import com.breckneck.deptbook.domain.util.*
 import com.breckneck.deptbook.domain.util.Filter
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -100,7 +101,43 @@ class MainFragment : Fragment() {
             setExpandedTitleTypeface(Typeface.DEFAULT_BOLD)
         }
 
-        humanRecyclerView = view.findViewById(R.id.categoryRecyclerView)
+        val emptyHumansLayout: ConstraintLayout = view.findViewById(R.id.emptyHumansLayout)
+        val humansLayout: ConstraintLayout = view.findViewById(R.id.humansLayout)
+        val loadingDebtsLayout: ConstraintLayout = view.findViewById(R.id.loadingDebtsLayout)
+        val shimmerLayout: ShimmerFrameLayout = view.findViewById(R.id.shimmerLayout)
+
+        vm.humanListState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                ListState.LOADING -> {
+                    humansLayout.visibility = View.GONE
+                    emptyHumansLayout.visibility = View.GONE
+                    loadingDebtsLayout.visibility = View.VISIBLE
+                    shimmerLayout.startShimmerAnimation()
+                }
+                ListState.FILLED -> {
+                    val transition = Fade()
+                    transition.duration = 200
+                    transition.addTarget(humansLayout)
+                    TransitionManager.beginDelayedTransition(view as ViewGroup?, transition)
+                    humansLayout.visibility = View.VISIBLE
+                    emptyHumansLayout.visibility = View.GONE
+                    loadingDebtsLayout.visibility = View.GONE
+                    shimmerLayout.stopShimmerAnimation()
+                }
+                ListState.EMPTY -> {
+                    val transition = Fade()
+                    transition.duration = 200
+                    transition.addTarget(emptyHumansLayout)
+                    TransitionManager.beginDelayedTransition(view as ViewGroup?, transition)
+                    emptyHumansLayout.visibility = View.VISIBLE
+                    humansLayout.visibility = View.GONE
+                    loadingDebtsLayout.visibility = View.GONE
+                    shimmerLayout.stopShimmerAnimation()
+                }
+            }
+        }
+
+        humanRecyclerView = view.findViewById(R.id.humanRecyclerView)
         val humanClickListener = object : HumanAdapter.OnHumanClickListener {
             override fun onHumanClick(humanDomain: HumanDomain, position: Int) {
                 buttonClickListener?.onHumanClick(
@@ -118,10 +155,6 @@ class MainFragment : Fragment() {
         humanAdapter = HumanAdapter(listOf(), humanClickListener)
         humanRecyclerView.adapter = humanAdapter
 
-        val emptyHumansLayout: ConstraintLayout = view.findViewById(R.id.emptyHumansLayout)
-        val humansLayout: ConstraintLayout = view.findViewById(R.id.humansLayout)
-        val humanProgressBar: ProgressBar = view.findViewById(R.id.humanProgressBar)
-
         val addButton: FloatingActionButton = view.findViewById(R.id.addHumanButton)
         addButton.setOnClickListener {
             buttonClickListener?.onAddButtonClick()
@@ -138,34 +171,6 @@ class MainFragment : Fragment() {
 
         vm.humanOrder.observe(viewLifecycleOwner) {
             vm.sortHumans()
-        }
-
-        vm.humanListState.observe(viewLifecycleOwner) { state ->
-            when (state) {
-                ListState.LOADING -> {
-                    humansLayout.visibility = View.GONE
-                    emptyHumansLayout.visibility = View.GONE
-                    humanProgressBar.visibility = View.VISIBLE
-                }
-                ListState.FILLED -> {
-                    val transition = Fade()
-                    transition.duration = 200
-                    transition.addTarget(humansLayout)
-                    TransitionManager.beginDelayedTransition(view as ViewGroup?, transition)
-                    humansLayout.visibility = View.VISIBLE
-                    emptyHumansLayout.visibility = View.GONE
-                    humanProgressBar.visibility = View.GONE
-                }
-                ListState.EMPTY -> {
-                    val transition = Fade()
-                    transition.duration = 200
-                    transition.addTarget(emptyHumansLayout)
-                    TransitionManager.beginDelayedTransition(view as ViewGroup?, transition)
-                    emptyHumansLayout.visibility = View.VISIBLE
-                    humansLayout.visibility = View.GONE
-                    humanProgressBar.visibility = View.GONE
-                }
-            }
         }
 
         val overallPositiveSumTextView: TextView =
@@ -204,7 +209,7 @@ class MainFragment : Fragment() {
                     vm.onSetListState(ListState.FILLED)
                 }
             }
-        }, 1)
+        }, 400)
 
         //TODO THIS CODE IS UPDATING RECYCLER VIEW WITHOUT LAGGING BUT WITH GHOSTING OF PREVIOUS FRAGMENT
 //        vm.resultHumanList.observe(viewLifecycleOwner) {
