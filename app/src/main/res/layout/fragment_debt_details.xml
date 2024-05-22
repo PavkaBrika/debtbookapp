@@ -247,8 +247,6 @@
                                 <include layout="@layout/item_debt_shimmer" />
                                 <include layout="@layout/item_debt_shimmer" />
                                 <include layout="@layout/item_debt_shimmer" />
-                                <include layout="@layout/item_debt_shimmer" />
-
 
                             </LinearLayout>
 

@@ -32,6 +32,7 @@ import com.breckneck.deptbook.domain.model.FinanceCategoryWithFinances
 import com.breckneck.deptbook.domain.util.FinanceCategoryState
 import com.breckneck.deptbook.domain.util.FinanceInterval
 import com.breckneck.deptbook.domain.util.ListState
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -320,9 +321,10 @@ class FinanceFragment : Fragment() {
             categoryRecyclerView.adapter = it
         }
 
-        val notesProgressBar: ProgressBar = view.findViewById(R.id.notesProgressBar)
         val categoryLayout: LinearLayout = view.findViewById(R.id.categoryLayout)
         val emptyNotesLayout: ConstraintLayout = view.findViewById(R.id.emptyNotesLayout)
+        val loadingNotesLayout: ConstraintLayout = view.findViewById(R.id.loadingFinanceCategoriesLayout)
+        val shimmerLayout: ShimmerFrameLayout = view.findViewById(R.id.shimmerLayout)
 
         val financeProgressBar: FinanceProgressBar = view.findViewById(R.id.financeProgressBar)
         vm.categoriesWithFinancesList.observe(viewLifecycleOwner) { categoryList ->
@@ -336,7 +338,8 @@ class FinanceFragment : Fragment() {
                 ListState.LOADING -> {
                     categoryLayout.visibility = View.GONE
                     emptyNotesLayout.visibility = View.GONE
-                    notesProgressBar.visibility = View.VISIBLE
+                    loadingNotesLayout.visibility = View.VISIBLE
+                    shimmerLayout.startShimmerAnimation()
                 }
                 ListState.FILLED -> {
                     val transition = Fade()
@@ -345,7 +348,8 @@ class FinanceFragment : Fragment() {
                     TransitionManager.beginDelayedTransition(view as ViewGroup?, transition)
                     categoryLayout.visibility = View.VISIBLE
                     emptyNotesLayout.visibility = View.GONE
-                    notesProgressBar.visibility = View.GONE
+                    loadingNotesLayout.visibility = View.GONE
+                    shimmerLayout.stopShimmerAnimation()
                 }
                 ListState.EMPTY -> {
                     val transition = Fade()
@@ -354,7 +358,8 @@ class FinanceFragment : Fragment() {
                     TransitionManager.beginDelayedTransition(view as ViewGroup?, transition)
                     categoryLayout.visibility = View.GONE
                     emptyNotesLayout.visibility = View.VISIBLE
-                    notesProgressBar.visibility = View.GONE
+                    loadingNotesLayout.visibility = View.GONE
+                    shimmerLayout.stopShimmerAnimation()
                 }
             }
         }

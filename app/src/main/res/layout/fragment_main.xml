@@ -233,11 +233,6 @@
                                 <include layout="@layout/item_human_shimmer" />
                                 <include layout="@layout/item_human_shimmer" />
                                 <include layout="@layout/item_human_shimmer" />
-                                <include layout="@layout/item_human_shimmer" />
-                                <include layout="@layout/item_human_shimmer" />
-                                <include layout="@layout/item_human_shimmer" />
-                                <include layout="@layout/item_human_shimmer" />
-                                <include layout="@layout/item_human_shimmer" />
 
                             </LinearLayout>
 
