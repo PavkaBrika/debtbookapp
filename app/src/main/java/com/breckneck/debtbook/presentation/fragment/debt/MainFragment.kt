@@ -5,6 +5,8 @@ import android.content.pm.ActivityInfo
 import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.transition.Fade
 import android.transition.TransitionManager
 import android.util.Log
@@ -13,7 +15,6 @@ import android.widget.*
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.core.view.doOnAttach
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.recyclerview.widget.RecyclerView
@@ -42,6 +43,7 @@ class MainFragment : Fragment() {
 
     private lateinit var filterButton: ImageView
     private lateinit var humanAdapter: HumanAdapter
+    private lateinit var humanRecyclerView: RecyclerView
 
     interface OnButtonClickListener {
         fun onHumanClick(idHuman: Int, currency: String, name: String)
@@ -77,12 +79,12 @@ class MainFragment : Fragment() {
                 vm.getMainSums()
         }
         Log.e(TAG, "MainFragment create view")
+        vm.onSetListState(ListState.LOADING)
         return inflater.inflate(R.layout.fragment_main, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        postponeEnterTransition()
 
         if (vm.isSortDialogOpened.value == true)
             showHumanSortDialog()
@@ -98,12 +100,7 @@ class MainFragment : Fragment() {
             setExpandedTitleTypeface(Typeface.DEFAULT_BOLD)
         }
 
-        val recyclerView: RecyclerView = view.findViewById(R.id.categoryRecyclerView)
-        recyclerView.doOnAttach {
-            //TODO FIX LAG AFTER SWITCHING BETWEEN FRAGMENTS
-            startPostponedEnterTransition()
-//            vm.onSetListState(ListState.LOADING)
-        }
+        humanRecyclerView = view.findViewById(R.id.categoryRecyclerView)
         val humanClickListener = object : HumanAdapter.OnHumanClickListener {
             override fun onHumanClick(humanDomain: HumanDomain, position: Int) {
                 buttonClickListener?.onHumanClick(
@@ -119,7 +116,7 @@ class MainFragment : Fragment() {
             }
         }
         humanAdapter = HumanAdapter(listOf(), humanClickListener)
-        recyclerView.adapter = humanAdapter
+        humanRecyclerView.adapter = humanAdapter
 
         val emptyHumansLayout: ConstraintLayout = view.findViewById(R.id.emptyHumansLayout)
         val humansLayout: ConstraintLayout = view.findViewById(R.id.humansLayout)
@@ -137,13 +134,6 @@ class MainFragment : Fragment() {
 
         vm.humanFilter.observe(viewLifecycleOwner) {
             changeFilterButtonColor(it)
-        }
-
-        vm.resultHumanList.observe(viewLifecycleOwner) {
-            if (it.isNotEmpty()) {
-                humanAdapter.updateHumansList(it)
-                Log.e(TAG, "adapter link success")
-            }
         }
 
         vm.humanOrder.observe(viewLifecycleOwner) {
@@ -200,6 +190,30 @@ class MainFragment : Fragment() {
                 overallNegativeSumTextView.text = it.second
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        //TODO THIS CODE IS UPDATING RECYCLER VIEW WITHOUT LAGGING AND GHOSTING BUT WITH SHOWING PROGRESS BAR AFTER CHANGING ORIENTATION
+        Handler(Looper.getMainLooper()).postDelayed({
+            vm.resultHumanList.observe(viewLifecycleOwner) {
+                if (it.isNotEmpty()) {
+                    humanAdapter.updateHumansList(it)
+                    Log.e(TAG, "data in adapter link success")
+                    vm.onSetListState(ListState.FILLED)
+                }
+            }
+        }, 1)
+
+        //TODO THIS CODE IS UPDATING RECYCLER VIEW WITHOUT LAGGING BUT WITH GHOSTING OF PREVIOUS FRAGMENT
+//        vm.resultHumanList.observe(viewLifecycleOwner) {
+//            if (it.isNotEmpty()) {
+//                humanAdapter.updateHumansList(it)
+//                Log.e(TAG, "data in adapter link success")
+//                vm.onSetListState(ListState.FILLED)
+//            }
+//        }
     }
 
     private fun showHumanSortDialog() {

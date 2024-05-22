@@ -122,9 +122,9 @@ class MainFragmentViewModel(
         Log.e(TAG, "Human order set ${order.first}, ${order.second}")
     }
 
-//    fun onSetListState(state: ListState) {
-//        _debtListState.value = state
-//    }
+    fun onSetListState(state: ListState) {
+        _humanListState.value = state
+    }
 
     private fun getHumanOrder() {
         _humanOrder.value = getHumanOrder.execute()
