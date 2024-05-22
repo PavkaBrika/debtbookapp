@@ -281,8 +281,8 @@ class FinanceViewModel(
                 _overallSum.value = it.second!!
                 if (_categoriesWithFinancesList.value!!.isEmpty())
                     _financeListState.value = ListState.EMPTY
-                else
-                    _financeListState.value = ListState.FILLED
+//                else
+//                    _financeListState.value = ListState.FILLED
                 Log.e(TAG, "Categories with finances load success")
             }, {
                 Log.e(TAG, it.message.toString())
@@ -343,6 +343,10 @@ class FinanceViewModel(
     fun setInterval(interval: FinanceInterval) {
         _financeInterval.value = interval
         getFinanceInterval()
+    }
+
+    fun setFinanceListState(state: ListState) {
+        _financeListState.value = state
     }
 
 //    fun onChangeFinanceListStateSwitch() {

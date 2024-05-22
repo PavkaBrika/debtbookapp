@@ -3,13 +3,19 @@ package com.breckneck.debtbook.presentation.fragment.finance
 import android.content.Context
 import android.graphics.Typeface
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.SpannableString
+import android.transition.Fade
+import android.transition.TransitionManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
@@ -23,7 +29,9 @@ import com.breckneck.debtbook.util.GetFinanceCategoryNameInLocalLanguage
 import com.breckneck.deptbook.domain.model.Finance
 import com.breckneck.deptbook.domain.usecase.Debt.FormatDebtSum
 import com.breckneck.deptbook.domain.util.FinanceCategoryState
+import com.breckneck.deptbook.domain.util.ListState
 import com.breckneck.deptbook.domain.util.revenuesCategoryEnglishNameList
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -34,6 +42,8 @@ class FinanceDetailsFragment: Fragment() {
     private val TAG = "FinanceDetailsFragment"
 
     private val vm by viewModel<FinanceDetailsViewModel>()
+
+    lateinit var financeAdapter: FinanceAdapter
 
     interface OnClickListener {
         fun onEditFinanceClick(finance: Finance)
@@ -56,6 +66,7 @@ class FinanceDetailsFragment: Fragment() {
             if (bundle.getBoolean("isListModified"))
                 vm.getFinanceByCategoryId(categoryId = vm.categoryId.value!!)
         }
+        vm.setFinanceListState(state = ListState.LOADING)
         return inflater.inflate(R.layout.fragment_finance_details, container, false)
     }
 
@@ -110,26 +121,65 @@ class FinanceDetailsFragment: Fragment() {
                 showDebtSettings(finance = finance, currency = currency!!)
             }
         }
-        val financeAdapter = FinanceAdapter(financeListImmutable = listOf(), financeClickListener = financeClickListener, currency!!)
+        financeAdapter = FinanceAdapter(financeListImmutable = listOf(), financeClickListener = financeClickListener, currency!!)
+
         val financeRecyclerView: RecyclerView = view.findViewById(R.id.financeRecyclerView)
         financeRecyclerView.adapter = financeAdapter
         val noNotesTextView: TextView = view.findViewById(R.id.noNotesTextView)
-        val nestedScrollView: NestedScrollView = view.findViewById(R.id.nestedScroll)
-        vm.financeList.observe(viewLifecycleOwner) { financeList ->
-            financeAdapter.updateFinanceList(financeList = financeList)
-            if (financeList.isEmpty()) {
-                nestedScrollView.visibility = View.GONE
-                noNotesTextView.visibility = View.VISIBLE
-                if (vm.isExpenses.value!!) {
-                    noNotesTextView.text = getString(R.string.there_are_no_expenses_yet)
-                } else {
-                    noNotesTextView.text = getString(R.string.there_are_no_incomes_yet)
+        val financesLayout: ConstraintLayout = view.findViewById(R.id.financesLayout)
+        val emptyFinancesLayout: ConstraintLayout = view.findViewById(R.id.emptyFinancesLayout)
+        val loadingFinancesLayout: ConstraintLayout = view.findViewById(R.id.loadingFinancesLayout)
+        val shimmerLayout: ShimmerFrameLayout = view.findViewById(R.id.shimmerLayout)
+
+        vm.financeListState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                ListState.LOADING -> {
+                    financesLayout.visibility = View.GONE
+                    emptyFinancesLayout.visibility = View.GONE
+                    loadingFinancesLayout.visibility = View.VISIBLE
+                    shimmerLayout.startShimmerAnimation()
                 }
-            } else {
-                nestedScrollView.visibility = View.VISIBLE
-                noNotesTextView.visibility = View.GONE
+                ListState.FILLED -> {
+                    val transition = Fade()
+                    transition.duration = 200
+                    transition.addTarget(financesLayout)
+                    TransitionManager.beginDelayedTransition(view as ViewGroup?, transition)
+                    financesLayout.visibility = View.VISIBLE
+                    emptyFinancesLayout.visibility = View.GONE
+                    loadingFinancesLayout.visibility = View.GONE
+                    shimmerLayout.stopShimmerAnimation()
+                }
+                ListState.EMPTY -> {
+                    val transition = Fade()
+                    transition.duration = 200
+                    transition.addTarget(emptyFinancesLayout)
+                    TransitionManager.beginDelayedTransition(view as ViewGroup?, transition)
+                    financesLayout.visibility = View.GONE
+                    emptyFinancesLayout.visibility = View.VISIBLE
+                    loadingFinancesLayout.visibility = View.GONE
+                    shimmerLayout.stopShimmerAnimation()
+                    if (vm.isExpenses.value!!) {
+                        noNotesTextView.text = getString(R.string.there_are_no_expenses_yet)
+                    } else {
+                        noNotesTextView.text = getString(R.string.there_are_no_incomes_yet)
+                    }
+                }
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            vm.financeList.observe(viewLifecycleOwner) { financeList ->
+                if (financeList.isNotEmpty()) {
+                    financeAdapter.updateFinanceList(financeList = financeList)
+                    vm.setFinanceListState(ListState.FILLED)
+                    Log.e(TAG, "Finance list updated in adapter")
+                }
+            }
+        }, 400)
     }
 
     private fun showDebtSettings(finance: Finance, currency: String) {

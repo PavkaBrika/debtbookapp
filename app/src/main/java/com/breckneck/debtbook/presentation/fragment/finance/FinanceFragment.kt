@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.pm.ActivityInfo
 import android.graphics.Typeface
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.transition.Fade
 import android.transition.TransitionManager
 import android.util.Log
@@ -49,6 +51,8 @@ class FinanceFragment : Fragment() {
 
     private lateinit var usedFinanceCategoryAdapter: UsedFinanceCategoryAdapter
 
+    private lateinit var financeProgressBar: FinanceProgressBar
+
     interface OnButtonClickListener {
         fun onAddFinanceButtonClick(financeCategoryState: FinanceCategoryState, dayInMillis: Long)
 
@@ -75,6 +79,7 @@ class FinanceFragment : Fragment() {
             if (bundle.getBoolean("isListModified"))
                 vm.getAllCategoriesWithFinances()
         }
+        vm.setFinanceListState(ListState.LOADING)
         return inflater.inflate(R.layout.fragment_finance, container, false)
     }
 
@@ -325,13 +330,7 @@ class FinanceFragment : Fragment() {
         val emptyNotesLayout: ConstraintLayout = view.findViewById(R.id.emptyNotesLayout)
         val loadingNotesLayout: ConstraintLayout = view.findViewById(R.id.loadingFinanceCategoriesLayout)
         val shimmerLayout: ShimmerFrameLayout = view.findViewById(R.id.shimmerLayout)
-
-        val financeProgressBar: FinanceProgressBar = view.findViewById(R.id.financeProgressBar)
-        vm.categoriesWithFinancesList.observe(viewLifecycleOwner) { categoryList ->
-            if (categoryList.isNotEmpty())
-                usedFinanceCategoryAdapter.updateUsedFinanceCategoryList(usedFinanceCategoryList = categoryList, currency = vm.currency.value!!)
-            financeProgressBar.setCategoryList(categoryList = categoryList)
-        }
+        financeProgressBar = view.findViewById(R.id.financeProgressBar)
 
         vm.financeListState.observe(viewLifecycleOwner) { state ->
             when (state) {
@@ -377,6 +376,20 @@ class FinanceFragment : Fragment() {
                     dayInMillis = vm.currentDayInSeconds.value!! * 1000
                 )
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            vm.categoriesWithFinancesList.observe(viewLifecycleOwner) { categoryList ->
+                if (categoryList.isNotEmpty()) {
+                    usedFinanceCategoryAdapter.updateUsedFinanceCategoryList(usedFinanceCategoryList = categoryList, currency = vm.currency.value!!)
+                    vm.setFinanceListState(ListState.FILLED)
+                }
+                financeProgressBar.setCategoryList(categoryList = categoryList)
+            }
+        }, 400)
     }
 
     private fun showFinanceIntervalDialog(
