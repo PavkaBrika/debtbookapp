@@ -103,7 +103,7 @@ class MainFragment : Fragment() {
 
         val emptyHumansLayout: ConstraintLayout = view.findViewById(R.id.emptyHumansLayout)
         val humansLayout: ConstraintLayout = view.findViewById(R.id.humansLayout)
-        val loadingDebtsLayout: ConstraintLayout = view.findViewById(R.id.loadingDebtsLayout)
+        val loadingDebtsLayout: ConstraintLayout = view.findViewById(R.id.loadingHumansLayout)
         val shimmerLayout: ShimmerFrameLayout = view.findViewById(R.id.shimmerLayout)
 
         vm.humanListState.observe(viewLifecycleOwner) { state ->

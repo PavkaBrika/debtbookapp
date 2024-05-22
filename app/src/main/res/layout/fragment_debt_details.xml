@@ -217,6 +217,44 @@
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/loadingDebtsLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="visible"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" >
+
+                        <com.facebook.shimmer.ShimmerFrameLayout
+                            android:id="@+id/shimmerLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            app:duration="500"
+                            android:paddingVertical="4dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical">
+
+                                <include layout="@layout/item_debt_shimmer" />
+                                <include layout="@layout/item_debt_shimmer" />
+                                <include layout="@layout/item_debt_shimmer" />
+                                <include layout="@layout/item_debt_shimmer" />
+                                <include layout="@layout/item_debt_shimmer" />
+                                <include layout="@layout/item_debt_shimmer" />
+
+
+                            </LinearLayout>
+
+                        </com.facebook.shimmer.ShimmerFrameLayout>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -238,16 +276,6 @@
             app:layout_anchor="@id/nestedScroll"
             app:layout_anchorGravity="bottom|center"
             app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior" />
-
-        <ProgressBar
-            android:id="@+id/debtProgressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|center_horizontal"
-            android:indeterminateTint="@color/green"
-            android:indeterminateTintMode="src_in"
-            android:visibility="visible"
-            android:elevation="11dp"/>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

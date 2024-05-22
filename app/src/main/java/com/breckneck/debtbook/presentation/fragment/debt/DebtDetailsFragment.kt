@@ -44,6 +44,7 @@ import com.breckneck.deptbook.domain.util.Filter
 import com.breckneck.deptbook.domain.util.ListState
 import com.breckneck.deptbook.domain.util.ROTATE_DEGREE_DEBT_IMAGE_VIEW_BY_DECREASE
 import com.breckneck.deptbook.domain.util.ROTATE_DEGREE_DEBT_IMAGE_VIEW_BY_INCREASE
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -157,14 +158,16 @@ class DebtDetailsFragment : Fragment() {
 
             val debtsLayout: ConstraintLayout = view.findViewById(R.id.debtsLayout)
             val emptyDebtsLayout: ConstraintLayout = view.findViewById(R.id.emptyDebtsLayout)
-            val debtProgressBar: ProgressBar = view.findViewById(R.id.debtProgressBar)
+            val loadingDebtsLayout: ConstraintLayout = view.findViewById(R.id.loadingDebtsLayout)
+            val shimmerLayout: ShimmerFrameLayout = view.findViewById(R.id.shimmerLayout)
 
             debtListState.observe(viewLifecycleOwner) { state ->
                 when (state) {
                     ListState.LOADING -> {
                         debtsLayout.visibility = View.GONE
                         emptyDebtsLayout.visibility = View.GONE
-                        debtProgressBar.visibility = View.VISIBLE
+                        loadingDebtsLayout.visibility = View.VISIBLE
+                        shimmerLayout.startShimmerAnimation()
                     }
                     ListState.FILLED -> {
                         val transition = Fade()
@@ -173,7 +176,8 @@ class DebtDetailsFragment : Fragment() {
                         TransitionManager.beginDelayedTransition(view as ViewGroup?, transition)
                         debtsLayout.visibility = View.VISIBLE
                         emptyDebtsLayout.visibility = View.GONE
-                        debtProgressBar.visibility = View.GONE
+                        loadingDebtsLayout.visibility = View.GONE
+                        shimmerLayout.stopShimmerAnimation()
                     }
                     ListState.EMPTY -> {
                         val transition = Fade()
@@ -182,7 +186,8 @@ class DebtDetailsFragment : Fragment() {
                         TransitionManager.beginDelayedTransition(view as ViewGroup?, transition)
                         debtsLayout.visibility = View.GONE
                         emptyDebtsLayout.visibility = View.VISIBLE
-                        debtProgressBar.visibility = View.GONE
+                        loadingDebtsLayout.visibility = View.GONE
+                        shimmerLayout.stopShimmerAnimation()
                     }
                 }
             }
