@@ -6,6 +6,7 @@ import com.breckneck.debtbook.presentation.viewmodel.SynchronizationViewModel
 import com.breckneck.debtbook.presentation.viewmodel.DebtDetailsViewModel
 import com.breckneck.debtbook.presentation.viewmodel.FinanceDetailsViewModel
 import com.breckneck.debtbook.presentation.viewmodel.FinanceViewModel
+import com.breckneck.debtbook.presentation.viewmodel.GoalsFragmentViewModel
 import com.breckneck.debtbook.presentation.viewmodel.MainActivityViewModel
 import com.breckneck.debtbook.presentation.viewmodel.MainFragmentViewModel
 import com.breckneck.debtbook.presentation.viewmodel.NewDebtViewModel
@@ -128,5 +129,9 @@ val appModule = module {
             getFinanceByCategoryId = get(),
             deleteFinance = get()
         )
+    }
+
+    viewModel<GoalsFragmentViewModel> {
+        GoalsFragmentViewModel()
     }
 }

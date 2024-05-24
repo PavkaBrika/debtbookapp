@@ -6,8 +6,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.breckneck.debtbook.R
+import com.breckneck.debtbook.presentation.viewmodel.GoalsFragmentViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class GoalsFragment: Fragment() {
+
+    private val TAG = "GoalsFragment"
+
+    private val vm by viewModel<GoalsFragmentViewModel>()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -18,10 +25,11 @@ class GoalsFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return super.onCreateView(inflater, container, savedInstanceState)
+        return inflater.inflate(R.layout.fragment_goal, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
         super.onViewCreated(view, savedInstanceState)
     }
 

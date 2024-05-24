@@ -137,4 +137,5 @@
     <string name="there_are_no_incomes_yet">There are no incomes yet</string>
     <string name="this_action_will_delete_the_category_and_all_data_associated_with_it">This action will delete this category and all associated data</string>
     <string name="support_us">Support us</string>
+    <string name="goals">Goals</string>
 </resources>

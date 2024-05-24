@@ -9,6 +9,8 @@ import androidx.fragment.app.Fragment
 
 class CreateGoalsFragment: Fragment() {
 
+    private val TAG = "CreateGoalsFragment"
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
     }
