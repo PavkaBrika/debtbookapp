@@ -12,6 +12,7 @@ import com.breckneck.deptbook.domain.usecase.Settings.GetHumanOrder
 import com.breckneck.deptbook.domain.usecase.Settings.GetSecondMainCurrency
 import com.breckneck.deptbook.domain.usecase.Settings.SetHumanOrder
 import com.breckneck.deptbook.domain.util.HumanOrderAttribute
+import com.breckneck.deptbook.domain.util.ListState
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
@@ -48,6 +49,7 @@ class MainFragmentViewModel(
     private val _humanOrder = MutableLiveData<Pair<HumanOrderAttribute, Boolean>>()
     val humanOrder: LiveData<Pair<HumanOrderAttribute, Boolean>>
         get() = _humanOrder
+    private val _isHumanSorted = MutableLiveData<Boolean>(false)
     private val _isChangeDebtNameDialogOpened = MutableLiveData<Boolean>()
     val isChangeDebtNameDialogOpened: LiveData<Boolean>
         get() = _isChangeDebtNameDialogOpened
@@ -57,6 +59,9 @@ class MainFragmentViewModel(
     private val _changedHumanPosition = MutableLiveData<Int>()
     val changedHumanPosition: LiveData<Int>
         get() = _changedHumanPosition
+    private val _humanListState = MutableLiveData<ListState>(ListState.LOADING)
+    val humanListState: LiveData<ListState>
+        get() = _humanListState
     private val sortHumans by lazy { SortHumans() }
     private val disposeBag = CompositeDisposable()
 
@@ -77,7 +82,7 @@ class MainFragmentViewModel(
     }
 
     fun sortHumans() {
-        if (_humanList.value != null) {
+        if ((_humanList.value != null) && (_isHumanSorted.value == false)) {
             val result = Single.create {
                 when (humanFilter.value!!) {
                     Filter.All -> it.onSuccess(sortHumans.execute(_humanList.value!!, _humanOrder.value!!))
@@ -87,19 +92,43 @@ class MainFragmentViewModel(
             }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe {
+                    _humanListState.value = ListState.LOADING
+                }
                 .subscribe({
                     _resultHumanList.value = it
+                    _isHumanSorted.value = true
+                    if (_resultHumanList.value!!.isEmpty())
+                        _humanListState.value = ListState.EMPTY
+//                    else
+//                        _humanListState.value = ListState.FILLED
                 }, {
                     Log.e(TAG, it.message.toString())
                 })
             disposeBag.add(result)
             Log.e(TAG, "Humans sorted")
+        } else if (_humanList.value != null) {
+            _resultHumanList.value = _humanList.value
+            _isHumanSorted.value = true
+            if (_resultHumanList.value!!.isEmpty())
+                _humanListState.value = ListState.EMPTY
         }
     }
 
     fun onSetHumanFilter(filter: Filter) {
+        _isHumanSorted.value = false
         _humanFilter.value = filter
         Log.e(TAG, "Human filter set ${filter}")
+    }
+
+    fun onSetHumanOrder(order: Pair<HumanOrderAttribute, Boolean>) {
+        _isHumanSorted.value = false
+        _humanOrder.value = order
+        Log.e(TAG, "Human order set ${order.first}, ${order.second}")
+    }
+
+    fun setListState(state: ListState) {
+        _humanListState.value = state
     }
 
     private fun getHumanOrder() {
@@ -116,6 +145,9 @@ class MainFragmentViewModel(
         }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe {
+                _humanListState.value = ListState.LOADING
+            }
             .subscribe({
                 _humanList.value = it
                 Log.e(TAG, "humans loaded in VM")
@@ -166,11 +198,6 @@ class MainFragmentViewModel(
 
     fun onHumanSortDialogClose() {
         _isSortDialogOpened.value = false
-    }
-
-    fun onSetHumanOrder(order: Pair<HumanOrderAttribute, Boolean>) {
-        _humanOrder.value = order
-        Log.e(TAG, "Human order set ${order.first}, ${order.second}")
     }
 
     fun onChangeDebtNameDialogOpen(humanDomain: HumanDomain, position: Int) {

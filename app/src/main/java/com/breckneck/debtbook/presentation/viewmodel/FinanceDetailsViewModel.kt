@@ -8,6 +8,7 @@ import com.breckneck.debtbook.util.GetFinanceCategoryNameInLocalLanguage
 import com.breckneck.deptbook.domain.model.Finance
 import com.breckneck.deptbook.domain.usecase.Finance.DeleteFinance
 import com.breckneck.deptbook.domain.usecase.Finance.GetFinanceByCategoryId
+import com.breckneck.deptbook.domain.util.ListState
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
@@ -39,6 +40,9 @@ class FinanceDetailsViewModel(
     private val _isExpenses = MutableLiveData<Boolean>()
     val isExpenses: LiveData<Boolean>
         get() = _isExpenses
+    private val _financeListState = MutableLiveData<ListState>(ListState.LOADING)
+    val financeListState: LiveData<ListState>
+        get() = _financeListState
 
     private val disposeBag = CompositeDisposable()
 
@@ -59,8 +63,13 @@ class FinanceDetailsViewModel(
         }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe {
+                _financeListState.value = ListState.LOADING
+            }
             .subscribe({
                 _financeList.value = it
+                if (_financeList.value!!.isEmpty())
+                    _financeListState.value = ListState.EMPTY
                 Log.e(TAG, "Finances load success")
             }, {
                 Log.e(TAG, it.message.toString())
@@ -82,6 +91,10 @@ class FinanceDetailsViewModel(
                 Log.e(TAG, it.message.toString())
             })
         disposeBag.add(result)
+    }
+
+    fun setFinanceListState(state: ListState) {
+        _financeListState.value = state
     }
 
     fun onSetSettingFinance(finance: Finance) {

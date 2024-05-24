@@ -4,13 +4,20 @@ import android.content.Context
 import android.content.pm.ActivityInfo
 import android.graphics.Typeface
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.transition.Fade
+import android.transition.TransitionManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
@@ -26,6 +33,8 @@ import com.breckneck.debtbook.presentation.viewmodel.FinanceViewModel
 import com.breckneck.deptbook.domain.model.FinanceCategoryWithFinances
 import com.breckneck.deptbook.domain.util.FinanceCategoryState
 import com.breckneck.deptbook.domain.util.FinanceInterval
+import com.breckneck.deptbook.domain.util.ListState
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -41,6 +50,8 @@ class FinanceFragment : Fragment() {
     private val vm by viewModel<FinanceViewModel>()
 
     private lateinit var usedFinanceCategoryAdapter: UsedFinanceCategoryAdapter
+
+    private lateinit var financeProgressBar: FinanceProgressBar
 
     interface OnButtonClickListener {
         fun onAddFinanceButtonClick(financeCategoryState: FinanceCategoryState, dayInMillis: Long)
@@ -68,6 +79,7 @@ class FinanceFragment : Fragment() {
             if (bundle.getBoolean("isListModified"))
                 vm.getAllCategoriesWithFinances()
         }
+        vm.setFinanceListState(ListState.LOADING)
         return inflater.inflate(R.layout.fragment_finance, container, false)
     }
 
@@ -314,19 +326,41 @@ class FinanceFragment : Fragment() {
             categoryRecyclerView.adapter = it
         }
 
-        val categoryNestedScrollView: NestedScrollView =
-            view.findViewById(R.id.categoryNestedScrollView)
-        val financeProgressBar: FinanceProgressBar = view.findViewById(R.id.financeProgressBar)
-        vm.categoriesWithFinancesList.observe(viewLifecycleOwner) { categoryList ->
-            if (categoryList.isEmpty()) {
-                noNotesTextView.visibility = View.VISIBLE
-                categoryNestedScrollView.visibility = View.INVISIBLE
-            } else {
-                noNotesTextView.visibility = View.GONE
-                categoryNestedScrollView.visibility = View.VISIBLE
-                usedFinanceCategoryAdapter.updateUsedFinanceCategoryList(usedFinanceCategoryList = categoryList, currency = vm.currency.value!!)
+        val categoryLayout: LinearLayout = view.findViewById(R.id.categoryLayout)
+        val emptyNotesLayout: ConstraintLayout = view.findViewById(R.id.emptyNotesLayout)
+        val loadingNotesLayout: ConstraintLayout = view.findViewById(R.id.loadingFinanceCategoriesLayout)
+        val shimmerLayout: ShimmerFrameLayout = view.findViewById(R.id.shimmerLayout)
+        financeProgressBar = view.findViewById(R.id.financeProgressBar)
+
+        vm.financeListState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                ListState.LOADING -> {
+                    categoryLayout.visibility = View.GONE
+                    emptyNotesLayout.visibility = View.GONE
+                    loadingNotesLayout.visibility = View.VISIBLE
+                    shimmerLayout.startShimmerAnimation()
+                }
+                ListState.FILLED -> {
+                    val transition = Fade()
+                    transition.duration = 200
+                    transition.addTarget(categoryLayout)
+                    TransitionManager.beginDelayedTransition(view as ViewGroup?, transition)
+                    categoryLayout.visibility = View.VISIBLE
+                    emptyNotesLayout.visibility = View.GONE
+                    loadingNotesLayout.visibility = View.GONE
+                    shimmerLayout.stopShimmerAnimation()
+                }
+                ListState.EMPTY -> {
+                    val transition = Fade()
+                    transition.duration = 200
+                    transition.addTarget(emptyNotesLayout)
+                    TransitionManager.beginDelayedTransition(view as ViewGroup?, transition)
+                    categoryLayout.visibility = View.GONE
+                    emptyNotesLayout.visibility = View.VISIBLE
+                    loadingNotesLayout.visibility = View.GONE
+                    shimmerLayout.stopShimmerAnimation()
+                }
             }
-            financeProgressBar.setCategoryList(categoryList = categoryList)
         }
 
         val addFinanceButton: FloatingActionButton = view.findViewById(R.id.addFinanceButton)
@@ -342,6 +376,20 @@ class FinanceFragment : Fragment() {
                     dayInMillis = vm.currentDayInSeconds.value!! * 1000
                 )
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            vm.categoriesWithFinancesList.observe(viewLifecycleOwner) { categoryList ->
+                if (categoryList.isNotEmpty()) {
+                    usedFinanceCategoryAdapter.updateUsedFinanceCategoryList(usedFinanceCategoryList = categoryList, currency = vm.currency.value!!)
+                    vm.setFinanceListState(ListState.FILLED)
+                }
+                financeProgressBar.setCategoryList(categoryList = categoryList)
+            }
+        }, 400)
     }
 
     private fun showFinanceIntervalDialog(

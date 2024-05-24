@@ -5,12 +5,16 @@ import android.content.pm.ActivityInfo
 import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.transition.Fade
+import android.transition.TransitionManager
 import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.recyclerview.widget.RecyclerView
@@ -21,6 +25,7 @@ import com.breckneck.debtbook.presentation.viewmodel.MainFragmentViewModel
 import com.breckneck.deptbook.domain.model.HumanDomain
 import com.breckneck.deptbook.domain.util.*
 import com.breckneck.deptbook.domain.util.Filter
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -39,6 +44,7 @@ class MainFragment : Fragment() {
 
     private lateinit var filterButton: ImageView
     private lateinit var humanAdapter: HumanAdapter
+    private lateinit var humanRecyclerView: RecyclerView
 
     interface OnButtonClickListener {
         fun onHumanClick(idHuman: Int, currency: String, name: String)
@@ -74,12 +80,12 @@ class MainFragment : Fragment() {
                 vm.getMainSums()
         }
         Log.e(TAG, "MainFragment create view")
+        vm.setListState(ListState.LOADING)
         return inflater.inflate(R.layout.fragment_main, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        postponeEnterTransition()
 
         if (vm.isSortDialogOpened.value == true)
             showHumanSortDialog()
@@ -95,10 +101,43 @@ class MainFragment : Fragment() {
             setExpandedTitleTypeface(Typeface.DEFAULT_BOLD)
         }
 
-        val recyclerView: RecyclerView = view.findViewById(R.id.categoryRecyclerView)
-        recyclerView.doOnPreDraw {
-            startPostponedEnterTransition()
+        val emptyHumansLayout: ConstraintLayout = view.findViewById(R.id.emptyHumansLayout)
+        val humansLayout: ConstraintLayout = view.findViewById(R.id.humansLayout)
+        val loadingDebtsLayout: ConstraintLayout = view.findViewById(R.id.loadingHumansLayout)
+        val shimmerLayout: ShimmerFrameLayout = view.findViewById(R.id.shimmerLayout)
+
+        vm.humanListState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                ListState.LOADING -> {
+                    humansLayout.visibility = View.GONE
+                    emptyHumansLayout.visibility = View.GONE
+                    loadingDebtsLayout.visibility = View.VISIBLE
+                    shimmerLayout.startShimmerAnimation()
+                }
+                ListState.FILLED -> {
+                    val transition = Fade()
+                    transition.duration = 200
+                    transition.addTarget(humansLayout)
+                    TransitionManager.beginDelayedTransition(view as ViewGroup?, transition)
+                    humansLayout.visibility = View.VISIBLE
+                    emptyHumansLayout.visibility = View.GONE
+                    loadingDebtsLayout.visibility = View.GONE
+                    shimmerLayout.stopShimmerAnimation()
+                }
+                ListState.EMPTY -> {
+                    val transition = Fade()
+                    transition.duration = 200
+                    transition.addTarget(emptyHumansLayout)
+                    TransitionManager.beginDelayedTransition(view as ViewGroup?, transition)
+                    emptyHumansLayout.visibility = View.VISIBLE
+                    humansLayout.visibility = View.GONE
+                    loadingDebtsLayout.visibility = View.GONE
+                    shimmerLayout.stopShimmerAnimation()
+                }
+            }
         }
+
+        humanRecyclerView = view.findViewById(R.id.humanRecyclerView)
         val humanClickListener = object : HumanAdapter.OnHumanClickListener {
             override fun onHumanClick(humanDomain: HumanDomain, position: Int) {
                 buttonClickListener?.onHumanClick(
@@ -114,10 +153,7 @@ class MainFragment : Fragment() {
             }
         }
         humanAdapter = HumanAdapter(listOf(), humanClickListener)
-        recyclerView.adapter = humanAdapter
-
-        val noDebtsTextView: TextView = view.findViewById(R.id.noDebtTextView)
-        val mainRecyclerViewSecondHintTextView: TextView = view.findViewById(R.id.mainRecyclerViewSecondHintTextView)
+        humanRecyclerView.adapter = humanAdapter
 
         val addButton: FloatingActionButton = view.findViewById(R.id.addHumanButton)
         addButton.setOnClickListener {
@@ -131,18 +167,6 @@ class MainFragment : Fragment() {
 
         vm.humanFilter.observe(viewLifecycleOwner) {
             changeFilterButtonColor(it)
-        }
-
-        vm.resultHumanList.observe(viewLifecycleOwner) {
-            if (it.isNotEmpty()) {
-                mainRecyclerViewSecondHintTextView.visibility = View.VISIBLE
-                noDebtsTextView.visibility = View.INVISIBLE
-            } else {
-                mainRecyclerViewSecondHintTextView.visibility = View.INVISIBLE
-                noDebtsTextView.visibility = View.VISIBLE
-            }
-            humanAdapter.updateHumansList(it)
-            Log.e(TAG, "adapter link success")
         }
 
         vm.humanOrder.observe(viewLifecycleOwner) {
@@ -171,6 +195,32 @@ class MainFragment : Fragment() {
                 overallNegativeSumTextView.text = it.second
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        //TODO THIS CODE IS UPDATING RECYCLER VIEW WITHOUT LAGGING AND GHOSTING BUT WITH SHOWING PROGRESS BAR AFTER CHANGING ORIENTATION
+        Handler(Looper.getMainLooper()).postDelayed({
+            vm.resultHumanList.observe(viewLifecycleOwner) {
+                if (it.isNotEmpty()) {
+                    humanAdapter.updateHumansList(it)
+                    Log.e(TAG, "data in adapter link success")
+                    vm.setListState(ListState.FILLED)
+                } else {
+                    vm.setListState(ListState.EMPTY)
+                }
+            }
+        }, 400)
+
+        //TODO THIS CODE IS UPDATING RECYCLER VIEW WITHOUT LAGGING BUT WITH GHOSTING OF PREVIOUS FRAGMENT
+//        vm.resultHumanList.observe(viewLifecycleOwner) {
+//            if (it.isNotEmpty()) {
+//                humanAdapter.updateHumansList(it)
+//                Log.e(TAG, "data in adapter link success")
+//                vm.onSetListState(ListState.FILLED)
+//            }
+//        }
     }
 
     private fun showHumanSortDialog() {

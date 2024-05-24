@@ -8,6 +8,10 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.os.Handler
+import android.os.Looper
+import android.transition.Fade
+import android.transition.TransitionManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -15,11 +19,13 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.os.bundleOf
@@ -35,8 +41,10 @@ import com.breckneck.deptbook.domain.usecase.Debt.*
 import com.breckneck.deptbook.domain.usecase.Settings.GetAddSumInShareText
 import com.breckneck.deptbook.domain.util.DebtOrderAttribute
 import com.breckneck.deptbook.domain.util.Filter
+import com.breckneck.deptbook.domain.util.ListState
 import com.breckneck.deptbook.domain.util.ROTATE_DEGREE_DEBT_IMAGE_VIEW_BY_DECREASE
 import com.breckneck.deptbook.domain.util.ROTATE_DEGREE_DEBT_IMAGE_VIEW_BY_INCREASE
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -89,21 +97,19 @@ class DebtDetailsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         return inflater.inflate(R.layout.fragment_debt_details, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        postponeEnterTransition()
+//        postponeEnterTransition()
+        vm.onSetListState(ListState.LOADING)
 
         val recyclerView: RecyclerView = view.findViewById(R.id.debtsRecyclerView)
-        recyclerView.doOnPreDraw {
-            startPostponedEnterTransition()
-        }
-
-        val debtRecyclerViewHintTextView: TextView =
-            view.findViewById(R.id.debtRecyclerViewHintTextView)
+//        recyclerView.doOnPreDraw {
+//            startPostponedEnterTransition()
+//        }
 
         val humanId = arguments?.getInt("idHuman", 0)
         val newHuman = arguments?.getBoolean("newHuman", false)
@@ -150,17 +156,39 @@ class DebtDetailsFragment : Fragment() {
             if ((isDebtSettingsDialogShown.value != null) && (isDebtSettingsDialogShown.value == true))
                 showDebtSettings(vm.settingDebt.value!!, currency = currency, name = humanName!!)
 
-            val noDebtTextView: TextView = view.findViewById(R.id.noDebtTextView)
-            resultDebtList.observe(viewLifecycleOwner) {
-                if (it.isNotEmpty()) {
-                    recyclerView.visibility = View.VISIBLE
-                    debtRecyclerViewHintTextView.visibility = View.VISIBLE
-                    noDebtTextView.visibility = View.GONE
-                    debtAdapter.updateDebtList(debtList = it)
-                } else {
-                    noDebtTextView.visibility = View.VISIBLE
-                    recyclerView.visibility = View.GONE
-                    debtRecyclerViewHintTextView.visibility = View.INVISIBLE
+            val debtsLayout: ConstraintLayout = view.findViewById(R.id.debtsLayout)
+            val emptyDebtsLayout: ConstraintLayout = view.findViewById(R.id.emptyDebtsLayout)
+            val loadingDebtsLayout: ConstraintLayout = view.findViewById(R.id.loadingDebtsLayout)
+            val shimmerLayout: ShimmerFrameLayout = view.findViewById(R.id.shimmerLayout)
+
+            debtListState.observe(viewLifecycleOwner) { state ->
+                when (state) {
+                    ListState.LOADING -> {
+                        debtsLayout.visibility = View.GONE
+                        emptyDebtsLayout.visibility = View.GONE
+                        loadingDebtsLayout.visibility = View.VISIBLE
+                        shimmerLayout.startShimmerAnimation()
+                    }
+                    ListState.FILLED -> {
+                        val transition = Fade()
+                        transition.duration = 200
+                        transition.addTarget(debtsLayout)
+                        TransitionManager.beginDelayedTransition(view as ViewGroup?, transition)
+                        debtsLayout.visibility = View.VISIBLE
+                        emptyDebtsLayout.visibility = View.GONE
+                        loadingDebtsLayout.visibility = View.GONE
+                        shimmerLayout.stopShimmerAnimation()
+                    }
+                    ListState.EMPTY -> {
+                        val transition = Fade()
+                        transition.duration = 200
+                        transition.addTarget(emptyDebtsLayout)
+                        TransitionManager.beginDelayedTransition(view as ViewGroup?, transition)
+                        debtsLayout.visibility = View.GONE
+                        emptyDebtsLayout.visibility = View.VISIBLE
+                        loadingDebtsLayout.visibility = View.GONE
+                        shimmerLayout.stopShimmerAnimation()
+                    }
                 }
             }
 
@@ -207,6 +235,28 @@ class DebtDetailsFragment : Fragment() {
         backButton.setOnClickListener {
             buttonClickListener?.onBackButtonClick()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            vm.resultDebtList.observe(viewLifecycleOwner) {
+                if (it.isNotEmpty()) {
+                    debtAdapter.updateDebtList(debtList = it)
+                    vm.onSetListState(ListState.FILLED)
+                }
+            }
+        }, 400)
+
+
+//        vm.resultDebtList.observe(viewLifecycleOwner) {
+//            if (it.isNotEmpty()) {
+//                debtAdapter.updateDebtList(debtList = it)
+//                vm.onSetListState(ListState.FILLED)
+//            }
+//        }
     }
 
     fun setOverallSumText(sum: Double, currency: String, view: View) {
