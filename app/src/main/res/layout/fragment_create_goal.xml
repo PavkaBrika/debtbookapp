@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/appBarLayoutStyle"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/app_bar"
+            style="@style/appBarLayoutStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:elevation="0dp">
+
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:id="@+id/collapsNewGoal"
+                style="@style/collapsContentScrim"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:fitsSystemWindows="true"
+                app:expandedTitleGravity="center_vertical"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                app:maxLines="3"
+                app:title="@string/add_new_goal"
+                app:titleEnabled="true">
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:fitsSystemWindows="true"
+                    app:elevation="0dp"
+                    app:layout_collapseMode="pin">
+
+                    <ImageView
+                        android:id="@+id/backButton"
+                        style="@style/imageViewButton"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginEnd="16dp"
+                        android:background="@android:color/transparent"
+                        android:foreground="?android:attr/selectableItemBackground"
+                        android:src="@drawable/baseline_arrow_back_24" />
+
+                </androidx.appcompat.widget.Toolbar>
+
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="-20dp"
+            android:scrollbars="vertical"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="10dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/nestedScroll"
+                style="@style/nestedScrollRounded"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="48dp"
+                    android:layout_marginHorizontal="8dp">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/humanNameCardView"
+                        style="@style/CardViewStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/humanNameTextInput"
+                                style="?attr/textInputOutlinedStyle"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_marginEnd="8dp"
+                                android:layout_weight="1"
+                                android:layout_marginStart="8dp"
+                                android:hint="@string/name"
+                                android:paddingTop="16dp"
+                                android:theme="@style/TextInputLayoutTheme"
+                                app:endIconMode="clear_text"
+                                app:errorEnabled="true">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/humanNameEditText"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:lines="1"
+                                    android:maxLength="20" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <TextView
+                                style="@style/addNewHumanLines"
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent" />
+
+                            <RelativeLayout
+                                android:id="@+id/contactsLayout"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="3"
+                                android:foreground="?android:attr/selectableItemBackground">
+
+                                <ImageView
+                                    android:id="@+id/contactsImageView"
+                                    style="@style/imageViewButton"
+                                    android:layout_width="40dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_centerInParent="true"
+                                    android:layout_marginStart="4dp"
+                                    android:src="@drawable/outline_contacts_24" />
+
+                            </RelativeLayout>
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/debtCardView"
+                        style="@style/CardViewStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:clickable="true"
+                        android:focusable="true">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:id="@+id/goalImageView"
+                                android:layout_width="match_parent"
+                                android:layout_height="200dp"
+                                android:layout_weight="1"
+                                android:src="@drawable/baseline_camera_24" />
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        style="@style/CardViewStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp" >
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/debtSumTextInput"
+                                style="?attr/textInputOutlinedStyle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="16dp"
+                                android:layout_marginEnd="8dp"
+                                android:layout_weight="1"
+                                android:layout_marginStart="8dp"
+                                android:hint="@string/sum"
+                                android:theme="@style/TextInputLayoutTheme"
+                                app:endIconMode="clear_text"
+                                app:errorEnabled="true">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/debtSumEditText"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:inputType="numberDecimal"
+                                    android:maxLength="10"
+                                    android:maxLines="1" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <TextView
+                                style="@style/addNewHumanLines"
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent" />
+
+                            <TextView
+                                android:id="@+id/debtCurrencyTextView"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center_vertical"
+                                android:layout_weight="3"
+                                android:background="?android:attr/selectableItemBackground"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:gravity="center"
+                                android:text="CUR"
+                                android:textSize="20sp"
+                                android:visibility="visible" />
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/debtDateCardView"
+                        style="@style/CardViewStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:clickable="true"
+                        android:focusable="true">
+
+                        <TextView
+                            android:id="@+id/debtDateTextView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingHorizontal="4dp"
+                            android:paddingVertical="16dp"
+                            android:text="date"
+                            android:textAlignment="center"
+                            android:textSize="26sp" />
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        style="@style/CardViewStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="8dp">
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/debtInfoTextInput"
+                            style="?attr/textInputOutlinedStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingHorizontal="8dp"
+                            android:paddingVertical="8dp"
+                            android:hint="@string/comment"
+                            android:theme="@style/TextInputLayoutTheme"
+                            app:endIconMode="clear_text"
+                            app:errorEnabled="false">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/debtInfoEditText"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                </LinearLayout>
+
+            </androidx.core.widget.NestedScrollView>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/setFinanceButton"
+            style="@style/fabTheme"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="24dp"
+            android:src="@drawable/ic_baseline_check_24"
+            app:elevation="11dp"
+            app:layout_anchor="@id/app_bar"
+            app:layout_anchorGravity="bottom|end" />
+
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
+</RelativeLayout>

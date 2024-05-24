@@ -11,6 +11,11 @@
         android:icon="@drawable/baseline_pie_chart_outline_24"
         android:title="@string/finances" />
     <item
+        android:id="@+id/goalsFragment"
+        android:enabled="true"
+        android:icon="@drawable/outline_monetization_on_24"
+        android:title="@string/goals" />
+    <item
         android:id="@+id/settingsFragment"
         android:enabled="true"
         android:icon="@drawable/outline_settings_24"

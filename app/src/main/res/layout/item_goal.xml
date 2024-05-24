@@ -26,34 +26,36 @@
                 android:id="@+id/goalImageView"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:background="@color/red"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                android:src="@drawable/baseline_camera_24"
+                android:background="@color/red" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_weight="3"
                 android:orientation="vertical"
-                android:padding="8dp"
-                android:layout_weight="3" >
+                android:padding="8dp">
 
                 <TextView
                     android:id="@+id/goalNameTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="FSDFASDFDASFDSAFADSF"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold"
+                    android:textSize="16sp"/>
 
                 <TextView
                     android:id="@+id/goalAccumulatedMoneyTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="100 USD / 1000 USD"/>
+                    android:text="100 USD / 1000 USD" />
 
                 <TextView
                     android:id="@+id/goalRemainingMoneyTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="900 USD remaining"/>
+                    android:text="900 USD remaining" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/okButton"

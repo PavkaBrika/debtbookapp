@@ -61,7 +61,7 @@
             app:enterAnim="@anim/slide_in"
             app:exitAnim="@anim/fade_out"
             app:popEnterAnim="@anim/fade_in"
-            app:popExitAnim="@anim/slide_out"/>
+            app:popExitAnim="@anim/slide_out" />
     </fragment>
     <fragment
         android:id="@+id/newDebtFragment"
@@ -82,19 +82,19 @@
         </action>
         <argument
             android:name="idHuman"
-            app:argType="integer"
-            android:defaultValue="-1" />
+            android:defaultValue="-1"
+            app:argType="integer" />
         <argument
             android:name="idDebt"
-            app:argType="integer"
-            android:defaultValue="-1" />
+            android:defaultValue="-1"
+            app:argType="integer" />
         <argument
             android:name="currency"
             app:argType="string" />
         <argument
             android:name="sum"
-            app:argType="float"
-            android:defaultValue="0.0" />
+            android:defaultValue="0.0"
+            app:argType="float" />
         <argument
             android:name="date"
             app:argType="string" />
@@ -122,12 +122,12 @@
             app:popUpToInclusive="false" />
         <argument
             android:name="humanId"
-            app:argType="integer"
-            android:defaultValue="0" />
+            android:defaultValue="0"
+            app:argType="integer" />
         <argument
             android:name="newHuman"
-            app:argType="boolean"
-            android:defaultValue="false" />
+            android:defaultValue="false"
+            app:argType="boolean" />
         <argument
             android:name="currency"
             app:argType="string"
@@ -141,34 +141,34 @@
         android:id="@+id/synchronizationFragment"
         android:name="com.breckneck.debtbook.presentation.fragment.settings.SynchronizationFragment"
         android:label="SynchronizationFragment"
-        tools:layout="@layout/fragment_synchronization"/>
+        tools:layout="@layout/fragment_synchronization" />
     <fragment
         android:id="@+id/financeFragment"
         android:name="com.breckneck.debtbook.presentation.fragment.finance.FinanceFragment"
         android:label="FinanceFragment"
-        tools:layout="@layout/fragment_finance" >
+        tools:layout="@layout/fragment_finance">
         <action
             android:id="@+id/action_financeFragment_to_createFinanceFragment"
             app:destination="@id/createFinanceFragment"
             app:enterAnim="@anim/slide_up"
             app:exitAnim="@anim/fade_out"
             app:popEnterAnim="@anim/fade_in"
-            app:popExitAnim="@anim/slide_down"/>
+            app:popExitAnim="@anim/slide_down" />
         <argument
             android:name="isRevenue"
-            app:argType="boolean"
-            android:defaultValue="true" />
+            android:defaultValue="true"
+            app:argType="boolean" />
         <argument
             android:name="dayInMillis"
-            app:argType="integer"
-            android:defaultValue="0" />
+            android:defaultValue="0"
+            app:argType="integer" />
         <action
             android:id="@+id/action_financeFragment_to_financeDetailsFragment"
             app:destination="@id/financeDetailsFragment"
             app:enterAnim="@anim/slide_in"
             app:exitAnim="@anim/fade_out"
             app:popEnterAnim="@anim/fade_in"
-            app:popExitAnim="@anim/slide_out"/>
+            app:popExitAnim="@anim/slide_out" />
     </fragment>
     <fragment
         android:id="@+id/createFinanceFragment"
@@ -181,13 +181,13 @@
             app:enterAnim="@anim/slide_up"
             app:exitAnim="@anim/fade_out"
             app:popEnterAnim="@anim/fade_in"
-            app:popExitAnim="@anim/slide_down"/>
+            app:popExitAnim="@anim/slide_down" />
     </fragment>
     <fragment
         android:id="@+id/createFinanceCategoryFragment"
         android:name="com.breckneck.debtbook.presentation.fragment.finance.CreateFinanceCategoryFragment"
         android:label="CreateFinanceCategoryFragment"
-        tools:layout="@layout/fragment_create_finance_category"/>
+        tools:layout="@layout/fragment_create_finance_category" />
     <fragment
         android:id="@+id/financeDetailsFragment"
         android:name="com.breckneck.debtbook.presentation.fragment.finance.FinanceDetailsFragment"
@@ -201,4 +201,22 @@
             app:popEnterAnim="@anim/fade_in"
             app:popExitAnim="@anim/slide_down" />
     </fragment>
+    <fragment
+        android:id="@+id/goalsFragment"
+        android:name="com.breckneck.debtbook.presentation.fragment.goals.GoalsFragment"
+        android:label="GoalsFragment"
+        tools:layout="@layout/fragment_goal">
+        <action
+            android:id="@+id/action_goalsFragment_to_createGoalsFragment"
+            app:destination="@id/createGoalsFragment"
+            app:enterAnim="@anim/slide_up"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/slide_down" />
+    </fragment>
+    <fragment
+        android:id="@+id/createGoalsFragment"
+        android:name="com.breckneck.debtbook.presentation.fragment.goals.CreateGoalsFragment"
+        android:label="CreateGoalsFragment"
+        tools:layout="@layout/fragment_create_goal"/>
 </navigation>
