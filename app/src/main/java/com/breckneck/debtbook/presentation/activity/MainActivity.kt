@@ -195,6 +195,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener,
                 R.id.mainFragment -> vm.setIsBottomNavBarVisible(isVisible = true)
                 R.id.settingsFragment -> vm.setIsBottomNavBarVisible(isVisible = true)
                 R.id.financeFragment -> vm.setIsBottomNavBarVisible(isVisible = true)
+                R.id.goalsFragment -> vm.setIsBottomNavBarVisible(isVisible = true)
                 else -> vm.setIsBottomNavBarVisible(isVisible = false)
             }
         }

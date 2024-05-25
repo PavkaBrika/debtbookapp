@@ -16,6 +16,8 @@ import com.breckneck.deptbook.domain.usecase.FinanceCategory.GetAllFinanceCatego
 import com.breckneck.deptbook.domain.usecase.FinanceCategory.GetFinanceCategoriesByState
 import com.breckneck.deptbook.domain.usecase.FinanceCategory.ReplaceAllFinanceCategories
 import com.breckneck.deptbook.domain.usecase.FinanceCategory.SetFinanceCategory
+import com.breckneck.deptbook.domain.usecase.Goal.GetAllGoals
+import com.breckneck.deptbook.domain.usecase.Goal.SetGoal
 import com.breckneck.deptbook.domain.usecase.Human.*
 import com.breckneck.deptbook.domain.usecase.Settings.*
 import org.koin.dsl.module
@@ -284,5 +286,15 @@ val domainModule = module {
 
     factory<GetClicksUseCase> {
         GetClicksUseCase(adRepository = get())
+    }
+
+    //GOALS
+
+    factory<GetAllGoals> {
+        GetAllGoals(goalRepository = get())
+    }
+
+    factory<SetGoal> {
+        SetGoal(goalRepository = get())
     }
 }

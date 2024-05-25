@@ -4,6 +4,7 @@ import androidx.room.*
 import entity.Debt
 import entity.FinanceCategoryData
 import entity.FinanceData
+import entity.GoalData
 import entity.Human
 import entity.relations.FinanceCategoryDataWithFinanceData
 import util.FinanceCategoryStateData
@@ -134,4 +135,18 @@ interface AppDao {
 
     @Update
     fun updateFinanceCategory(financeCategoryData: FinanceCategoryData)
+
+    //GOAL
+
+    @Query("SELECT * FROM goaldata")
+    fun getAllGoals(): List<GoalData>
+
+    @Insert
+    fun insertGoal(goalDate: GoalData)
+
+    @Delete
+    fun deleteGoal(goalDate: GoalData)
+
+    @Update
+    fun updateGoal(goalDate: GoalData)
 }

@@ -4,6 +4,7 @@ import com.breckneck.deptbook.data.storage.AdStorage
 import com.breckneck.deptbook.data.storage.DebtStorage
 import com.breckneck.deptbook.data.storage.FinanceCategoryStorage
 import com.breckneck.deptbook.data.storage.FinanceStorage
+import com.breckneck.deptbook.data.storage.GoalStorage
 import com.breckneck.deptbook.data.storage.HumanStorage
 import com.breckneck.deptbook.data.storage.SettingsStorage
 import com.breckneck.deptbook.domain.repository.AdRepository
@@ -14,14 +15,17 @@ import repository.HumanRepositoryImpl
 import com.breckneck.deptbook.domain.repository.DebtRepository
 import com.breckneck.deptbook.domain.repository.FinanceCategoryRepository
 import com.breckneck.deptbook.domain.repository.FinanceRepository
+import com.breckneck.deptbook.domain.repository.GoalRepository
 import com.breckneck.deptbook.domain.repository.HumanRepository
 import com.breckneck.deptbook.domain.repository.SettingsRepository
 import database.DataBaseFinanceCategoryStorageImpl
 import database.DataBaseFinanceStorageImpl
+import database.DataBaseGoalStorageImpl
 import org.koin.dsl.module
 import repository.AdRepositoryImpl
 import repository.FinanceCategoryRepositoryImpl
 import repository.FinanceRepositoryImpl
+import repository.GoalRepositoryImpl
 import repository.SettingsRepositoryImpl
 import sharedprefs.SharedPrefsAdStorageImpl
 import sharedprefs.SharedPrefsSettingsStorageImpl
@@ -88,4 +92,13 @@ val dataModule = module {
         AdRepositoryImpl(adStorage = get())
     }
 
+    //GOALS
+
+    factory<GoalStorage> {
+        DataBaseGoalStorageImpl(context = get())
+    }
+
+    factory<GoalRepository> {
+        GoalRepositoryImpl(goalStorage = get())
+    }
 }
