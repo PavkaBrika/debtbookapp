@@ -7,6 +7,7 @@ data class Goal(
     var name: String,
     var sum: Double,
     var savedSum: Double,
+    var currency: String,
     var creationDate: Date,
     var goalDate: Date
 )

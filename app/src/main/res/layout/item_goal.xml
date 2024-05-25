@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clipToPadding="false"
@@ -27,6 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:layout_weight="1"
+                android:visibility="gone"
                 android:src="@drawable/baseline_camera_24"
                 android:background="@color/red" />
 
@@ -45,20 +47,71 @@
                     android:textStyle="bold"
                     android:textSize="16sp"/>
 
-                <TextView
-                    android:id="@+id/goalAccumulatedMoneyTextView"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="100 USD / 1000 USD" />
+                    android:layout_height="wrap_content" >
 
-                <TextView
-                    android:id="@+id/goalRemainingMoneyTextView"
+                    <TextView
+                        android:id="@+id/goalSavedMoneyTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="100" />
+
+                    <TextView
+                        android:id="@+id/goalSavedMoneyCurrencyTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:text="USD" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=" / "
+                        tools:ignore="HardcodedText" />
+
+                    <TextView
+                        android:id="@+id/goalSumTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="1000" />
+
+                    <TextView
+                        android:id="@+id/goalSumCurrencyTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:text="USD" />
+
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="900 USD remaining" />
+                    android:layout_height="wrap_content" >
+
+                    <TextView
+                        android:id="@+id/goalRemainingMoneyTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="900" />
+
+                    <TextView
+                        android:id="@+id/goalRemainingMoneyCurrencyTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:text="USD" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/remaining"
+                        android:layout_marginStart="4dp" />
+
+                </LinearLayout>
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/okButton"
+                    android:id="@+id/addButton"
                     style="@style/FilledButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
