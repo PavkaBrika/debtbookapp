@@ -141,4 +141,5 @@
     <string name="add_new_goal">Add new goal</string>
     <string name="there_are_no_goals_yet_click_the_button_below_to_add">There are no goals yet. Click the button below to add.</string>
     <string name="remaining">remaining</string>
+    <string name="already_saved_sum">Already saved sum</string>
 </resources>

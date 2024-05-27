@@ -1,6 +1,7 @@
 package com.breckneck.debtbook.presentation.fragment.goals
 
 import android.content.Context
+import android.content.pm.ActivityInfo
 import android.graphics.Typeface
 import android.os.Bundle
 import android.os.Handler
@@ -56,6 +57,7 @@ class GoalsFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         setFragmentResultListener("goalsFragmentKey") { requestKey, bundle ->
             if (bundle.getBoolean("isListModified"))
                 vm.getAllGoals()

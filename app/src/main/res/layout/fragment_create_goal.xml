@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     style="@style/appBarLayoutStyle"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -72,9 +73,9 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
+                    android:layout_marginHorizontal="8dp"
                     android:layout_marginTop="48dp"
-                    android:layout_marginHorizontal="8dp">
+                    android:orientation="vertical">
 
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/goalNameCardView"
@@ -92,9 +93,9 @@
                                 style="?attr/textInputOutlinedStyle"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
+                                android:layout_marginStart="8dp"
                                 android:layout_marginEnd="8dp"
                                 android:layout_weight="1"
-                                android:layout_marginStart="8dp"
                                 android:hint="@string/name"
                                 android:paddingTop="16dp"
                                 android:theme="@style/TextInputLayoutTheme"
@@ -115,7 +116,7 @@
                     </com.google.android.material.card.MaterialCardView>
 
                     <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/debtCardView"
+                        android:id="@+id/goalPhotoCardView"
                         style="@style/CardViewStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -123,20 +124,49 @@
                         android:clickable="true"
                         android:focusable="true">
 
-                        <LinearLayout
+                        <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="@android:color/transparent"
-                            android:orientation="vertical">
+                            android:orientation="vertical"
+                            android:padding="12dp">
+
+                            <TextView
+                                android:id="@+id/textView"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="8dp"
+                                android:text="Goal`s photo"
+                                android:textSize="20sp"
+                                app:layout_constraintEnd_toStartOf="@+id/deleteGoalPhotoImageView"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <ImageView
+                                android:id="@+id/deleteGoalPhotoImageView"
+                                style="@style/imageViewButton"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/ic_baseline_delete_outline_24"
+                                android:visibility="visible"
+                                app:layout_constraintBottom_toBottomOf="@+id/textView"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="@+id/textView" />
 
                             <ImageView
                                 android:id="@+id/goalImageView"
-                                android:layout_width="match_parent"
-                                android:layout_height="200dp"
+                                android:layout_width="0dp"
+                                android:layout_height="0dp"
+                                android:layout_marginTop="12dp"
                                 android:layout_weight="1"
-                                android:src="@drawable/baseline_camera_24" />
+                                android:src="@drawable/baseline_camera_24"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintDimensionRatio="H,16:9"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/textView" />
 
-                        </LinearLayout>
+                        </androidx.constraintlayout.widget.ConstraintLayout>
 
                     </com.google.android.material.card.MaterialCardView>
 
@@ -144,36 +174,62 @@
                         style="@style/CardViewStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp" >
+                        android:layout_marginTop="8dp">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal">
 
-                            <com.google.android.material.textfield.TextInputLayout
-                                android:id="@+id/debtSumTextInput"
-                                style="?attr/textInputOutlinedStyle"
+                            <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="16dp"
-                                android:layout_marginEnd="8dp"
+                                android:layout_marginHorizontal="8dp"
+                                android:layout_marginVertical="16dp"
                                 android:layout_weight="1"
-                                android:layout_marginStart="8dp"
-                                android:hint="@string/sum"
-                                android:theme="@style/TextInputLayoutTheme"
-                                app:endIconMode="clear_text"
-                                app:errorEnabled="true">
+                                android:orientation="vertical">
 
-                                <com.google.android.material.textfield.TextInputEditText
-                                    android:id="@+id/goalSumEditText"
+                                <com.google.android.material.textfield.TextInputLayout
+                                    android:id="@+id/debtSumTextInput"
+                                    style="?attr/textInputOutlinedStyle"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:inputType="numberDecimal"
-                                    android:maxLength="10"
-                                    android:maxLines="1" />
 
-                            </com.google.android.material.textfield.TextInputLayout>
+                                    android:hint="@string/sum"
+                                    android:theme="@style/TextInputLayoutTheme"
+                                    app:endIconMode="clear_text"
+                                    app:errorEnabled="true">
+
+                                    <com.google.android.material.textfield.TextInputEditText
+                                        android:id="@+id/goalSumEditText"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:inputType="numberDecimal"
+                                        android:maxLength="10"
+                                        android:maxLines="1" />
+
+                                </com.google.android.material.textfield.TextInputLayout>
+
+                                <com.google.android.material.textfield.TextInputLayout
+                                    android:id="@+id/goalSavedSumTextInput"
+                                    style="?attr/textInputOutlinedStyle"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:hint="@string/already_saved_sum"
+                                    android:theme="@style/TextInputLayoutTheme"
+                                    app:endIconMode="clear_text">
+
+                                    <com.google.android.material.textfield.TextInputEditText
+                                        android:id="@+id/goalSavedSumEditText"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:inputType="numberDecimal"
+                                        android:maxLength="10"
+                                        android:maxLines="1" />
+
+                                </com.google.android.material.textfield.TextInputLayout>
+
+                            </LinearLayout>
 
                             <TextView
                                 style="@style/addNewHumanLines"
@@ -198,32 +254,32 @@
 
                     </com.google.android.material.card.MaterialCardView>
 
-<!--                    <com.google.android.material.card.MaterialCardView-->
-<!--                        style="@style/CardViewStyle"-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_marginVertical="8dp">-->
+                    <!--                    <com.google.android.material.card.MaterialCardView-->
+                    <!--                        style="@style/CardViewStyle"-->
+                    <!--                        android:layout_width="match_parent"-->
+                    <!--                        android:layout_height="wrap_content"-->
+                    <!--                        android:layout_marginVertical="8dp">-->
 
-<!--                        <com.google.android.material.textfield.TextInputLayout-->
-<!--                            android:id="@+id/goalInfoTextInput"-->
-<!--                            style="?attr/textInputOutlinedStyle"-->
-<!--                            android:layout_width="match_parent"-->
-<!--                            android:layout_height="wrap_content"-->
-<!--                            android:paddingHorizontal="8dp"-->
-<!--                            android:paddingVertical="8dp"-->
-<!--                            android:hint="@string/comment"-->
-<!--                            android:theme="@style/TextInputLayoutTheme"-->
-<!--                            app:endIconMode="clear_text"-->
-<!--                            app:errorEnabled="false">-->
+                    <!--                        <com.google.android.material.textfield.TextInputLayout-->
+                    <!--                            android:id="@+id/goalInfoTextInput"-->
+                    <!--                            style="?attr/textInputOutlinedStyle"-->
+                    <!--                            android:layout_width="match_parent"-->
+                    <!--                            android:layout_height="wrap_content"-->
+                    <!--                            android:paddingHorizontal="8dp"-->
+                    <!--                            android:paddingVertical="8dp"-->
+                    <!--                            android:hint="@string/comment"-->
+                    <!--                            android:theme="@style/TextInputLayoutTheme"-->
+                    <!--                            app:endIconMode="clear_text"-->
+                    <!--                            app:errorEnabled="false">-->
 
-<!--                            <com.google.android.material.textfield.TextInputEditText-->
-<!--                                android:id="@+id/goalInfoEditText"-->
-<!--                                android:layout_width="match_parent"-->
-<!--                                android:layout_height="wrap_content" />-->
+                    <!--                            <com.google.android.material.textfield.TextInputEditText-->
+                    <!--                                android:id="@+id/goalInfoEditText"-->
+                    <!--                                android:layout_width="match_parent"-->
+                    <!--                                android:layout_height="wrap_content" />-->
 
-<!--                        </com.google.android.material.textfield.TextInputLayout>-->
+                    <!--                        </com.google.android.material.textfield.TextInputLayout>-->
 
-<!--                    </com.google.android.material.card.MaterialCardView>-->
+                    <!--                    </com.google.android.material.card.MaterialCardView>-->
 
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/goalDateCardView"
@@ -234,17 +290,35 @@
                         android:clickable="true"
                         android:focusable="true">
 
-                        <TextView
-                            android:id="@+id/goalDateTextView"
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:orientation="vertical"
                             android:paddingHorizontal="4dp"
-                            android:paddingVertical="16dp"
-                            android:text="date"
-                            android:textAlignment="center"
-                            android:textSize="26sp" />
+                            android:paddingVertical="12dp">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginHorizontal="8dp"
+                                android:text="Goal`s date"
+                                android:textSize="20sp" />
+
+                            <TextView
+                                android:id="@+id/goalDateTextView"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Date"
+                                android:textAlignment="center"
+                                android:textColor="@color/darkgray"
+                                android:textSize="26sp" />
+                        </LinearLayout>
 
                     </com.google.android.material.card.MaterialCardView>
+
+                    <Space
+                        android:layout_width="match_parent"
+                        android:layout_height="150dp" />
 
                 </LinearLayout>
 

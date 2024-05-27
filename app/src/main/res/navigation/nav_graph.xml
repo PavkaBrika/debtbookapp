@@ -67,7 +67,7 @@
         android:id="@+id/newDebtFragment"
         android:name="com.breckneck.debtbook.presentation.fragment.debt.NewDebtFragment"
         android:label="NewDebtFragment"
-        tools:layout="@layout/fragment_addnewhuman">
+        tools:layout="@layout/fragment_create_human_debt">
         <action
             android:id="@+id/action_newDebtFragment_to_debtDetailsFragment"
             app:destination="@id/debtDetailsFragment"

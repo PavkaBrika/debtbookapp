@@ -1,5 +1,6 @@
 package com.breckneck.debtbook.presentation.viewmodel
 
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -20,7 +21,7 @@ class CreateGoalsFragmentViewModel(
 
     private val TAG = "CreateGoalsFragmentVM"
 
-    private val _goalDate = MutableLiveData<Date>()
+    private var _goalDate = MutableLiveData<Date>()
     val goalDate: LiveData<Date>
         get() = _goalDate
     private val _selectedCurrencyPosition = MutableLiveData<Int>()
@@ -32,6 +33,9 @@ class CreateGoalsFragmentViewModel(
     private val _currency = MutableLiveData<String>()
     val currency: LiveData<String>
         get() = _currency
+    private val _imageUri = MutableLiveData<Uri?>(null)
+    val imageUri: LiveData<Uri?>
+        get() = _imageUri
 
     private val disposeBag = CompositeDisposable()
 
@@ -66,6 +70,14 @@ class CreateGoalsFragmentViewModel(
 
     fun setCurrency(currency: String) {
         _currency.value = currency
+    }
+
+    fun setGoalDate(date: Date) {
+        _goalDate.value = date
+    }
+
+    fun setImageUri(uri: Uri?) {
+        _imageUri.value = uri
     }
 
     private fun getDefaultCurrency() {

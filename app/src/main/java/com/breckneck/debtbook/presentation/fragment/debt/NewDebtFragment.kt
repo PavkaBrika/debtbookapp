@@ -93,7 +93,7 @@ class NewDebtFragment: Fragment() {
 
     @SuppressLint("Range")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_addnewhuman, container, false)
+        return inflater.inflate(R.layout.fragment_create_human_debt, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
