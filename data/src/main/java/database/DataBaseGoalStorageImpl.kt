@@ -14,7 +14,11 @@ class DataBaseGoalStorageImpl(private val context: Context): GoalStorage {
         return db.appDao().getAllGoals()
     }
 
-    override fun setGoal(goal: GoalData) {
-        db.appDao().insertGoal(goalDate = goal)
+    override fun setGoal(goalData: GoalData) {
+        db.appDao().insertGoal(goalData = goalData)
+    }
+
+    override fun updateGoal(goalData: GoalData) {
+        db.appDao().updateGoal(goalData = goalData)
     }
 }

@@ -142,11 +142,11 @@ interface AppDao {
     fun getAllGoals(): List<GoalData>
 
     @Insert
-    fun insertGoal(goalDate: GoalData)
+    fun insertGoal(goalData: GoalData)
 
     @Delete
-    fun deleteGoal(goalDate: GoalData)
+    fun deleteGoal(goalData: GoalData)
 
     @Update
-    fun updateGoal(goalDate: GoalData)
+    fun updateGoal(goalData: GoalData)
 }

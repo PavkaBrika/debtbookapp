@@ -3,25 +3,33 @@ package com.breckneck.debtbook.presentation.fragment.goals
 import android.content.Context
 import android.graphics.Typeface
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.text.Editable
+import android.text.TextWatcher
 import android.transition.Fade
 import android.transition.TransitionManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.adapter.GoalAdapter
-import com.breckneck.debtbook.adapter.HumanAdapter
 import com.breckneck.debtbook.presentation.viewmodel.GoalsFragmentViewModel
 import com.breckneck.deptbook.domain.model.Goal
-import com.breckneck.deptbook.domain.model.HumanDomain
 import com.breckneck.deptbook.domain.util.ListState
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class GoalsFragment: Fragment() {
@@ -37,8 +45,10 @@ class GoalsFragment: Fragment() {
         fun onAddGoalButtonClick()
     }
 
+    private var onButtonClickListener: OnClickListener? = null
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        onButtonClickListener = context as OnClickListener
     }
 
     override fun onCreateView(
@@ -46,6 +56,11 @@ class GoalsFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        setFragmentResultListener("goalsFragmentKey") { requestKey, bundle ->
+            if (bundle.getBoolean("isListModified"))
+                vm.getAllGoals()
+        }
+        vm.setListState(state = ListState.LOADING)
         return inflater.inflate(R.layout.fragment_goal, container, false)
     }
 
@@ -54,6 +69,10 @@ class GoalsFragment: Fragment() {
         collaps.apply {
             setCollapsedTitleTypeface(Typeface.DEFAULT_BOLD)
             setExpandedTitleTypeface(Typeface.DEFAULT_BOLD)
+        }
+
+        if (vm.isAddSumDialogOpened) {
+            openAddSavedGoalSumDialog(goal = vm.changedGoal!!, position = vm.changedGoalPosition!!)
         }
 
         val goalsLayout: ConstraintLayout = view.findViewById(R.id.goalsLayout)
@@ -99,7 +118,7 @@ class GoalsFragment: Fragment() {
             }
 
             override fun onAddButtonClick(goal: Goal, position: Int) {
-
+                openAddSavedGoalSumDialog(goal = goal, position = position)
             }
         }
         goalAdapter = GoalAdapter(goalListImmutable = listOf(), goalClickListener)
@@ -107,7 +126,7 @@ class GoalsFragment: Fragment() {
 
         val addGoalsButton: FloatingActionButton = view.findViewById(R.id.addGoalsButton)
         addGoalsButton.setOnClickListener {
-
+            onButtonClickListener?.onAddGoalButtonClick()
         }
 
         super.onViewCreated(view, savedInstanceState)
@@ -116,10 +135,71 @@ class GoalsFragment: Fragment() {
     override fun onResume() {
         super.onResume()
 
-        vm.goalList.observe(viewLifecycleOwner) { goalList ->
-            goalAdapter.updateGoalList(goalList)
-            Log.e(TAG, "data in adapter link success")
-        }
+        Handler(Looper.getMainLooper()).postDelayed({
+            vm.goalList.observe(viewLifecycleOwner) { goalList ->
+                if (goalList.isNotEmpty()) {
+                    goalAdapter.updateGoalList(goalList)
+                    Log.e(TAG, "data in adapter link success")
+                    vm.setListState(state = ListState.FILLED)
+                }
+            }
+        }, 400)
     }
 
+
+    private fun openAddSavedGoalSumDialog(goal: Goal, position: Int) {
+        val dialog = BottomSheetDialog(requireActivity())
+        dialog.setContentView(R.layout.dialog_add_goal_sum)
+        vm.onOpenAddSavedSumChangeDialog(changedGoal = goal, changedGoalPosition = position)
+        val goalSumTextInput: TextInputLayout = dialog.findViewById(R.id.goalSumTextInput)!!
+        val goalSumEditText: TextInputEditText = dialog.findViewById(R.id.goalSumEditText)!!
+
+        goalSumEditText.addTextChangedListener {
+            object : TextWatcher {
+                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+                override fun afterTextChanged(editable: Editable?) {
+                    val str = editable.toString()
+                    val position = str.indexOf(".")
+                    if (position != -1) {
+                        val subStr = str.substring(position)
+                        val subStrStart = str.substring(0, position)
+                        if ((subStr.length > 3) || (subStrStart.length == 0))
+                            editable?.delete(editable.length - 1, editable.length)
+                    }
+                }
+            }
+        }
+
+        dialog.findViewById<Button>(R.id.confirmButton)!!.setOnClickListener {
+            val savedSum = goalSumEditText.text.toString().trim()
+            if (savedSum.isEmpty())
+                goalSumTextInput.error = getString(R.string.youmustentername)
+            else {
+                addSavedGoalSum(goal = goal, position = position, sum = savedSum.toDouble())
+                dialog.dismiss()
+            }
+        }
+
+        dialog.findViewById<Button>(R.id.cancelButton)!!.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.setOnDismissListener {
+            vm.onCloseAddSumChangeDialog()
+        }
+        dialog.setOnCancelListener {
+            vm.onCloseAddSumChangeDialog()
+        }
+
+        dialog.show()
+    }
+
+    private fun addSavedGoalSum(goal: Goal, position: Int, sum: Double) {
+        goal.savedSum += sum
+        goalAdapter.updateGoal(goal = goal, position = position)
+        vm.updateGoal(goal = goal)
+    }
 }

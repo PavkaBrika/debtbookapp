@@ -6,5 +6,7 @@ interface GoalStorage {
 
     fun getAllGoals(): List<GoalData>
 
-    fun setGoal(goal: GoalData)
+    fun setGoal(goalData: GoalData)
+
+    fun updateGoal(goalData: GoalData)
 }

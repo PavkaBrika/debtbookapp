@@ -7,4 +7,6 @@ interface GoalRepository {
     fun getAllGoals(): List<Goal>
 
     fun setGoal(goal: Goal)
+
+    fun updateGoal(goal: Goal)
 }

@@ -23,7 +23,21 @@ class GoalRepositoryImpl(private val goalStorage: GoalStorage) : GoalRepository 
 
     override fun setGoal(goal: Goal) {
         goalStorage.setGoal(
-            goal = GoalData(
+            goalData = GoalData(
+                id = goal.id,
+                name = goal.name,
+                sum = goal.sum,
+                savedSum = goal.savedSum,
+                creationDate = goal.creationDate,
+                goalDate = goal.goalDate,
+                currency = goal.currency
+            )
+        )
+    }
+
+    override fun updateGoal(goal: Goal) {
+        goalStorage.updateGoal(
+            goalData = GoalData(
                 id = goal.id,
                 name = goal.name,
                 sum = goal.sum,

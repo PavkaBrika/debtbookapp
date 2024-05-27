@@ -37,6 +37,7 @@ class CreateGoalsFragmentViewModel(
 
     init {
         Log.e(TAG, "Initialized")
+        getDefaultCurrency()
     }
 
     fun setGoal(goal: Goal) {

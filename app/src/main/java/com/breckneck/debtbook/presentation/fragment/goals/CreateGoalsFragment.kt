@@ -20,8 +20,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.adapter.SettingsAdapter
 import com.breckneck.debtbook.presentation.viewmodel.CreateGoalsFragmentViewModel
+import com.breckneck.deptbook.domain.model.Goal
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.Calendar
 
@@ -63,7 +65,7 @@ class CreateGoalsFragment: Fragment() {
             getString(R.string.sek), getString(R.string.mxn)
         )
 
-        val collaps: CollapsingToolbarLayout = view.findViewById(R.id.collaps)
+        val collaps: CollapsingToolbarLayout = view.findViewById(R.id.collapsNewGoal)
         collaps.apply {
             setCollapsedTitleTypeface(Typeface.DEFAULT_BOLD)
             setExpandedTitleTypeface(Typeface.DEFAULT_BOLD)
@@ -131,6 +133,18 @@ class CreateGoalsFragment: Fragment() {
             val calendar = Calendar.getInstance()
 //            calendar.timeInMillis = vm.dayInMillis.value!!
 //            vm.setCurrentDate(calendar.time)
+        }
+
+        val setFinanceButton: FloatingActionButton = view.findViewById(R.id.setFinanceButton)
+        setFinanceButton.setOnClickListener {
+            vm.setGoal(goal = Goal(
+                name = goalNameEditText.text.toString(),
+                sum = goalSumEditText.text.toString().toDouble(),
+                savedSum = 0.0,
+                currency = vm.currency.value!!,
+                creationDate = Calendar.getInstance().time,
+                goalDate = Calendar.getInstance().time
+            ))
         }
 
         super.onViewCreated(view, savedInstanceState)

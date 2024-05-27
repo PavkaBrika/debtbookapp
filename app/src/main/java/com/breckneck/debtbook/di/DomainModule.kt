@@ -18,6 +18,7 @@ import com.breckneck.deptbook.domain.usecase.FinanceCategory.ReplaceAllFinanceCa
 import com.breckneck.deptbook.domain.usecase.FinanceCategory.SetFinanceCategory
 import com.breckneck.deptbook.domain.usecase.Goal.GetAllGoals
 import com.breckneck.deptbook.domain.usecase.Goal.SetGoal
+import com.breckneck.deptbook.domain.usecase.Goal.UpdateGoal
 import com.breckneck.deptbook.domain.usecase.Human.*
 import com.breckneck.deptbook.domain.usecase.Settings.*
 import org.koin.dsl.module
@@ -296,5 +297,9 @@ val domainModule = module {
 
     factory<SetGoal> {
         SetGoal(goalRepository = get())
+    }
+
+    factory<UpdateGoal> {
+        UpdateGoal(goalRepository = get())
     }
 }
