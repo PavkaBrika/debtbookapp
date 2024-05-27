@@ -77,7 +77,7 @@
                     android:layout_marginHorizontal="8dp">
 
                     <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/humanNameCardView"
+                        android:id="@+id/goalNameCardView"
                         style="@style/CardViewStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
@@ -88,7 +88,7 @@
                             android:orientation="horizontal">
 
                             <com.google.android.material.textfield.TextInputLayout
-                                android:id="@+id/humanNameTextInput"
+                                android:id="@+id/goalNameTextInput"
                                 style="?attr/textInputOutlinedStyle"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
@@ -102,36 +102,13 @@
                                 app:errorEnabled="true">
 
                                 <com.google.android.material.textfield.TextInputEditText
-                                    android:id="@+id/humanNameEditText"
+                                    android:id="@+id/goalNameEditText"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:lines="1"
                                     android:maxLength="20" />
 
                             </com.google.android.material.textfield.TextInputLayout>
-
-                            <TextView
-                                style="@style/addNewHumanLines"
-                                android:layout_width="1dp"
-                                android:layout_height="match_parent" />
-
-                            <RelativeLayout
-                                android:id="@+id/contactsLayout"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_weight="3"
-                                android:foreground="?android:attr/selectableItemBackground">
-
-                                <ImageView
-                                    android:id="@+id/contactsImageView"
-                                    style="@style/imageViewButton"
-                                    android:layout_width="40dp"
-                                    android:layout_height="match_parent"
-                                    android:layout_centerInParent="true"
-                                    android:layout_marginStart="4dp"
-                                    android:src="@drawable/outline_contacts_24" />
-
-                            </RelativeLayout>
 
                         </LinearLayout>
 
@@ -189,7 +166,7 @@
                                 app:errorEnabled="true">
 
                                 <com.google.android.material.textfield.TextInputEditText
-                                    android:id="@+id/debtSumEditText"
+                                    android:id="@+id/goalSumEditText"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:inputType="numberDecimal"
@@ -204,7 +181,7 @@
                                 android:layout_height="match_parent" />
 
                             <TextView
-                                android:id="@+id/debtCurrencyTextView"
+                                android:id="@+id/goalCurrencyTextView"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:layout_gravity="center_vertical"
@@ -221,8 +198,35 @@
 
                     </com.google.android.material.card.MaterialCardView>
 
+<!--                    <com.google.android.material.card.MaterialCardView-->
+<!--                        style="@style/CardViewStyle"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_marginVertical="8dp">-->
+
+<!--                        <com.google.android.material.textfield.TextInputLayout-->
+<!--                            android:id="@+id/goalInfoTextInput"-->
+<!--                            style="?attr/textInputOutlinedStyle"-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:paddingHorizontal="8dp"-->
+<!--                            android:paddingVertical="8dp"-->
+<!--                            android:hint="@string/comment"-->
+<!--                            android:theme="@style/TextInputLayoutTheme"-->
+<!--                            app:endIconMode="clear_text"-->
+<!--                            app:errorEnabled="false">-->
+
+<!--                            <com.google.android.material.textfield.TextInputEditText-->
+<!--                                android:id="@+id/goalInfoEditText"-->
+<!--                                android:layout_width="match_parent"-->
+<!--                                android:layout_height="wrap_content" />-->
+
+<!--                        </com.google.android.material.textfield.TextInputLayout>-->
+
+<!--                    </com.google.android.material.card.MaterialCardView>-->
+
                     <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/debtDateCardView"
+                        android:id="@+id/goalDateCardView"
                         style="@style/CardViewStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -231,7 +235,7 @@
                         android:focusable="true">
 
                         <TextView
-                            android:id="@+id/debtDateTextView"
+                            android:id="@+id/goalDateTextView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:paddingHorizontal="4dp"
@@ -239,33 +243,6 @@
                             android:text="date"
                             android:textAlignment="center"
                             android:textSize="26sp" />
-
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <com.google.android.material.card.MaterialCardView
-                        style="@style/CardViewStyle"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginVertical="8dp">
-
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/debtInfoTextInput"
-                            style="?attr/textInputOutlinedStyle"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingHorizontal="8dp"
-                            android:paddingVertical="8dp"
-                            android:hint="@string/comment"
-                            android:theme="@style/TextInputLayoutTheme"
-                            app:endIconMode="clear_text"
-                            app:errorEnabled="false">
-
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/debtInfoEditText"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content" />
-
-                        </com.google.android.material.textfield.TextInputLayout>
 
                     </com.google.android.material.card.MaterialCardView>
 

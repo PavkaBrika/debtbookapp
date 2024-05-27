@@ -27,6 +27,8 @@ import com.breckneck.debtbook.presentation.fragment.finance.CreateFinanceCategor
 import com.breckneck.debtbook.presentation.fragment.finance.CreateFinanceFragment
 import com.breckneck.debtbook.presentation.fragment.finance.FinanceDetailsFragment
 import com.breckneck.debtbook.presentation.fragment.finance.FinanceFragment
+import com.breckneck.debtbook.presentation.fragment.goals.CreateGoalsFragment
+import com.breckneck.debtbook.presentation.fragment.goals.GoalsFragment
 import com.breckneck.debtbook.presentation.fragment.settings.SettingsFragment
 import com.breckneck.debtbook.presentation.fragment.settings.SynchronizationFragment
 import com.breckneck.debtbook.presentation.viewmodel.MainActivityViewModel
@@ -55,7 +57,8 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener,
     NewDebtFragment.OnButtonClickListener, DebtDetailsFragment.OnButtonClickListener,
     SettingsFragment.OnButtonClickListener, SynchronizationFragment.SynchronizationInterface,
     FinanceFragment.OnButtonClickListener, CreateFinanceFragment.OnClickListener,
-    CreateFinanceCategoryFragment.OnClickListener, FinanceDetailsFragment.OnClickListener {
+    CreateFinanceCategoryFragment.OnClickListener, FinanceDetailsFragment.OnClickListener,
+    GoalsFragment.OnClickListener, CreateGoalsFragment.OnButtonClickListener {
 
     private var interstitialAd: InterstitialAd? = null
     private var interstitialAdLoader: InterstitialAdLoader? = null
@@ -440,6 +443,13 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener,
 
     override fun onAuthorizationButtonClick() {
         navController.navigate(R.id.action_settingsFragment_to_synchronizationFragment)
+    }
+
+    //goals interface
+
+    override fun onAddGoalButtonClick() {
+        navController.navigate(R.id.action_goalsFragment_to_createGoalsFragment)
+        vm.onActionClick()
     }
 
     private fun showAppRateDialog(isFromSettings: Boolean) {

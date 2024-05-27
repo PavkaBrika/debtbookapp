@@ -30,9 +30,10 @@ class GoalsFragmentViewModel(
 
     init {
         Log.e(TAG, "initialized")
+        getAllGoals()
     }
 
-    fun getAllGoals() {
+    private fun getAllGoals() {
         val result = Single.create {
             it.onSuccess(getAllGoals.execute())
         }
@@ -41,7 +42,7 @@ class GoalsFragmentViewModel(
             .doOnSubscribe {
                 _goalListState.value = ListState.LOADING
             }
-            .delay(400, TimeUnit.MILLISECONDS)
+            .delay(400, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
             .subscribe({
                 _goalList.value = it
                 if (_goalList.value!!.isEmpty())
@@ -51,9 +52,12 @@ class GoalsFragmentViewModel(
             }, {
                 Log.e(TAG, it.message.toString())
             })
+        disposeBag.add(result)
     }
 
     override fun onCleared() {
         super.onCleared()
+        disposeBag.clear()
+        Log.e(TAG, "cleared")
     }
 }

@@ -138,7 +138,7 @@ interface AppDao {
 
     //GOAL
 
-    @Query("SELECT * FROM goaldata")
+    @Query("SELECT * FROM GoalData")
     fun getAllGoals(): List<GoalData>
 
     @Insert

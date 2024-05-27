@@ -13,5 +13,5 @@ data class GoalData(
     var savedSum: Double,
     var currency: String,
     var creationDate: Date,
-    var goalDate: Date
+    var goalDate: Date?
 )

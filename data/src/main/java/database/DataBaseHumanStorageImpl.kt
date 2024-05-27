@@ -37,6 +37,13 @@ class DataBaseHumanStorageImpl(context: Context) : HumanStorage {
         }
     }
 
+    private val MIGRATION_13_14 = object: Migration(13, 14) {
+        override fun migrate(database: SupportSQLiteDatabase) {
+            database.execSQL("CREATE TABLE IF NOT EXISTS 'GoalData' ('id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 'name' TEXT NOT NULL, 'sum' REAL NOT NULL, 'savedSum' REAL NOT NULL, 'currency' TEXT NOT NULL, 'creationDate' INTEGER NOT NULL, 'goalDate' INTEGER)")
+            database.execSQL("CREATE TABLE IF NOT EXISTS 'GoalDepositData' ('id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 'sum' REAL NOT NULL, 'date' INTEGER NOT NULL, 'goalId' INTEGER NOT NULL, FOREIGN KEY('goalId') REFERENCES 'GoalData'('id') ON UPDATE NO ACTION ON DELETE CASCADE)")
+        }
+    }
+
     private val roomDatabaseCallback = object: RoomDatabase.Callback() {
         override fun onCreate(database: SupportSQLiteDatabase) {
             insertInitialFinanceCategoryData(database = database)
@@ -222,7 +229,7 @@ class DataBaseHumanStorageImpl(context: Context) : HumanStorage {
 
     val db = Room.databaseBuilder(context, AppDataBase::class.java, DATA_BASE_NAME)
         .addCallback(roomDatabaseCallback)
-        .addMigrations(MIGRATION_5_11, MIGRATION_11_12, MIGRATION_12_13)
+        .addMigrations(MIGRATION_5_11, MIGRATION_11_12, MIGRATION_12_13, MIGRATION_13_14)
         .build()
 
     override fun getAllHumans(): List<Human> {

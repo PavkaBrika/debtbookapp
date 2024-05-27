@@ -2,6 +2,7 @@ package com.breckneck.debtbook.di
 
 import com.breckneck.debtbook.presentation.viewmodel.CreateFinanceCategoryViewModel
 import com.breckneck.debtbook.presentation.viewmodel.CreateFinanceViewModel
+import com.breckneck.debtbook.presentation.viewmodel.CreateGoalsFragmentViewModel
 import com.breckneck.debtbook.presentation.viewmodel.SynchronizationViewModel
 import com.breckneck.debtbook.presentation.viewmodel.DebtDetailsViewModel
 import com.breckneck.debtbook.presentation.viewmodel.FinanceDetailsViewModel
@@ -132,6 +133,15 @@ val appModule = module {
     }
 
     viewModel<GoalsFragmentViewModel> {
-        GoalsFragmentViewModel()
+        GoalsFragmentViewModel(
+            getAllGoals = get()
+        )
+    }
+
+    viewModel<CreateGoalsFragmentViewModel> {
+        CreateGoalsFragmentViewModel(
+            setGoal = get(),
+            getDefaultCurrency = get()
+        )
     }
 }

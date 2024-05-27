@@ -21,6 +21,7 @@ import com.breckneck.deptbook.domain.model.HumanDomain
 import com.breckneck.deptbook.domain.util.ListState
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class GoalsFragment: Fragment() {
@@ -32,6 +33,9 @@ class GoalsFragment: Fragment() {
     lateinit var goalsRecyclerView: RecyclerView
     lateinit var goalAdapter: GoalAdapter
 
+    interface OnClickListener {
+        fun onAddGoalButtonClick()
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -100,6 +104,11 @@ class GoalsFragment: Fragment() {
         }
         goalAdapter = GoalAdapter(goalListImmutable = listOf(), goalClickListener)
         goalsRecyclerView.adapter = goalAdapter
+
+        val addGoalsButton: FloatingActionButton = view.findViewById(R.id.addGoalsButton)
+        addGoalsButton.setOnClickListener {
+
+        }
 
         super.onViewCreated(view, savedInstanceState)
     }
