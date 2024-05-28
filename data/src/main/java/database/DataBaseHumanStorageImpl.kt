@@ -39,7 +39,7 @@ class DataBaseHumanStorageImpl(context: Context) : HumanStorage {
 
     private val MIGRATION_13_14 = object: Migration(13, 14) {
         override fun migrate(database: SupportSQLiteDatabase) {
-            database.execSQL("CREATE TABLE IF NOT EXISTS 'GoalData' ('id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 'name' TEXT NOT NULL, 'sum' REAL NOT NULL, 'savedSum' REAL NOT NULL, 'currency' TEXT NOT NULL, 'creationDate' INTEGER NOT NULL, 'goalDate' INTEGER)")
+            database.execSQL("CREATE TABLE IF NOT EXISTS 'GoalData' ('id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 'name' TEXT NOT NULL, 'sum' REAL NOT NULL, 'savedSum' REAL NOT NULL, 'currency' TEXT NOT NULL, 'photoPath' TEXT, 'creationDate' INTEGER NOT NULL, 'goalDate' INTEGER)")
             database.execSQL("CREATE TABLE IF NOT EXISTS 'GoalDepositData' ('id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 'sum' REAL NOT NULL, 'date' INTEGER NOT NULL, 'goalId' INTEGER NOT NULL, FOREIGN KEY('goalId') REFERENCES 'GoalData'('id') ON UPDATE NO ACTION ON DELETE CASCADE)")
         }
     }

@@ -2,7 +2,6 @@ package com.breckneck.debtbook.presentation.fragment.goals
 
 import android.app.DatePickerDialog
 import android.content.Context
-import android.content.Intent
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
@@ -16,8 +15,6 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.cardview.widget.CardView
@@ -212,29 +209,35 @@ class CreateGoalsFragment : Fragment() {
                     } catch (e: NumberFormatException) {
                         0.0
                     },
+                    photoPath = savePhotoToInternalStorage(vm.imageUri.value),
                     currency = vm.currency.value!!,
                     creationDate = Calendar.getInstance().time,
                     goalDate = vm.goalDate.value
                 )
             )
-            if (vm.imageUri.value != null) {
-                val inputStream =
-                    requireContext().contentResolver.openInputStream(vm.imageUri.value!!)
-                val outputStream =
-                    requireContext().openFileOutput("image.jpg", Context.MODE_PRIVATE)
-                inputStream?.use { input ->
-                    outputStream.use { output ->
-                        input.copyTo(output)
-                    }
-                }
-            }
         }
-
         super.onViewCreated(view, savedInstanceState)
     }
 
     override fun onResume() {
         super.onResume()
+    }
+
+    private fun savePhotoToInternalStorage(uri: Uri?): String? {
+        return if (uri != null) {
+            val inputStream =
+                requireContext().contentResolver.openInputStream(vm.imageUri.value!!)
+            val outputStream =
+                requireContext().openFileOutput(uri.pathSegments.last() + ".jpg", Context.MODE_PRIVATE)
+            inputStream?.use { input ->
+                outputStream.use { output ->
+                    input.copyTo(output)
+                }
+            }
+            "${requireContext().filesDir.absolutePath}/${uri.pathSegments.last()}.jpg"
+        } else {
+            null
+        }
     }
 
     private fun showCurrencyDialog(

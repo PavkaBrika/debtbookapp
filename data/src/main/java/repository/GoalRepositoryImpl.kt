@@ -16,7 +16,8 @@ class GoalRepositoryImpl(private val goalStorage: GoalStorage) : GoalRepository 
                 savedSum = goalData.savedSum,
                 creationDate = goalData.creationDate,
                 goalDate = goalData.goalDate,
-                currency = goalData.currency
+                currency = goalData.currency,
+                photoPath = goalData.photoPath
             )
         }
     }
@@ -30,7 +31,8 @@ class GoalRepositoryImpl(private val goalStorage: GoalStorage) : GoalRepository 
                 savedSum = goal.savedSum,
                 creationDate = goal.creationDate,
                 goalDate = goal.goalDate,
-                currency = goal.currency
+                currency = goal.currency,
+                photoPath = goal.photoPath
             )
         )
     }
@@ -44,7 +46,8 @@ class GoalRepositoryImpl(private val goalStorage: GoalStorage) : GoalRepository 
                 savedSum = goal.savedSum,
                 creationDate = goal.creationDate,
                 goalDate = goal.goalDate,
-                currency = goal.currency
+                currency = goal.currency,
+                photoPath = goal.photoPath
             )
         )
     }

@@ -8,6 +8,7 @@ data class Goal(
     var sum: Double,
     var savedSum: Double,
     var currency: String,
+    var photoPath: String?,
     var creationDate: Date,
     var goalDate: Date?
 )

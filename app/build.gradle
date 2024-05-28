@@ -100,4 +100,7 @@ dependencies {
 
     //Shimmer (pre-loading recycler view effect)
     implementation "com.facebook.shimmer:shimmer:0.1.0@aar"
+
+    //Glide (for smooth recycler view with ImageView scrolling)
+    implementation 'com.github.bumptech.glide:glide:4.16.0'
 }

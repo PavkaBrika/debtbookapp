@@ -1,16 +1,32 @@
 package com.breckneck.debtbook.adapter
 
 import android.annotation.SuppressLint
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.drawable.Drawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.deptbook.domain.model.Goal
 import com.breckneck.deptbook.domain.model.HumanDomain
+import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestBuilder
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.schedulers.Schedulers
+import java.io.File
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 
@@ -19,6 +35,7 @@ class GoalAdapter(
     private val goalClickListener: OnGoalClickListener
 ) : RecyclerView.Adapter<GoalAdapter.GoalViewHolder>() {
 
+    private val TAG = "GoalAdapter"
     private val decimalFormat = DecimalFormat("###,###,###.##")
     private val customSymbol: DecimalFormatSymbols = DecimalFormatSymbols()
     private val goalList: MutableList<Goal> = goalListImmutable.toMutableList()
@@ -46,6 +63,7 @@ class GoalAdapter(
         val savedMoneyTextView: TextView = itemView.findViewById(R.id.goalSavedMoneyTextView)
         val sumTextView: TextView = itemView.findViewById(R.id.goalSumTextView)
         val goalRemainingMoneyTextView: TextView = itemView.findViewById(R.id.goalRemainingMoneyTextView)
+        val goalImageView: ImageView = itemView.findViewById(R.id.goalImageView)
 
         val goalSavedMoneyCurrencyTextView: TextView = itemView.findViewById(R.id.goalSavedMoneyCurrencyTextView)
         val goalSumCurrencyTextView: TextView = itemView.findViewById(R.id.goalSumCurrencyTextView)
@@ -72,6 +90,32 @@ class GoalAdapter(
         holder.goalSavedMoneyCurrencyTextView.text = goal.currency
         holder.goalSumCurrencyTextView.text = goal.currency
         holder.goalRemainingMoneyCurrencyTextView.text = goal.currency
+
+        val result = Glide.with(holder.goalImageView.context)
+            .load(goal.photoPath)
+            .listener(object: RequestListener<Drawable> {
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any?,
+                    target: Target<Drawable>,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    holder.goalImageView.visibility = View.GONE
+                    return false
+                }
+
+                override fun onResourceReady(
+                    resource: Drawable,
+                    model: Any,
+                    target: Target<Drawable>?,
+                    dataSource: DataSource,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    holder.goalImageView.visibility = View.VISIBLE
+                    return false
+                }
+            })
+            .into(holder.goalImageView)
 
         holder.addButton.setOnClickListener {
             goalClickListener.onAddButtonClick(goal = goal, position = position)

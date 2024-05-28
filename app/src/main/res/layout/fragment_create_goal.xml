@@ -149,6 +149,7 @@
                                 android:layout_height="wrap_content"
                                 android:src="@drawable/ic_baseline_delete_outline_24"
                                 android:visibility="visible"
+                                android:adjustViewBounds="true"
                                 app:layout_constraintBottom_toBottomOf="@+id/textView"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintTop_toTopOf="@+id/textView" />
