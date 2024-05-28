@@ -51,18 +51,20 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="DEFAULT GOAL NAME"
-                    android:textSize="16sp"
+                    android:textSize="20sp"
                     android:textStyle="bold" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp">
 
                     <TextView
                         android:id="@+id/goalSavedMoneyTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="100" />
+                        android:text="100"
+                        android:textSize="16sp"/>
 
                     <TextView
                         android:id="@+id/goalSavedMoneyCurrencyTextView"
@@ -81,7 +83,8 @@
                         android:id="@+id/goalSumTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="1000" />
+                        android:text="1000"
+                        android:textSize="16sp"/>
 
                     <TextView
                         android:id="@+id/goalSumCurrencyTextView"
@@ -94,13 +97,15 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp">
 
                     <TextView
                         android:id="@+id/goalRemainingMoneyTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="900" />
+                        android:text="900"
+                        android:textSize="16sp" />
 
                     <TextView
                         android:id="@+id/goalRemainingMoneyCurrencyTextView"

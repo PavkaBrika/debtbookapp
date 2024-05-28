@@ -91,31 +91,35 @@ class GoalAdapter(
         holder.goalSumCurrencyTextView.text = goal.currency
         holder.goalRemainingMoneyCurrencyTextView.text = goal.currency
 
-        val result = Glide.with(holder.goalImageView.context)
-            .load(goal.photoPath)
-            .listener(object: RequestListener<Drawable> {
-                override fun onLoadFailed(
-                    e: GlideException?,
-                    model: Any?,
-                    target: Target<Drawable>,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    holder.goalImageView.visibility = View.GONE
-                    return false
-                }
+        if ((goal.photoPath != null) && (File(goal.photoPath!!).exists())) {
+            holder.goalImageView.visibility = View.VISIBLE
+            val result = Glide.with(holder.goalImageView.context)
+                .load(goal.photoPath)
+                .listener(object: RequestListener<Drawable> {
+                    override fun onLoadFailed(
+                        e: GlideException?,
+                        model: Any?,
+                        target: Target<Drawable>,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        holder.goalImageView.visibility = View.GONE
+                        return false
+                    }
 
-                override fun onResourceReady(
-                    resource: Drawable,
-                    model: Any,
-                    target: Target<Drawable>?,
-                    dataSource: DataSource,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    holder.goalImageView.visibility = View.VISIBLE
-                    return false
-                }
-            })
-            .into(holder.goalImageView)
+                    override fun onResourceReady(
+                        resource: Drawable,
+                        model: Any,
+                        target: Target<Drawable>?,
+                        dataSource: DataSource,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        return false
+                    }
+                })
+                .into(holder.goalImageView)
+        } else {
+            holder.goalImageView.visibility = View.GONE
+        }
 
         holder.addButton.setOnClickListener {
             goalClickListener.onAddButtonClick(goal = goal, position = position)
