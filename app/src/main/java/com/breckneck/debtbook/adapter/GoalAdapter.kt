@@ -3,6 +3,7 @@ package com.breckneck.debtbook.adapter
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,8 +11,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.deptbook.domain.model.Goal
@@ -29,6 +32,8 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import java.io.File
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
+import java.text.SimpleDateFormat
+import java.util.Date
 
 class GoalAdapter(
     goalListImmutable: List<Goal>,
@@ -37,6 +42,7 @@ class GoalAdapter(
 
     private val TAG = "GoalAdapter"
     private val decimalFormat = DecimalFormat("###,###,###.##")
+    private val sdf = SimpleDateFormat("d MMM yyyy")
     private val customSymbol: DecimalFormatSymbols = DecimalFormatSymbols()
     private val goalList: MutableList<Goal> = goalListImmutable.toMutableList()
 
@@ -64,6 +70,10 @@ class GoalAdapter(
         val sumTextView: TextView = itemView.findViewById(R.id.goalSumTextView)
         val goalRemainingMoneyTextView: TextView = itemView.findViewById(R.id.goalRemainingMoneyTextView)
         val goalImageView: ImageView = itemView.findViewById(R.id.goalImageView)
+        val goalInfoCardView: CardView = itemView.findViewById(R.id.goalInfoCardView)
+        val goalDateLayout: LinearLayout = itemView.findViewById(R.id.goalDateLayout)
+        val goalDateTextView: TextView = itemView.findViewById(R.id.goalDateTextView)
+        val goalDateImageView: ImageView = itemView.findViewById(R.id.goalDateImageView)
 
         val goalSavedMoneyCurrencyTextView: TextView = itemView.findViewById(R.id.goalSavedMoneyCurrencyTextView)
         val goalSumCurrencyTextView: TextView = itemView.findViewById(R.id.goalSumCurrencyTextView)
@@ -90,6 +100,19 @@ class GoalAdapter(
         holder.goalSavedMoneyCurrencyTextView.text = goal.currency
         holder.goalSumCurrencyTextView.text = goal.currency
         holder.goalRemainingMoneyCurrencyTextView.text = goal.currency
+
+        if (goal.goalDate != null) {
+            holder.goalDateLayout.visibility = View.VISIBLE
+            if (goal.goalDate!!.before(Date())) {
+                holder.goalDateTextView.text = ContextCompat.getString(holder.goalDateLayout.context, R.string.overdue)
+                holder.goalDateTextView.setTextColor(Color.RED)
+                holder.goalDateImageView.setColorFilter(Color.RED)
+            } else {
+                holder.goalDateTextView.text = sdf.format(goal.goalDate!!)
+            }
+        } else {
+            holder.goalDateLayout.visibility = View.GONE
+        }
 
         if ((goal.photoPath != null) && (File(goal.photoPath!!).exists())) {
             holder.goalImageView.visibility = View.VISIBLE
@@ -119,6 +142,9 @@ class GoalAdapter(
                 .into(holder.goalImageView)
         } else {
             holder.goalImageView.visibility = View.GONE
+            val param = holder.goalInfoCardView.layoutParams as ViewGroup.MarginLayoutParams
+            param.topMargin = 0
+            holder.goalInfoCardView.layoutParams = param
         }
 
         holder.addButton.setOnClickListener {
