@@ -33,7 +33,9 @@ import java.io.File
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.text.SimpleDateFormat
+import java.time.Duration
 import java.util.Date
+import java.util.concurrent.TimeUnit
 
 class GoalAdapter(
     goalListImmutable: List<Goal>,
@@ -74,6 +76,9 @@ class GoalAdapter(
         val goalDateLayout: LinearLayout = itemView.findViewById(R.id.goalDateLayout)
         val goalDateTextView: TextView = itemView.findViewById(R.id.goalDateTextView)
         val goalDateImageView: ImageView = itemView.findViewById(R.id.goalDateImageView)
+        val goalRemainingSumLayout: LinearLayout = itemView.findViewById(R.id.goalRemainingSumLayout)
+
+        val congratulationsTextView: TextView = itemView.findViewById(R.id.congratulationsTextView)
 
         val goalSavedMoneyCurrencyTextView: TextView = itemView.findViewById(R.id.goalSavedMoneyCurrencyTextView)
         val goalSumCurrencyTextView: TextView = itemView.findViewById(R.id.goalSumCurrencyTextView)
@@ -95,23 +100,41 @@ class GoalAdapter(
         holder.nameTextView.text = goal.name
         holder.savedMoneyTextView.text = decimalFormat.format(goal.savedSum)
         holder.sumTextView.text = decimalFormat.format(goal.sum)
-        holder.goalRemainingMoneyTextView.text = decimalFormat.format(goal.sum - goal.savedSum)
 
         holder.goalSavedMoneyCurrencyTextView.text = goal.currency
         holder.goalSumCurrencyTextView.text = goal.currency
         holder.goalRemainingMoneyCurrencyTextView.text = goal.currency
 
-        if (goal.goalDate != null) {
+
+        if (goal.sum - goal.savedSum <= 0) { // if goal is reached
+            holder.congratulationsTextView.visibility = View.VISIBLE
+            holder.addButton.visibility = View.GONE
+            holder.goalRemainingSumLayout.visibility = View.GONE
             holder.goalDateLayout.visibility = View.VISIBLE
-            if (goal.goalDate!!.before(Date())) {
-                holder.goalDateTextView.text = ContextCompat.getString(holder.goalDateLayout.context, R.string.overdue)
-                holder.goalDateTextView.setTextColor(Color.RED)
-                holder.goalDateImageView.setColorFilter(Color.RED)
-            } else {
-                holder.goalDateTextView.text = sdf.format(goal.goalDate!!)
-            }
+            var diffInDays = TimeUnit.DAYS.convert(Date().time - goal.creationDate.time, TimeUnit.MILLISECONDS)
+            if (diffInDays == 0L)
+                diffInDays = 1L
+            if (diffInDays == 1L) //для разных склонений
+                holder.goalDateTextView.text = holder.goalDateTextView.context.getString(R.string.achieved_in_day, diffInDays)
+            else
+                holder.goalDateTextView.text = holder.goalDateTextView.context.getString(R.string.achieved_in_days, diffInDays)
         } else {
-            holder.goalDateLayout.visibility = View.GONE
+            holder.congratulationsTextView.visibility = View.GONE
+            holder.addButton.visibility = View.VISIBLE
+            holder.goalRemainingSumLayout.visibility = View.VISIBLE
+            holder.goalRemainingMoneyTextView.text = decimalFormat.format(goal.sum - goal.savedSum)
+            if (goal.goalDate != null) {
+                holder.goalDateLayout.visibility = View.VISIBLE
+                if (goal.goalDate!!.before(Date())) {
+                    holder.goalDateTextView.text = ContextCompat.getString(holder.goalDateLayout.context, R.string.overdue)
+                    holder.goalDateTextView.setTextColor(Color.RED)
+                    holder.goalDateImageView.setColorFilter(Color.RED)
+                } else {
+                    holder.goalDateTextView.text = sdf.format(goal.goalDate!!)
+                }
+            } else {
+                holder.goalDateLayout.visibility = View.GONE
+            }
         }
 
         if ((goal.photoPath != null) && (File(goal.photoPath!!).exists())) {

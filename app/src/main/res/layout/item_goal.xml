@@ -134,6 +134,7 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/goalRemainingSumLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
@@ -165,9 +166,17 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:text="@string/add"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/dialogMessage" />
+                        android:text="@string/add" />
+
+                    <TextView
+                        android:id="@+id/congratulationsTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="20sp"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/congratulations_you_have_reached_your_goal"
+                        android:textAlignment="center"
+                        android:visibility="gone"/>
 
                 </LinearLayout>
 
