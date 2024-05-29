@@ -63,6 +63,8 @@ class GoalsFragment: Fragment() {
                 vm.getAllGoals()
         }
         vm.setListState(state = ListState.LOADING)
+        if (vm.goalListNeedToUpdate == true)
+            vm.getAllGoals()
         return inflater.inflate(R.layout.fragment_goal, container, false)
     }
 
@@ -121,6 +123,10 @@ class GoalsFragment: Fragment() {
 
             override fun onAddButtonClick(goal: Goal, position: Int) {
                 openAddSavedGoalSumDialog(goal = goal, position = position)
+            }
+
+            override fun onDeleteButtonClick(goal: Goal, position: Int) {
+                deleteGoal(goal = goal, position = position)
             }
         }
         goalAdapter = GoalAdapter(goalListImmutable = listOf(), goalClickListener)
@@ -203,5 +209,10 @@ class GoalsFragment: Fragment() {
         goal.savedSum += sum
         goalAdapter.updateGoal(goal = goal, position = position)
         vm.updateGoal(goal = goal)
+    }
+
+    private fun deleteGoal(goal: Goal, position: Int) {
+        goalAdapter.deleteGoal(position = position)
+        vm.deleteGoal(goal = goal)
     }
 }

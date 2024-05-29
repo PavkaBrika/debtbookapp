@@ -16,6 +16,7 @@ import com.breckneck.deptbook.domain.usecase.FinanceCategory.GetAllFinanceCatego
 import com.breckneck.deptbook.domain.usecase.FinanceCategory.GetFinanceCategoriesByState
 import com.breckneck.deptbook.domain.usecase.FinanceCategory.ReplaceAllFinanceCategories
 import com.breckneck.deptbook.domain.usecase.FinanceCategory.SetFinanceCategory
+import com.breckneck.deptbook.domain.usecase.Goal.DeleteGoal
 import com.breckneck.deptbook.domain.usecase.Goal.GetAllGoals
 import com.breckneck.deptbook.domain.usecase.Goal.SetGoal
 import com.breckneck.deptbook.domain.usecase.Goal.UpdateGoal
@@ -301,5 +302,9 @@ val domainModule = module {
 
     factory<UpdateGoal> {
         UpdateGoal(goalRepository = get())
+    }
+
+    factory<DeleteGoal> {
+        DeleteGoal(goalRepository = get())
     }
 }

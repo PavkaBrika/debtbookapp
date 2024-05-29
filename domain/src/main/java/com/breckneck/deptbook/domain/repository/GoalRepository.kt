@@ -9,4 +9,6 @@ interface GoalRepository {
     fun setGoal(goal: Goal)
 
     fun updateGoal(goal: Goal)
+
+    fun deleteGoal(goal: Goal)
 }

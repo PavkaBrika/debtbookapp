@@ -52,11 +52,18 @@ class GoalAdapter(
         fun onGoalClick(goal: Goal, position: Int)
 
         fun onAddButtonClick(goal: Goal, position: Int)
+
+        fun onDeleteButtonClick(goal: Goal, position: Int)
     }
 
     fun updateGoal(goal: Goal, position: Int) {
         goalList[position] = goal
         notifyItemChanged(position)
+    }
+
+    fun deleteGoal(position: Int) {
+        goalList.removeAt(position)
+        notifyItemRemoved(position)
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -85,6 +92,7 @@ class GoalAdapter(
         val goalRemainingMoneyCurrencyTextView: TextView = itemView.findViewById(R.id.goalRemainingMoneyCurrencyTextView)
 
         val addButton: Button = itemView.findViewById(R.id.addButton)
+        val deleteButton: Button = itemView.findViewById(R.id.deleteButton)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GoalViewHolder {
@@ -105,10 +113,8 @@ class GoalAdapter(
         holder.goalSumCurrencyTextView.text = goal.currency
         holder.goalRemainingMoneyCurrencyTextView.text = goal.currency
 
-
         if (goal.sum - goal.savedSum <= 0) { // if goal is reached
             holder.congratulationsTextView.visibility = View.VISIBLE
-            holder.addButton.visibility = View.GONE
             holder.goalRemainingSumLayout.visibility = View.GONE
             holder.goalDateLayout.visibility = View.VISIBLE
             var diffInDays = TimeUnit.DAYS.convert(Date().time - goal.creationDate.time, TimeUnit.MILLISECONDS)
@@ -118,9 +124,13 @@ class GoalAdapter(
                 holder.goalDateTextView.text = holder.goalDateTextView.context.getString(R.string.achieved_in_day, diffInDays)
             else
                 holder.goalDateTextView.text = holder.goalDateTextView.context.getString(R.string.achieved_in_days, diffInDays)
+            holder.addButton.visibility = View.GONE
+            holder.deleteButton.visibility = View.VISIBLE
+            holder.deleteButton.setOnClickListener {
+                goalClickListener.onDeleteButtonClick(goal = goal, position = position)
+            }
         } else {
             holder.congratulationsTextView.visibility = View.GONE
-            holder.addButton.visibility = View.VISIBLE
             holder.goalRemainingSumLayout.visibility = View.VISIBLE
             holder.goalRemainingMoneyTextView.text = decimalFormat.format(goal.sum - goal.savedSum)
             if (goal.goalDate != null) {
@@ -134,6 +144,11 @@ class GoalAdapter(
                 }
             } else {
                 holder.goalDateLayout.visibility = View.GONE
+            }
+            holder.addButton.visibility = View.VISIBLE
+            holder.deleteButton.visibility = View.GONE
+            holder.addButton.setOnClickListener {
+                goalClickListener.onAddButtonClick(goal = goal, position = position)
             }
         }
 
@@ -168,10 +183,6 @@ class GoalAdapter(
             val param = holder.goalInfoCardView.layoutParams as ViewGroup.MarginLayoutParams
             param.topMargin = 0
             holder.goalInfoCardView.layoutParams = param
-        }
-
-        holder.addButton.setOnClickListener {
-            goalClickListener.onAddButtonClick(goal = goal, position = position)
         }
     }
 

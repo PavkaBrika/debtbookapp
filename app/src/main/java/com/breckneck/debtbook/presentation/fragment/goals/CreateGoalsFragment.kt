@@ -18,9 +18,13 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
@@ -59,8 +63,8 @@ class CreateGoalsFragment : Fragment() {
                 try {
                     vm.setImageUri(uri = result!!)
                 } catch (e: NullPointerException) {
-                    Toast.makeText(context, R.string.something_went_wrong, Toast.LENGTH_SHORT)
-                        .show()
+//                    Toast.makeText(context, R.string.something_went_wrong, Toast.LENGTH_SHORT)
+//                        .show()
                 }
             }
     }
@@ -158,12 +162,14 @@ class CreateGoalsFragment : Fragment() {
             val calendar = Calendar.getInstance()
             if (vm.goalDate.value != null)
                 calendar.timeInMillis = vm.goalDate.value!!.time
-            DatePickerDialog(
+            val datePickerDialog = DatePickerDialog(
                 view.context, dateSetListener,
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
                 calendar.get(Calendar.DAY_OF_MONTH)
-            ).show()
+            )
+            datePickerDialog.datePicker.minDate = calendar.timeInMillis
+            datePickerDialog.show()
         }
 
         vm.goalDate.observe(viewLifecycleOwner) { date ->
@@ -174,6 +180,7 @@ class CreateGoalsFragment : Fragment() {
         }
 
         val goalImageView: ImageView = view.findViewById(R.id.goalImageView)
+        val goalPhotoCardView: CardView = view.findViewById(R.id.goalPhotoCardView)
         val deleteGoalPhotoImageView: ImageView = view.findViewById(R.id.deleteGoalPhotoImageView)
         deleteGoalPhotoImageView.setOnClickListener {
             vm.setImageUri(uri = null)
@@ -183,7 +190,9 @@ class CreateGoalsFragment : Fragment() {
             if (uri != null) {
                 goalImageView.setImageURI(uri)
                 deleteGoalPhotoImageView.visibility = View.VISIBLE
-                goalImageView.setOnClickListener(null)
+                goalPhotoCardView.setOnClickListener(null)
+//                (goalImageView.layoutParams as LayoutParams).dimensionRatio = null
+////                goalImageView.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
             } else {
                 goalImageView.setImageDrawable(
                     ContextCompat.getDrawable(
@@ -192,9 +201,11 @@ class CreateGoalsFragment : Fragment() {
                     )
                 )
                 deleteGoalPhotoImageView.visibility = View.GONE
-                goalImageView.setOnClickListener {
+                goalPhotoCardView.setOnClickListener {
                     getImageUriActivityResult.launch("image/*")
                 }
+//                (goalImageView.layoutParams as LayoutParams).dimensionRatio = "H,16:9"
+//                goalImageView.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, 0)
             }
         }
 
@@ -215,6 +226,8 @@ class CreateGoalsFragment : Fragment() {
                     goalDate = vm.goalDate.value
                 )
             )
+            setFragmentResult("goalsFragmentKey", bundleOf("isListModified" to true))
+            onClickListener!!.onBackButtonClick()
         }
         super.onViewCreated(view, savedInstanceState)
     }

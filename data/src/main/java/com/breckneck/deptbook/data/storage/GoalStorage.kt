@@ -9,4 +9,6 @@ interface GoalStorage {
     fun setGoal(goalData: GoalData)
 
     fun updateGoal(goalData: GoalData)
+
+    fun deleteGoal(goalData: GoalData)
 }

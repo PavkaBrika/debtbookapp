@@ -33,34 +33,6 @@
                 app:titleCollapseMode="scale"
                 app:titleEnabled="true">
 
-                <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="end"
-                    android:layout_marginTop="?attr/actionBarSize"
-                    android:layout_marginEnd="12dp"
-                    android:layout_marginBottom="36dp">
-
-                    <TextView
-                        android:id="@+id/overallPositiveSumTextView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_above="@id/overallNegativeSumTextView"
-                        android:textAlignment="viewEnd"
-                        android:textColor="@color/green"
-                        android:textSize="18sp" />
-
-                    <TextView
-                        android:id="@+id/overallNegativeSumTextView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
-                        android:textAlignment="viewEnd"
-                        android:textColor="@color/red"
-                        android:textSize="18sp" />
-
-                </RelativeLayout>
-
                 <androidx.appcompat.widget.Toolbar
                     android:id="@+id/mainToolbar"
                     android:layout_width="match_parent"
@@ -118,27 +90,11 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
-                        <TextView
-                            android:id="@+id/mainRecyclerViewSecondHintTextView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical|center_horizontal"
-                            android:layout_marginHorizontal="16dp"
-                            android:layout_marginVertical="32dp"
-                            android:gravity="center"
-                            android:text="@string/long_tap_to_change_the_name_of_the_debt"
-                            android:textColor="@color/darkgray"
-                            android:textSize="16sp"
-                            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/goalsRecyclerView" />
-
                         <Space
                             android:layout_width="match_parent"
                             android:layout_height="44dp"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/mainRecyclerViewSecondHintTextView" />
+                            app:layout_constraintTop_toBottomOf="@+id/goalsRecyclerView" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -215,11 +171,8 @@
                                 android:layout_height="match_parent"
                                 android:orientation="vertical">
 
-                                <include layout="@layout/item_human_shimmer" />
-                                <include layout="@layout/item_human_shimmer" />
-                                <include layout="@layout/item_human_shimmer" />
-                                <include layout="@layout/item_human_shimmer" />
-                                <include layout="@layout/item_human_shimmer" />
+                                <include layout="@layout/item_goal_shimmer" />
+                                <include layout="@layout/item_goal_shimmer" />
 
                             </LinearLayout>
 

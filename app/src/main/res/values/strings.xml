@@ -143,7 +143,8 @@
     <string name="remaining">remaining</string>
     <string name="already_saved_sum">Already saved sum</string>
     <string name="overdue">Overdue</string>
-    <string name="congratulations_you_have_reached_your_goal">&#x1F389; Congratulations! You have reached your goal! &#x1F389;</string>
+    <string name="congratulations_you_have_reached_your_goal">&#x1F389;&#x1F389;&#x1F389;\nCongratulations! You have reached your goal!</string>
     <string name="achieved_in_days">Achieved in %1$d days</string>
     <string name="achieved_in_day">Achieved in %1$d day</string>
+    <string name="goal_s_photo">Goal`s photo</string>
 </resources>

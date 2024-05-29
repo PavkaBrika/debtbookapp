@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.breckneck.deptbook.domain.model.Goal
+import com.breckneck.deptbook.domain.usecase.Goal.DeleteGoal
 import com.breckneck.deptbook.domain.usecase.Goal.GetAllGoals
 import com.breckneck.deptbook.domain.usecase.Goal.UpdateGoal
 import com.breckneck.deptbook.domain.util.ListState
@@ -16,7 +17,8 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 
 class GoalsFragmentViewModel(
     private val getAllGoals: GetAllGoals,
-    private val updateGoal: UpdateGoal
+    private val updateGoal: UpdateGoal,
+    private val deleteGoal: DeleteGoal
 ) : ViewModel() {
 
     private val TAG = "GoalsFragmentVM"
@@ -37,8 +39,9 @@ class GoalsFragmentViewModel(
     private var _changedGoalPosition: Int? = null
     val changedGoalPosition: Int?
         get() = _changedGoalPosition
-
-
+    private var _goalListNeedToUpdate = false
+    val goalListNeedToUpdate: Boolean
+        get() = _goalListNeedToUpdate
 
     private val disposeBag = CompositeDisposable()
 
@@ -60,6 +63,8 @@ class GoalsFragmentViewModel(
                 _goalList.value = it
                 if (_goalList.value!!.isEmpty())
                     _goalListState.value = ListState.EMPTY
+                _goalListNeedToUpdate = false
+                Log.e(TAG, "Goals loaded")
             }, {
                 Log.e(TAG, it.message.toString())
             })
@@ -91,6 +96,22 @@ class GoalsFragmentViewModel(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 Log.e(TAG, "goal updated")
+            }, {
+                Log.e(TAG, it.message.toString())
+            })
+        disposeBag.add(result)
+    }
+
+    fun deleteGoal(goal: Goal) {
+        val result = Completable.create {
+            deleteGoal.execute(goal = goal)
+            it.onComplete()
+        }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                _goalListNeedToUpdate = true
+                Log.e(TAG, "goal deleted")
             }, {
                 Log.e(TAG, it.message.toString())
             })

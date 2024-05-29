@@ -51,4 +51,19 @@ class GoalRepositoryImpl(private val goalStorage: GoalStorage) : GoalRepository 
             )
         )
     }
+
+    override fun deleteGoal(goal: Goal) {
+        goalStorage.deleteGoal(
+            goalData = GoalData(
+                id = goal.id,
+                name = goal.name,
+                sum = goal.sum,
+                savedSum = goal.savedSum,
+                creationDate = goal.creationDate,
+                goalDate = goal.goalDate,
+                currency = goal.currency,
+                photoPath = goal.photoPath
+            )
+        )
+    }
 }

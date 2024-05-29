@@ -135,7 +135,8 @@ val appModule = module {
     viewModel<GoalsFragmentViewModel> {
         GoalsFragmentViewModel(
             getAllGoals = get(),
-            updateGoal = get()
+            updateGoal = get(),
+            deleteGoal = get()
         )
     }
 

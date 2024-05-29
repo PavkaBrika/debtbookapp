@@ -166,6 +166,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
+                        android:visibility="visible"
                         android:text="@string/add" />
 
                     <TextView
@@ -177,6 +178,15 @@
                         android:text="@string/congratulations_you_have_reached_your_goal"
                         android:textAlignment="center"
                         android:visibility="gone"/>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/deleteButton"
+                        style="@style/FilledButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:visibility="gone"
+                        android:text="@string/delete" />
 
                 </LinearLayout>
 
