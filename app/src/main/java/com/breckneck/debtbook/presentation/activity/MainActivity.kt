@@ -35,6 +35,7 @@ import com.breckneck.debtbook.presentation.fragment.settings.SynchronizationFrag
 import com.breckneck.debtbook.presentation.viewmodel.MainActivityViewModel
 import com.breckneck.deptbook.domain.model.DebtDomain
 import com.breckneck.deptbook.domain.model.Finance
+import com.breckneck.deptbook.domain.model.Goal
 import com.breckneck.deptbook.domain.util.CLICKS_QUANTITY_FOR_AD_SHOW
 import com.breckneck.deptbook.domain.util.DEBT_QUANTITY_FOR_LAST_SHOW_APP_RATE_DIALOG
 import com.breckneck.deptbook.domain.util.FinanceCategoryState
@@ -450,6 +451,13 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener,
 
     override fun onAddGoalButtonClick() {
         navController.navigate(R.id.action_goalsFragment_to_createGoalsFragment)
+        vm.onActionClick()
+    }
+
+    override fun onGoalClick(goal: Goal) {
+        val args = Bundle()
+        args.putSerializable("goal", goal)
+        navController.navigate(R.id.action_goalsFragment_to_goalDetailsFragment, args)
         vm.onActionClick()
     }
 

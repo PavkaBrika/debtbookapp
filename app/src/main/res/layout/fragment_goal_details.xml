@@ -201,7 +201,7 @@
                     android:layout_height="match_parent">
 
                     <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/debtCardView"
+                        android:id="@+id/goalImageCardView"
                         style="@style/CardViewStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -223,17 +223,28 @@
 
                     </com.google.android.material.card.MaterialCardView>
 
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/deleteButton"
+                        style="@style/FilledButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:text="@string/delete"
+                        android:visibility="gone"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/goalImageCardView" />
+
                     <LinearLayout
-                        android:id="@+id/linearLayout2"
+                        android:id="@+id/actionButtonLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="8dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/debtCardView">
+                        app:layout_constraintTop_toBottomOf="@+id/deleteButton">
 
                         <com.google.android.material.button.MaterialButton
-                            android:id="@+id/cancelButton"
+                            android:id="@+id/subtractButton"
                             style="@style/OutlineButton"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -244,7 +255,7 @@
                             app:layout_constraintTop_toTopOf="@+id/okButton" />
 
                         <com.google.android.material.button.MaterialButton
-                            android:id="@+id/okButton"
+                            android:id="@+id/addButton"
                             style="@style/FilledButton"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -264,7 +275,7 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
+                        app:layout_constraintTop_toBottomOf="@+id/actionButtonLayout">
 
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/goalTransactionRecyclerView"
@@ -300,7 +311,7 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
+                        app:layout_constraintTop_toBottomOf="@+id/actionButtonLayout">
 
                         <Space
                             android:id="@+id/space3"
@@ -348,7 +359,7 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
+                        app:layout_constraintTop_toBottomOf="@+id/actionButtonLayout">
 
                         <com.facebook.shimmer.ShimmerFrameLayout
                             android:id="@+id/shimmerLayout"

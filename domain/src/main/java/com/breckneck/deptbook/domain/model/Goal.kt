@@ -1,5 +1,6 @@
 package com.breckneck.deptbook.domain.model
 
+import java.io.Serializable
 import java.util.Date
 
 data class Goal(
@@ -11,4 +12,4 @@ data class Goal(
     var photoPath: String?,
     var creationDate: Date,
     var goalDate: Date?
-)
+) : Serializable

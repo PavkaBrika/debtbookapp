@@ -7,6 +7,7 @@ import com.breckneck.debtbook.presentation.viewmodel.SynchronizationViewModel
 import com.breckneck.debtbook.presentation.viewmodel.DebtDetailsViewModel
 import com.breckneck.debtbook.presentation.viewmodel.FinanceDetailsViewModel
 import com.breckneck.debtbook.presentation.viewmodel.FinanceViewModel
+import com.breckneck.debtbook.presentation.viewmodel.GoalDetailsFragmentViewModel
 import com.breckneck.debtbook.presentation.viewmodel.GoalsFragmentViewModel
 import com.breckneck.debtbook.presentation.viewmodel.MainActivityViewModel
 import com.breckneck.debtbook.presentation.viewmodel.MainFragmentViewModel
@@ -146,5 +147,9 @@ val appModule = module {
             setGoal = get(),
             getDefaultCurrency = get()
         )
+    }
+
+    viewModel<GoalDetailsFragmentViewModel> {
+        GoalDetailsFragmentViewModel()
     }
 }

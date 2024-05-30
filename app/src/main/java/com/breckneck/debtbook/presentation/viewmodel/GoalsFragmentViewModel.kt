@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.breckneck.deptbook.domain.model.Goal
+import com.breckneck.deptbook.domain.model.GoalDeposit
 import com.breckneck.deptbook.domain.usecase.Goal.DeleteGoal
 import com.breckneck.deptbook.domain.usecase.Goal.GetAllGoals
 import com.breckneck.deptbook.domain.usecase.Goal.UpdateGoal
@@ -114,6 +115,21 @@ class GoalsFragmentViewModel(
             .subscribe({
                 _goalListNeedToUpdate = true
                 Log.e(TAG, "goal deleted")
+            }, {
+                Log.e(TAG, it.message.toString())
+            })
+        disposeBag.add(result)
+    }
+
+    fun setGoalDeposit(goalDeposit: GoalDeposit) {
+        val result = Completable.create {
+            setGoalDeposit.execute(goalDeposit = goalDeposit)
+            it.onComplete()
+        }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                Log.e(TAG, "goal deposit added")
             }, {
                 Log.e(TAG, it.message.toString())
             })

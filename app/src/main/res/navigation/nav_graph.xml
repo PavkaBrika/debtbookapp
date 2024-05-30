@@ -213,10 +213,30 @@
             app:exitAnim="@anim/fade_out"
             app:popEnterAnim="@anim/fade_in"
             app:popExitAnim="@anim/slide_down" />
+        <action
+            android:id="@+id/action_goalsFragment_to_goalDetailsFragment"
+            app:destination="@id/goalDetailsFragment"
+            app:enterAnim="@anim/slide_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/slide_out" />
     </fragment>
     <fragment
         android:id="@+id/createGoalsFragment"
         android:name="com.breckneck.debtbook.presentation.fragment.goals.CreateGoalsFragment"
         android:label="CreateGoalsFragment"
         tools:layout="@layout/fragment_create_goal"/>
+    <fragment
+        android:id="@+id/goalDetailsFragment"
+        android:name="com.breckneck.debtbook.presentation.fragment.goals.GoalDetailsFragment"
+        android:label="GoalDetailsFragment"
+        tools:layout="@layout/fragment_goal_details">
+        <action
+            android:id="@+id/action_goalDetailsFragment_to_createGoalsFragment"
+            app:destination="@id/createGoalsFragment"
+            app:enterAnim="@anim/slide_up"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/slide_down" />
+    </fragment>
 </navigation>

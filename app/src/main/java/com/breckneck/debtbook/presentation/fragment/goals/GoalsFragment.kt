@@ -24,6 +24,7 @@ import com.breckneck.debtbook.R
 import com.breckneck.debtbook.adapter.GoalAdapter
 import com.breckneck.debtbook.presentation.viewmodel.GoalsFragmentViewModel
 import com.breckneck.deptbook.domain.model.Goal
+import com.breckneck.deptbook.domain.model.GoalDeposit
 import com.breckneck.deptbook.domain.util.ListState
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
@@ -32,6 +33,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.util.Date
 
 class GoalsFragment: Fragment() {
 
@@ -44,6 +46,8 @@ class GoalsFragment: Fragment() {
 
     interface OnClickListener {
         fun onAddGoalButtonClick()
+
+        fun onGoalClick(goal: Goal)
     }
 
     private var onButtonClickListener: OnClickListener? = null
@@ -118,7 +122,7 @@ class GoalsFragment: Fragment() {
         goalsRecyclerView = view.findViewById(R.id.goalsRecyclerView)
         val goalClickListener = object: GoalAdapter.OnGoalClickListener {
             override fun onGoalClick(goal: Goal, position: Int) {
-
+                onButtonClickListener?.onGoalClick(goal = goal)
             }
 
             override fun onAddButtonClick(goal: Goal, position: Int) {
@@ -209,6 +213,7 @@ class GoalsFragment: Fragment() {
         goal.savedSum += sum
         goalAdapter.updateGoal(goal = goal, position = position)
         vm.updateGoal(goal = goal)
+        vm.setGoalDeposit(goalDeposit = GoalDeposit(sum = sum, date = Date(), goalId = goal.id))
     }
 
     private fun deleteGoal(goal: Goal, position: Int) {

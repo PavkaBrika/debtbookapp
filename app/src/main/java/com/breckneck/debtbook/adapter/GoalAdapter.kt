@@ -74,6 +74,7 @@ class GoalAdapter(
     }
 
     class GoalViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val goalCardView: CardView = itemView.findViewById(R.id.goalCardView)
         val nameTextView: TextView = itemView.findViewById(R.id.goalNameTextView)
         val savedMoneyTextView: TextView = itemView.findViewById(R.id.goalSavedMoneyTextView)
         val sumTextView: TextView = itemView.findViewById(R.id.goalSumTextView)
@@ -117,9 +118,17 @@ class GoalAdapter(
             holder.congratulationsTextView.visibility = View.VISIBLE
             holder.goalRemainingSumLayout.visibility = View.GONE
             holder.goalDateLayout.visibility = View.VISIBLE
-            var diffInDays = TimeUnit.DAYS.convert(Date().time - goal.creationDate.time, TimeUnit.MILLISECONDS)
-            if (diffInDays == 0L)
-                diffInDays = 1L
+            val diffInDays = if (TimeUnit.DAYS.convert(
+                    Date().time - goal.creationDate.time,
+                    TimeUnit.MILLISECONDS
+                ) == 0L
+            )
+                1
+            else
+                TimeUnit.DAYS.convert(
+                    Date().time - goal.creationDate.time,
+                    TimeUnit.MILLISECONDS
+                )
             if (diffInDays == 1L) //для разных склонений
                 holder.goalDateTextView.text = holder.goalDateTextView.context.getString(R.string.achieved_in_day, diffInDays)
             else
@@ -183,6 +192,10 @@ class GoalAdapter(
             val param = holder.goalInfoCardView.layoutParams as ViewGroup.MarginLayoutParams
             param.topMargin = 0
             holder.goalInfoCardView.layoutParams = param
+        }
+
+        holder.goalCardView.setOnClickListener {
+            goalClickListener.onGoalClick(goal = goal, position = position)
         }
     }
 

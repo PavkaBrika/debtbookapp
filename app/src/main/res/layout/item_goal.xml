@@ -10,7 +10,7 @@
     android:paddingVertical="4dp">
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/debtCardView"
+        android:id="@+id/goalCardView"
         style="@style/CardViewStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
