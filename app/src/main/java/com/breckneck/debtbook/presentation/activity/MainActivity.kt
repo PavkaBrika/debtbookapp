@@ -28,6 +28,7 @@ import com.breckneck.debtbook.presentation.fragment.finance.CreateFinanceFragmen
 import com.breckneck.debtbook.presentation.fragment.finance.FinanceDetailsFragment
 import com.breckneck.debtbook.presentation.fragment.finance.FinanceFragment
 import com.breckneck.debtbook.presentation.fragment.goals.CreateGoalsFragment
+import com.breckneck.debtbook.presentation.fragment.goals.GoalDetailsFragment
 import com.breckneck.debtbook.presentation.fragment.goals.GoalsFragment
 import com.breckneck.debtbook.presentation.fragment.settings.SettingsFragment
 import com.breckneck.debtbook.presentation.fragment.settings.SynchronizationFragment
@@ -58,7 +59,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener,
     SettingsFragment.OnButtonClickListener, SynchronizationFragment.SynchronizationInterface,
     FinanceFragment.OnButtonClickListener, CreateFinanceFragment.OnClickListener,
     CreateFinanceCategoryFragment.OnClickListener, FinanceDetailsFragment.OnClickListener,
-    GoalsFragment.OnClickListener, CreateGoalsFragment.OnButtonClickListener {
+    GoalsFragment.OnClickListener, CreateGoalsFragment.OnButtonClickListener, GoalDetailsFragment.OnClickListener {
 
     private var interstitialAd: InterstitialAd? = null
     private var interstitialAdLoader: InterstitialAdLoader? = null
