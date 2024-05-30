@@ -13,7 +13,11 @@ import com.breckneck.deptbook.domain.model.DebtDomain
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 
-class DebtAdapter(private val debtDomainListImmutable: List<DebtDomain>, private val debtClickListener: OnDebtClickListener, private val currencyText: String): RecyclerView.Adapter<DebtAdapter.DebtViewHolder>() {
+class DebtAdapter(
+    private val debtDomainListImmutable: List<DebtDomain>,
+    private val debtClickListener: OnDebtClickListener,
+    private val currencyText: String
+) : RecyclerView.Adapter<DebtAdapter.DebtViewHolder>() {
 
     private val decimalFormat = DecimalFormat("###,###,###.##")
     private val customSymbol: DecimalFormatSymbols = DecimalFormatSymbols()
@@ -44,8 +48,9 @@ class DebtAdapter(private val debtDomainListImmutable: List<DebtDomain>, private
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DebtViewHolder {
         customSymbol.groupingSeparator = ' '
         decimalFormat.decimalFormatSymbols = customSymbol
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_debt, parent, false)
-        return  DebtViewHolder(itemView)
+        val itemView =
+            LayoutInflater.from(parent.context).inflate(R.layout.item_debt, parent, false)
+        return DebtViewHolder(itemView)
     }
 
     override fun onBindViewHolder(holder: DebtViewHolder, position: Int) {
@@ -65,7 +70,7 @@ class DebtAdapter(private val debtDomainListImmutable: List<DebtDomain>, private
         if (holder.info.text.equals("")) {
             holder.infoLayout.visibility = View.GONE
         }
-        holder.debtCardView.setOnClickListener{
+        holder.debtCardView.setOnClickListener {
             debtClickListener.onDebtClick(debtDomain = debtDomain, position = position)
         }
     }
