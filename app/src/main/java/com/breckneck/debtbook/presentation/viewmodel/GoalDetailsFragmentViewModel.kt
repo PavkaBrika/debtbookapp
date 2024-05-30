@@ -5,35 +5,45 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.breckneck.deptbook.domain.model.Goal
+import com.breckneck.deptbook.domain.model.GoalDeposit
+import com.breckneck.deptbook.domain.usecase.Goal.UpdateGoal
+import com.breckneck.deptbook.domain.usecase.GoalTransaction.GetGoalDepositsByGoalId
+import com.breckneck.deptbook.domain.usecase.GoalTransaction.SetGoalDeposit
+import com.breckneck.deptbook.domain.util.ChangeGoalSavedSumDialogState
+import com.breckneck.deptbook.domain.util.ListState
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.Date
 
-class GoalDetailsFragmentViewModel: ViewModel() {
+class GoalDetailsFragmentViewModel(
+    private val updateGoal: UpdateGoal,
+    private val setGoalDeposit: SetGoalDeposit,
+    private val getGoalDepositsByGoalId: GetGoalDepositsByGoalId
+): ViewModel() {
 
     private val TAG = "GoalDetailsFragmentVM"
 
-//    private val _goalName = MutableLiveData<String>()
-//    val goalName: LiveData<String>
-//        get() = _goalName
-//    private val _goalSum = MutableLiveData<Double>()
-//    val goalSum: LiveData<Double>
-//        get() = _goalSum
-//    private val _goalSavedSum = MutableLiveData<Double>()
-//    val goalSavedSum: LiveData<Double>
-//        get() = _goalSavedSum
-//    private val _goalCurrency = MutableLiveData<String>()
-//    val goalCurrency: LiveData<String>
-//        get() = _goalCurrency
-//    private val _photoPath = MutableLiveData<String?>()
-//    val photoPath: LiveData<String?>
-//        get() = _photoPath
-//    private val _goalDate = MutableLiveData<Date?>()
-//    val goalData: LiveData<Date?>
-//        get() = _goalDate
+    private val _goalDepositList = MutableLiveData<List<GoalDeposit>>()
+    val goalDepositList: LiveData<List<GoalDeposit>>
+        get() = _goalDepositList
+    private val _goalDepositListState = MutableLiveData(ListState.LOADING)
+    val goalDepositListState: LiveData<ListState>
+        get() = _goalDepositListState
+    private val _goalSavedSum = MutableLiveData<Double>()
+    val goalSavedSum: LiveData<Double>
+        get() = _goalSavedSum
     private val _goal = MutableLiveData<Goal>()
     val goal: LiveData<Goal>
         get() = _goal
-
+    private var _isChangeSavedSumDialogOpened = false
+    val isChangeSavedSumDialogOpened: Boolean
+        get() = _isChangeSavedSumDialogOpened
+    private var _changeDialogState: ChangeGoalSavedSumDialogState? = null
+    val changeDialogState: ChangeGoalSavedSumDialogState?
+        get() = _changeDialogState
 
     private val disposeBag = CompositeDisposable()
 
@@ -43,12 +53,72 @@ class GoalDetailsFragmentViewModel: ViewModel() {
 
     fun setGoal(goal: Goal) {
         _goal.value = goal
-//        _goalName.value = goal.name
-//        _goalSum.value = goal.sum
-//        _goalSavedSum.value = goal.savedSum
-//        _goalCurrency.value = goal.currency
-//        _photoPath.value = goal.photoPath
-//        _goalDate.value = goal.goalDate
+        _goalSavedSum.value = goal.savedSum
+
+    }
+
+    fun getGoalDepositList() {
+        val result = Single.create {
+            it.onSuccess(getGoalDepositsByGoalId.execute(goalId = _goal.value!!.id))
+        }
+            .subscribeOn(Schedulers.io())
+            .doOnSubscribe {
+                _goalDepositListState.value = ListState.LOADING
+            }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ list ->
+                if (list.isEmpty()) {
+                    _goalDepositListState.value = ListState.EMPTY
+                } else {
+                    _goalDepositList.value = list
+                }
+                Log.e(TAG, "Goal deposit list loaded")
+            }, {
+                Log.e(TAG, it.message.toString())
+            })
+        disposeBag.add(result)
+    }
+
+    fun updateGoalSum(sum: Double) {
+        val result = Completable.create {
+            _goal.value!!.savedSum = _goal.value!!.savedSum + sum
+            updateGoal.execute(goal = _goal.value!!)
+            it.onComplete()
+        }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                _goalSavedSum.value = _goal.value!!.savedSum
+                Log.e(TAG, "Goal updated")
+            }, {
+                Log.e(TAG, it.message.toString())
+            })
+        disposeBag.add(result)
+    }
+
+    fun setGoalDeposit(goalDeposit: GoalDeposit) {
+        val result = Completable.create {
+            setGoalDeposit.execute(goalDeposit = goalDeposit)
+            it.onComplete()
+        }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                Log.e(TAG, "Goal deposit added")
+            }, {
+                Log.e(TAG, it.message.toString())
+            })
+        disposeBag.add(result)
+    }
+
+    fun onOpenChangeSavedSumChangeDialog(state: ChangeGoalSavedSumDialogState) {
+        _isChangeSavedSumDialogOpened = true
+        _changeDialogState = state
+    }
+
+    fun onCloseChangeSumChangeDialog() {
+        _isChangeSavedSumDialogOpened = true
+        _changeDialogState = null
     }
 
     override fun onCleared() {

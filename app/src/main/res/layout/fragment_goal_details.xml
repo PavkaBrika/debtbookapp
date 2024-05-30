@@ -271,7 +271,7 @@
                         android:id="@+id/goalTransactionLayout"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:visibility="visible"
+                        android:visibility="gone"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -355,7 +355,7 @@
                         android:id="@+id/loadingGoalTransactionLayout"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:visibility="gone"
+                        android:visibility="visible"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -376,11 +376,9 @@
                                 android:layout_height="match_parent"
                                 android:orientation="vertical">
 
-                                <include layout="@layout/item_human_shimmer" />
-                                <include layout="@layout/item_human_shimmer" />
-                                <include layout="@layout/item_human_shimmer" />
-                                <include layout="@layout/item_human_shimmer" />
-                                <include layout="@layout/item_human_shimmer" />
+                                <include layout="@layout/item_goal_transaction_shimmer" />
+                                <include layout="@layout/item_goal_transaction_shimmer" />
+                                <include layout="@layout/item_goal_transaction_shimmer" />
 
                             </LinearLayout>
 

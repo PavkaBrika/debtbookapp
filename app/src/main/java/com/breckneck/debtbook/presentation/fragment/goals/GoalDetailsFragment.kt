@@ -6,6 +6,8 @@ import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,16 +16,22 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.presentation.viewmodel.GoalDetailsFragmentViewModel
 import com.breckneck.deptbook.domain.model.Goal
+import com.breckneck.deptbook.domain.model.GoalDeposit
+import com.breckneck.deptbook.domain.util.ChangeGoalSavedSumDialogState
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.google.android.material.appbar.CollapsingToolbarLayout
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.text.DecimalFormat
@@ -75,6 +83,11 @@ class GoalDetailsFragment : Fragment() {
         val sdf = SimpleDateFormat("d MMM yyyy")
         customSymbol.groupingSeparator = ' '
         decimalFormat.decimalFormatSymbols = customSymbol
+
+        if (vm.isChangeSavedSumDialogOpened == true) {
+            openChangeSavedGoalSumDialog(state = vm.changeDialogState!!)
+        }
+
         val goalSavedMoneyTextView: TextView = view.findViewById(R.id.goalSavedMoneyTextView)
         val goalSumTextView: TextView = view.findViewById(R.id.goalSumTextView)
         val goalRemainingSumLayout: LinearLayout = view.findViewById(R.id.goalRemainingSumLayout)
@@ -106,63 +119,12 @@ class GoalDetailsFragment : Fragment() {
 
         vm.goal.observe(viewLifecycleOwner) { goal ->
             collaps.title = goal.name
-            goalSavedMoneyTextView.text = decimalFormat.format(goal.savedSum)
             goalSumTextView.text = decimalFormat.format(goal.sum)
             goalCreationDateTextView.text = sdf.format(goal.creationDate)
 
             goalSavedMoneyCurrencyTextView.text = goal.currency
             goalSumCurrencyTextView.text = goal.currency
             goalRemainingMoneyCurrencyTextView.text = goal.currency
-
-            if (goal.sum - goal.savedSum <= 0) { // if goal is reached
-                goalRemainingSumLayout.visibility = View.GONE
-                val diffInDays = if (TimeUnit.DAYS.convert(
-                        Date().time - goal.creationDate.time,
-                        TimeUnit.MILLISECONDS
-                    ) == 0L
-                )
-                    1
-                else
-                    TimeUnit.DAYS.convert(
-                        Date().time - goal.creationDate.time,
-                        TimeUnit.MILLISECONDS
-                    )
-                if (diffInDays == 1L) //для разных склонений
-                    goalDateTextView.text =
-                        requireActivity().getString(R.string.achieved_in_day, diffInDays)
-                else
-                    goalDateTextView.text =
-                        requireActivity().getString(R.string.achieved_in_days, diffInDays)
-
-                deleteButton.visibility = View.VISIBLE
-                actionButtonLayout.visibility = View.GONE
-                deleteButton.setOnClickListener {
-
-                }
-            } else {
-                goalRemainingMoneyTextView.text = decimalFormat.format(goal.sum - goal.savedSum)
-                if (goal.goalDate != null) {
-                    goalDateLayout.visibility = View.VISIBLE
-                    if (goal.goalDate!!.before(Date())) {
-                        goalDateTextView.text = requireActivity().getString(R.string.overdue)
-                        goalDateTextView.setTextColor(Color.RED)
-                        goalDateImageView.setColorFilter(Color.RED)
-                    } else {
-                        goalDateTextView.text = sdf.format(goal.goalDate!!)
-                    }
-                } else {
-                    goalDateLayout.visibility = View.GONE
-                }
-
-                deleteButton.visibility = View.GONE
-                actionButtonLayout.visibility = View.VISIBLE
-                subtractButton.setOnClickListener {
-
-                }
-                addButton.setOnClickListener {
-
-                }
-            }
 
             if ((goal.photoPath != null) && (File(goal.photoPath!!).exists())) {
                 goalImageCardView.visibility = View.VISIBLE
@@ -195,7 +157,123 @@ class GoalDetailsFragment : Fragment() {
             }
         }
 
+        vm.goalSavedSum.observe(viewLifecycleOwner) { savedSum ->
+            goalSavedMoneyTextView.text = decimalFormat.format(savedSum)
+            val sum = vm.goal.value!!.sum
+            if (sum - savedSum <= 0) { // if goal is reached
+                goalRemainingSumLayout.visibility = View.GONE
+                val diffInDays = if (TimeUnit.DAYS.convert(
+                        Date().time - vm.goal.value!!.creationDate.time,
+                        TimeUnit.MILLISECONDS
+                    ) == 0L
+                )
+                    1
+                else
+                    TimeUnit.DAYS.convert(
+                        Date().time - vm.goal.value!!.creationDate.time,
+                        TimeUnit.MILLISECONDS
+                    )
+                if (diffInDays == 1L) //для разных склонений
+                    goalDateTextView.text =
+                        requireActivity().getString(R.string.achieved_in_day, diffInDays)
+                else
+                    goalDateTextView.text =
+                        requireActivity().getString(R.string.achieved_in_days, diffInDays)
+
+                deleteButton.visibility = View.VISIBLE
+                actionButtonLayout.visibility = View.GONE
+                deleteButton.setOnClickListener {
+
+                }
+            } else {
+                goalRemainingMoneyTextView.text = decimalFormat.format(sum - savedSum)
+                if (vm.goal.value!!.goalDate != null) {
+                    goalDateLayout.visibility = View.VISIBLE
+                    if (vm.goal.value!!.goalDate!!.before(Date())) {
+                        goalDateTextView.text = requireActivity().getString(R.string.overdue)
+                        goalDateTextView.setTextColor(Color.RED)
+                        goalDateImageView.setColorFilter(Color.RED)
+                    } else {
+                        goalDateTextView.text = sdf.format(vm.goal.value!!.goalDate!!)
+                    }
+                } else {
+                    goalDateLayout.visibility = View.GONE
+                }
+
+                deleteButton.visibility = View.GONE
+                actionButtonLayout.visibility = View.VISIBLE
+                subtractButton.setOnClickListener {
+                    openChangeSavedGoalSumDialog(state = ChangeGoalSavedSumDialogState.SUBTRACT)
+                }
+                addButton.setOnClickListener {
+                    openChangeSavedGoalSumDialog(state = ChangeGoalSavedSumDialogState.ADD)
+                }
+            }
+        }
+
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    private fun openChangeSavedGoalSumDialog(state:ChangeGoalSavedSumDialogState) {
+        val dialog = BottomSheetDialog(requireActivity())
+        dialog.setContentView(R.layout.dialog_add_goal_sum)
+        vm.onOpenChangeSavedSumChangeDialog(
+            state = state
+        )
+        val goalSumTextInput: TextInputLayout = dialog.findViewById(R.id.goalSumTextInput)!!
+        val goalSumEditText: TextInputEditText = dialog.findViewById(R.id.goalSumEditText)!!
+        val dialogTitleTextView: TextView = dialog.findViewById(R.id.dialogTitleTextView)!!
+        dialogTitleTextView.text =  when (state) {
+            ChangeGoalSavedSumDialogState.ADD -> requireActivity().getString(R.string.add)
+            ChangeGoalSavedSumDialogState.SUBTRACT -> requireActivity().getString(R.string.subtract)
+        }
+
+        goalSumEditText.addTextChangedListener {
+            object : TextWatcher {
+                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+                override fun afterTextChanged(editable: Editable?) {
+                    val str = editable.toString()
+                    val position = str.indexOf(".")
+                    if (position != -1) {
+                        val subStr = str.substring(position)
+                        val subStrStart = str.substring(0, position)
+                        if ((subStr.length > 3) || (subStrStart.length == 0))
+                            editable?.delete(editable.length - 1, editable.length)
+                    }
+                }
+            }
+        }
+
+        dialog.findViewById<Button>(R.id.confirmButton)!!.setOnClickListener {
+            val savedSum = goalSumEditText.text.toString().trim()
+            if (savedSum.isEmpty())
+                goalSumTextInput.error = getString(R.string.youmustentername)
+            else {
+                val savedSumDouble = when (state) {
+                    ChangeGoalSavedSumDialogState.ADD -> savedSum.toDouble()
+                    ChangeGoalSavedSumDialogState.SUBTRACT -> savedSum.toDouble() * (-1)
+                }
+                vm.updateGoalSum(sum = savedSumDouble)
+                vm.setGoalDeposit(goalDeposit = GoalDeposit(sum = savedSumDouble, date = Date(), goalId = vm.goal.value!!.id))
+                dialog.dismiss()
+            }
+        }
+
+        dialog.findViewById<Button>(R.id.cancelButton)!!.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.setOnDismissListener {
+            vm.onCloseChangeSumChangeDialog()
+        }
+        dialog.setOnCancelListener {
+            vm.onCloseChangeSumChangeDialog()
+        }
+
+        dialog.show()
     }
 
 }

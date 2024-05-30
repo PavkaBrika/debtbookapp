@@ -150,6 +150,9 @@ val appModule = module {
     }
 
     viewModel<GoalDetailsFragmentViewModel> {
-        GoalDetailsFragmentViewModel()
+        GoalDetailsFragmentViewModel(
+            updateGoal = get(),
+            setGoalDeposit = get()
+        )
     }
 }
