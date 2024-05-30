@@ -20,6 +20,8 @@ import com.breckneck.deptbook.domain.usecase.Goal.DeleteGoal
 import com.breckneck.deptbook.domain.usecase.Goal.GetAllGoals
 import com.breckneck.deptbook.domain.usecase.Goal.SetGoal
 import com.breckneck.deptbook.domain.usecase.Goal.UpdateGoal
+import com.breckneck.deptbook.domain.usecase.GoalTransaction.GetGoalDepositsByGoalId
+import com.breckneck.deptbook.domain.usecase.GoalTransaction.SetGoalDeposit
 import com.breckneck.deptbook.domain.usecase.Human.*
 import com.breckneck.deptbook.domain.usecase.Settings.*
 import org.koin.dsl.module
@@ -306,5 +308,15 @@ val domainModule = module {
 
     factory<DeleteGoal> {
         DeleteGoal(goalRepository = get())
+    }
+
+    //GOAL DEPOSITS
+
+    factory<GetGoalDepositsByGoalId> {
+        GetGoalDepositsByGoalId(goalDepositRepository = get())
+    }
+
+    factory<SetGoalDeposit> {
+        SetGoalDeposit(goalDepositRepository = get())
     }
 }

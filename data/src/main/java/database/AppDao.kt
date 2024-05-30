@@ -5,6 +5,7 @@ import entity.Debt
 import entity.FinanceCategoryData
 import entity.FinanceData
 import entity.GoalData
+import entity.GoalDepositData
 import entity.Human
 import entity.relations.FinanceCategoryDataWithFinanceData
 import util.FinanceCategoryStateData
@@ -149,4 +150,18 @@ interface AppDao {
 
     @Update
     fun updateGoal(goalData: GoalData)
+
+    //GOAL DEPOSIT
+
+    @Query("SELECT * FROM GoalDepositData WHERE id = :goalId")
+    fun getGoalDepositsByGoalId(goalId: Int): List<GoalDepositData>
+
+    @Insert
+    fun insertGoalDeposit(goalDepositData: GoalDepositData)
+
+    @Delete
+    fun deleteGoalDeposit(goalDepositData: GoalDepositData)
+
+    @Update
+    fun updateGoalDeposit(goalDepositData: GoalDepositData)
 }

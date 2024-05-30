@@ -8,6 +8,7 @@ import com.breckneck.deptbook.domain.model.Goal
 import com.breckneck.deptbook.domain.usecase.Goal.DeleteGoal
 import com.breckneck.deptbook.domain.usecase.Goal.GetAllGoals
 import com.breckneck.deptbook.domain.usecase.Goal.UpdateGoal
+import com.breckneck.deptbook.domain.usecase.GoalTransaction.SetGoalDeposit
 import com.breckneck.deptbook.domain.util.ListState
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Completable
@@ -18,7 +19,8 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 class GoalsFragmentViewModel(
     private val getAllGoals: GetAllGoals,
     private val updateGoal: UpdateGoal,
-    private val deleteGoal: DeleteGoal
+    private val deleteGoal: DeleteGoal,
+    private val setGoalDeposit: SetGoalDeposit
 ) : ViewModel() {
 
     private val TAG = "GoalsFragmentVM"

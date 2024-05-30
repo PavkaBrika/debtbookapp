@@ -4,9 +4,11 @@ import com.breckneck.deptbook.data.storage.AdStorage
 import com.breckneck.deptbook.data.storage.DebtStorage
 import com.breckneck.deptbook.data.storage.FinanceCategoryStorage
 import com.breckneck.deptbook.data.storage.FinanceStorage
+import com.breckneck.deptbook.data.storage.GoalDepositStorage
 import com.breckneck.deptbook.data.storage.GoalStorage
 import com.breckneck.deptbook.data.storage.HumanStorage
 import com.breckneck.deptbook.data.storage.SettingsStorage
+import com.breckneck.deptbook.domain.model.GoalDeposit
 import com.breckneck.deptbook.domain.repository.AdRepository
 import database.DataBaseDebtStorageImpl
 import database.DataBaseHumanStorageImpl
@@ -15,16 +17,19 @@ import repository.HumanRepositoryImpl
 import com.breckneck.deptbook.domain.repository.DebtRepository
 import com.breckneck.deptbook.domain.repository.FinanceCategoryRepository
 import com.breckneck.deptbook.domain.repository.FinanceRepository
+import com.breckneck.deptbook.domain.repository.GoalDepositRepository
 import com.breckneck.deptbook.domain.repository.GoalRepository
 import com.breckneck.deptbook.domain.repository.HumanRepository
 import com.breckneck.deptbook.domain.repository.SettingsRepository
 import database.DataBaseFinanceCategoryStorageImpl
 import database.DataBaseFinanceStorageImpl
+import database.DataBaseGoalDepositStorageImpl
 import database.DataBaseGoalStorageImpl
 import org.koin.dsl.module
 import repository.AdRepositoryImpl
 import repository.FinanceCategoryRepositoryImpl
 import repository.FinanceRepositoryImpl
+import repository.GoalDepositRepositoryImpl
 import repository.GoalRepositoryImpl
 import repository.SettingsRepositoryImpl
 import sharedprefs.SharedPrefsAdStorageImpl
@@ -100,5 +105,15 @@ val dataModule = module {
 
     factory<GoalRepository> {
         GoalRepositoryImpl(goalStorage = get())
+    }
+
+    //GOAL DEPOSITS
+
+    factory<GoalDepositStorage> {
+        DataBaseGoalDepositStorageImpl(context = get())
+    }
+
+    factory<GoalDepositRepository> {
+        GoalDepositRepositoryImpl(goalDepositStorage = get())
     }
 }
