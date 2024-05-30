@@ -12,9 +12,7 @@
         android:id="@+id/transactionCardView"
         style="@style/CardViewStyle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:focusable="true">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="match_parent"
