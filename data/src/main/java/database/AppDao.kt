@@ -153,7 +153,7 @@ interface AppDao {
 
     //GOAL DEPOSIT
 
-    @Query("SELECT * FROM GoalDepositData WHERE id = :goalId")
+    @Query("SELECT * FROM GoalDepositData WHERE goalId = :goalId")
     fun getGoalDepositsByGoalId(goalId: Int): List<GoalDepositData>
 
     @Insert

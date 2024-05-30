@@ -32,6 +32,9 @@ class GoalDetailsFragmentViewModel(
     private val _goalDepositListState = MutableLiveData(ListState.LOADING)
     val goalDepositListState: LiveData<ListState>
         get() = _goalDepositListState
+    private var _isGoalDepositListNeedToUpdate = false
+    val isGoalDepositListNeedToUpdate: Boolean
+        get() = _isGoalDepositListNeedToUpdate
     private val _goalSavedSum = MutableLiveData<Double>()
     val goalSavedSum: LiveData<Double>
         get() = _goalSavedSum
@@ -54,7 +57,7 @@ class GoalDetailsFragmentViewModel(
     fun setGoal(goal: Goal) {
         _goal.value = goal
         _goalSavedSum.value = goal.savedSum
-
+        getGoalDepositList()
     }
 
     fun getGoalDepositList() {
@@ -72,6 +75,7 @@ class GoalDetailsFragmentViewModel(
                 } else {
                     _goalDepositList.value = list
                 }
+                _isGoalDepositListNeedToUpdate = false
                 Log.e(TAG, "Goal deposit list loaded")
             }, {
                 Log.e(TAG, it.message.toString())
@@ -109,6 +113,10 @@ class GoalDetailsFragmentViewModel(
                 Log.e(TAG, it.message.toString())
             })
         disposeBag.add(result)
+    }
+
+    fun setGoalListState(state: ListState) {
+        _goalDepositListState.value = state
     }
 
     fun onOpenChangeSavedSumChangeDialog(state: ChangeGoalSavedSumDialogState) {

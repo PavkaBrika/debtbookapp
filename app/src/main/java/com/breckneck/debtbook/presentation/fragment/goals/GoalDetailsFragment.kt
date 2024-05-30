@@ -6,8 +6,13 @@ import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.transition.Fade
+import android.transition.TransitionManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,18 +21,23 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
+import com.breckneck.debtbook.adapter.GoalDepositAdapter
 import com.breckneck.debtbook.presentation.viewmodel.GoalDetailsFragmentViewModel
 import com.breckneck.deptbook.domain.model.Goal
 import com.breckneck.deptbook.domain.model.GoalDeposit
 import com.breckneck.deptbook.domain.util.ChangeGoalSavedSumDialogState
+import com.breckneck.deptbook.domain.util.ListState
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.textfield.TextInputEditText
@@ -45,6 +55,9 @@ class GoalDetailsFragment : Fragment() {
     private val TAG = "GoalDetailsFragment"
 
     private val vm by viewModel<GoalDetailsFragmentViewModel>()
+
+    lateinit var goalDepositRecyclerView: RecyclerView
+    lateinit var goalDepositAdapter: GoalDepositAdapter
 
     interface OnClickListener {
 
@@ -73,6 +86,9 @@ class GoalDetailsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        vm.setGoalListState(ListState.LOADING)
+        if (vm.isGoalDepositListNeedToUpdate)
+            vm.getGoalDepositList()
         val view = inflater.inflate(R.layout.fragment_goal_details, container, false)
         return view
     }
@@ -115,6 +131,46 @@ class GoalDetailsFragment : Fragment() {
         collaps.apply {
             setCollapsedTitleTypeface(Typeface.DEFAULT_BOLD)
             setExpandedTitleTypeface(Typeface.DEFAULT_BOLD)
+        }
+
+        goalDepositRecyclerView = view.findViewById(R.id.goalTransactionRecyclerView)
+        goalDepositAdapter = GoalDepositAdapter(listOf(), vm.goal.value!!.currency)
+        goalDepositRecyclerView.adapter = goalDepositAdapter
+
+        val goalTransactionLayout: ConstraintLayout = view.findViewById(R.id.goalTransactionLayout)
+        val emptyGoalTransactionLayout: ConstraintLayout = view.findViewById(R.id.emptyGoalTransactionLayout)
+        val loadingGoalTransactionLayout: ConstraintLayout = view.findViewById(R.id.loadingGoalTransactionLayout)
+        val shimmerLayout: ShimmerFrameLayout = view.findViewById(R.id.shimmerLayout)
+
+        vm.goalDepositListState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                ListState.LOADING -> {
+                    goalTransactionLayout.visibility = View.GONE
+                    emptyGoalTransactionLayout.visibility = View.GONE
+                    loadingGoalTransactionLayout.visibility = View.VISIBLE
+                    shimmerLayout.startShimmerAnimation()
+                }
+                ListState.FILLED -> {
+                    val transition = Fade()
+                    transition.duration = 200
+                    transition.addTarget(goalTransactionLayout)
+                    TransitionManager.beginDelayedTransition(view as ViewGroup?, transition)
+                    goalTransactionLayout.visibility = View.VISIBLE
+                    emptyGoalTransactionLayout.visibility = View.GONE
+                    loadingGoalTransactionLayout.visibility = View.GONE
+                    shimmerLayout.stopShimmerAnimation()
+                }
+                ListState.EMPTY -> {
+                    val transition = Fade()
+                    transition.duration = 200
+                    transition.addTarget(emptyGoalTransactionLayout)
+                    TransitionManager.beginDelayedTransition(view as ViewGroup?, transition)
+                    goalTransactionLayout.visibility = View.GONE
+                    emptyGoalTransactionLayout.visibility = View.VISIBLE
+                    loadingGoalTransactionLayout.visibility = View.GONE
+                    shimmerLayout.stopShimmerAnimation()
+                }
+            }
         }
 
         vm.goal.observe(viewLifecycleOwner) { goal ->
@@ -214,6 +270,20 @@ class GoalDetailsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            vm.goalDepositList.observe(viewLifecycleOwner) { goalDepositList ->
+                if (goalDepositList.isNotEmpty()) {
+                    goalDepositAdapter.updateGoalDepositList(goalDepositList)
+                    Log.e(TAG, "data in adapter link success")
+                    vm.setGoalListState(state = ListState.FILLED)
+                }
+            }
+        }, 400)
+    }
+
     private fun openChangeSavedGoalSumDialog(state:ChangeGoalSavedSumDialogState) {
         val dialog = BottomSheetDialog(requireActivity())
         dialog.setContentView(R.layout.dialog_add_goal_sum)
@@ -257,7 +327,9 @@ class GoalDetailsFragment : Fragment() {
                     ChangeGoalSavedSumDialogState.SUBTRACT -> savedSum.toDouble() * (-1)
                 }
                 vm.updateGoalSum(sum = savedSumDouble)
-                vm.setGoalDeposit(goalDeposit = GoalDeposit(sum = savedSumDouble, date = Date(), goalId = vm.goal.value!!.id))
+                val goalDeposit = GoalDeposit(sum = savedSumDouble, date = Date(), goalId = vm.goal.value!!.id)
+                goalDepositAdapter.addGoalDeposit(goalDeposit = goalDeposit)
+                vm.setGoalDeposit(goalDeposit = goalDeposit)
                 dialog.dismiss()
             }
         }

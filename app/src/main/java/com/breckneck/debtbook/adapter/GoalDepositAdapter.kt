@@ -31,6 +31,11 @@ class GoalDepositAdapter(
         notifyDataSetChanged()
     }
 
+    fun addGoalDeposit(goalDeposit: GoalDeposit) {
+        goalDepositList.add(goalDeposit)
+        notifyItemInserted(goalDepositList.size - 1);
+    }
+
     class GoalDepositViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val transactionSumTextView: TextView = itemView.findViewById(R.id.transactionSumTextView)
         val transactionCurrencyTextVew: TextView = itemView.findViewById(R.id.transactionCurrencyTextVew)
@@ -55,9 +60,9 @@ class GoalDepositAdapter(
             holder.transactionSumTextView.setTextColor(holder.greenColor)
             holder.transactionCurrencyTextVew.setTextColor(holder.greenColor)
         } else {
-            holder.transactionSumTextView.text = "-${decimalFormat.format(goalDeposit.sum)}"
-            holder.transactionSumTextView.setTextColor(holder.greenColor)
-            holder.transactionCurrencyTextVew.setTextColor(holder.greenColor)
+            holder.transactionSumTextView.text = decimalFormat.format(goalDeposit.sum)
+            holder.transactionSumTextView.setTextColor(holder.redColor)
+            holder.transactionCurrencyTextVew.setTextColor(holder.redColor)
         }
         holder.transactionCurrencyTextVew.text = currency
         holder.transactionDateTextView.text = sdf.format(goalDeposit.date)
