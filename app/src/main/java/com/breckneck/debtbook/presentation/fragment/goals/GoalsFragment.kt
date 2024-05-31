@@ -192,8 +192,12 @@ class GoalsFragment: Fragment() {
             if (savedSum.isEmpty())
                 goalSumTextInput.error = getString(R.string.youmustentername)
             else {
-                addSavedGoalSum(goal = goal, position = position, sum = savedSum.toDouble())
-                dialog.dismiss()
+                if (savedSum.toDouble() == 0.0) {
+                    goalSumTextInput.error = getString(R.string.zerodebt)
+                } else {
+                    addSavedGoalSum(goal = goal, position = position, sum = savedSum.toDouble())
+                    dialog.dismiss()
+                }
             }
         }
 

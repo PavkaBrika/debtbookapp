@@ -111,10 +111,10 @@ class GoalDetailsFragment : Fragment() {
         customSymbol.groupingSeparator = ' '
         decimalFormat.decimalFormatSymbols = customSymbol
 
-        if (vm.isChangeSavedSumDialogOpened) {
+        if (vm.isChangeSavedSumDialogOpened == true) {
             openChangeSavedGoalSumDialog(state = vm.changeDialogState!!)
         }
-        if (vm.isEditOptionsDialogOpened) {
+        if (vm.isEditOptionsDialogOpened == true) {
             openEditOptionsDialog()
         }
 
@@ -264,6 +264,8 @@ class GoalDetailsFragment : Fragment() {
                 actionButtonLayout.visibility = View.GONE
                 deleteButton.setOnClickListener {
                     vm.deleteGoal(goal = vm.goal.value!!)
+                    setFragmentResult("goalsFragmentKey", bundleOf("isListModified" to true))
+                    onClickListener!!.onBackButtonClick()
                 }
             } else {
                 goalRemainingMoneyTextView.text = decimalFormat.format(sum - savedSum)
@@ -352,11 +354,16 @@ class GoalDetailsFragment : Fragment() {
                     ChangeGoalSavedSumDialogState.ADD -> savedSum.toDouble()
                     ChangeGoalSavedSumDialogState.SUBTRACT -> savedSum.toDouble() * (-1)
                 }
-                vm.updateGoalSum(sum = savedSumDouble)
-                val goalDeposit = GoalDeposit(sum = savedSumDouble, date = Date(), goalId = vm.goal.value!!.id)
-                goalDepositAdapter.addGoalDeposit(goalDeposit = goalDeposit)
-                vm.setGoalDeposit(goalDeposit = goalDeposit)
-                dialog.dismiss()
+                if (savedSumDouble == 0.0) {
+                    goalSumTextInput.error = getString(R.string.zerodebt)
+                } else {
+                    vm.updateGoalSum(sum = savedSumDouble)
+                    val goalDeposit = GoalDeposit(sum = savedSumDouble, date = Date(), goalId = vm.goal.value!!.id)
+                    goalDepositAdapter.addGoalDeposit(goalDeposit = goalDeposit)
+                    vm.setGoalListState(state = ListState.FILLED)
+                    vm.setGoalDeposit(goalDeposit = goalDeposit)
+                    dialog.dismiss()
+                }
             }
         }
 

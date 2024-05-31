@@ -152,7 +152,7 @@ class GoalDetailsFragmentViewModel(
     }
 
     fun onCloseChangeSumChangeDialog() {
-        _isChangeSavedSumDialogOpened = true
+        _isChangeSavedSumDialogOpened = false
         _changeDialogState = null
     }
 
