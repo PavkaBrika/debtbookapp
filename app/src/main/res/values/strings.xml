@@ -149,4 +149,5 @@
     <string name="goal_s_photo">Goal`s photo</string>
     <string name="subtract">Subtract</string>
     <string name="it_s_empty_here_for_now">It\'s empty here for now</string>
+    <string name="already_saved_sum_can_t_be_greater_than_the_goal_sum">Already saved sum can`t be greater than the goal sum</string>
 </resources>

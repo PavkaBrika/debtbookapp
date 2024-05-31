@@ -16,6 +16,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.cardview.widget.CardView
@@ -39,6 +40,7 @@ import com.bumptech.glide.request.target.Target
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.textfield.TextInputLayout
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.lang.NullPointerException
 import java.lang.NumberFormatException
@@ -195,6 +197,7 @@ class CreateGoalsFragment : Fragment() {
         }
         goalDateCardView.setOnClickListener {
             val calendar = Calendar.getInstance()
+            calendar.set(Calendar.DAY_OF_YEAR, calendar.get(Calendar.DAY_OF_YEAR) + 1)
             if (vm.goalDate.value != null)
                 calendar.timeInMillis = vm.goalDate.value!!.time
             val datePickerDialog = DatePickerDialog(
@@ -271,12 +274,74 @@ class CreateGoalsFragment : Fragment() {
             }
         }
 
+        fun isAllFieldsFilledRight(): Boolean {
+            val goalNameTextInput: TextInputLayout = view.findViewById(R.id.goalNameTextInput)
+            val goalSumTextInput: TextInputLayout = view.findViewById(R.id.goalSumTextInput)
+            val goalSavedSumTextInput: TextInputLayout = view.findViewById(R.id.goalSavedSumTextInput)
+            var isFilledRight = true
+
+            if (goalNameEditText.text.toString().trim().isEmpty()) {
+                goalNameTextInput.error = getString(R.string.youmustentername)
+                isFilledRight = false
+            }
+
+            try {
+                if (goalSumEditText.text.toString().toDouble() == 0.0) {
+                    goalSumTextInput.error = getString(R.string.zerodebt)
+                    isFilledRight = false
+                } else
+                    goalSumTextInput.error = ""
+            } catch (e: Exception) {
+                e.printStackTrace()
+                isFilledRight = false
+                goalSumTextInput.error = getString(R.string.something_went_wrong)
+            }
+
+            try {
+                if (goalSavedSumEditText.text.toString().isNotEmpty()) {
+                    if (goalSavedSumEditText.text.toString().toDouble() >= goalSumEditText.text.toString().toDouble()) {
+                        goalSavedSumTextInput.error =
+                            getString(R.string.already_saved_sum_can_t_be_greater_than_the_goal_sum)
+                        isFilledRight = false
+                    } else
+                        goalSavedSumTextInput.error = ""
+                } else {
+                    goalSavedSumTextInput.error = ""
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                isFilledRight = false
+                goalSavedSumTextInput.error = getString(R.string.something_went_wrong)
+            }
+
+            return isFilledRight
+        }
+
         val setFinanceButton: FloatingActionButton = view.findViewById(R.id.setFinanceButton)
         setFinanceButton.setOnClickListener {
-            when (vm.createFragmentState!!) {
-                CreateFragmentState.CREATE -> {
-                    vm.setGoal(
-                        goal = Goal(
+            if (isAllFieldsFilledRight()) {
+                when (vm.createFragmentState!!) {
+                    CreateFragmentState.CREATE -> {
+                        vm.setGoal(
+                            goal = Goal(
+                                name = goalNameEditText.text.toString(),
+                                sum = goalSumEditText.text.toString().toDouble(),
+                                savedSum = try {
+                                    goalSavedSumEditText.text.toString().toDouble()
+                                } catch (e: NumberFormatException) {
+                                    0.0
+                                },
+                                photoPath = savePhotoToInternalStorage(vm.imageUri.value),
+                                currency = vm.currency.value!!,
+                                creationDate = Calendar.getInstance().time,
+                                goalDate = vm.goalDate.value
+                            )
+                        )
+                    }
+
+                    CreateFragmentState.EDIT -> {
+                        val editGoal = Goal(
+                            id = vm.goal!!.id,
                             name = goalNameEditText.text.toString(),
                             sum = goalSumEditText.text.toString().toDouble(),
                             savedSum = try {
@@ -284,47 +349,31 @@ class CreateGoalsFragment : Fragment() {
                             } catch (e: NumberFormatException) {
                                 0.0
                             },
-                            photoPath = savePhotoToInternalStorage(vm.imageUri.value),
+                            photoPath = if (vm.imagePath.value != null)
+                                vm.goal!!.photoPath
+                            else
+                                savePhotoToInternalStorage(vm.imageUri.value),
                             currency = vm.currency.value!!,
-                            creationDate = Calendar.getInstance().time,
+                            creationDate = vm.goal!!.creationDate,
                             goalDate = vm.goalDate.value
                         )
-                    )
+                        vm.editGoal(
+                            goal = editGoal
+                        )
+                        setFragmentResult(
+                            "goalDetailsFragmentKey",
+                            bundleOf("isGoalEdited" to true, "goal" to editGoal)
+                        )
+                    }
                 }
-
-                CreateFragmentState.EDIT -> {
-                    val editGoal = Goal(
-                        id = vm.goal!!.id,
-                        name = goalNameEditText.text.toString(),
-                        sum = goalSumEditText.text.toString().toDouble(),
-                        savedSum = try {
-                            goalSavedSumEditText.text.toString().toDouble()
-                        } catch (e: NumberFormatException) {
-                            0.0
-                        },
-                        photoPath = if (vm.imagePath.value != null)
-                            vm.goal!!.photoPath
-                        else
-                            savePhotoToInternalStorage(vm.imageUri.value),
-                        currency = vm.currency.value!!,
-                        creationDate = vm.goal!!.creationDate,
-                        goalDate = vm.goalDate.value
-                    )
-                    vm.editGoal(
-                        goal = editGoal
-                    )
-                    setFragmentResult(
-                        "goalDetailsFragmentKey",
-                        bundleOf("isGoalEdited" to true, "goal" to editGoal)
-                    )
-                }
+                setFragmentResult("goalsFragmentKey", bundleOf("isListModified" to true))
+                onClickListener!!.onBackButtonClick()
             }
-
-            setFragmentResult("goalsFragmentKey", bundleOf("isListModified" to true))
-            onClickListener!!.onBackButtonClick()
         }
+
         super.onViewCreated(view, savedInstanceState)
     }
+
 
     override fun onResume() {
         super.onResume()
