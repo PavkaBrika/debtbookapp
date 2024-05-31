@@ -22,14 +22,17 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.os.bundleOf
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.adapter.GoalDepositAdapter
 import com.breckneck.debtbook.presentation.viewmodel.GoalDetailsFragmentViewModel
 import com.breckneck.deptbook.domain.model.Goal
 import com.breckneck.deptbook.domain.model.GoalDeposit
+import com.breckneck.deptbook.domain.usecase.Debt.FormatDebtSum
 import com.breckneck.deptbook.domain.util.ChangeGoalSavedSumDialogState
 import com.breckneck.deptbook.domain.util.ListState
 import com.bumptech.glide.Glide
@@ -61,7 +64,7 @@ class GoalDetailsFragment : Fragment() {
 
     interface OnClickListener {
 
-//        fun onGoalClick()
+        fun onEditGoalButtonClick(goal: Goal)
 
         fun onBackButtonClick()
     }
@@ -100,8 +103,21 @@ class GoalDetailsFragment : Fragment() {
         customSymbol.groupingSeparator = ' '
         decimalFormat.decimalFormatSymbols = customSymbol
 
-        if (vm.isChangeSavedSumDialogOpened == true) {
+        if (vm.isChangeSavedSumDialogOpened) {
             openChangeSavedGoalSumDialog(state = vm.changeDialogState!!)
+        }
+        if (vm.isEditOptionsDialogOpened) {
+            openEditOptionsDialog()
+        }
+
+        val backButton: ImageView = view.findViewById(R.id.backButton)
+        backButton.setOnClickListener {
+            onClickListener?.onBackButtonClick()
+        }
+
+        val editGoalButton: ImageView = view.findViewById(R.id.editGoalButton)
+        editGoalButton.setOnClickListener {
+            openEditOptionsDialog()
         }
 
         val goalSavedMoneyTextView: TextView = view.findViewById(R.id.goalSavedMoneyTextView)
@@ -239,7 +255,7 @@ class GoalDetailsFragment : Fragment() {
                 deleteButton.visibility = View.VISIBLE
                 actionButtonLayout.visibility = View.GONE
                 deleteButton.setOnClickListener {
-
+                    vm.deleteGoal(goal = vm.goal.value!!)
                 }
             } else {
                 goalRemainingMoneyTextView.text = decimalFormat.format(sum - savedSum)
@@ -343,6 +359,40 @@ class GoalDetailsFragment : Fragment() {
         }
         dialog.setOnCancelListener {
             vm.onCloseChangeSumChangeDialog()
+        }
+
+        dialog.show()
+    }
+
+    private fun openEditOptionsDialog() {
+        val dialog = BottomSheetDialog(requireContext())
+        dialog.setContentView(R.layout.dialog_extra_functions)
+
+        vm.onOpenEditOptionsDialog()
+
+        dialog.findViewById<TextView>(R.id.extrasTitle)!!.text = vm.goal.value!!.name
+
+        dialog.findViewById<Button>(R.id.deleteButton)!!.setOnClickListener {
+            vm.deleteGoal(goal = vm.goal.value!!)
+            setFragmentResult("goalsFragmentKey", bundleOf("isListModified" to true))
+            dialog.dismiss()
+            onClickListener!!.onBackButtonClick()
+        }
+
+        dialog.findViewById<Button>(R.id.editButton)!!.setOnClickListener {
+            onClickListener!!.onEditGoalButtonClick(goal = vm.goal.value!!)
+            dialog.dismiss()
+        }
+
+        dialog.findViewById<Button>(R.id.cancelButton)!!.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.setOnDismissListener {
+            vm.onCloseEditOptionsDialog()
+        }
+        dialog.setOnCancelListener {
+            vm.onCloseEditOptionsDialog()
         }
 
         dialog.show()

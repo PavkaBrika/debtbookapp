@@ -6,7 +6,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.breckneck.deptbook.domain.model.Goal
 import com.breckneck.deptbook.domain.model.GoalDeposit
+import com.breckneck.deptbook.domain.usecase.Goal.DeleteGoal
 import com.breckneck.deptbook.domain.usecase.Goal.UpdateGoal
+import com.breckneck.deptbook.domain.usecase.GoalTransaction.DeleteGoalDepositsByGoalId
 import com.breckneck.deptbook.domain.usecase.GoalTransaction.GetGoalDepositsByGoalId
 import com.breckneck.deptbook.domain.usecase.GoalTransaction.SetGoalDeposit
 import com.breckneck.deptbook.domain.util.ChangeGoalSavedSumDialogState
@@ -21,7 +23,9 @@ import java.util.Date
 class GoalDetailsFragmentViewModel(
     private val updateGoal: UpdateGoal,
     private val setGoalDeposit: SetGoalDeposit,
-    private val getGoalDepositsByGoalId: GetGoalDepositsByGoalId
+    private val getGoalDepositsByGoalId: GetGoalDepositsByGoalId,
+    private val deleteGoal: DeleteGoal,
+    private val deleteGoalDepositsByGoalId: DeleteGoalDepositsByGoalId
 ): ViewModel() {
 
     private val TAG = "GoalDetailsFragmentVM"
@@ -47,6 +51,9 @@ class GoalDetailsFragmentViewModel(
     private var _changeDialogState: ChangeGoalSavedSumDialogState? = null
     val changeDialogState: ChangeGoalSavedSumDialogState?
         get() = _changeDialogState
+    private var _isEditOptionsDialogOpened = false
+    val isEditOptionsDialogOpened: Boolean
+        get() = _isEditOptionsDialogOpened
 
     private val disposeBag = CompositeDisposable()
 
@@ -115,6 +122,22 @@ class GoalDetailsFragmentViewModel(
         disposeBag.add(result)
     }
 
+    fun deleteGoal(goal: Goal) {
+        val result = Completable.create {
+            deleteGoal.execute(goal = goal)
+            deleteGoalDepositsByGoalId.execute(goalId = goal.id)
+            it.onComplete()
+        }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                Log.e(TAG, "Goal deleted")
+            }, {
+                Log.e(TAG, it.message.toString())
+            })
+        disposeBag.add(result)
+    }
+
     fun setGoalListState(state: ListState) {
         _goalDepositListState.value = state
     }
@@ -127,6 +150,14 @@ class GoalDetailsFragmentViewModel(
     fun onCloseChangeSumChangeDialog() {
         _isChangeSavedSumDialogOpened = true
         _changeDialogState = null
+    }
+
+    fun onOpenEditOptionsDialog() {
+        _isEditOptionsDialogOpened = true
+    }
+
+    fun onCloseEditOptionsDialog() {
+        _isEditOptionsDialogOpened = false
     }
 
     override fun onCleared() {

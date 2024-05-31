@@ -16,7 +16,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
@@ -30,12 +29,10 @@ import com.breckneck.debtbook.presentation.viewmodel.CreateFinanceViewModel
 import com.breckneck.debtbook.util.GetFinanceCategoryNameInLocalLanguage
 import com.breckneck.deptbook.domain.model.Finance
 import com.breckneck.deptbook.domain.model.FinanceCategory
-import com.breckneck.deptbook.domain.util.CreateFinanceState
+import com.breckneck.deptbook.domain.util.CreateFragmentState
 import com.breckneck.deptbook.domain.util.FinanceCategoryState
 import com.breckneck.deptbook.domain.util.SWITCH_STATE_INCOMES
 import com.breckneck.deptbook.domain.util.SWITCH_STATE_REVENUES
-import com.breckneck.deptbook.domain.util.incomesCategoryEnglishNameList
-import com.breckneck.deptbook.domain.util.revenuesCategoryEnglishNameList
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -87,10 +84,10 @@ class CreateFinanceFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (vm.createFinanceState.value == null) {
+        if (vm.createFragmentState.value == null) {
             when (arguments?.getBoolean("isEditFinance")!!) {
-                true -> vm.setCreateFinanceState(createFinanceState = CreateFinanceState.EDIT)
-                false -> vm.setCreateFinanceState(createFinanceState = CreateFinanceState.CREATE)
+                true -> vm.setCreateFinanceState(createFragmentState = CreateFragmentState.EDIT)
+                false -> vm.setCreateFinanceState(createFragmentState = CreateFragmentState.CREATE)
             }
         }
 
@@ -109,9 +106,9 @@ class CreateFinanceFragment : Fragment() {
         val financeSumTextInput: TextInputLayout = view.findViewById(R.id.financeSumTextInput)
         val financeInfoEditText: EditText = view.findViewById(R.id.financeInfoEditText)
         val categoryLinearLayout: LinearLayout = view.findViewById(R.id.categoryLinearLayout)
-        vm.createFinanceState.observe(viewLifecycleOwner) { state ->
+        vm.createFragmentState.observe(viewLifecycleOwner) { state ->
             when (state) {
-                CreateFinanceState.CREATE -> {
+                CreateFragmentState.CREATE -> {
                     val calendarCurrentTime = Calendar.getInstance()
                     val calendarFinanceTime = Calendar.getInstance()
                     calendarFinanceTime.timeInMillis = arguments?.getLong("dayInMillis")!!
@@ -128,7 +125,7 @@ class CreateFinanceFragment : Fragment() {
                     vm.getFinanceCategoriesByState()
                 }
 
-                CreateFinanceState.EDIT -> {
+                CreateFragmentState.EDIT -> {
                     val financeEdit = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                         arguments?.getSerializable("financeEdit", Finance::class.java)
                     } else {
@@ -282,7 +279,7 @@ class CreateFinanceFragment : Fragment() {
                 }
             }
 
-            if (vm.createFinanceState.value == CreateFinanceState.CREATE) {
+            if (vm.createFragmentState.value == CreateFragmentState.CREATE) {
                 if (vm.checkedFinanceCategory.value == null) {
                     Toast.makeText(
                         requireActivity(),
@@ -298,8 +295,8 @@ class CreateFinanceFragment : Fragment() {
         val setFinanceButton: FloatingActionButton = view.findViewById(R.id.setFinanceButton)
         setFinanceButton.setOnClickListener {
             if (isAllFieldsFilledRight()) {
-                when (vm.createFinanceState.value!!) {
-                    CreateFinanceState.CREATE -> {
+                when (vm.createFragmentState.value!!) {
+                    CreateFragmentState.CREATE -> {
                         vm.setFinance(
                             Finance(
                                 sum = financeSumEditText.text.toString().toDouble(),
@@ -310,7 +307,7 @@ class CreateFinanceFragment : Fragment() {
                         )
                     }
 
-                    CreateFinanceState.EDIT -> {
+                    CreateFragmentState.EDIT -> {
                         vm.editFinance(
                             Finance(
                                 id = vm.financeEdit.value!!.id,

@@ -175,6 +175,17 @@
                         android:foreground="?android:attr/selectableItemBackground"
                         android:src="@drawable/baseline_arrow_back_24" />
 
+                    <ImageView
+                        android:id="@+id/editGoalButton"
+                        style="@style/imageViewButton"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="end"
+                        android:layout_marginEnd="16dp"
+                        android:background="@android:color/transparent"
+                        android:foreground="?android:attr/selectableItemBackground"
+                        android:src="@drawable/baseline_edit_note_24" />
+
                 </androidx.appcompat.widget.Toolbar>
 
             </com.google.android.material.appbar.CollapsingToolbarLayout>
@@ -307,32 +318,24 @@
                         android:id="@+id/emptyGoalTransactionLayout"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:visibility="gone"
+                        android:visibility="visible"
+                        android:paddingVertical="16dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/actionButtonLayout">
-
-                        <Space
-                            android:id="@+id/space3"
-                            android:layout_width="match_parent"
-                            android:layout_height="100dp"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
 
                         <ImageView
                             android:id="@+id/emptyGoalTransactionImageView"
                             android:layout_width="100dp"
                             android:layout_height="100dp"
                             android:layout_gravity="center"
-                            android:layout_margin="24dp"
                             android:elevation="11dp"
                             android:src="@drawable/empty_list"
                             app:layout_behavior="@string/appbar_scrolling_view_behavior"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/space3" />
+                            app:layout_constraintTop_toTopOf="parent" />
 
                         <TextView
                             android:id="@+id/noNotesTextView"
@@ -355,7 +358,7 @@
                         android:id="@+id/loadingGoalTransactionLayout"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:visibility="visible"
+                        android:visibility="gone"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"

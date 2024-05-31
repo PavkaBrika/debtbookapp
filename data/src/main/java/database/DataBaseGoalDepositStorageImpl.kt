@@ -18,4 +18,8 @@ class DataBaseGoalDepositStorageImpl(private val context: Context): GoalDepositS
     override fun getGoalDepositsDataByGoalId(goalId: Int): List<GoalDepositData> {
         return db.appDao().getGoalDepositsByGoalId(goalId = goalId)
     }
+
+    override fun deleteGoalDepositsDataByGoalId(goalId: Int) {
+        db.appDao().deleteGoalDepositsByGoalId(goalId = goalId)
+    }
 }

@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.breckneck.debtbook.util.GetFinanceCategoryNameInLocalLanguage
 import com.breckneck.deptbook.domain.model.Finance
 import com.breckneck.deptbook.domain.model.FinanceCategory
 import com.breckneck.deptbook.domain.usecase.Finance.DeleteAllFinancesByCategoryId
@@ -14,7 +13,7 @@ import com.breckneck.deptbook.domain.usecase.FinanceCategory.DeleteFinanceCatego
 import com.breckneck.deptbook.domain.usecase.FinanceCategory.GetAllFinanceCategories
 import com.breckneck.deptbook.domain.usecase.FinanceCategory.GetFinanceCategoriesByState
 import com.breckneck.deptbook.domain.usecase.Settings.GetFinanceCurrency
-import com.breckneck.deptbook.domain.util.CreateFinanceState
+import com.breckneck.deptbook.domain.util.CreateFragmentState
 import com.breckneck.deptbook.domain.util.FinanceCategoryState
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Completable
@@ -64,9 +63,9 @@ class CreateFinanceViewModel(
     private val _financeEdit = MutableLiveData<Finance>()
     val financeEdit: LiveData<Finance>
         get() = _financeEdit
-    private val _createFinanceState = MutableLiveData<CreateFinanceState>()
-    val createFinanceState: LiveData<CreateFinanceState>
-        get() = _createFinanceState
+    private val _createFragmentState = MutableLiveData<CreateFragmentState>()
+    val createFragmentState: LiveData<CreateFragmentState>
+        get() = _createFragmentState
     private val _isDeleteCategoryDialogOpened = MutableLiveData<Boolean>(false)
     val isDeleteCategoryDialogOpened: LiveData<Boolean>
         get() = _isDeleteCategoryDialogOpened
@@ -189,8 +188,8 @@ class CreateFinanceViewModel(
         _checkedFinanceCategory.value = financeCategory
     }
 
-    fun setCreateFinanceState(createFinanceState: CreateFinanceState) {
-        _createFinanceState.value = createFinanceState
+    fun setCreateFinanceState(createFragmentState: CreateFragmentState) {
+        _createFragmentState.value = createFragmentState
     }
 
     fun setDeleteCategoryDialogOpened(isOpened: Boolean) {

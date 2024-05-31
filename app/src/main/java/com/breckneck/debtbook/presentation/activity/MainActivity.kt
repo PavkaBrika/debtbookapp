@@ -461,6 +461,15 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener,
         vm.onActionClick()
     }
 
+    //goal details interface
+
+    override fun onEditGoalButtonClick(goal: Goal) {
+        val args = Bundle()
+        args.putSerializable("goal", goal)
+        navController.navigate(R.id.action_goalDetailsFragment_to_createGoalsFragment, args)
+        vm.onActionClick()
+    }
+
     private fun showAppRateDialog(isFromSettings: Boolean) {
         val rateAppBottomSheetDialog = BottomSheetDialog(this)
         rateAppBottomSheetDialog.setContentView(R.layout.dialog_rate_app)

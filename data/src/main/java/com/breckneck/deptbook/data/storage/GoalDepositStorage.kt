@@ -7,4 +7,6 @@ interface GoalDepositStorage {
     fun setGoalDepositData(goalDepositData: GoalDepositData)
 
     fun getGoalDepositsDataByGoalId(goalId: Int): List<GoalDepositData>
+
+    fun deleteGoalDepositsDataByGoalId(goalId: Int)
 }

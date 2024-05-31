@@ -23,4 +23,8 @@ class GoalDepositRepositoryImpl(private val goalDepositStorage: GoalDepositStora
         return goalDepositStorage.getGoalDepositsDataByGoalId(goalId = goalId)
             .map { GoalDeposit(id = it.id, sum = it.sum, date = it.date, goalId = it.goalId) }
     }
+
+    override fun deleteGoalDepositsByGoalId(goalId: Int) {
+        goalDepositStorage.deleteGoalDepositsDataByGoalId(goalId = goalId)
+    }
 }

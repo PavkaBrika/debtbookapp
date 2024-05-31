@@ -153,7 +153,9 @@ val appModule = module {
         GoalDetailsFragmentViewModel(
             updateGoal = get(),
             setGoalDeposit = get(),
-            getGoalDepositsByGoalId = get()
+            getGoalDepositsByGoalId = get(),
+            deleteGoalDepositsByGoalId = get(),
+            deleteGoal = get()
         )
     }
 }

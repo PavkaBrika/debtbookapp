@@ -20,6 +20,7 @@ import com.breckneck.deptbook.domain.usecase.Goal.DeleteGoal
 import com.breckneck.deptbook.domain.usecase.Goal.GetAllGoals
 import com.breckneck.deptbook.domain.usecase.Goal.SetGoal
 import com.breckneck.deptbook.domain.usecase.Goal.UpdateGoal
+import com.breckneck.deptbook.domain.usecase.GoalTransaction.DeleteGoalDepositsByGoalId
 import com.breckneck.deptbook.domain.usecase.GoalTransaction.GetGoalDepositsByGoalId
 import com.breckneck.deptbook.domain.usecase.GoalTransaction.SetGoalDeposit
 import com.breckneck.deptbook.domain.usecase.Human.*
@@ -318,5 +319,9 @@ val domainModule = module {
 
     factory<SetGoalDeposit> {
         SetGoalDeposit(goalDepositRepository = get())
+    }
+
+    factory<DeleteGoalDepositsByGoalId> {
+        DeleteGoalDepositsByGoalId(goalDepositRepository = get())
     }
 }
