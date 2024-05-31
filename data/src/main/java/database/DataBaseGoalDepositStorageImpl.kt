@@ -27,4 +27,8 @@ class DataBaseGoalDepositStorageImpl(private val context: Context): GoalDepositS
         db.appDao().deleteAllGoalDeposits()
         db.appDao().insertAllGoalDeposits(goalDepositDataList = goalDepositDataList)
     }
+
+    override fun getAllGoalDepositsData(): List<GoalDepositData> {
+        return db.appDao().getAllGoalDeposits()
+    }
 }

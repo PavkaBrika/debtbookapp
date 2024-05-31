@@ -20,9 +20,9 @@ import com.breckneck.deptbook.domain.usecase.Goal.DeleteGoal
 import com.breckneck.deptbook.domain.usecase.Goal.GetAllGoals
 import com.breckneck.deptbook.domain.usecase.Goal.SetGoal
 import com.breckneck.deptbook.domain.usecase.Goal.UpdateGoal
-import com.breckneck.deptbook.domain.usecase.GoalTransaction.DeleteGoalDepositsByGoalId
-import com.breckneck.deptbook.domain.usecase.GoalTransaction.GetGoalDepositsByGoalId
-import com.breckneck.deptbook.domain.usecase.GoalTransaction.SetGoalDeposit
+import com.breckneck.deptbook.domain.usecase.GoalDeposit.DeleteGoalDepositsByGoalId
+import com.breckneck.deptbook.domain.usecase.GoalDeposit.GetGoalDepositsByGoalId
+import com.breckneck.deptbook.domain.usecase.GoalDeposit.SetGoalDeposit
 import com.breckneck.deptbook.domain.usecase.Human.*
 import com.breckneck.deptbook.domain.usecase.Settings.*
 import org.koin.dsl.module

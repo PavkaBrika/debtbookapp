@@ -11,4 +11,6 @@ interface GoalDepositRepository {
     fun deleteGoalDepositsByGoalId(goalId: Int)
 
     fun replaceAllGoalDeposits(goalDepositList: List<GoalDeposit>)
+
+    fun getAllGoalDeposits(): List<GoalDeposit>
 }

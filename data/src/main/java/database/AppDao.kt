@@ -159,6 +159,9 @@ interface AppDao {
 
     //GOAL DEPOSIT
 
+    @Query("SELECT * FROM GoalDepositData")
+    fun getAllGoalDeposits(): List<GoalDepositData>
+
     @Query("SELECT * FROM GoalDepositData WHERE goalId = :goalId")
     fun getGoalDepositsByGoalId(goalId: Int): List<GoalDepositData>
 

@@ -13,6 +13,10 @@ import com.breckneck.deptbook.domain.usecase.Finance.GetAllFinances
 import com.breckneck.deptbook.domain.usecase.Finance.ReplaceAllFinances
 import com.breckneck.deptbook.domain.usecase.FinanceCategory.GetAllFinanceCategories
 import com.breckneck.deptbook.domain.usecase.FinanceCategory.ReplaceAllFinanceCategories
+import com.breckneck.deptbook.domain.usecase.Goal.GetAllGoals
+import com.breckneck.deptbook.domain.usecase.Goal.ReplaceAllGoals
+import com.breckneck.deptbook.domain.usecase.GoalDeposit.GetAllGoalDeposits
+import com.breckneck.deptbook.domain.usecase.GoalDeposit.ReplaceAllGoalsDeposits
 import com.breckneck.deptbook.domain.usecase.Human.GetAllHumansUseCase
 import com.breckneck.deptbook.domain.usecase.Human.ReplaceAllHumans
 import com.breckneck.deptbook.domain.usecase.Settings.GetIsAuthorized
@@ -41,7 +45,11 @@ class SynchronizationViewModel(
     private val getAllFinances: GetAllFinances,
     private val getAllFinanceCategories: GetAllFinanceCategories,
     private val replaceAllFinances: ReplaceAllFinances,
-    private val replaceAllFinanceCategories: ReplaceAllFinanceCategories
+    private val replaceAllFinanceCategories: ReplaceAllFinanceCategories,
+    private val getAllGoals: GetAllGoals,
+    private val getAllGoalDeposits: GetAllGoalDeposits,
+    private val replaceAllGoals: ReplaceAllGoals,
+    private val replaceAllGoalDeposits: ReplaceAllGoalsDeposits
 ) : ViewModel() {
 
     private val TAG = "SyncFragmentVM"
@@ -153,7 +161,9 @@ class SynchronizationViewModel(
                     humanList = getAllHumansUseCase.execute(),
                     debtList = getAllDebts.execute(),
                     financeList = getAllFinances.execute(),
-                    financeCategoryList = getAllFinanceCategories.execute()
+                    financeCategoryList = getAllFinanceCategories.execute(),
+                    goalList = getAllGoals.execute(),
+                    goalDepositList = getAllGoalDeposits.execute()
                 )
             )
         }
@@ -173,6 +183,8 @@ class SynchronizationViewModel(
             replaceAllDebts.execute(appDataLists.debtList)
             replaceAllFinanceCategories.execute(appDataLists.financeCategoryList)
             replaceAllFinances.execute(appDataLists.financeList)
+            replaceAllGoals.execute(appDataLists.goalList)
+            replaceAllGoalDeposits.execute(appDataLists.goalDepositList)
             it.onComplete()
         }
             .subscribeOn(Schedulers.io())

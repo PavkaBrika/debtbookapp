@@ -8,9 +8,9 @@ import com.breckneck.deptbook.domain.model.Goal
 import com.breckneck.deptbook.domain.model.GoalDeposit
 import com.breckneck.deptbook.domain.usecase.Goal.DeleteGoal
 import com.breckneck.deptbook.domain.usecase.Goal.UpdateGoal
-import com.breckneck.deptbook.domain.usecase.GoalTransaction.DeleteGoalDepositsByGoalId
-import com.breckneck.deptbook.domain.usecase.GoalTransaction.GetGoalDepositsByGoalId
-import com.breckneck.deptbook.domain.usecase.GoalTransaction.SetGoalDeposit
+import com.breckneck.deptbook.domain.usecase.GoalDeposit.DeleteGoalDepositsByGoalId
+import com.breckneck.deptbook.domain.usecase.GoalDeposit.GetGoalDepositsByGoalId
+import com.breckneck.deptbook.domain.usecase.GoalDeposit.SetGoalDeposit
 import com.breckneck.deptbook.domain.util.ChangeGoalSavedSumDialogState
 import com.breckneck.deptbook.domain.util.ListState
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -18,7 +18,6 @@ import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
-import java.util.Date
 
 class GoalDetailsFragmentViewModel(
     private val updateGoal: UpdateGoal,

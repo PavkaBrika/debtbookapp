@@ -1,4 +1,4 @@
-package com.breckneck.deptbook.domain.usecase.GoalTransaction
+package com.breckneck.deptbook.domain.usecase.GoalDeposit
 
 import com.breckneck.deptbook.domain.model.GoalDeposit
 import com.breckneck.deptbook.domain.repository.GoalDepositRepository

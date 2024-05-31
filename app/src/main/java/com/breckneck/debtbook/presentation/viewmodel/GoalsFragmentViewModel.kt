@@ -9,8 +9,8 @@ import com.breckneck.deptbook.domain.model.GoalDeposit
 import com.breckneck.deptbook.domain.usecase.Goal.DeleteGoal
 import com.breckneck.deptbook.domain.usecase.Goal.GetAllGoals
 import com.breckneck.deptbook.domain.usecase.Goal.UpdateGoal
-import com.breckneck.deptbook.domain.usecase.GoalTransaction.DeleteGoalDepositsByGoalId
-import com.breckneck.deptbook.domain.usecase.GoalTransaction.SetGoalDeposit
+import com.breckneck.deptbook.domain.usecase.GoalDeposit.DeleteGoalDepositsByGoalId
+import com.breckneck.deptbook.domain.usecase.GoalDeposit.SetGoalDeposit
 import com.breckneck.deptbook.domain.util.ListState
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Completable
