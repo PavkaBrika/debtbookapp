@@ -7,7 +7,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.breckneck.deptbook.domain.model.Goal
 import com.breckneck.deptbook.domain.usecase.Goal.SetGoal
+import com.breckneck.deptbook.domain.usecase.Goal.UpdateGoal
 import com.breckneck.deptbook.domain.usecase.Settings.GetDefaultCurrency
+import com.breckneck.deptbook.domain.util.CreateFragmentState
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -16,7 +18,8 @@ import java.util.Date
 
 class CreateGoalsFragmentViewModel(
     private val setGoal: SetGoal,
-    private val getDefaultCurrency: GetDefaultCurrency
+    private val getDefaultCurrency: GetDefaultCurrency,
+    private val updateGoal: UpdateGoal
 ): ViewModel() {
 
     private val TAG = "CreateGoalsFragmentVM"
@@ -36,6 +39,15 @@ class CreateGoalsFragmentViewModel(
     private val _imageUri = MutableLiveData<Uri?>(null)
     val imageUri: LiveData<Uri?>
         get() = _imageUri
+    private val _imagePath = MutableLiveData<String?>(null)
+    val imagePath: LiveData<String?>
+        get() = _imagePath
+    private var _createFragmentState: CreateFragmentState? = null
+    val createFragmentState: CreateFragmentState?
+        get() = _createFragmentState
+    private var _goal: Goal? = null
+    val goal: Goal?
+        get() = _goal
 
     private val disposeBag = CompositeDisposable()
 
@@ -52,11 +64,25 @@ class CreateGoalsFragmentViewModel(
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                Log.e(TAG, "finance added")
+                Log.e(TAG, "Goal added")
             }, {
                 Log.e(TAG, it.message.toString())
             })
         disposeBag.add(result)
+    }
+
+    fun editGoal(goal: Goal) {
+        var result = Completable.create {
+            updateGoal.execute(goal = goal)
+            it.onComplete()
+        }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                Log.e(TAG, "Goal edited")
+            }, {
+                Log.e(TAG, it.message.toString())
+            })
     }
 
     fun onCurrencyDialogOpen(selectedCurrencyPosition: Int) {
@@ -80,8 +106,20 @@ class CreateGoalsFragmentViewModel(
         _imageUri.value = uri
     }
 
+    fun setImagePath(path: String?) {
+        _imagePath.value = path
+    }
+
     private fun getDefaultCurrency() {
         _currency.value = getDefaultCurrency.execute()
+    }
+
+    fun setGoalEdit(goal: Goal) {
+        _goal = goal
+    }
+
+    fun setCreateFragmentState(state: CreateFragmentState) {
+        _createFragmentState = state
     }
 
     override fun onCleared() {

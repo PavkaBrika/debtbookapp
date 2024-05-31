@@ -61,6 +61,10 @@ class GoalDetailsFragmentViewModel(
         Log.e(TAG, "Created")
     }
 
+    fun getGoalFromDB(id: Int) {
+
+    }
+
     fun setGoal(goal: Goal) {
         _goal.value = goal
         _goalSavedSum.value = goal.savedSum

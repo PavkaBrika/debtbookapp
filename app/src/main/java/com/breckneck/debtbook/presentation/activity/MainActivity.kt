@@ -466,6 +466,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener,
     override fun onEditGoalButtonClick(goal: Goal) {
         val args = Bundle()
         args.putSerializable("goal", goal)
+        args.putBoolean("isEditGoal", true)
         navController.navigate(R.id.action_goalDetailsFragment_to_createGoalsFragment, args)
         vm.onActionClick()
     }

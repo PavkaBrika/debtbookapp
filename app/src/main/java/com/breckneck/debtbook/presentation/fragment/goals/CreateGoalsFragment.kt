@@ -3,7 +3,9 @@ package com.breckneck.debtbook.presentation.fragment.goals
 import android.app.DatePickerDialog
 import android.content.Context
 import android.graphics.Typeface
+import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -14,12 +16,9 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.cardview.widget.CardView
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.widget.addTextChangedListener
@@ -31,12 +30,20 @@ import com.breckneck.debtbook.R
 import com.breckneck.debtbook.adapter.SettingsAdapter
 import com.breckneck.debtbook.presentation.viewmodel.CreateGoalsFragmentViewModel
 import com.breckneck.deptbook.domain.model.Goal
+import com.breckneck.deptbook.domain.util.CreateFragmentState
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.lang.NullPointerException
 import java.lang.NumberFormatException
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
 import java.text.SimpleDateFormat
 import java.util.Calendar
 
@@ -74,6 +81,12 @@ class CreateGoalsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        if (vm.createFragmentState == null) {
+            when (arguments?.getBoolean("isEditGoal")) {
+                true -> vm.setCreateFragmentState(state = CreateFragmentState.EDIT)
+                else -> vm.setCreateFragmentState(state = CreateFragmentState.CREATE)
+            }
+        }
         return inflater.inflate(R.layout.fragment_create_goal, container, false)
     }
 
@@ -105,6 +118,30 @@ class CreateGoalsFragment : Fragment() {
             }
         }
 
+        val goalSumEditText: EditText = view.findViewById(R.id.goalSumEditText)
+        val goalSavedSumEditText: EditText = view.findViewById(R.id.goalSavedSumEditText)
+
+        if (vm.createFragmentState!! == CreateFragmentState.EDIT) {
+            val decimalFormat = DecimalFormat("###,###,###.##")
+            val customSymbol: DecimalFormatSymbols = DecimalFormatSymbols()
+            customSymbol.groupingSeparator = ' '
+            decimalFormat.decimalFormatSymbols = customSymbol
+            val goalEdit = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                arguments?.getSerializable("goal", Goal::class.java)
+            } else {
+                arguments?.getSerializable("goal") as Goal?
+            }
+            vm.setGoalEdit(goal = goalEdit!!)
+            goalNameEditText.setText(goalEdit.name)
+            goalSumEditText.setText(decimalFormat.format(goalEdit.sum))
+            goalSavedSumEditText.setText(decimalFormat.format(goalEdit.savedSum))
+            vm.setCurrency(goalEdit.currency)
+            vm.setImagePath(goalEdit.photoPath)
+            if (goalEdit.goalDate != null)
+                vm.setGoalDate(goalEdit.goalDate!!)
+            collaps.title = getString(R.string.edit)
+        }
+
         if (vm.isCurrencyDialogOpened.value == true) {
             showCurrencyDialog(
                 settingsList = currencyNames,
@@ -130,8 +167,6 @@ class CreateGoalsFragment : Fragment() {
             }
         }
 
-        val goalSumEditText: EditText = view.findViewById(R.id.goalSumEditText)
-        val goalSavedSumEditText: EditText = view.findViewById(R.id.goalSavedSumEditText)
         goalSumEditText.let { goalSavedSumEditText }.addTextChangedListener {
             object : TextWatcher {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
@@ -184,48 +219,107 @@ class CreateGoalsFragment : Fragment() {
         val deleteGoalPhotoImageView: ImageView = view.findViewById(R.id.deleteGoalPhotoImageView)
         deleteGoalPhotoImageView.setOnClickListener {
             vm.setImageUri(uri = null)
+            vm.setImagePath(path = null)
         }
 
-        vm.imageUri.observe(viewLifecycleOwner) { uri ->
-            if (uri != null) {
-                goalImageView.setImageURI(uri)
-                deleteGoalPhotoImageView.visibility = View.VISIBLE
-                goalPhotoCardView.setOnClickListener(null)
-//                (goalImageView.layoutParams as LayoutParams).dimensionRatio = null
-////                goalImageView.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+        vm.imagePath.observe(viewLifecycleOwner) { path ->
+            if (path != null) {
+                val result = Glide.with(goalImageView.context)
+                    .load(path)
+                    .placeholder(R.drawable.baseline_camera_24)
+                    .listener(object : RequestListener<Drawable> {
+                        override fun onLoadFailed(
+                            e: GlideException?,
+                            model: Any?,
+                            target: Target<Drawable>,
+                            isFirstResource: Boolean
+                        ): Boolean {
+                            vm.setImagePath(path = null)
+                            return false
+                        }
+
+                        override fun onResourceReady(
+                            resource: Drawable,
+                            model: Any,
+                            target: Target<Drawable>?,
+                            dataSource: DataSource,
+                            isFirstResource: Boolean
+                        ): Boolean {
+                            return false
+                        }
+                    })
+                    .into(goalImageView)
             } else {
-                goalImageView.setImageDrawable(
-                    ContextCompat.getDrawable(
-                        requireActivity(),
-                        R.drawable.baseline_camera_24
-                    )
-                )
-                deleteGoalPhotoImageView.visibility = View.GONE
-                goalPhotoCardView.setOnClickListener {
-                    getImageUriActivityResult.launch("image/*")
+                vm.imageUri.observe(viewLifecycleOwner) { uri ->
+                    if (uri != null) {
+                        goalImageView.setImageURI(uri)
+                        deleteGoalPhotoImageView.visibility = View.VISIBLE
+                        goalPhotoCardView.setOnClickListener(null)
+                    } else {
+                        goalImageView.setImageDrawable(
+                            ContextCompat.getDrawable(
+                                requireActivity(),
+                                R.drawable.baseline_camera_24
+                            )
+                        )
+                        deleteGoalPhotoImageView.visibility = View.GONE
+                        goalPhotoCardView.setOnClickListener {
+                            getImageUriActivityResult.launch("image/*")
+                        }
+                    }
                 }
-//                (goalImageView.layoutParams as LayoutParams).dimensionRatio = "H,16:9"
-//                goalImageView.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, 0)
             }
         }
 
         val setFinanceButton: FloatingActionButton = view.findViewById(R.id.setFinanceButton)
         setFinanceButton.setOnClickListener {
-            vm.setGoal(
-                goal = Goal(
-                    name = goalNameEditText.text.toString(),
-                    sum = goalSumEditText.text.toString().toDouble(),
-                    savedSum = try {
-                        goalSavedSumEditText.text.toString().toDouble()
-                    } catch (e: NumberFormatException) {
-                        0.0
-                    },
-                    photoPath = savePhotoToInternalStorage(vm.imageUri.value),
-                    currency = vm.currency.value!!,
-                    creationDate = Calendar.getInstance().time,
-                    goalDate = vm.goalDate.value
-                )
-            )
+            when (vm.createFragmentState!!) {
+                CreateFragmentState.CREATE -> {
+                    vm.setGoal(
+                        goal = Goal(
+                            name = goalNameEditText.text.toString(),
+                            sum = goalSumEditText.text.toString().toDouble(),
+                            savedSum = try {
+                                goalSavedSumEditText.text.toString().toDouble()
+                            } catch (e: NumberFormatException) {
+                                0.0
+                            },
+                            photoPath = savePhotoToInternalStorage(vm.imageUri.value),
+                            currency = vm.currency.value!!,
+                            creationDate = Calendar.getInstance().time,
+                            goalDate = vm.goalDate.value
+                        )
+                    )
+                }
+
+                CreateFragmentState.EDIT -> {
+                    val editGoal = Goal(
+                        id = vm.goal!!.id,
+                        name = goalNameEditText.text.toString(),
+                        sum = goalSumEditText.text.toString().toDouble(),
+                        savedSum = try {
+                            goalSavedSumEditText.text.toString().toDouble()
+                        } catch (e: NumberFormatException) {
+                            0.0
+                        },
+                        photoPath = if (vm.imagePath.value != null)
+                            vm.goal!!.photoPath
+                        else
+                            savePhotoToInternalStorage(vm.imageUri.value),
+                        currency = vm.currency.value!!,
+                        creationDate = vm.goal!!.creationDate,
+                        goalDate = vm.goalDate.value
+                    )
+                    vm.editGoal(
+                        goal = editGoal
+                    )
+                    setFragmentResult(
+                        "goalDetailsFragmentKey",
+                        bundleOf("isGoalEdited" to true, "goal" to editGoal)
+                    )
+                }
+            }
+
             setFragmentResult("goalsFragmentKey", bundleOf("isListModified" to true))
             onClickListener!!.onBackButtonClick()
         }
@@ -241,7 +335,10 @@ class CreateGoalsFragment : Fragment() {
             val inputStream =
                 requireContext().contentResolver.openInputStream(vm.imageUri.value!!)
             val outputStream =
-                requireContext().openFileOutput(uri.pathSegments.last() + ".jpg", Context.MODE_PRIVATE)
+                requireContext().openFileOutput(
+                    uri.pathSegments.last() + ".jpg",
+                    Context.MODE_PRIVATE
+                )
             inputStream?.use { input ->
                 outputStream.use { output ->
                     input.copyTo(output)

@@ -145,7 +145,8 @@ val appModule = module {
     viewModel<CreateGoalsFragmentViewModel> {
         CreateGoalsFragmentViewModel(
             setGoal = get(),
-            getDefaultCurrency = get()
+            getDefaultCurrency = get(),
+            updateGoal = get()
         )
     }
 

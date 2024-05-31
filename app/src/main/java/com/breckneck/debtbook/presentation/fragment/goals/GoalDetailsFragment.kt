@@ -26,6 +26,7 @@ import androidx.core.os.bundleOf
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
+import androidx.fragment.app.setFragmentResultListener
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.adapter.GoalDepositAdapter
@@ -77,11 +78,11 @@ class GoalDetailsFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            vm.setGoal(arguments?.getSerializable("goal", Goal::class.java)!!)
-        } else {
-            vm.setGoal(arguments?.getSerializable("goal") as Goal)
-        }
+        if (vm.goal.value == null)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+                vm.setGoal(arguments?.getSerializable("goal", Goal::class.java)!!)
+            else
+                vm.setGoal(arguments?.getSerializable("goal") as Goal)
     }
 
     override fun onCreateView(
@@ -89,6 +90,13 @@ class GoalDetailsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        setFragmentResultListener("goalDetailsFragmentKey") { requestKey, bundle ->
+            if (bundle.getBoolean("isGoalEdited"))
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+                    vm.setGoal(bundle.getSerializable("goal", Goal::class.java)!!)
+                else
+                    vm.setGoal(bundle.getSerializable("goal") as Goal)
+        }
         vm.setGoalListState(ListState.LOADING)
         if (vm.isGoalDepositListNeedToUpdate)
             vm.getGoalDepositList()
