@@ -142,6 +142,12 @@ interface AppDao {
     @Query("SELECT * FROM GoalData")
     fun getAllGoals(): List<GoalData>
 
+    @Query("DELETE FROM GoalData")
+    fun deleteAllGoals()
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAllGoals(goalList: List<GoalData>)
+
     @Insert
     fun insertGoal(goalData: GoalData)
 
@@ -158,6 +164,12 @@ interface AppDao {
 
     @Query("DELETE FROM GoalDepositData WHERE goalId = :goalId")
     fun deleteGoalDepositsByGoalId(goalId: Int)
+
+    @Query("DELETE FROM GoalDepositData")
+    fun deleteAllGoalDeposits()
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAllGoalDeposits(goalDepositDataList: List<GoalDepositData>)
 
     @Insert
     fun insertGoalDeposit(goalDepositData: GoalDepositData)

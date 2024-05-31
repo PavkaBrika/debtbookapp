@@ -66,4 +66,19 @@ class GoalRepositoryImpl(private val goalStorage: GoalStorage) : GoalRepository 
             )
         )
     }
+
+    override fun replaceAllGoals(goalList: List<Goal>) {
+        goalStorage.replaceAllGoals(goalList = goalList.map {
+            GoalData(
+                id = it.id,
+                name = it.name,
+                sum = it.sum,
+                savedSum = it.savedSum,
+                currency = it.currency,
+                photoPath = it.photoPath,
+                creationDate = it.creationDate,
+                goalDate = it.goalDate
+            )
+        })
+    }
 }

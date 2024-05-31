@@ -11,4 +11,7 @@ interface GoalRepository {
     fun updateGoal(goal: Goal)
 
     fun deleteGoal(goal: Goal)
+
+    fun replaceAllGoals(goalList: List<Goal>)
+
 }

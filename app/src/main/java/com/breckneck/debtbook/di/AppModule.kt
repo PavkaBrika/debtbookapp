@@ -138,7 +138,8 @@ val appModule = module {
             getAllGoals = get(),
             updateGoal = get(),
             deleteGoal = get(),
-            setGoalDeposit = get()
+            setGoalDeposit = get(),
+            deleteGoalDepositsByGoalId = get()
         )
     }
 

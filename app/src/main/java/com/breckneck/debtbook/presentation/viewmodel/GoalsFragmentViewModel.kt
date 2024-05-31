@@ -9,6 +9,7 @@ import com.breckneck.deptbook.domain.model.GoalDeposit
 import com.breckneck.deptbook.domain.usecase.Goal.DeleteGoal
 import com.breckneck.deptbook.domain.usecase.Goal.GetAllGoals
 import com.breckneck.deptbook.domain.usecase.Goal.UpdateGoal
+import com.breckneck.deptbook.domain.usecase.GoalTransaction.DeleteGoalDepositsByGoalId
 import com.breckneck.deptbook.domain.usecase.GoalTransaction.SetGoalDeposit
 import com.breckneck.deptbook.domain.util.ListState
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -21,6 +22,7 @@ class GoalsFragmentViewModel(
     private val getAllGoals: GetAllGoals,
     private val updateGoal: UpdateGoal,
     private val deleteGoal: DeleteGoal,
+    private val deleteGoalDepositsByGoalId: DeleteGoalDepositsByGoalId,
     private val setGoalDeposit: SetGoalDeposit
 ) : ViewModel() {
 
@@ -108,6 +110,7 @@ class GoalsFragmentViewModel(
     fun deleteGoal(goal: Goal) {
         val result = Completable.create {
             deleteGoal.execute(goal = goal)
+            deleteGoalDepositsByGoalId.execute(goalId = goal.id)
             it.onComplete()
         }
             .subscribeOn(Schedulers.io())

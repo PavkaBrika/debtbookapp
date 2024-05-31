@@ -25,4 +25,9 @@ class DataBaseGoalStorageImpl(private val context: Context): GoalStorage {
     override fun deleteGoal(goalData: GoalData) {
         db.appDao().deleteGoal(goalData = goalData)
     }
+
+    override fun replaceAllGoals(goalList: List<GoalData>) {
+        db.appDao().deleteAllGoals()
+        db.appDao().insertAllGoals(goalList = goalList)
+    }
 }

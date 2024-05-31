@@ -11,4 +11,6 @@ interface GoalStorage {
     fun updateGoal(goalData: GoalData)
 
     fun deleteGoal(goalData: GoalData)
+
+    fun replaceAllGoals(goalList: List<GoalData>)
 }
