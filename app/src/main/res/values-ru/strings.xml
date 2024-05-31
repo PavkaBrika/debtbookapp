@@ -124,4 +124,18 @@
     <string name="investments">Инвестиции</string>
     <string name="this_action_will_delete_the_category_and_all_data_associated_with_it">Это действие удалит эту категорию и все данные, связанные с ней</string>
     <string name="support_us">Поддержите нас</string>
+    <string name="goals">Цели</string>
+    <string name="add_new_goal">Добавить новую цель</string>
+    <string name="there_are_no_goals_yet_click_the_button_below_to_add">Пока нет целей. Нажмите на кнопку ниже, чтобы добавить.</string>
+    <string name="remaining">осталось</string>
+    <string name="already_saved_sum">Уже накопленная сумма</string>
+    <string name="overdue">Просрочено</string>
+    <string name="congratulations_you_have_reached_your_goal">Поздравляем! Вы достигли своей цели!</string>
+    <string name="achieved_in_days">Достигнуто за %1$d дней</string>
+    <string name="achieved_in_day">Достигнуто за %1$d день</string>
+    <string name="goal_s_photo">Фотография цели</string>
+    <string name="subtract">Вычесть</string>
+    <string name="it_s_empty_here_for_now">Здесь пока что пусто</string>
+    <string name="already_saved_sum_can_t_be_greater_than_the_goal_sum">Уже накопленная сумма не может быть больше, чем сумма цели</string>
+    <string name="goal_deadline">Срок выполнения цели</string>
 </resources>

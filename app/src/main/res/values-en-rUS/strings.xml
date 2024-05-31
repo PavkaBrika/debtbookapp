@@ -123,4 +123,18 @@
     <string name="investments">Investments</string>
     <string name="this_action_will_delete_the_category_and_all_data_associated_with_it">This action will delete this category and all associated data</string>
     <string name="support_us">Support us</string>
+    <string name="goals">Goals</string>
+    <string name="add_new_goal">Add new goal</string>
+    <string name="there_are_no_goals_yet_click_the_button_below_to_add">There are no goals yet. Click the button below to add.</string>
+    <string name="remaining">remaining</string>
+    <string name="already_saved_sum">Already saved sum</string>
+    <string name="overdue">Overdue</string>
+    <string name="congratulations_you_have_reached_your_goal">&#x1F389;&#x1F389;&#x1F389; Congratulations! You have reached your goal!</string>
+    <string name="achieved_in_days">Achieved in %1$d days</string>
+    <string name="achieved_in_day">Achieved in %1$d day</string>
+    <string name="goal_s_photo">Goal photo</string>
+    <string name="subtract">Subtract</string>
+    <string name="it_s_empty_here_for_now">It\'s empty here for now</string>
+    <string name="already_saved_sum_can_t_be_greater_than_the_goal_sum">Already saved sum can`t be greater than the goal sum</string>
+    <string name="goal_deadline">Goal deadline</string>
 </resources>

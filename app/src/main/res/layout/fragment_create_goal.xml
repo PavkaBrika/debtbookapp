@@ -301,14 +301,15 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginHorizontal="8dp"
-                                android:text="Goal`s date"
+                                android:text="@string/goal_deadline"
                                 android:textSize="20sp" />
 
                             <TextView
                                 android:id="@+id/goalDateTextView"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="Date"
+                                android:text="@string/date"
+                                android:layout_marginTop="4dp"
                                 android:textAlignment="center"
                                 android:textColor="@color/darkgray"
                                 android:textSize="26sp" />
