@@ -386,6 +386,8 @@ class FinanceFragment : Fragment() {
                 if (categoryList.isNotEmpty()) {
                     usedFinanceCategoryAdapter.updateUsedFinanceCategoryList(usedFinanceCategoryList = categoryList, currency = vm.currency.value!!)
                     vm.setFinanceListState(ListState.FILLED)
+                } else {
+                    vm.setFinanceListState(ListState.EMPTY)
                 }
                 financeProgressBar.setCategoryList(categoryList = categoryList)
             }

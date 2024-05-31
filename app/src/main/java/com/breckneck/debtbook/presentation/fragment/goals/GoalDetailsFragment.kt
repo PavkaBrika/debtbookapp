@@ -303,6 +303,8 @@ class GoalDetailsFragment : Fragment() {
                     goalDepositAdapter.updateGoalDepositList(goalDepositList)
                     Log.e(TAG, "data in adapter link success")
                     vm.setGoalListState(state = ListState.FILLED)
+                } else {
+                    vm.setGoalListState(ListState.EMPTY)
                 }
             }
         }, 400)
