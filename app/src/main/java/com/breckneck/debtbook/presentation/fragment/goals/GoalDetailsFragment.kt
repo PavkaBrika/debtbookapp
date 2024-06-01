@@ -241,6 +241,7 @@ class GoalDetailsFragment : Fragment() {
             goalSavedMoneyTextView.text = decimalFormat.format(savedSum)
             val sum = vm.goal.value!!.sum
             if (sum - savedSum <= 0) { // if goal is reached
+                editGoalButton.visibility = View.GONE
                 goalRemainingSumLayout.visibility = View.GONE
                 val diffInDays = if (TimeUnit.DAYS.convert(
                         Date().time - vm.goal.value!!.creationDate.time,
@@ -268,6 +269,7 @@ class GoalDetailsFragment : Fragment() {
                     onClickListener!!.onBackButtonClick()
                 }
             } else {
+                editGoalButton.visibility = View.VISIBLE
                 goalRemainingMoneyTextView.text = decimalFormat.format(sum - savedSum)
                 if (vm.goal.value!!.goalDate != null) {
                     goalDateLayout.visibility = View.VISIBLE

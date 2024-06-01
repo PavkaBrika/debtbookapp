@@ -124,10 +124,7 @@ class CreateGoalsFragment : Fragment() {
         val goalSavedSumEditText: EditText = view.findViewById(R.id.goalSavedSumEditText)
 
         if (vm.createFragmentState!! == CreateFragmentState.EDIT) {
-            val decimalFormat = DecimalFormat("###,###,###.##")
-            val customSymbol: DecimalFormatSymbols = DecimalFormatSymbols()
-            customSymbol.groupingSeparator = ' '
-            decimalFormat.decimalFormatSymbols = customSymbol
+            val decimalFormat = DecimalFormat("#.##")
             val goalEdit = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 arguments?.getSerializable("goal", Goal::class.java)
             } else {
@@ -277,7 +274,8 @@ class CreateGoalsFragment : Fragment() {
         fun isAllFieldsFilledRight(): Boolean {
             val goalNameTextInput: TextInputLayout = view.findViewById(R.id.goalNameTextInput)
             val goalSumTextInput: TextInputLayout = view.findViewById(R.id.goalSumTextInput)
-            val goalSavedSumTextInput: TextInputLayout = view.findViewById(R.id.goalSavedSumTextInput)
+            val goalSavedSumTextInput: TextInputLayout =
+                view.findViewById(R.id.goalSavedSumTextInput)
             var isFilledRight = true
 
             if (goalNameEditText.text.toString().trim().isEmpty()) {
@@ -286,7 +284,7 @@ class CreateGoalsFragment : Fragment() {
             }
 
             try {
-                if (goalSumEditText.text.toString().trim().toDouble() == 0.0) {
+                if (goalSumEditText.text.toString().trim().replace(" ", "").toDouble() == 0.0) {
                     goalSumTextInput.error = getString(R.string.zerodebt)
                     isFilledRight = false
                 } else
@@ -299,7 +297,10 @@ class CreateGoalsFragment : Fragment() {
 
             try {
                 if (goalSavedSumEditText.text.toString().trim().isNotEmpty()) {
-                    if (goalSavedSumEditText.text.toString().trim().toDouble() >= goalSumEditText.text.toString().trim().toDouble()) {
+                    if (goalSavedSumEditText.text.toString().replace(" ", "")
+                            .toDouble() >= goalSumEditText.text.toString().replace(" ", "")
+                            .toDouble()
+                    ) {
                         goalSavedSumTextInput.error =
                             getString(R.string.already_saved_sum_can_t_be_greater_than_the_goal_sum)
                         isFilledRight = false
@@ -325,9 +326,9 @@ class CreateGoalsFragment : Fragment() {
                         vm.setGoal(
                             goal = Goal(
                                 name = goalNameEditText.text.toString(),
-                                sum = goalSumEditText.text.toString().toDouble(),
+                                sum = goalSumEditText.text.toString().replace(" ", "").toDouble(),
                                 savedSum = try {
-                                    goalSavedSumEditText.text.toString().toDouble()
+                                    goalSavedSumEditText.text.toString().replace(" ", "").toDouble()
                                 } catch (e: NumberFormatException) {
                                     0.0
                                 },
@@ -343,9 +344,9 @@ class CreateGoalsFragment : Fragment() {
                         val editGoal = Goal(
                             id = vm.goal!!.id,
                             name = goalNameEditText.text.toString(),
-                            sum = goalSumEditText.text.toString().toDouble(),
+                            sum = goalSumEditText.text.toString().replace(" ", "").toDouble(),
                             savedSum = try {
-                                goalSavedSumEditText.text.toString().toDouble()
+                                goalSavedSumEditText.text.toString().replace(" ", "").toDouble()
                             } catch (e: NumberFormatException) {
                                 0.0
                             },

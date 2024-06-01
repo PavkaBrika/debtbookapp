@@ -130,7 +130,7 @@
     <string name="remaining">restants</string>
     <string name="already_saved_sum">Somme déjà sauvegardée</string>
     <string name="overdue">En retard</string>
-    <string name="congratulations_you_have_reached_your_goal">&#x1F389;&#x1F389;&#x1F389; Congratulations! Vous avez atteint votre objectif !</string>
+    <string name="congratulations_you_have_reached_your_goal">&#x1F389;&#x1F389;&#x1F389;\nFélicitations ! Vous avez atteint votre objectif !</string>
     <string name="achieved_in_days">Atteint en %1$d jours</string>
     <string name="achieved_in_day">Atteint en %1$d jour</string>
     <string name="goal_s_photo">Photo de l\'objectif</string>

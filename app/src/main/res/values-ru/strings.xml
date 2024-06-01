@@ -130,7 +130,7 @@
     <string name="remaining">осталось</string>
     <string name="already_saved_sum">Уже накопленная сумма</string>
     <string name="overdue">Просрочено</string>
-    <string name="congratulations_you_have_reached_your_goal">Поздравляем! Вы достигли своей цели!</string>
+    <string name="congratulations_you_have_reached_your_goal">&#x1F389;&#x1F389;&#x1F389;\nПоздравляем! Вы достигли своей цели!</string>
     <string name="achieved_in_days">Достигнуто за %1$d дней</string>
     <string name="achieved_in_day">Достигнуто за %1$d день</string>
     <string name="goal_s_photo">Фотография цели</string>

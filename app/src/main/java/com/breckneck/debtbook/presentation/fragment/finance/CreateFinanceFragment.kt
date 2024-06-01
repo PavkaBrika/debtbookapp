@@ -38,6 +38,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputLayout
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
 import java.util.Calendar
 
 class CreateFinanceFragment : Fragment() {
@@ -126,6 +128,7 @@ class CreateFinanceFragment : Fragment() {
                 }
 
                 CreateFragmentState.EDIT -> {
+                    val decimalFormat = DecimalFormat("#.##")
                     val financeEdit = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                         arguments?.getSerializable("financeEdit", Finance::class.java)
                     } else {
@@ -133,7 +136,7 @@ class CreateFinanceFragment : Fragment() {
                     }
                     vm.setFinanceEdit(finance = financeEdit!!)
                     vm.setDayInMillis(dayInMillis = financeEdit.date.time)
-                    financeSumEditText.setText(financeEdit.sum.toString())
+                    financeSumEditText.setText(decimalFormat.format(financeEdit.sum))
                     financeInfoEditText.setText(financeEdit.info)
                     categoryLinearLayout.visibility = View.GONE
                     customSwitch.visibility = View.GONE
@@ -268,7 +271,7 @@ class CreateFinanceFragment : Fragment() {
             } else {
                 financeSumTextInput.error = ""
                 try {
-                    if (financeSumEditText.text.toString().toDouble() == 0.0) {
+                    if (financeSumEditText.text.toString().trim().replace(" ", "").toDouble() == 0.0) {
                         financeSumTextInput.error = getString(R.string.zerodebt)
                         isFilledRight = false
                     } else
