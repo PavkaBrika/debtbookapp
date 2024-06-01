@@ -202,7 +202,7 @@ class MainFragment : Fragment() {
 
         //TODO THIS CODE IS UPDATING RECYCLER VIEW WITHOUT LAGGING AND GHOSTING BUT WITH SHOWING PROGRESS BAR AFTER CHANGING ORIENTATION
         Handler(Looper.getMainLooper()).postDelayed({
-            vm.resultHumanList.observe(viewLifecycleOwner) {
+            vm.resultHumanList.observe(this) {
                 if (it.isNotEmpty()) {
                     humanAdapter.updateHumansList(it)
                     Log.e(TAG, "data in adapter link success")

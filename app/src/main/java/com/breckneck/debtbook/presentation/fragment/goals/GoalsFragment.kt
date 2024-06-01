@@ -148,7 +148,7 @@ class GoalsFragment: Fragment() {
         super.onResume()
 
         Handler(Looper.getMainLooper()).postDelayed({
-            vm.goalList.observe(viewLifecycleOwner) { goalList ->
+            vm.goalList.observe(this) { goalList ->
                 if (goalList.isNotEmpty()) {
                     goalAdapter.updateGoalList(goalList)
                     Log.e(TAG, "data in adapter link success")

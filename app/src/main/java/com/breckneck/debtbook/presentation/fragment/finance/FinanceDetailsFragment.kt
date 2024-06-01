@@ -172,7 +172,7 @@ class FinanceDetailsFragment: Fragment() {
         super.onResume()
 
         Handler(Looper.getMainLooper()).postDelayed({
-            vm.financeList.observe(viewLifecycleOwner) { financeList ->
+            vm.financeList.observe(this) { financeList ->
                 if (financeList.isNotEmpty()) {
                     financeAdapter.updateFinanceList(financeList = financeList)
                     vm.setFinanceListState(ListState.FILLED)

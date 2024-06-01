@@ -302,7 +302,7 @@ class GoalDetailsFragment : Fragment() {
         super.onResume()
 
         Handler(Looper.getMainLooper()).postDelayed({
-            vm.goalDepositList.observe(viewLifecycleOwner) { goalDepositList ->
+            vm.goalDepositList.observe(this) { goalDepositList ->
                 if (goalDepositList.isNotEmpty()) {
                     goalDepositAdapter.updateGoalDepositList(goalDepositList)
                     Log.e(TAG, "data in adapter link success")

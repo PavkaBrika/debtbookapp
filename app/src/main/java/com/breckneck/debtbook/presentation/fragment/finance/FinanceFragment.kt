@@ -382,7 +382,7 @@ class FinanceFragment : Fragment() {
         super.onResume()
 
         Handler(Looper.getMainLooper()).postDelayed({
-            vm.categoriesWithFinancesList.observe(viewLifecycleOwner) { categoryList ->
+            vm.categoriesWithFinancesList.observe(this) { categoryList ->
                 if (categoryList.isNotEmpty()) {
                     usedFinanceCategoryAdapter.updateUsedFinanceCategoryList(usedFinanceCategoryList = categoryList, currency = vm.currency.value!!)
                     vm.setFinanceListState(ListState.FILLED)
