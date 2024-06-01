@@ -98,7 +98,11 @@ val appModule = module {
             getAllFinances = get(),
             getAllFinanceCategories = get(),
             replaceAllFinances = get(),
-            replaceAllFinanceCategories = get()
+            replaceAllFinanceCategories = get(),
+            getAllGoals = get(),
+            getAllGoalDeposits = get(),
+            replaceAllGoals = get(),
+            replaceAllGoalDeposits = get()
         )
     }
 

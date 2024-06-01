@@ -18,10 +18,13 @@ import com.breckneck.deptbook.domain.usecase.FinanceCategory.ReplaceAllFinanceCa
 import com.breckneck.deptbook.domain.usecase.FinanceCategory.SetFinanceCategory
 import com.breckneck.deptbook.domain.usecase.Goal.DeleteGoal
 import com.breckneck.deptbook.domain.usecase.Goal.GetAllGoals
+import com.breckneck.deptbook.domain.usecase.Goal.ReplaceAllGoals
 import com.breckneck.deptbook.domain.usecase.Goal.SetGoal
 import com.breckneck.deptbook.domain.usecase.Goal.UpdateGoal
 import com.breckneck.deptbook.domain.usecase.GoalDeposit.DeleteGoalDepositsByGoalId
+import com.breckneck.deptbook.domain.usecase.GoalDeposit.GetAllGoalDeposits
 import com.breckneck.deptbook.domain.usecase.GoalDeposit.GetGoalDepositsByGoalId
+import com.breckneck.deptbook.domain.usecase.GoalDeposit.ReplaceAllGoalsDeposits
 import com.breckneck.deptbook.domain.usecase.GoalDeposit.SetGoalDeposit
 import com.breckneck.deptbook.domain.usecase.Human.*
 import com.breckneck.deptbook.domain.usecase.Settings.*
@@ -311,7 +314,15 @@ val domainModule = module {
         DeleteGoal(goalRepository = get())
     }
 
+    factory<ReplaceAllGoals> {
+        ReplaceAllGoals(goalRepository = get())
+    }
+
     //GOAL DEPOSITS
+
+    factory<GetAllGoalDeposits> {
+        GetAllGoalDeposits(goalDepositRepository = get())
+    }
 
     factory<GetGoalDepositsByGoalId> {
         GetGoalDepositsByGoalId(goalDepositRepository = get())
@@ -323,5 +334,9 @@ val domainModule = module {
 
     factory<DeleteGoalDepositsByGoalId> {
         DeleteGoalDepositsByGoalId(goalDepositRepository = get())
+    }
+
+    factory<ReplaceAllGoalsDeposits> {
+        ReplaceAllGoalsDeposits(goalDepositRepository = get())
     }
 }

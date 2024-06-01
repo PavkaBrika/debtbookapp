@@ -286,7 +286,7 @@ class CreateGoalsFragment : Fragment() {
             }
 
             try {
-                if (goalSumEditText.text.toString().toDouble() == 0.0) {
+                if (goalSumEditText.text.toString().trim().toDouble() == 0.0) {
                     goalSumTextInput.error = getString(R.string.zerodebt)
                     isFilledRight = false
                 } else
@@ -298,8 +298,8 @@ class CreateGoalsFragment : Fragment() {
             }
 
             try {
-                if (goalSavedSumEditText.text.toString().isNotEmpty()) {
-                    if (goalSavedSumEditText.text.toString().toDouble() >= goalSumEditText.text.toString().toDouble()) {
+                if (goalSavedSumEditText.text.toString().trim().isNotEmpty()) {
+                    if (goalSavedSumEditText.text.toString().trim().toDouble() >= goalSumEditText.text.toString().trim().toDouble()) {
                         goalSavedSumTextInput.error =
                             getString(R.string.already_saved_sum_can_t_be_greater_than_the_goal_sum)
                         isFilledRight = false
