@@ -131,7 +131,7 @@ class MainFragmentViewModel(
         _humanListState.value = state
     }
 
-    private fun getHumanOrder() {
+    fun getHumanOrder() {
         _humanOrder.value = getHumanOrder.execute()
     }
 
