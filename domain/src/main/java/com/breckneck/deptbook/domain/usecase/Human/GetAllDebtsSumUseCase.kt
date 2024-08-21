@@ -19,8 +19,6 @@ class GetAllDebtsSumUseCase(val humanRepository: HumanRepository) {
         var positiveText = ""
         var negativeText = ""
         var negativeNumbers = 0.0
-        positiveNumbers = 0.0
-        negativeNumbers = 0.0
         if (debtsInFirstCurrency.isNotEmpty()) {
             for (i in debtsInFirstCurrency.indices) {
                 if (debtsInFirstCurrency[i] > 0) {
