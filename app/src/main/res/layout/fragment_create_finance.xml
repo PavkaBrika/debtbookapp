@@ -89,7 +89,7 @@
                         app:cardCornerRadius="10dp"
                         app:cardElevation="20dp">
 
-                        <com.breckneck.debtbook.presentation.customview.CustomSwitchView
+                        <com.breckneck.debtbook.core.customview.CustomSwitchView
                             android:id="@+id/customSwitch"
                             style="@style/CustomSwitchViewTheme"
                             android:layout_width="match_parent"

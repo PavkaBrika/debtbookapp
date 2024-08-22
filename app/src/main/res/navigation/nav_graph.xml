@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.breckneck.debtbook.presentation.fragment.debt.MainFragment"
+        android:name="com.breckneck.debtbook.debt.presentation.MainFragment"
         android:label="MainFragment"
         tools:layout="@layout/fragment_main">
         <action
@@ -52,7 +52,7 @@
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.breckneck.debtbook.presentation.fragment.settings.SettingsFragment"
+        android:name="com.breckneck.debtbook.settings.presentation.SettingsFragment"
         android:label="SettingsFragment"
         tools:layout="@layout/fragment_settings">
         <action
@@ -65,7 +65,7 @@
     </fragment>
     <fragment
         android:id="@+id/newDebtFragment"
-        android:name="com.breckneck.debtbook.presentation.fragment.debt.NewDebtFragment"
+        android:name="com.breckneck.debtbook.debt.presentation.NewDebtFragment"
         android:label="NewDebtFragment"
         tools:layout="@layout/fragment_create_human_debt">
         <action
@@ -107,7 +107,7 @@
     </fragment>
     <fragment
         android:id="@+id/debtDetailsFragment"
-        android:name="com.breckneck.debtbook.presentation.fragment.debt.DebtDetailsFragment"
+        android:name="com.breckneck.debtbook.debt.presentation.DebtDetailsFragment"
         android:label="DebtDetailsFragment"
         app:route="Details"
         tools:layout="@layout/fragment_debt_details">
@@ -139,12 +139,12 @@
     </fragment>
     <fragment
         android:id="@+id/synchronizationFragment"
-        android:name="com.breckneck.debtbook.presentation.fragment.settings.SynchronizationFragment"
+        android:name="com.breckneck.debtbook.settings.presentation.SynchronizationFragment"
         android:label="SynchronizationFragment"
         tools:layout="@layout/fragment_synchronization" />
     <fragment
         android:id="@+id/financeFragment"
-        android:name="com.breckneck.debtbook.presentation.fragment.finance.FinanceFragment"
+        android:name="com.breckneck.debtbook.finance.presentation.FinanceFragment"
         android:label="FinanceFragment"
         tools:layout="@layout/fragment_finance">
         <action
@@ -172,7 +172,7 @@
     </fragment>
     <fragment
         android:id="@+id/createFinanceFragment"
-        android:name="com.breckneck.debtbook.presentation.fragment.finance.CreateFinanceFragment"
+        android:name="com.breckneck.debtbook.finance.presentation.CreateFinanceFragment"
         android:label="CreateFinanceFragment"
         tools:layout="@layout/fragment_create_finance">
         <action
@@ -185,12 +185,12 @@
     </fragment>
     <fragment
         android:id="@+id/createFinanceCategoryFragment"
-        android:name="com.breckneck.debtbook.presentation.fragment.finance.CreateFinanceCategoryFragment"
+        android:name="com.breckneck.debtbook.finance.presentation.CreateFinanceCategoryFragment"
         android:label="CreateFinanceCategoryFragment"
         tools:layout="@layout/fragment_create_finance_category" />
     <fragment
         android:id="@+id/financeDetailsFragment"
-        android:name="com.breckneck.debtbook.presentation.fragment.finance.FinanceDetailsFragment"
+        android:name="com.breckneck.debtbook.finance.presentation.FinanceDetailsFragment"
         android:label="FinanceDetailsFragment"
         tools:layout="@layout/fragment_finance_details">
         <action
@@ -203,7 +203,7 @@
     </fragment>
     <fragment
         android:id="@+id/goalsFragment"
-        android:name="com.breckneck.debtbook.presentation.fragment.goals.GoalsFragment"
+        android:name="com.breckneck.debtbook.goal.presentation.GoalsFragment"
         android:label="GoalsFragment"
         tools:layout="@layout/fragment_goal">
         <action
@@ -223,12 +223,12 @@
     </fragment>
     <fragment
         android:id="@+id/createGoalsFragment"
-        android:name="com.breckneck.debtbook.presentation.fragment.goals.CreateGoalsFragment"
+        android:name="com.breckneck.debtbook.goal.presentation.CreateGoalsFragment"
         android:label="CreateGoalsFragment"
         tools:layout="@layout/fragment_create_goal"/>
     <fragment
         android:id="@+id/goalDetailsFragment"
-        android:name="com.breckneck.debtbook.presentation.fragment.goals.GoalDetailsFragment"
+        android:name="com.breckneck.debtbook.goal.presentation.GoalDetailsFragment"
         android:label="GoalDetailsFragment"
         tools:layout="@layout/fragment_goal_details">
         <action

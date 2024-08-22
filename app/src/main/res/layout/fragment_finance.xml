@@ -129,7 +129,7 @@
                 app:layout_constraintStart_toEndOf="@+id/pastDateImageView"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <com.breckneck.debtbook.presentation.customview.FinanceProgressBar
+                <com.breckneck.debtbook.finance.customview.FinanceProgressBar
                     android:id="@+id/financeProgressBar"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -181,7 +181,7 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
-                    <com.breckneck.debtbook.presentation.customview.CustomSwitchView
+                    <com.breckneck.debtbook.core.customview.CustomSwitchView
                         android:id="@+id/financeSwitch"
                         style="@style/CustomSwitchViewTheme"
                         android:layout_width="match_parent"

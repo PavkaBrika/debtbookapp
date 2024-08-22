@@ -1,18 +1,18 @@
 package com.breckneck.debtbook.di
 
-import com.breckneck.debtbook.presentation.viewmodel.CreateFinanceCategoryViewModel
-import com.breckneck.debtbook.presentation.viewmodel.CreateFinanceViewModel
-import com.breckneck.debtbook.presentation.viewmodel.CreateGoalsFragmentViewModel
-import com.breckneck.debtbook.presentation.viewmodel.SynchronizationViewModel
-import com.breckneck.debtbook.presentation.viewmodel.DebtDetailsViewModel
-import com.breckneck.debtbook.presentation.viewmodel.FinanceDetailsViewModel
-import com.breckneck.debtbook.presentation.viewmodel.FinanceViewModel
-import com.breckneck.debtbook.presentation.viewmodel.GoalDetailsFragmentViewModel
-import com.breckneck.debtbook.presentation.viewmodel.GoalsFragmentViewModel
-import com.breckneck.debtbook.presentation.viewmodel.MainActivityViewModel
-import com.breckneck.debtbook.presentation.viewmodel.MainFragmentViewModel
-import com.breckneck.debtbook.presentation.viewmodel.NewDebtViewModel
-import com.breckneck.debtbook.presentation.viewmodel.SettingsViewModel
+import com.breckneck.debtbook.finance.viewmodel.CreateFinanceCategoryViewModel
+import com.breckneck.debtbook.finance.viewmodel.CreateFinanceViewModel
+import com.breckneck.debtbook.goal.viewmodel.CreateGoalsFragmentViewModel
+import com.breckneck.debtbook.settings.viewmodel.SynchronizationViewModel
+import com.breckneck.debtbook.debt.viewmodel.DebtDetailsViewModel
+import com.breckneck.debtbook.finance.viewmodel.FinanceDetailsViewModel
+import com.breckneck.debtbook.finance.viewmodel.FinanceViewModel
+import com.breckneck.debtbook.goal.viewmodel.GoalDetailsFragmentViewModel
+import com.breckneck.debtbook.goal.viewmodel.GoalsFragmentViewModel
+import com.breckneck.debtbook.core.viewmodel.MainActivityViewModel
+import com.breckneck.debtbook.debt.viewmodel.MainFragmentViewModel
+import com.breckneck.debtbook.debt.viewmodel.NewDebtViewModel
+import com.breckneck.debtbook.settings.viewmodel.SettingsViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
