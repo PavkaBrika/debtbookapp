@@ -227,10 +227,12 @@ class DataBaseHumanStorageImpl(context: Context) : HumanStorage {
         database.execSQL("INSERT OR IGNORE INTO 'Debt' ('id', 'sum', 'idHuman', 'info', 'date') VALUES ('54', '1000', '1', '', '3 янв. 2024 г.')")
     }
 
-    val db = Room.databaseBuilder(context, AppDataBase::class.java, DATA_BASE_NAME)
-        .addCallback(roomDatabaseCallback)
-        .addMigrations(MIGRATION_5_11, MIGRATION_11_12, MIGRATION_12_13, MIGRATION_13_14)
-        .build()
+
+    private val db = AppDataBase(
+        context = context,
+        callback = roomDatabaseCallback,
+        MIGRATION_5_11, MIGRATION_11_12, MIGRATION_12_13, MIGRATION_13_14
+    )
 
     override fun getAllHumans(): List<Human> {
         val humanList = db.appDao().getAllHuman()

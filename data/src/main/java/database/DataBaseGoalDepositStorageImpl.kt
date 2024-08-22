@@ -7,9 +7,9 @@ import com.breckneck.deptbook.data.storage.GoalDepositStorage
 import entity.GoalDepositData
 import util.DATA_BASE_NAME
 
-class DataBaseGoalDepositStorageImpl(private val context: Context): GoalDepositStorage {
+class DataBaseGoalDepositStorageImpl(context: Context): GoalDepositStorage {
 
-    val db = Room.databaseBuilder(context, AppDataBase::class.java, DATA_BASE_NAME).build()
+    private val db = AppDataBase(context = context)
 
     override fun setGoalDepositData(goalDepositData: GoalDepositData) {
         db.appDao().insertGoalDeposit(goalDepositData = goalDepositData)

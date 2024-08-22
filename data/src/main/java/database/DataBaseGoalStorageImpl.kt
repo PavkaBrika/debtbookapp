@@ -6,9 +6,9 @@ import com.breckneck.deptbook.data.storage.GoalStorage
 import entity.GoalData
 import util.DATA_BASE_NAME
 
-class DataBaseGoalStorageImpl(private val context: Context): GoalStorage {
+class DataBaseGoalStorageImpl(context: Context): GoalStorage {
 
-    val db = Room.databaseBuilder(context, AppDataBase::class.java, DATA_BASE_NAME).build()
+    private val db = AppDataBase(context = context)
 
     override fun getAllGoals(): List<GoalData> {
         return db.appDao().getAllGoals()

@@ -10,8 +10,7 @@ import util.FinanceCategoryStateData
 
 class DataBaseFinanceCategoryStorageImpl(context: Context) : FinanceCategoryStorage {
 
-    private val db = Room.databaseBuilder(context, AppDataBase::class.java, DATA_BASE_NAME).build()
-
+    private val db = AppDataBase(context = context)
 
     override fun getAllFinanceCategories(): List<FinanceCategoryData> {
         return db.appDao().getAllFinanceCategories()

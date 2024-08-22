@@ -8,7 +8,7 @@ import util.DATA_BASE_NAME
 
 class DataBaseDebtStorageImpl(context: Context): DebtStorage {
 
-    val db = Room.databaseBuilder(context, AppDataBase::class.java, DATA_BASE_NAME).build()
+    private val db = AppDataBase(context = context)
 
     override fun getAllDebtsById(id: Int): List<Debt> {
         return db.appDao().getAllDebtsById(id = id)

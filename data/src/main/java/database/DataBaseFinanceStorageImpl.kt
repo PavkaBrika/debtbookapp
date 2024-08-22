@@ -8,8 +8,7 @@ import util.DATA_BASE_NAME
 
 class DataBaseFinanceStorageImpl(context: Context): FinanceStorage {
 
-    private val db = Room.databaseBuilder(context, AppDataBase::class.java, DATA_BASE_NAME)
-        .build()
+    private val db = AppDataBase(context = context)
 
     override fun setFinance(finance: FinanceData) {
         db.appDao().insertFinance(financeData = finance)
