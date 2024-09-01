@@ -9,12 +9,14 @@ import com.breckneck.deptbook.domain.usecase.Settings.GetAppTheme
 import com.breckneck.deptbook.domain.usecase.Settings.GetDefaultCurrency
 import com.breckneck.deptbook.domain.usecase.Settings.GetFirstMainCurrency
 import com.breckneck.deptbook.domain.usecase.Settings.GetIsAuthorized
+import com.breckneck.deptbook.domain.usecase.Settings.GetPINCodeEnabled
 import com.breckneck.deptbook.domain.usecase.Settings.GetSecondMainCurrency
 import com.breckneck.deptbook.domain.usecase.Settings.GetUserData
 import com.breckneck.deptbook.domain.usecase.Settings.SetAddSumInShareText
 import com.breckneck.deptbook.domain.usecase.Settings.SetAppTheme
 import com.breckneck.deptbook.domain.usecase.Settings.SetDefaultCurrency
 import com.breckneck.deptbook.domain.usecase.Settings.SetFirstMainCurrency
+import com.breckneck.deptbook.domain.usecase.Settings.SetPINCodeEnabled
 import com.breckneck.deptbook.domain.usecase.Settings.SetSecondMainCurrency
 
 class SettingsViewModel(
@@ -29,7 +31,9 @@ class SettingsViewModel(
     private val getAppTheme: GetAppTheme,
     private val setAppTheme: SetAppTheme,
     private val getIsAuthorized: GetIsAuthorized,
-    private val getUserData: GetUserData
+    private val getUserData: GetUserData,
+    private val getPINCodeEnabled: GetPINCodeEnabled,
+    private val setPINCodeEnabled: SetPINCodeEnabled
 ) : ViewModel() {
 
     private val TAG = "SettingsFragmentViewModel"
@@ -79,9 +83,9 @@ class SettingsViewModel(
     private val _isListModified = MutableLiveData<Boolean>(false)
     val isListModified: LiveData<Boolean>
         get() = _isListModified
-    private val _isPINCodeSet = MutableLiveData(false)
-    val isPINCodeSet: LiveData<Boolean>
-        get() = _isPINCodeSet
+    private val _isPINCodeEnabled = MutableLiveData(false)
+    val isPINCodeEnabled: LiveData<Boolean>
+        get() = _isPINCodeEnabled
 
     init {
         getFirstMainCurrency()
@@ -168,7 +172,12 @@ class SettingsViewModel(
         _emailAddress.value = userData.email
     }
 
-    fun getIsPINCodeSet() {
-//        _isPINCodeSet.value =
+    fun getIsPINCodeEnabled() {
+        _isPINCodeEnabled.value = getPINCodeEnabled.execute()
+    }
+
+    fun setIsPINCodeEnabled(isEnabled: Boolean) {
+        _isPINCodeEnabled.value = isEnabled
+        setPINCodeEnabled.execute(isEnabled = _isPINCodeEnabled.value!!)
     }
 }

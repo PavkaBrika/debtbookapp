@@ -289,6 +289,29 @@ class SettingsFragment : Fragment() {
             val dialog = BottomSheetDialog(requireActivity())
             dialog.setContentView(R.layout.dialog_pincode_lock)
 
+            val setPINCodeLayout: LinearLayout = dialog.findViewById(R.id.setPINCodeLayout)!!
+            val setPINCodeSwitch: SwitchCompat = dialog.findViewById(R.id.setPINCodeSwitch)!!
+            val PINCodeSettingsLayout: LinearLayout = dialog.findViewById(R.id.PINCodeSettingsLayout)!!
+
+            setPINCodeLayout.setOnClickListener {
+                setPINCodeSwitch.performClick()
+            }
+
+            vm.isPINCodeEnabled.observe(viewLifecycleOwner) { isEnabled ->
+                if (isEnabled) {
+                    PINCodeSettingsLayout.visibility = View.VISIBLE
+                    setPINCodeSwitch.isChecked = true
+                } else {
+                    PINCodeSettingsLayout.visibility = View.GONE
+                    setPINCodeSwitch.isChecked = false
+                }
+            }
+            vm.getIsPINCodeEnabled()
+
+            setPINCodeSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
+                vm.setIsPINCodeEnabled(isEnabled = isChecked)
+            }
+
             dialog.show()
         }
 

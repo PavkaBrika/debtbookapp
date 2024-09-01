@@ -71,7 +71,9 @@ val appModule = module {
             getAppTheme = get(),
             setAppTheme = get(),
             getIsAuthorized = get(),
-            getUserData = get()
+            getUserData = get(),
+            getPINCodeEnabled = get(),
+            setPINCodeEnabled = get()
         )
     }
 

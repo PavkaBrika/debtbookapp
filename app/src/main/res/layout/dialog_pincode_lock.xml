@@ -54,7 +54,7 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <LinearLayout
-                    android:id="@+id/addSumShareTextLayout"
+                    android:id="@+id/setPINCodeLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="?android:attr/selectableItemBackground"
@@ -69,7 +69,7 @@
                         android:layout_gravity="center_vertical"
                         android:layout_weight="2"
                         android:background="@android:color/transparent"
-                        android:text="Set PIN-code"
+                        android:text="@string/set_pin_code"
                         android:textSize="16sp" />
 
                     <RelativeLayout
@@ -80,7 +80,7 @@
                         android:background="@android:color/transparent">
 
                         <androidx.appcompat.widget.SwitchCompat
-                            android:id="@+id/balanceShareTextSwitch"
+                            android:id="@+id/setPINCodeSwitch"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
@@ -121,23 +121,42 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/fingerprintUnlockLayout"
+                        android:id="@+id/unlockFingerprintLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="?android:attr/selectableItemBackground"
                         android:clickable="true"
                         android:focusable="true"
                         android:orientation="horizontal"
-                        android:paddingHorizontal="12dp"
-                        android:paddingVertical="12dp">
+                        android:paddingHorizontal="12dp">
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
                             android:layout_weight="2"
                             android:background="@android:color/transparent"
                             android:text="@string/unlock_with_fingerprint"
                             android:textSize="16sp" />
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_weight="4"
+                            android:background="@android:color/transparent">
+
+                            <androidx.appcompat.widget.SwitchCompat
+                                android:id="@+id/unlockFingerprintSwitch"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentEnd="true"
+                                android:layout_gravity="center"
+                                android:checked="false"
+                                android:gravity="center"
+                                android:theme="@style/SwitchTheme" />
+
+                        </RelativeLayout>
 
                     </LinearLayout>
 

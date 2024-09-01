@@ -155,4 +155,5 @@
     <string name="pin_code_lock">PIN-code Lock</string>
     <string name="change_pin_code">Change PIN-code</string>
     <string name="unlock_with_fingerprint">Unlock with Fingerprint</string>
+    <string name="set_pin_code">Set PIN-code</string>
 </resources>
