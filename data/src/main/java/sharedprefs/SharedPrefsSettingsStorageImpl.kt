@@ -24,6 +24,7 @@ private const val USER_NAME = "user_name"
 private const val USER_EMAIL = "user_email"
 private const val LAST_SYNC_DATE = "last_sync_date"
 private const val FINANCE_CURRENCY = "finance_currency"
+private const val PIN_CODE_IS_ENABLED = "pin_code_is_enabled"
 
 
 class SharedPrefsSettingsStorageImpl(val context: Context): SettingsStorage {
@@ -146,5 +147,13 @@ class SharedPrefsSettingsStorageImpl(val context: Context): SettingsStorage {
 
     override fun getFinanceCurrency(): String {
         return sharedPreferences.getString(FINANCE_CURRENCY, "USD")!!
+    }
+
+    override fun setPINCodeEnabled(isEnabled: Boolean) {
+        sharedPreferences.edit().putBoolean(PIN_CODE_IS_ENABLED, isEnabled).apply()
+    }
+
+    override fun getPINCodeEnabled(): Boolean {
+        return sharedPreferences.getBoolean(PIN_CODE_IS_ENABLED, false)
     }
 }

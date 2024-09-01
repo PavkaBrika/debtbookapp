@@ -55,4 +55,8 @@ interface SettingsStorage {
     fun setFinanceCurrency(currency: String)
 
     fun getFinanceCurrency(): String
+
+    fun setPINCodeEnabled(isEnabled: Boolean)
+
+    fun getPINCodeEnabled(): Boolean
 }

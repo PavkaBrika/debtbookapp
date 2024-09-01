@@ -137,4 +137,12 @@ class SettingsRepositoryImpl(private val settingsStorage: SettingsStorage): Sett
     override fun getFinanceCurrency(): String {
         return settingsStorage.getFinanceCurrency()
     }
+
+    override fun setPINCodeEnabled(isEnabled: Boolean) {
+        settingsStorage.setPINCodeEnabled(isEnabled = isEnabled)
+    }
+
+    override fun getPINCodeEnabled(): Boolean {
+        return settingsStorage.getPINCodeEnabled()
+    }
 }

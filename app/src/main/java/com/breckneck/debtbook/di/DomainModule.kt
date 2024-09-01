@@ -231,6 +231,14 @@ val domainModule = module {
         GetFinanceCurrency(settingsRepository = get())
     }
 
+    single<SetPINCodeEnabled> {
+        SetPINCodeEnabled(settingsRepository = get())
+    }
+
+    single<GetPINCodeEnabled> {
+        GetPINCodeEnabled(settingsRepository = get())
+    }
+
     //FINANCE
     single<SetFinance> {
         SetFinance(financeRepository = get())

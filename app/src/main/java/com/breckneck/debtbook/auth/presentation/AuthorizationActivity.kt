@@ -27,6 +27,8 @@ import com.breakneck.pokedex.ui.theme.DebtBookTheme
 import com.breckneck.debtbook.auth.util.BiometricPromptManager
 import com.breckneck.debtbook.auth.util.BiometricPromptManager.*
 import com.breckneck.debtbook.core.activity.MainActivity
+import com.breckneck.deptbook.domain.usecase.Settings.GetPINCodeEnabled
+import org.koin.android.ext.android.inject
 
 class AuthorizationActivity: AppCompatActivity() {
 
@@ -34,8 +36,13 @@ class AuthorizationActivity: AppCompatActivity() {
         BiometricPromptManager(this)
     }
 
+    private val getPINCodeEnabled: GetPINCodeEnabled by inject()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (!getPINCodeEnabled.execute())
+            startActivity(Intent(this, MainActivity::class.java))
+
         setContent {
             DebtBookTheme {
                 Surface(
