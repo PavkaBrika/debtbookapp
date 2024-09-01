@@ -284,6 +284,14 @@ class SettingsFragment : Fragment() {
                 }
         }
 
+        val securityLayout: LinearLayout = view.findViewById(R.id.securityLayout)
+        securityLayout.setOnClickListener {
+            val dialog = BottomSheetDialog(requireActivity())
+            dialog.setContentView(R.layout.dialog_pincode_lock)
+
+            dialog.show()
+        }
+
         val rateAppLayout: LinearLayout = view.findViewById(R.id.rateAppLayout)
         rateAppLayout.setOnClickListener {
             buttonClickListener.onRateAppButtonClick()

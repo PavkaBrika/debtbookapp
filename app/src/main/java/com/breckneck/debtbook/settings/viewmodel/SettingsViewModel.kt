@@ -79,6 +79,9 @@ class SettingsViewModel(
     private val _isListModified = MutableLiveData<Boolean>(false)
     val isListModified: LiveData<Boolean>
         get() = _isListModified
+    private val _isPINCodeSet = MutableLiveData(false)
+    val isPINCodeSet: LiveData<Boolean>
+        get() = _isPINCodeSet
 
     init {
         getFirstMainCurrency()
@@ -163,5 +166,9 @@ class SettingsViewModel(
         val userData = getUserData.execute()
         _userName.value = userData.name
         _emailAddress.value = userData.email
+    }
+
+    fun getIsPINCodeSet() {
+//        _isPINCodeSet.value =
     }
 }
