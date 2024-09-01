@@ -25,6 +25,10 @@ android {
     }
     buildFeatures{
         viewBinding true
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.1"
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -62,8 +66,20 @@ dependencies {
     testImplementation 'org.mockito.kotlin:mockito-kotlin:5.4.0'
     testImplementation 'org.mockito:mockito-inline:5.2.0'
     testImplementation 'androidx.arch.core:core-testing:2.2.0'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
+
+//    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.4")
+    implementation("androidx.activity:activity-compose:1.9.1")
+    implementation(platform("androidx.compose:compose-bom:2024.02.01"))
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.ui:ui-graphics")
+    implementation("androidx.compose.ui:ui-tooling-preview")
+    implementation("androidx.compose.material3:material3")
+    androidTestImplementation(platform("androidx.compose:compose-bom:2023.08.00"))
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+    debugImplementation("androidx.compose.ui:ui-tooling")
+    debugImplementation("androidx.compose.ui:ui-test-manifest")
 
     //RxJava
     implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
@@ -110,4 +126,7 @@ dependencies {
 
     //Glide (for smooth recycler view with ImageView scrolling)
     implementation 'com.github.bumptech.glide:glide:4.16.0'
+
+    //Biometric auth
+    implementation("androidx.biometric:biometric:1.1.0")
 }
