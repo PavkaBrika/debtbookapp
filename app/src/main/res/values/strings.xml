@@ -156,4 +156,9 @@
     <string name="change_pin_code">Change PIN-code</string>
     <string name="unlock_with_fingerprint">Unlock with Fingerprint</string>
     <string name="set_pin_code">Set PIN-code</string>
+    <string name="touch_to_show_fingerprint_scanner">Touch to show fingerprint scanner</string>
+    <string name="backspace">Backspace</string>
+    <string name="app_icon">App Icon</string>
+    <string name="enter_pin">Enter PIN</string>
+    <string name="pin">PIN</string>
 </resources>
