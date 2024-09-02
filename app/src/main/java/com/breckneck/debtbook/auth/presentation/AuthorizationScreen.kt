@@ -48,7 +48,8 @@ import com.breckneck.debtbook.core.activity.MainActivity
 
 @Composable
 fun AuthorizationScreen(
-    activity: AppCompatActivity
+    activity: AppCompatActivity,
+    settingPIN: Boolean = false
 ) {
     val promptManager by lazy {
         BiometricPromptManager(activity)
@@ -79,44 +80,12 @@ fun AuthorizationScreen(
         }
     }
     LaunchedEffect(PINCode) {
-        if ((PINCode.length == 4) && (PINCode.equals("1111"))) {
-            enrollLauncher.launch(Intent(activity, MainActivity::class.java))
+        if ((PINCode.length == 4)) {
+            if (settingPIN)
+                enrollLauncher.launch(Intent(activity, MainActivity::class.java))
+            else if (PINCode.equals("1111"))
+                enrollLauncher.launch(Intent(activity, MainActivity::class.java))
         }
-    }
-    biometricResult?.let { result ->
-        Text(
-            text = when (result) {
-                is BiometricResult.AuthenticationError -> {
-                    "Authentication error: ${result.error}"
-                }
-
-                BiometricResult.AuthenticationFailed -> {
-                    "Authentication failed"
-                }
-
-                BiometricResult.AuthenticationNotSet -> {
-                    "Authentication not set"
-                }
-
-                BiometricResult.AuthenticationSuccess -> {
-                    enrollLauncher.launch(
-                        Intent(
-                            LocalContext.current,
-                            MainActivity::class.java
-                        )
-                    )
-                    "Authentication success"
-                }
-
-                BiometricResult.FeatureUnavailable -> {
-                    "Feature unavailable"
-                }
-
-                BiometricResult.HardwareUnavailable -> {
-                    "Hardware unavailable"
-                }
-            }
-        )
     }
     Column(
         modifier = Modifier
@@ -137,6 +106,41 @@ fun AuthorizationScreen(
             fontSize = 32.sp
         )
         PINCodeSection(PINCode = PINCode)
+        biometricResult?.let { result ->
+            Text(
+                text = when (result) {
+                    is BiometricResult.AuthenticationError -> {
+                        "Authentication error: ${result.error}"
+                    }
+
+                    BiometricResult.AuthenticationFailed -> {
+                        "Authentication failed"
+                    }
+
+                    BiometricResult.AuthenticationNotSet -> {
+                        "Authentication not set"
+                    }
+
+                    BiometricResult.AuthenticationSuccess -> {
+                        enrollLauncher.launch(
+                            Intent(
+                                LocalContext.current,
+                                MainActivity::class.java
+                            )
+                        )
+                        "Authentication success"
+                    }
+
+                    BiometricResult.FeatureUnavailable -> {
+                        "Feature unavailable"
+                    }
+
+                    BiometricResult.HardwareUnavailable -> {
+                        "Hardware unavailable"
+                    }
+                }
+            )
+        }
         Spacer(modifier = Modifier.height(200.dp))
         ButtonsSection(modifier = Modifier.fillMaxWidth(),
             onFingerprintButtonClick = {

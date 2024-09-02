@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.BuildConfig
 import com.breckneck.debtbook.R
+import com.breckneck.debtbook.auth.presentation.AuthorizationActivity
 import com.breckneck.debtbook.settings.adapter.SettingsAdapter
 import com.breckneck.debtbook.core.viewmodel.MainActivityViewModel
 import com.breckneck.debtbook.settings.viewmodel.SettingsViewModel
@@ -310,6 +311,13 @@ class SettingsFragment : Fragment() {
 
             setPINCodeSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
                 vm.setIsPINCodeEnabled(isEnabled = isChecked)
+                if (isChecked) {
+                    Intent(requireActivity(), AuthorizationActivity::class.java).also {
+                        it.putExtra("settingPIN", true)
+                        startActivity(it)
+                    }
+
+                }
             }
 
             dialog.show()

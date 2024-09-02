@@ -45,10 +45,16 @@ class AuthorizationActivity : AppCompatActivity() {
 
     private val getPINCodeEnabled: GetPINCodeEnabled by inject()
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (!getPINCodeEnabled.execute())
             startActivity(Intent(this, MainActivity::class.java))
+
+        val bundle = intent.extras
+        var settingPIN = false
+        if (bundle != null)
+            settingPIN = bundle.getBoolean("settingPIN", false)
 
         setContent {
             DebtBookTheme {
@@ -56,7 +62,7 @@ class AuthorizationActivity : AppCompatActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    AuthorizationScreen(activity = this)
+                    AuthorizationScreen(activity = this, settingPIN = settingPIN)
                 }
             }
         }
