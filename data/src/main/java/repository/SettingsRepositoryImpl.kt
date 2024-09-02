@@ -145,4 +145,12 @@ class SettingsRepositoryImpl(private val settingsStorage: SettingsStorage): Sett
     override fun getPINCodeEnabled(): Boolean {
         return settingsStorage.getPINCodeEnabled()
     }
+
+    override fun getPINCode(): String {
+        return settingsStorage.getPINCode()
+    }
+
+    override fun setPINCode(PINCode: String) {
+        settingsStorage.setPINCode(PINCode = PINCode)
+    }
 }

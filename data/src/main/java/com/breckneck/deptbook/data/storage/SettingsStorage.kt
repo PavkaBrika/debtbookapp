@@ -59,4 +59,8 @@ interface SettingsStorage {
     fun setPINCodeEnabled(isEnabled: Boolean)
 
     fun getPINCodeEnabled(): Boolean
+
+    fun setPINCode(PINCode: String)
+
+    fun getPINCode(): String
 }

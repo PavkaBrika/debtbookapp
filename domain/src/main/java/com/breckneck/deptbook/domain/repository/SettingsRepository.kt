@@ -61,4 +61,8 @@ interface SettingsRepository {
     fun setPINCodeEnabled(isEnabled: Boolean)
 
     fun getPINCodeEnabled(): Boolean
+
+    fun getPINCode(): String
+
+    fun setPINCode(PINCode: String)
 }
