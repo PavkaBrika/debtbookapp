@@ -20,6 +20,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.breckneck.debtbook.BuildConfig
 import com.breckneck.debtbook.R
+import com.breckneck.debtbook.auth.util.PINCodeAction
 import com.breckneck.debtbook.debt.presentation.DebtDetailsFragment
 import com.breckneck.debtbook.debt.presentation.MainFragment
 import com.breckneck.debtbook.debt.presentation.NewDebtFragment
@@ -741,7 +742,12 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener,
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        Log.e(TAG, "RESULT")
+        if (resultCode == RESULT_OK) {
+            when (data!!.getStringExtra("PINCodeState")) {
+                PINCodeAction.ENABLE.toString() -> vm.setIsPINCodeEnabled(true)
+                PINCodeAction.DISABLE.toString() -> vm.setIsPINCodeEnabled(false)
+            }
+        }
         super.onActivityResult(requestCode, resultCode, data)
     }
 }

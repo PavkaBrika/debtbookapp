@@ -7,6 +7,7 @@ import android.content.pm.ActivityInfo
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,6 +46,8 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsFragment : Fragment() {
 
+    private val TAG = "SettingsFragment"
+
     interface OnButtonClickListener {
         fun onRateAppButtonClick()
 
@@ -67,6 +70,7 @@ class SettingsFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.e(TAG, "onCreate")
     }
 
     override fun onCreateView(
@@ -74,6 +78,7 @@ class SettingsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        Log.e(TAG, "onCreateView")
         requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         setFragmentResultListener("settingsFragmentKey") { requestKey, bundle ->
             if (bundle.getBoolean("isAuthorized") != vm.isAuthorized.value)
@@ -96,6 +101,7 @@ class SettingsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.e(TAG, "onViewCreated")
 
         if (vm.isSynchronizationAvailable.value == null) {
             checkIsSynchronizationAvailable()
@@ -317,7 +323,7 @@ class SettingsFragment : Fragment() {
 //                setPINCodeSwitch.performClick()
             }
 
-            vm.isPINCodeEnabled.observe(viewLifecycleOwner) { isEnabled ->
+            mainActivityVM.isPINCodeEnabled.observe(viewLifecycleOwner) { isEnabled ->
                 if (isEnabled) {
                     PINCodeSettingsLayout.visibility = View.VISIBLE
                     setPINCodeSwitch.isChecked = true
@@ -326,7 +332,7 @@ class SettingsFragment : Fragment() {
                     setPINCodeSwitch.isChecked = false
                 }
             }
-            vm.getIsPINCodeEnabled()
+            mainActivityVM.getIsPINCodeEnabled()
 
 //            setPINCodeSwitch.setOnTouchListener(object : View.OnTouchListener {
 //                override fun onTouch(v: View?, event: MotionEvent?): Boolean {
@@ -402,6 +408,11 @@ class SettingsFragment : Fragment() {
         accountInfoLayout.setOnClickListener {
             buttonClickListener.onAuthorizationButtonClick()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
     }
 
     private fun showSettingsDialog(

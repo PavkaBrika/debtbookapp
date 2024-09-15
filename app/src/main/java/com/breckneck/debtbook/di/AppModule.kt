@@ -40,7 +40,9 @@ val appModule = module {
             setDebtQuantityForAppRateDialogShow = get(),
             getClicksUseCase = get(),
             saveClicks = get(),
-            getAppTheme = get()
+            getAppTheme = get(),
+            setPINCodeEnabled = get(),
+            getPINCodeEnabled = get()
         )
     }
 

@@ -9,7 +9,9 @@ import com.breckneck.deptbook.domain.usecase.Ad.GetClicksUseCase
 import com.breckneck.deptbook.domain.usecase.Debt.GetDebtQuantity
 import com.breckneck.deptbook.domain.usecase.Settings.GetAppTheme
 import com.breckneck.deptbook.domain.usecase.Settings.GetDebtQuantityForAppRateDialogShow
+import com.breckneck.deptbook.domain.usecase.Settings.GetPINCodeEnabled
 import com.breckneck.deptbook.domain.usecase.Settings.SetDebtQuantityForAppRateDialogShow
+import com.breckneck.deptbook.domain.usecase.Settings.SetPINCodeEnabled
 import com.breckneck.deptbook.domain.util.DEBT_QUANTITY_FOR_NEXT_SHOW_APP_RATE_DIALOG
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
@@ -22,8 +24,10 @@ class MainActivityViewModel(
     private val setDebtQuantityForAppRateDialogShow: SetDebtQuantityForAppRateDialogShow,
     private val getClicksUseCase: GetClicksUseCase,
     private val saveClicks: SaveClicksUseCase,
-    private val getAppTheme: GetAppTheme
-) : ViewModel() {
+    private val getAppTheme: GetAppTheme,
+    private val setPINCodeEnabled: SetPINCodeEnabled,
+    private val getPINCodeEnabled: GetPINCodeEnabled
+    ) : ViewModel() {
 
     private val TAG = "MainActivityViewModel"
 
@@ -63,6 +67,9 @@ class MainActivityViewModel(
     private val _isBottomNavViewVisible = MutableLiveData<Boolean>(true)
     val isBottomNavViewVisible: LiveData<Boolean>
         get() = _isBottomNavViewVisible
+    private val _isPINCodeEnabled = MutableLiveData<Boolean>(false)
+    val isPINCodeEnabled: LiveData<Boolean>
+        get() = _isPINCodeEnabled
 
     private val disposeBag = CompositeDisposable()
 
@@ -156,4 +163,12 @@ class MainActivityViewModel(
         _isBottomNavViewVisible.value = isVisible
     }
 
+    fun setIsPINCodeEnabled(enabled: Boolean) {
+        _isPINCodeEnabled.value = enabled
+        setPINCodeEnabled.execute(_isPINCodeEnabled.value!!)
+    }
+
+    fun getIsPINCodeEnabled() {
+        _isPINCodeEnabled.value = getPINCodeEnabled.execute()
+    }
 }
