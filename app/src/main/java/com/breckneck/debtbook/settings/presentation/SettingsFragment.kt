@@ -1,5 +1,6 @@
 package com.breckneck.debtbook.settings.presentation
 
+import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
@@ -14,6 +15,10 @@ import android.widget.CompoundButton
 import android.widget.CompoundButton.OnCheckedChangeListener
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultCallback
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SwitchCompat
 import androidx.cardview.widget.CardView
@@ -27,6 +32,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.BuildConfig
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.auth.presentation.AuthorizationActivity
+import com.breckneck.debtbook.auth.util.PINCodeAction
 import com.breckneck.debtbook.settings.adapter.SettingsAdapter
 import com.breckneck.debtbook.core.viewmodel.MainActivityViewModel
 import com.breckneck.debtbook.settings.viewmodel.SettingsViewModel
@@ -52,6 +58,8 @@ class SettingsFragment : Fragment() {
     private val vm by viewModel<SettingsViewModel>()
     private val mainActivityVM by activityViewModel<MainActivityViewModel>()
 
+    private lateinit var startActivityForResult : ActivityResultLauncher<Intent>
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         buttonClickListener = context as OnButtonClickListener
@@ -72,6 +80,16 @@ class SettingsFragment : Fragment() {
                 vm.getIsAuthorized()
             if (bundle.getBoolean("isListModified"))
                 mainActivityVM.setIsNeedUpdateDebtData(true)
+        }
+        startActivityForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            ActivityResultCallback<ActivityResult> { result ->
+                if (result.resultCode == RESULT_OK) {
+                    when (result.data!!.getStringExtra("PINCodeState")) {
+                        PINCodeAction.ENABLE.toString() -> vm.setIsPINCodeEnabled(true)
+                        PINCodeAction.DISABLE.toString() -> vm.setIsPINCodeEnabled(false)
+                    }
+                }
+            }
         }
         return inflater.inflate(R.layout.fragment_settings, container, false)
     }
@@ -293,9 +311,10 @@ class SettingsFragment : Fragment() {
             val setPINCodeLayout: LinearLayout = dialog.findViewById(R.id.setPINCodeLayout)!!
             val setPINCodeSwitch: SwitchCompat = dialog.findViewById(R.id.setPINCodeSwitch)!!
             val PINCodeSettingsLayout: LinearLayout = dialog.findViewById(R.id.PINCodeSettingsLayout)!!
+            val changePINCodeLayout: LinearLayout = dialog.findViewById(R.id.changePINCodeLayout)!!
 
             setPINCodeLayout.setOnClickListener {
-                setPINCodeSwitch.performClick()
+//                setPINCodeSwitch.performClick()
             }
 
             vm.isPINCodeEnabled.observe(viewLifecycleOwner) { isEnabled ->
@@ -309,14 +328,32 @@ class SettingsFragment : Fragment() {
             }
             vm.getIsPINCodeEnabled()
 
-            setPINCodeSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
-                vm.setIsPINCodeEnabled(isEnabled = isChecked)
-                if (isChecked) {
-                    Intent(requireActivity(), AuthorizationActivity::class.java).also {
-                        it.putExtra("settingPIN", true)
-                        startActivity(it)
-                    }
+//            setPINCodeSwitch.setOnTouchListener(object : View.OnTouchListener {
+//                override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+//                    setPINCodeSwitch.isClickable = false
+//                    val intent = Intent(requireActivity(), AuthorizationActivity::class.java)
+//                    if (setPINCodeSwitch.isChecked)
+//                        intent.putExtra("PINCodeState", PINCodeState.DISABLE.toString())
+//                    else
+//                        intent.putExtra("PINCodeState", PINCodeState.ENABLE.toString())
+//                    startActivityForResult.launch(intent)
+//                    return false
+//                }
+//            })
 
+            setPINCodeLayout.setOnClickListener {
+                val intent = Intent(requireActivity(), AuthorizationActivity::class.java)
+                if (setPINCodeSwitch.isChecked)
+                    intent.putExtra("PINCodeState", PINCodeAction.DISABLE.toString())
+                else
+                    intent.putExtra("PINCodeState", PINCodeAction.ENABLE.toString())
+                startActivityForResult.launch(intent)
+            }
+
+            changePINCodeLayout.setOnClickListener {
+                Intent(requireActivity(), AuthorizationActivity::class.java).also {
+                    it.putExtra("PINCodeState", PINCodeAction.CHANGE.toString())
+                    startActivity(it)
                 }
             }
 

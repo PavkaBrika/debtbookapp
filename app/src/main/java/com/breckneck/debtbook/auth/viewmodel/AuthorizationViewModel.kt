@@ -1,7 +1,92 @@
 package com.breckneck.debtbook.auth.viewmodel
 
+import android.util.Log
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.breckneck.debtbook.auth.util.PINCodeAction
+import com.breckneck.debtbook.auth.util.PINCodeEnterState
+import com.breckneck.deptbook.domain.usecase.Settings.GetPINCode
+import com.breckneck.deptbook.domain.usecase.Settings.GetPINCodeEnabled
+import com.breckneck.deptbook.domain.usecase.Settings.SetPINCode
+import com.breckneck.deptbook.domain.usecase.Settings.SetPINCodeEnabled
 
-class AuthorizationViewModel(): ViewModel() {
+class AuthorizationViewModel(
+    private val getPINCodeEnabled: GetPINCodeEnabled,
+    private val setPINCodeEnabled: SetPINCodeEnabled,
+    private val setPINCode: SetPINCode,
+    private val getPINCode: GetPINCode
+): ViewModel() {
 
+    val TAG = "AuthorizationVM"
+
+    private val _enteredPINCode = mutableStateOf("") // variable for current entered pin by user
+    val enteredPINCode: State<String>
+        get() = _enteredPINCode
+    private val _pastPINCode = mutableStateOf("") // variable that used for ENABLE action and comparing with entered pin code in CONFIRMATION state
+    val pastPINCode: State<String>
+        get() = _pastPINCode
+    private val _currentPINCode = mutableStateOf(getPINCode.execute()) // variable for existing PIN code in memory
+    val currentPINCode: State<String>
+        get() = _currentPINCode
+    private val _isPINCodeEnabled = MutableLiveData<Boolean>(false)
+    val isPINCodeEnabled: LiveData<Boolean>
+        get() = _isPINCodeEnabled
+    private val _pinCodeEnterState = mutableStateOf(PINCodeEnterState.FIRST)
+    val pinCodeEnterState: State<PINCodeEnterState>
+        get() = _pinCodeEnterState
+    private val _pinCodeAction = mutableStateOf(PINCodeAction.CHECK)
+    val pinCodeAction: State<PINCodeAction>
+        get() = _pinCodeAction
+
+    init {
+        Log.e(TAG, "Created")
+        getPINCodeEnabled()
+        getPINCode()
+    }
+
+    fun getPINCode() {
+        _currentPINCode.value = getPINCode.execute()
+    }
+
+    fun getPINCodeEnabled() {
+        _isPINCodeEnabled.value = getPINCodeEnabled.execute()
+    }
+
+    fun changePINCode(PINCode: String) {
+        _enteredPINCode.value = PINCode
+    }
+
+    fun setPINCode() {
+        setPINCode.execute(PINCode = _enteredPINCode.value)
+    }
+
+    fun enablePINCode() {
+        setPINCodeEnabled.execute(true)
+    }
+
+    fun setPastPINCode() {
+        _pastPINCode.value = _enteredPINCode.value
+        _enteredPINCode.value = ""
+    }
+
+    fun resetPINCodes() {
+        _enteredPINCode.value = ""
+        _pastPINCode.value = ""
+    }
+
+    fun turnOffPINCode() {
+        setPINCode.execute("")
+        setPINCodeEnabled.execute(false)
+    }
+
+    fun setPINCodeAction(action: PINCodeAction) {
+        _pinCodeAction.value = action
+    }
+
+    fun setPINCodeEnterState(state: PINCodeEnterState) {
+        _pinCodeEnterState.value = state
+    }
 }

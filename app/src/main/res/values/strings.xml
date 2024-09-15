@@ -161,4 +161,6 @@
     <string name="app_icon">App Icon</string>
     <string name="enter_pin">Enter PIN</string>
     <string name="pin">PIN</string>
+    <string name="confirm_your_pin">Confirm your PIN</string>
+    <string name="pin_code_is_incorrect">PIN Code is incorrect</string>
 </resources>

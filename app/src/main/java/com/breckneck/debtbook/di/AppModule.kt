@@ -1,5 +1,6 @@
 package com.breckneck.debtbook.di
 
+import com.breckneck.debtbook.auth.viewmodel.AuthorizationViewModel
 import com.breckneck.debtbook.finance.viewmodel.CreateFinanceCategoryViewModel
 import com.breckneck.debtbook.finance.viewmodel.CreateFinanceViewModel
 import com.breckneck.debtbook.goal.viewmodel.CreateGoalsFragmentViewModel
@@ -164,6 +165,15 @@ val appModule = module {
             getGoalDepositsByGoalId = get(),
             deleteGoalDepositsByGoalId = get(),
             deleteGoal = get()
+        )
+    }
+
+    viewModel<AuthorizationViewModel> {
+        AuthorizationViewModel(
+            getPINCodeEnabled = get(),
+            setPINCodeEnabled = get(),
+            setPINCode = get(),
+            getPINCode = get()
         )
     }
 }

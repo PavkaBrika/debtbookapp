@@ -739,4 +739,9 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener,
 
         lowRateBottomSheetDialog.show()
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        Log.e(TAG, "RESULT")
+        super.onActivityResult(requestCode, resultCode, data)
+    }
 }

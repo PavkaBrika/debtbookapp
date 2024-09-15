@@ -118,6 +118,7 @@ dependencies {
     def koin_version = "3.5.3"
     implementation "io.insert-koin:koin-core:$koin_version"
     implementation "io.insert-koin:koin-android:$koin_version"
+    implementation "io.insert-koin:koin-androidx-compose:$koin_version"
     //Testing
     testImplementation "io.insert-koin:koin-test:$koin_version"
 
