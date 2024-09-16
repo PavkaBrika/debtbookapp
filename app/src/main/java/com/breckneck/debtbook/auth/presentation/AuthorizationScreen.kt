@@ -129,16 +129,18 @@ fun AuthorizationScreen(
                         vm.setPINCode()
                         activity.finish()
                     }
-                    else
+                    else {
                         vm.resetPINCodes() //pin codes doesnt match
+                        vm.setPINCodeEnterState(INCORRECT)
+                    }
                 }
 
                 CHECK ->
                     if (vm.enteredPINCode.value == vm.currentPINCode.value)
                         enrollLauncher.launch(Intent(activity, MainActivity::class.java))
                     else {
-                        vm.setPINCodeEnterState(INCORRECT)
                         vm.resetPINCodes()
+                        vm.setPINCodeEnterState(INCORRECT)
                     }
             }
         }

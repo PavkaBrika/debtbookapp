@@ -28,9 +28,7 @@ class MainActivityViewModel(
     private val saveClicks: SaveClicksUseCase,
     private val getAppTheme: GetAppTheme,
     private val setPINCodeEnabled: SetPINCodeEnabled,
-    private val getPINCodeEnabled: GetPINCodeEnabled,
-    private val setIsFingerprintAuthEnabled: SetIsFingerprintAuthEnabled,
-    private val getIsFingerprintAuthEnabled: GetIsFingerprintAuthEnabled
+    private val getPINCodeEnabled: GetPINCodeEnabled
     ) : ViewModel() {
 
     private val TAG = "MainActivityViewModel"

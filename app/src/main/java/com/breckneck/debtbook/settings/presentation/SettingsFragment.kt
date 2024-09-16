@@ -86,16 +86,7 @@ class SettingsFragment : Fragment() {
             if (bundle.getBoolean("isListModified"))
                 mainActivityVM.setIsNeedUpdateDebtData(true)
         }
-        startActivityForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            ActivityResultCallback<ActivityResult> { result ->
-                if (result.resultCode == RESULT_OK) {
-                    when (result.data!!.getStringExtra("PINCodeState")) {
-                        PINCodeAction.ENABLE.toString() -> vm.setIsPINCodeEnabled(true)
-                        PINCodeAction.DISABLE.toString() -> vm.setIsPINCodeEnabled(false)
-                    }
-                }
-            }
-        }
+        startActivityForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { }
         return inflater.inflate(R.layout.fragment_settings, container, false)
     }
 
@@ -316,23 +307,33 @@ class SettingsFragment : Fragment() {
 
             val setPINCodeLayout: LinearLayout = dialog.findViewById(R.id.setPINCodeLayout)!!
             val setPINCodeSwitch: SwitchCompat = dialog.findViewById(R.id.setPINCodeSwitch)!!
-            val PINCodeSettingsLayout: LinearLayout = dialog.findViewById(R.id.PINCodeSettingsLayout)!!
+            val pinCodeSettingsLayout: LinearLayout = dialog.findViewById(R.id.PINCodeSettingsLayout)!!
             val changePINCodeLayout: LinearLayout = dialog.findViewById(R.id.changePINCodeLayout)!!
+            val unlockFingerprintSwitch: SwitchCompat = dialog.findViewById(R.id.unlockFingerprintSwitch)!!
+            val unlockFingerprintLayout: LinearLayout = dialog.findViewById(R.id.unlockFingerprintLayout)!!
 
             setPINCodeLayout.setOnClickListener {
-//                setPINCodeSwitch.performClick()
+                setPINCodeSwitch.performClick()
+            }
+
+            unlockFingerprintLayout.setOnClickListener {
+                unlockFingerprintSwitch.performClick()
             }
 
             mainActivityVM.isPINCodeEnabled.observe(viewLifecycleOwner) { isEnabled ->
                 if (isEnabled) {
-                    PINCodeSettingsLayout.visibility = View.VISIBLE
+                    pinCodeSettingsLayout.visibility = View.VISIBLE
                     setPINCodeSwitch.isChecked = true
                 } else {
-                    PINCodeSettingsLayout.visibility = View.GONE
+                    pinCodeSettingsLayout.visibility = View.GONE
                     setPINCodeSwitch.isChecked = false
                 }
             }
+            vm.isFingerprintAuthEnabled.observe(viewLifecycleOwner) { isEnabled ->
+                unlockFingerprintSwitch.isChecked = isEnabled
+            }
             mainActivityVM.getIsPINCodeEnabled()
+            vm.getIsFingerprintAuthEnabled()
 
             setPINCodeLayout.setOnClickListener {
                 val intent = Intent(requireActivity(), AuthorizationActivity::class.java)
@@ -342,20 +343,28 @@ class SettingsFragment : Fragment() {
                     intent.putExtra("PINCodeState", PINCodeAction.ENABLE.toString())
                 startActivityForResult.launch(intent)
             }
-
-            setPINCodeSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
-                val intent = Intent(requireActivity(), AuthorizationActivity::class.java)
-                if (isChecked)
-                    intent.putExtra("PINCodeState", PINCodeAction.ENABLE.toString())
-                else
-                    intent.putExtra("PINCodeState", PINCodeAction.DISABLE.toString())
-                startActivityForResult.launch(intent)
+            setPINCodeSwitch.setOnCheckedChangeListener { button, isChecked ->
+                if (button.isPressed) {
+                    val intent = Intent(requireActivity(), AuthorizationActivity::class.java)
+                    if (isChecked)
+                        intent.putExtra("PINCodeState", PINCodeAction.ENABLE.toString())
+                    else
+                        intent.putExtra("PINCodeState", PINCodeAction.DISABLE.toString())
+                    setPINCodeSwitch.isChecked = !setPINCodeSwitch.isChecked
+                    startActivityForResult.launch(intent)
+                }
             }
 
             changePINCodeLayout.setOnClickListener {
                 Intent(requireActivity(), AuthorizationActivity::class.java).also {
                     it.putExtra("PINCodeState", PINCodeAction.CHANGE.toString())
                     startActivity(it)
+                }
+            }
+
+            unlockFingerprintSwitch.setOnCheckedChangeListener { _, isChecked ->
+                if (isChecked) {
+
                 }
             }
 

@@ -9,6 +9,7 @@ import com.breckneck.deptbook.domain.usecase.Settings.GetAppTheme
 import com.breckneck.deptbook.domain.usecase.Settings.GetDefaultCurrency
 import com.breckneck.deptbook.domain.usecase.Settings.GetFirstMainCurrency
 import com.breckneck.deptbook.domain.usecase.Settings.GetIsAuthorized
+import com.breckneck.deptbook.domain.usecase.Settings.GetIsFingerprintAuthEnabled
 import com.breckneck.deptbook.domain.usecase.Settings.GetPINCodeEnabled
 import com.breckneck.deptbook.domain.usecase.Settings.GetSecondMainCurrency
 import com.breckneck.deptbook.domain.usecase.Settings.GetUserData
@@ -16,6 +17,7 @@ import com.breckneck.deptbook.domain.usecase.Settings.SetAddSumInShareText
 import com.breckneck.deptbook.domain.usecase.Settings.SetAppTheme
 import com.breckneck.deptbook.domain.usecase.Settings.SetDefaultCurrency
 import com.breckneck.deptbook.domain.usecase.Settings.SetFirstMainCurrency
+import com.breckneck.deptbook.domain.usecase.Settings.SetIsFingerprintAuthEnabled
 import com.breckneck.deptbook.domain.usecase.Settings.SetPINCodeEnabled
 import com.breckneck.deptbook.domain.usecase.Settings.SetSecondMainCurrency
 
@@ -32,8 +34,8 @@ class SettingsViewModel(
     private val setAppTheme: SetAppTheme,
     private val getIsAuthorized: GetIsAuthorized,
     private val getUserData: GetUserData,
-    private val getPINCodeEnabled: GetPINCodeEnabled,
-    private val setPINCodeEnabled: SetPINCodeEnabled
+    private val setIsFingerprintAuthEnabled: SetIsFingerprintAuthEnabled,
+    private val getIsFingerprintAuthEnabled: GetIsFingerprintAuthEnabled
 ) : ViewModel() {
 
     private val TAG = "SettingsFragmentViewModel"
@@ -83,9 +85,9 @@ class SettingsViewModel(
     private val _isListModified = MutableLiveData<Boolean>(false)
     val isListModified: LiveData<Boolean>
         get() = _isListModified
-    private val _isPINCodeEnabled = MutableLiveData(false)
-    val isPINCodeEnabled: LiveData<Boolean>
-        get() = _isPINCodeEnabled
+    private val _isFingerprintAuthEnabled = MutableLiveData<Boolean>(false)
+    val isFingerprintAuthEnabled: LiveData<Boolean>
+        get() = _isFingerprintAuthEnabled
 
     init {
         getFirstMainCurrency()
@@ -172,12 +174,12 @@ class SettingsViewModel(
         _emailAddress.value = userData.email
     }
 
-    fun getIsPINCodeEnabled() {
-        _isPINCodeEnabled.value = getPINCodeEnabled.execute()
+    fun getIsFingerprintAuthEnabled() {
+        _isFingerprintAuthEnabled.value = getIsFingerprintAuthEnabled.execute()
     }
 
-    fun setIsPINCodeEnabled(isEnabled: Boolean) {
-        _isPINCodeEnabled.value = isEnabled
-        setPINCodeEnabled.execute(isEnabled = _isPINCodeEnabled.value!!)
+    fun setIsFingerprintAuthEnabled(isEnabled: Boolean) {
+        _isFingerprintAuthEnabled.value = isEnabled
+        setIsFingerprintAuthEnabled.execute(_isFingerprintAuthEnabled.value!!)
     }
 }
