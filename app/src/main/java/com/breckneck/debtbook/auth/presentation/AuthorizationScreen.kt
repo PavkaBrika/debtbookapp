@@ -92,10 +92,10 @@ fun AuthorizationScreen(
         if ((enteredPINCode.length == 4)) {
             when (pinCodeAction.value) {
                 ENABLE -> {
-                    if (vm.pastPINCode.value.isEmpty()) {
+                    if (vm.pinCodeEnterState.value == FIRST) {
                         vm.setPastPINCode()
                         vm.setPINCodeEnterState(CONFIRMATION)
-                    } else if (vm.pastPINCode.value == vm.enteredPINCode.value) {
+                    } else if ((vm.pinCodeEnterState.value == CONFIRMATION) && (vm.pastPINCode.value == vm.enteredPINCode.value)) {
                         vm.setPINCode()
                         vm.enablePINCode()
                         val intent = Intent()
@@ -109,25 +109,30 @@ fun AuthorizationScreen(
                 }
 
                 DISABLE -> {
-//                    if (vm.enteredPINCode.value == vm.currentPINCode.value) {
-//                        vm.turnOffPINCode()
-//                        Intent().also {
-//                            it.putExtra("PINCodeState", pinCodeAction.value.toString())
-//                            activity.setResult(RESULT_OK, it)
-//                        }
-//                        activity.finish()
-//                    }
-//                    else
-//                        vm.changePINCode("") //pin code doesnt match
+                    if (vm.enteredPINCode.value == vm.currentPINCode.value) {
+                        vm.turnOffPINCode()
+                        vm.changePINCode("") //pin code doesnt match
+                        Intent().also {
+                            it.putExtra("PINCodeState", pinCodeAction.value.toString())
+                            activity.setResult(RESULT_OK, it)
+                        }
+                        activity.finish()
+                    } else {
+                        vm.resetPINCodes() //pin codes doesnt match
+                        vm.setPINCodeEnterState(INCORRECT)
+                    }
                 }
 
                 CHANGE -> {
-//                    if ((vm.pastPINCode.value.isEmpty()) && (vm.enteredPINCode.value == vm.currentPINCode.value))
-//                        vm.setPastPINCode()
-//                    else if (vm.pastPINCode.value == vm.enteredPINCode.value) //pin codes matched
-//                        vm.setPINCode()
-//                    else
-//                        vm.resetPINCodes() //pin codes doesnt match
+                    if ((vm.pinCodeEnterState.value == FIRST)  && (vm.enteredPINCode.value == vm.currentPINCode.value)) {
+                        vm.setPastPINCode()
+                        vm.setPINCodeEnterState(CONFIRMATION)
+                    } else if (vm.pinCodeEnterState.value == CONFIRMATION) {
+                        vm.setPINCode()
+                        activity.finish()
+                    }
+                    else
+                        vm.resetPINCodes() //pin codes doesnt match
                 }
 
                 CHECK ->
@@ -157,7 +162,9 @@ fun AuthorizationScreen(
         Text(
             text = when (pinCodeEnterState) {
                 FIRST -> stringResource(R.string.enter_pin)
-                CONFIRMATION -> stringResource(R.string.confirm_your_pin)
+                CONFIRMATION ->
+                    if (pinCodeAction.value == CHANGE) stringResource(R.string.enter_new_pin)
+                    else stringResource(R.string.confirm_your_pin)
                 INCORRECT -> stringResource(R.string.pin_code_is_incorrect)
             },
             fontSize = 32.sp
@@ -199,7 +206,8 @@ fun AuthorizationScreen(
             )
         }
         Spacer(modifier = Modifier.height(200.dp))
-        ButtonsSection(modifier = Modifier.fillMaxWidth(),
+        ButtonsSection(
+            modifier = Modifier.fillMaxWidth(),
             onFingerprintButtonClick = {
                 promptManager.showBiometricPrompt(
                     title = "Sample promt",

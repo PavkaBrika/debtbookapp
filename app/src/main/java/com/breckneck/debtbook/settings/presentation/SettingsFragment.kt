@@ -334,25 +334,21 @@ class SettingsFragment : Fragment() {
             }
             mainActivityVM.getIsPINCodeEnabled()
 
-//            setPINCodeSwitch.setOnTouchListener(object : View.OnTouchListener {
-//                override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-//                    setPINCodeSwitch.isClickable = false
-//                    val intent = Intent(requireActivity(), AuthorizationActivity::class.java)
-//                    if (setPINCodeSwitch.isChecked)
-//                        intent.putExtra("PINCodeState", PINCodeState.DISABLE.toString())
-//                    else
-//                        intent.putExtra("PINCodeState", PINCodeState.ENABLE.toString())
-//                    startActivityForResult.launch(intent)
-//                    return false
-//                }
-//            })
-
             setPINCodeLayout.setOnClickListener {
                 val intent = Intent(requireActivity(), AuthorizationActivity::class.java)
                 if (setPINCodeSwitch.isChecked)
                     intent.putExtra("PINCodeState", PINCodeAction.DISABLE.toString())
                 else
                     intent.putExtra("PINCodeState", PINCodeAction.ENABLE.toString())
+                startActivityForResult.launch(intent)
+            }
+
+            setPINCodeSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
+                val intent = Intent(requireActivity(), AuthorizationActivity::class.java)
+                if (isChecked)
+                    intent.putExtra("PINCodeState", PINCodeAction.ENABLE.toString())
+                else
+                    intent.putExtra("PINCodeState", PINCodeAction.DISABLE.toString())
                 startActivityForResult.launch(intent)
             }
 
