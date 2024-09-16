@@ -65,4 +65,8 @@ interface SettingsRepository {
     fun getPINCode(): String
 
     fun setPINCode(PINCode: String)
+
+    fun setIsFingerprintAuthEnabled(isEnabled: Boolean)
+
+    fun getIsFingerprintAuthEnabled(): Boolean
 }

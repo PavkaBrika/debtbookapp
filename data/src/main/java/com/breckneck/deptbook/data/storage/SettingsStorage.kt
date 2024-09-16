@@ -63,4 +63,8 @@ interface SettingsStorage {
     fun setPINCode(PINCode: String)
 
     fun getPINCode(): String
+
+    fun setIsFingerprintAuthEnabled(isEnabled: Boolean)
+
+    fun getIsFingerprintAuthEnabled(): Boolean
 }

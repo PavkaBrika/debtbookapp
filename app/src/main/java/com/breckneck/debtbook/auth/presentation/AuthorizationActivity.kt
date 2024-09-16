@@ -9,7 +9,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import com.breakneck.pokedex.ui.theme.DebtBookTheme
-import com.breckneck.debtbook.auth.util.PINCodeAction.*
+import com.breckneck.deptbook.domain.util.PINCodeAction.*
 import com.breckneck.debtbook.auth.viewmodel.AuthorizationViewModel
 import com.breckneck.debtbook.core.activity.MainActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel

@@ -247,6 +247,14 @@ val domainModule = module {
         GetPINCode(settingsRepository = get())
     }
 
+    single<GetIsFingerprintAuthEnabled> {
+        GetIsFingerprintAuthEnabled(settingsRepository = get())
+    }
+
+    single<SetIsFingerprintAuthEnabled> {
+        SetIsFingerprintAuthEnabled(settingsRepository = get())
+    }
+
     //FINANCE
     single<SetFinance> {
         SetFinance(financeRepository = get())

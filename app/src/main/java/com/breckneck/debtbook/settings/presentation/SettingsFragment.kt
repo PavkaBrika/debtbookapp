@@ -33,7 +33,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.BuildConfig
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.auth.presentation.AuthorizationActivity
-import com.breckneck.debtbook.auth.util.PINCodeAction
+import com.breckneck.deptbook.domain.util.PINCodeAction
 import com.breckneck.debtbook.settings.adapter.SettingsAdapter
 import com.breckneck.debtbook.core.viewmodel.MainActivityViewModel
 import com.breckneck.debtbook.settings.viewmodel.SettingsViewModel

@@ -9,8 +9,10 @@ import com.breckneck.deptbook.domain.usecase.Ad.GetClicksUseCase
 import com.breckneck.deptbook.domain.usecase.Debt.GetDebtQuantity
 import com.breckneck.deptbook.domain.usecase.Settings.GetAppTheme
 import com.breckneck.deptbook.domain.usecase.Settings.GetDebtQuantityForAppRateDialogShow
+import com.breckneck.deptbook.domain.usecase.Settings.GetIsFingerprintAuthEnabled
 import com.breckneck.deptbook.domain.usecase.Settings.GetPINCodeEnabled
 import com.breckneck.deptbook.domain.usecase.Settings.SetDebtQuantityForAppRateDialogShow
+import com.breckneck.deptbook.domain.usecase.Settings.SetIsFingerprintAuthEnabled
 import com.breckneck.deptbook.domain.usecase.Settings.SetPINCodeEnabled
 import com.breckneck.deptbook.domain.util.DEBT_QUANTITY_FOR_NEXT_SHOW_APP_RATE_DIALOG
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -26,7 +28,9 @@ class MainActivityViewModel(
     private val saveClicks: SaveClicksUseCase,
     private val getAppTheme: GetAppTheme,
     private val setPINCodeEnabled: SetPINCodeEnabled,
-    private val getPINCodeEnabled: GetPINCodeEnabled
+    private val getPINCodeEnabled: GetPINCodeEnabled,
+    private val setIsFingerprintAuthEnabled: SetIsFingerprintAuthEnabled,
+    private val getIsFingerprintAuthEnabled: GetIsFingerprintAuthEnabled
     ) : ViewModel() {
 
     private val TAG = "MainActivityViewModel"

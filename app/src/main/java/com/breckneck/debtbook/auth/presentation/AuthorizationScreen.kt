@@ -33,7 +33,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -43,10 +42,9 @@ import androidx.compose.ui.unit.sp
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.auth.util.BiometricPromptManager
 import com.breckneck.debtbook.auth.util.BiometricPromptManager.*
-import com.breckneck.debtbook.auth.util.PINCodeAction
-import com.breckneck.debtbook.auth.util.PINCodeAction.*
-import com.breckneck.debtbook.auth.util.PINCodeEnterState
-import com.breckneck.debtbook.auth.util.PINCodeEnterState.*
+import com.breckneck.deptbook.domain.util.PINCodeAction.*
+import com.breckneck.deptbook.domain.util.PINCodeEnterState
+import com.breckneck.deptbook.domain.util.PINCodeEnterState.*
 import com.breckneck.debtbook.auth.viewmodel.AuthorizationViewModel
 import com.breckneck.debtbook.core.activity.MainActivity
 import org.koin.androidx.compose.koinViewModel

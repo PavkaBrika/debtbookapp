@@ -153,4 +153,12 @@ class SettingsRepositoryImpl(private val settingsStorage: SettingsStorage): Sett
     override fun setPINCode(PINCode: String) {
         settingsStorage.setPINCode(PINCode = PINCode)
     }
+
+    override fun setIsFingerprintAuthEnabled(isEnabled: Boolean) {
+        settingsStorage.setIsFingerprintAuthEnabled(isEnabled = isEnabled)
+    }
+
+    override fun getIsFingerprintAuthEnabled(): Boolean {
+        return settingsStorage.getIsFingerprintAuthEnabled()
+    }
 }

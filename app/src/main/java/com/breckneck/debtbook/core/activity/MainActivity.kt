@@ -20,7 +20,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.breckneck.debtbook.BuildConfig
 import com.breckneck.debtbook.R
-import com.breckneck.debtbook.auth.util.PINCodeAction
+import com.breckneck.deptbook.domain.util.PINCodeAction
 import com.breckneck.debtbook.debt.presentation.DebtDetailsFragment
 import com.breckneck.debtbook.debt.presentation.MainFragment
 import com.breckneck.debtbook.debt.presentation.NewDebtFragment
