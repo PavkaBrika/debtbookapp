@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.breckneck.deptbook.domain.usecase.Settings.GetIsFingerprintAuthEnabled
 import com.breckneck.deptbook.domain.util.PINCodeAction
 import com.breckneck.deptbook.domain.util.PINCodeEnterState
 import com.breckneck.deptbook.domain.usecase.Settings.GetPINCode
@@ -17,7 +18,8 @@ class AuthorizationViewModel(
     private val getPINCodeEnabled: GetPINCodeEnabled,
     private val setPINCodeEnabled: SetPINCodeEnabled,
     private val setPINCode: SetPINCode,
-    private val getPINCode: GetPINCode
+    private val getPINCode: GetPINCode,
+    private val getIsFingerprintAuthEnabled: GetIsFingerprintAuthEnabled
 ): ViewModel() {
 
     val TAG = "AuthorizationVM"
@@ -40,6 +42,9 @@ class AuthorizationViewModel(
     private val _pinCodeAction = mutableStateOf(PINCodeAction.CHECK)
     val pinCodeAction: State<PINCodeAction>
         get() = _pinCodeAction
+    private val _isFingerprintAuthEnabled = mutableStateOf(false)
+    val isFingerprintAuthEnabled: State<Boolean>
+        get() = _isFingerprintAuthEnabled
 
     init {
         Log.e(TAG, "Created")
@@ -88,5 +93,9 @@ class AuthorizationViewModel(
 
     fun setPINCodeEnterState(state: PINCodeEnterState) {
         _pinCodeEnterState.value = state
+    }
+
+    fun getIsFingerprintAuthEnabled() {
+        _isFingerprintAuthEnabled.value = getIsFingerprintAuthEnabled.execute()
     }
 }

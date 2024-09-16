@@ -175,7 +175,8 @@ val appModule = module {
             getPINCodeEnabled = get(),
             setPINCodeEnabled = get(),
             setPINCode = get(),
-            getPINCode = get()
+            getPINCode = get(),
+            getIsFingerprintAuthEnabled = get()
         )
     }
 }

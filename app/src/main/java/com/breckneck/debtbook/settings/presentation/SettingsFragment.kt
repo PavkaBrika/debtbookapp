@@ -312,14 +312,6 @@ class SettingsFragment : Fragment() {
             val unlockFingerprintSwitch: SwitchCompat = dialog.findViewById(R.id.unlockFingerprintSwitch)!!
             val unlockFingerprintLayout: LinearLayout = dialog.findViewById(R.id.unlockFingerprintLayout)!!
 
-            setPINCodeLayout.setOnClickListener {
-                setPINCodeSwitch.performClick()
-            }
-
-            unlockFingerprintLayout.setOnClickListener {
-                unlockFingerprintSwitch.performClick()
-            }
-
             mainActivityVM.isPINCodeEnabled.observe(viewLifecycleOwner) { isEnabled ->
                 if (isEnabled) {
                     pinCodeSettingsLayout.visibility = View.VISIBLE
@@ -354,6 +346,17 @@ class SettingsFragment : Fragment() {
                     startActivityForResult.launch(intent)
                 }
             }
+
+            unlockFingerprintLayout.setOnClickListener {
+                unlockFingerprintSwitch.performClick()
+            }
+            unlockFingerprintSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
+                if (buttonView.isPressed) {
+                    vm.setIsFingerprintAuthEnabled(isChecked)
+                }
+            }
+
+
 
             changePINCodeLayout.setOnClickListener {
                 Intent(requireActivity(), AuthorizationActivity::class.java).also {

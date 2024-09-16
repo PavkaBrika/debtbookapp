@@ -54,7 +54,6 @@ fun AuthorizationScreen(
     activity: AppCompatActivity,
     vm: AuthorizationViewModel = koinViewModel()
 ) {
-    val pinCodeAction = vm.pinCodeAction
     val pinCodeEnterState by remember {
         vm.pinCodeEnterState
     }
@@ -88,7 +87,7 @@ fun AuthorizationScreen(
     }
     LaunchedEffect(enteredPINCode) {
         if ((enteredPINCode.length == 4)) {
-            when (pinCodeAction.value) {
+            when (vm.pinCodeAction.value) {
                 ENABLE -> {
                     if (vm.pinCodeEnterState.value == FIRST) {
                         vm.setPastPINCode()
@@ -97,7 +96,7 @@ fun AuthorizationScreen(
                         vm.setPINCode()
                         vm.enablePINCode()
                         val intent = Intent()
-                        intent.putExtra("PINCodeState", pinCodeAction.value.toString())
+                        intent.putExtra("PINCodeState", vm.pinCodeAction.value.toString())
                         activity.setResult(RESULT_OK, intent)
                         activity.finish()
                     } else {
@@ -111,7 +110,7 @@ fun AuthorizationScreen(
                         vm.turnOffPINCode()
                         vm.changePINCode("") //pin code doesnt match
                         Intent().also {
-                            it.putExtra("PINCodeState", pinCodeAction.value.toString())
+                            it.putExtra("PINCodeState", vm.pinCodeAction.value.toString())
                             activity.setResult(RESULT_OK, it)
                         }
                         activity.finish()
@@ -163,7 +162,7 @@ fun AuthorizationScreen(
             text = when (pinCodeEnterState) {
                 FIRST -> stringResource(R.string.enter_pin)
                 CONFIRMATION ->
-                    if (pinCodeAction.value == CHANGE) stringResource(R.string.enter_new_pin)
+                    if (vm.pinCodeAction.value == CHANGE) stringResource(R.string.enter_new_pin)
                     else stringResource(R.string.confirm_your_pin)
                 INCORRECT -> stringResource(R.string.pin_code_is_incorrect)
             },
@@ -221,7 +220,8 @@ fun AuthorizationScreen(
             },
             onBackspaceButtonClick = {
                 vm.changePINCode(PINCode = enteredPINCode.dropLast(1))
-            }
+            },
+            showFingerprintButton = vm.isFingerprintAuthEnabled.value
         )
     }
 }

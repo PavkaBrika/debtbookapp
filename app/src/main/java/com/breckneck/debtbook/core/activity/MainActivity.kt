@@ -745,7 +745,10 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener,
         if (resultCode == RESULT_OK) {
             when (data!!.getStringExtra("PINCodeState")) {
                 PINCodeAction.ENABLE.toString() -> vm.setIsPINCodeEnabled(true)
-                PINCodeAction.DISABLE.toString() -> vm.setIsPINCodeEnabled(false)
+                PINCodeAction.DISABLE.toString() -> {
+                    vm.setIsPINCodeEnabled(false)
+                    vm.setIsFingerprintEnabled(false)
+                }
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
