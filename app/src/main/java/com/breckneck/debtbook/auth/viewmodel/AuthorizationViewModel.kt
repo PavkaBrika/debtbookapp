@@ -50,6 +50,7 @@ class AuthorizationViewModel(
         Log.e(TAG, "Created")
         getPINCodeEnabled()
         getPINCode()
+        getIsFingerprintAuthEnabled()
     }
 
     fun getPINCode() {

@@ -8,21 +8,27 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -32,13 +38,21 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.breakneck.pokedex.ui.theme.Green
+import com.breakneck.pokedex.ui.theme.Red
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.auth.util.BiometricPromptManager
 import com.breckneck.debtbook.auth.util.BiometricPromptManager.*
@@ -47,6 +61,7 @@ import com.breckneck.deptbook.domain.util.PINCodeEnterState
 import com.breckneck.deptbook.domain.util.PINCodeEnterState.*
 import com.breckneck.debtbook.auth.viewmodel.AuthorizationViewModel
 import com.breckneck.debtbook.core.activity.MainActivity
+import com.breckneck.deptbook.domain.util.PINCodeAction
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -63,28 +78,12 @@ fun AuthorizationScreen(
     val enteredPINCode by remember {
         vm.enteredPINCode
     }
-    val biometricResult by promptManager.promptResults.collectAsState(
-        initial = null
-    )
     val enrollLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult(),
         onResult = {
             println("Activity result: $it")
         }
     )
-    LaunchedEffect(biometricResult) {
-        if (biometricResult is BiometricResult.AuthenticationNotSet) {
-            if (Build.VERSION.SDK_INT >= 30) {
-                val enrollIntent = Intent(Settings.ACTION_BIOMETRIC_ENROLL).apply {
-                    putExtra(
-                        Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,
-                        BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.DEVICE_CREDENTIAL
-                    )
-                }
-                enrollLauncher.launch(enrollIntent)
-            }
-        }
-    }
     LaunchedEffect(enteredPINCode) {
         if ((enteredPINCode.length == 4)) {
             when (vm.pinCodeAction.value) {
@@ -121,14 +120,13 @@ fun AuthorizationScreen(
                 }
 
                 CHANGE -> {
-                    if ((vm.pinCodeEnterState.value == FIRST)  && (vm.enteredPINCode.value == vm.currentPINCode.value)) {
+                    if ((vm.pinCodeEnterState.value == FIRST) && (vm.enteredPINCode.value == vm.currentPINCode.value)) {
                         vm.setPastPINCode()
                         vm.setPINCodeEnterState(CONFIRMATION)
                     } else if (vm.pinCodeEnterState.value == CONFIRMATION) {
                         vm.setPINCode()
                         activity.finish()
-                    }
-                    else {
+                    } else {
                         vm.resetPINCodes() //pin codes doesnt match
                         vm.setPINCodeEnterState(INCORRECT)
                     }
@@ -144,84 +142,164 @@ fun AuthorizationScreen(
             }
         }
     }
+    UnlockScreen(
+        pinCodeEnterState = pinCodeEnterState,
+        enteredPINCode = enteredPINCode,
+        pinCodeAction = vm.pinCodeAction.value,
+        promptManager = promptManager,
+        onFingerprintButtonClick = {
+            promptManager.showBiometricPrompt(
+                title = activity.getString(R.string.login_in_the_debtbook),
+                description = activity.getString(R.string.scan_your_fingerprint)
+            )
+        },
+        onDigitButtonClick = { digit ->
+            vm.changePINCode(PINCode = enteredPINCode + digit)
+            if (pinCodeEnterState == INCORRECT)
+                vm.setPINCodeEnterState(FIRST)
+        },
+        onBackspaceButtonClick = {
+            vm.changePINCode(PINCode = enteredPINCode.dropLast(1))
+        },
+        onCloseAppButtonClick = {
+            activity.finishAndRemoveTask()
+        },
+        showFingerprintButton = vm.isFingerprintAuthEnabled.value
+    )
+}
+
+@Composable
+fun UnlockScreen(
+    pinCodeEnterState: PINCodeEnterState,
+    enteredPINCode: String,
+    pinCodeAction: PINCodeAction,
+    promptManager: BiometricPromptManager,
+    onFingerprintButtonClick: () -> Unit = {},
+    onDigitButtonClick: (String) -> Unit = {},
+    onBackspaceButtonClick: () -> Unit = {},
+    onCloseAppButtonClick: () -> Unit = {},
+    showFingerprintButton: Boolean = true
+) {
+    val biometricResult by promptManager.promptResults.collectAsState(
+        initial = null
+    )
+    val enrollLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult(),
+        onResult = {
+            println("Activity result: $it")
+        }
+    )
+    LaunchedEffect(biometricResult) {
+        if (biometricResult is BiometricResult.AuthenticationNotSet) {
+            if (Build.VERSION.SDK_INT >= 30) {
+                val enrollIntent = Intent(Settings.ACTION_BIOMETRIC_ENROLL).apply {
+                    putExtra(
+                        Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,
+                        BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.DEVICE_CREDENTIAL
+                    )
+                }
+                enrollLauncher.launch(enrollIntent)
+            }
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .padding(bottom = 16.dp),
+            .background(MaterialTheme.colorScheme.background),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Bottom
     ) {
         Image(
             modifier = Modifier.size(100.dp),
-            painter = painterResource(id = R.drawable.baseline_key_24),
+            painter = painterResource(id = R.drawable.app_icon),
             contentDescription = stringResource(R.string.app_icon)
         )
-        Spacer(modifier = Modifier.height(28.dp))
+        Spacer(modifier = Modifier.height(36.dp))
         Text(
             text = when (pinCodeEnterState) {
                 FIRST -> stringResource(R.string.enter_pin)
                 CONFIRMATION ->
-                    if (vm.pinCodeAction.value == CHANGE) stringResource(R.string.enter_new_pin)
+                    if (pinCodeAction == CHANGE) stringResource(R.string.enter_new_pin)
                     else stringResource(R.string.confirm_your_pin)
+
                 INCORRECT -> stringResource(R.string.pin_code_is_incorrect)
             },
-            fontSize = 32.sp
+            fontSize = 32.sp,
+            fontWeight = FontWeight.Bold
         )
-        PINCodeSection(PINCode = enteredPINCode, pinCodeEnterState = pinCodeEnterState)
-        biometricResult?.let { result ->
-            Text(
-                text = when (result) {
-                    is BiometricResult.AuthenticationError -> {
-                        "Authentication error: ${result.error}"
-                    }
+        Spacer(modifier = Modifier.height(28.dp))
+        PINCodeSection(
+            modifier = Modifier.fillMaxWidth(0.5f),
+            PINCode = enteredPINCode,
+            pinCodeEnterState = pinCodeEnterState
+        )
+        if (biometricResult != null) {
+            biometricResult?.let { result ->
+                Spacer(modifier = Modifier.height(28.dp))
+                Text(
+                    text = when (result) {
+                        is BiometricResult.AuthenticationError -> {
+                            "Authentication error: ${result.error}"
+                        }
 
-                    BiometricResult.AuthenticationFailed -> {
-                        "Authentication failed"
-                    }
+                        BiometricResult.AuthenticationFailed -> {
+                            "Authentication failed"
+                        }
 
-                    BiometricResult.AuthenticationNotSet -> {
-                        "Authentication not set"
-                    }
+                        BiometricResult.AuthenticationNotSet -> {
+                            "Authentication not set"
+                        }
 
-                    BiometricResult.AuthenticationSuccess -> {
-                        enrollLauncher.launch(
-                            Intent(
-                                LocalContext.current,
-                                MainActivity::class.java
+                        BiometricResult.AuthenticationSuccess -> {
+                            enrollLauncher.launch(
+                                Intent(
+                                    LocalContext.current,
+                                    MainActivity::class.java
+                                )
                             )
-                        )
-                        "Authentication success"
-                    }
+                            "Authentication success"
+                        }
 
-                    BiometricResult.FeatureUnavailable -> {
-                        "Feature unavailable"
-                    }
+                        BiometricResult.FeatureUnavailable -> {
+                            "Feature unavailable"
+                        }
 
-                    BiometricResult.HardwareUnavailable -> {
-                        "Hardware unavailable"
+                        BiometricResult.HardwareUnavailable -> {
+                            "Hardware unavailable"
+                        }
                     }
-                }
-            )
-        }
-        Spacer(modifier = Modifier.height(200.dp))
-        ButtonsSection(
-            modifier = Modifier.fillMaxWidth(),
-            onFingerprintButtonClick = {
-                promptManager.showBiometricPrompt(
-                    title = "Sample promt",
-                    description = "Sample promt description"
                 )
-            },
-            onDigitButtonClick = { digit ->
-                vm.changePINCode(PINCode = enteredPINCode + digit)
-                if (pinCodeEnterState == INCORRECT)
-                    vm.setPINCodeEnterState(FIRST)
-            },
-            onBackspaceButtonClick = {
-                vm.changePINCode(PINCode = enteredPINCode.dropLast(1))
-            },
-            showFingerprintButton = vm.isFingerprintAuthEnabled.value
+            }
+        } else {
+            Spacer(modifier = Modifier.height(32.dp))
+        }
+
+        if (pinCodeAction == CHECK) {
+            Spacer(modifier = Modifier.height(140.dp))
+            TextButton(
+                modifier = Modifier.offset(y = 24.dp),
+                onClick = {
+                    onCloseAppButtonClick()
+                }
+            ) {
+                Text(
+                    text = "Close app",
+                    fontSize = 20.sp,
+                    color = Red,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
+        } else {
+            Spacer(modifier = Modifier.height(164.dp))
+        }
+        ButtonsSection(
+            modifier = Modifier
+                .fillMaxWidth(),
+            onFingerprintButtonClick = onFingerprintButtonClick,
+            onDigitButtonClick = onDigitButtonClick,
+            onBackspaceButtonClick = onBackspaceButtonClick,
+            showFingerprintButton = showFingerprintButton
         )
     }
 }
@@ -234,7 +312,8 @@ fun PINCodeSection(
 ) {
     Row(
         modifier = modifier,
-        horizontalArrangement = Arrangement.Center
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         for (i in 1..4) {
             Icon(
@@ -243,10 +322,11 @@ fun PINCodeSection(
                 tint = if (pinCodeEnterState == INCORRECT) {
                     Color.Red
                 } else if (PINCode.length >= i) {
-                    Color.Black
+                    MaterialTheme.colorScheme.onBackground
                 } else {
                     Color.Gray
-                }
+                },
+                modifier = Modifier.size(32.dp)
             )
         }
     }
@@ -273,7 +353,8 @@ fun DigitsButtonsRow(
                 Text(
                     modifier = Modifier.padding(4.dp),
                     text = numbersList[i].toString(),
-                    fontSize = 20.sp,
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onBackground
                 )
             }
@@ -325,7 +406,7 @@ fun BottomButtonsSection(
         ) {
             Text(
                 text = "0",
-                fontSize = 20.sp,
+                fontSize = 22.sp,
                 color = MaterialTheme.colorScheme.onBackground
             )
         }
@@ -345,6 +426,29 @@ fun BottomButtonsSection(
 }
 
 @Composable
+fun TopShadow(
+    modifier: Modifier = Modifier,
+    alpha: Float = 0.1f,
+    height: Dp = 8.dp,
+    shape: Shape = RectangleShape
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(height)
+            .clip(shape)
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        Color.Transparent,
+                        Color.Black.copy(alpha = alpha),
+                    )
+                )
+            )
+    )
+}
+
+@Composable
 fun ButtonsSection(
     modifier: Modifier = Modifier,
     onFingerprintButtonClick: () -> Unit = {},
@@ -352,45 +456,64 @@ fun ButtonsSection(
     onBackspaceButtonClick: () -> Unit = {},
     showFingerprintButton: Boolean = true
 ) {
-    Column(
-        verticalArrangement = Arrangement.Bottom,
-        modifier = modifier
+    TopShadow(
+        modifier = Modifier.offset(y = 32.dp),
+        height = 40.dp,
+        alpha = 0.3f,
+        shape = RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp)
+    )
+    Surface(
+        modifier = modifier,
+        shape = RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
     ) {
-        DigitsButtonsRow(
-            modifier = Modifier,
-            numbersList = listOf(1, 2, 3),
-            onDigitButtonClick = onDigitButtonClick
-        )
-        DigitsButtonsRow(
-            modifier = Modifier,
-            numbersList = listOf(4, 5, 6),
-            onDigitButtonClick = onDigitButtonClick
-        )
-        DigitsButtonsRow(
-            modifier = Modifier,
-            numbersList = listOf(7, 8, 9),
-            onDigitButtonClick = onDigitButtonClick
-        )
-        BottomButtonsSection(
-            modifier = Modifier,
-            onFingerprintButtonClick = onFingerprintButtonClick,
-            onBackspaceButtonClick = onBackspaceButtonClick,
-            onDigitButtonClick = onDigitButtonClick,
-            showFingerprintButton = showFingerprintButton
-        )
+        Column(
+            verticalArrangement = Arrangement.Bottom,
+            modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+        ) {
+            DigitsButtonsRow(
+                modifier = Modifier,
+                numbersList = listOf(1, 2, 3),
+                onDigitButtonClick = onDigitButtonClick
+            )
+            DigitsButtonsRow(
+                modifier = Modifier,
+                numbersList = listOf(4, 5, 6),
+                onDigitButtonClick = onDigitButtonClick
+            )
+            DigitsButtonsRow(
+                modifier = Modifier,
+                numbersList = listOf(7, 8, 9),
+                onDigitButtonClick = onDigitButtonClick
+            )
+            BottomButtonsSection(
+                modifier = Modifier,
+                onFingerprintButtonClick = onFingerprintButtonClick,
+                onBackspaceButtonClick = onBackspaceButtonClick,
+                onDigitButtonClick = onDigitButtonClick,
+                showFingerprintButton = showFingerprintButton
+            )
+        }
     }
 }
 
 @Preview
 @Composable
-fun AuthorizationScreenPreview() {
-    AuthorizationScreen(AppCompatActivity())
+fun UnlockScreenPreview() {
+    UnlockScreen(
+        pinCodeEnterState = FIRST,
+        enteredPINCode = "11",
+        pinCodeAction = CHECK,
+        promptManager = BiometricPromptManager(AppCompatActivity())
+    )
 }
 
 @Preview
 @Composable
 fun ButtonsSectionPreview() {
     ButtonsSection(
-        modifier = Modifier.background(MaterialTheme.colorScheme.background)
+        modifier = Modifier
+            .background(MaterialTheme.colorScheme.background)
+            .padding(32.dp)
     )
 }
