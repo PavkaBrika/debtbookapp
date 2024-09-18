@@ -7,6 +7,7 @@ import android.content.pm.ActivityInfo
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -22,6 +23,8 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SwitchCompat
+import androidx.biometric.BiometricManager
+import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
@@ -347,15 +350,36 @@ class SettingsFragment : Fragment() {
                 }
             }
 
-            unlockFingerprintLayout.setOnClickListener {
-                unlockFingerprintSwitch.performClick()
-                vm.setIsFingerprintAuthEnabled(unlockFingerprintSwitch.isChecked)
-            }
-            unlockFingerprintSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
-                if (buttonView.isPressed) {
-                    vm.setIsFingerprintAuthEnabled(isChecked)
+            val biometricManager = BiometricManager.from(requireActivity())
+            when (biometricManager.canAuthenticate(BIOMETRIC_STRONG)) {
+                BiometricManager.BIOMETRIC_SUCCESS -> {
+                    unlockFingerprintLayout.setOnClickListener {
+                        unlockFingerprintSwitch.performClick()
+                        vm.setIsFingerprintAuthEnabled(unlockFingerprintSwitch.isChecked)
+                    }
+                    unlockFingerprintSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
+                        if (buttonView.isPressed) {
+                            vm.setIsFingerprintAuthEnabled(isChecked)
+                        }
+                    }
+                }
+                BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE,
+                BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE -> {
+                    Log.e(TAG, "No biometric features available on this device or features are currently unavailable")
+                    unlockFingerprintLayout.visibility = View.GONE
+                    unlockFingerprintSwitch.visibility = View.GONE
+                }
+                BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
+                    val enrollIntent = Intent(Settings.ACTION_BIOMETRIC_ENROLL).apply {
+                        putExtra(
+                            Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,
+                            BIOMETRIC_STRONG
+                        )
+                    }
+                    startActivity(enrollIntent)
                 }
             }
+
 
             changePINCodeLayout.setOnClickListener {
                 Intent(requireActivity(), AuthorizationActivity::class.java).also {

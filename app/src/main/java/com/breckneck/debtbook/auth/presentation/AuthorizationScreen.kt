@@ -5,13 +5,12 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
 import android.provider.Settings
-import android.view.animation.OvershootInterpolator
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager
+import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
 import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
@@ -31,7 +30,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -47,6 +45,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
@@ -57,13 +56,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.breakneck.pokedex.ui.theme.DebtBookTheme
-import com.breakneck.pokedex.ui.theme.Green
 import com.breakneck.pokedex.ui.theme.Red
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.auth.util.BiometricPromptManager
@@ -82,16 +81,12 @@ fun AuthorizationScreen(
     activity: AppCompatActivity,
     vm: AuthorizationViewModel = koinViewModel()
 ) {
-    val pinCodeEnterState by remember {
-        vm.pinCodeEnterState
-    }
+    val pinCodeEnterState by vm.pinCodeEnterState.collectAsState()
     val promptManager by lazy {
         BiometricPromptManager(activity)
     }
-    val enteredPINCode by remember {
-        vm.enteredPINCode
-    }
-    val enrollLauncher = rememberLauncherForActivityResult(
+    val enteredPINCode by vm.enteredPINCode.collectAsState()
+    val startMainLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult(),
         onResult = {
             println("Activity result: $it")
@@ -147,7 +142,7 @@ fun AuthorizationScreen(
 
                 CHECK ->
                     if (vm.enteredPINCode.value == vm.currentPINCode.value)
-                        enrollLauncher.launch(Intent(activity, MainActivity::class.java))
+                        startMainLauncher.launch(Intent(activity, MainActivity::class.java).apply { addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP) })
                     else {
                         vm.resetPINCodes()
                         vm.setPINCodeEnterState(INCORRECT)
@@ -163,7 +158,9 @@ fun AuthorizationScreen(
         onFingerprintButtonClick = {
             promptManager.showBiometricPrompt(
                 title = activity.getString(R.string.login_in_the_debtbook),
-                description = activity.getString(R.string.scan_your_fingerprint)
+                description = activity.getString(R.string.scan_your_fingerprint),
+                authenticators = BIOMETRIC_STRONG,
+                negativeButtonText = activity.getString(R.string.cancel)
             )
         },
         onDigitButtonClick = { digit ->
@@ -202,17 +199,40 @@ fun UnlockScreen(
             println("Activity result: $it")
         }
     )
+    var showFingerprintButton by remember {
+        mutableStateOf(showFingerprintButton)
+    }
     LaunchedEffect(biometricResult) {
         if (biometricResult is BiometricResult.AuthenticationNotSet) {
             if (Build.VERSION.SDK_INT >= 30) {
                 val enrollIntent = Intent(Settings.ACTION_BIOMETRIC_ENROLL).apply {
                     putExtra(
                         Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,
-                        BiometricManager.Authenticators.BIOMETRIC_WEAK
+                        BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.DEVICE_CREDENTIAL
                     )
                 }
                 enrollLauncher.launch(enrollIntent)
             }
+        }
+    }
+    biometricResult?.let { result ->
+        when (result) {
+            BiometricResult.HardwareUnavailable,
+            BiometricResult.FeatureUnavailable,
+            BiometricResult.AuthenticationNotSet -> {
+                showFingerprintButton = false
+            }
+
+            BiometricResult.AuthenticationSuccess -> {
+                enrollLauncher.launch(
+                    Intent(
+                        LocalContext.current,
+                        MainActivity::class.java
+                    )
+                )
+            }
+
+            else -> {}
         }
     }
 
@@ -248,49 +268,19 @@ fun UnlockScreen(
             PINCode = enteredPINCode,
             pinCodeEnterState = pinCodeEnterState
         )
-        if (biometricResult != null) {
-            biometricResult?.let { result ->
-                Spacer(modifier = Modifier.height(28.dp))
-                Text(
-                    text = when (result) {
-                        is BiometricResult.AuthenticationError -> {
-                            "Authentication error: ${result.error}"
-                        }
-
-                        BiometricResult.AuthenticationFailed -> {
-                            "Authentication failed"
-                        }
-
-                        BiometricResult.AuthenticationNotSet -> {
-                            "Authentication not set"
-                        }
-
-                        BiometricResult.AuthenticationSuccess -> {
-                            enrollLauncher.launch(
-                                Intent(
-                                    LocalContext.current,
-                                    MainActivity::class.java
-                                )
-                            )
-                            "Authentication success"
-                        }
-
-                        BiometricResult.FeatureUnavailable -> {
-                            "Feature unavailable"
-                        }
-
-                        BiometricResult.HardwareUnavailable -> {
-                            "Hardware unavailable"
-                        }
-                    }
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = stringResource(R.string.something_went_wrong_please_login_with_your_pin_code),
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .padding(horizontal = 48.dp)
+                .alpha(
+                    if (biometricResult is BiometricResult.AuthenticationError) 1f
+                    else 0f
                 )
-            }
-        } else {
-            Spacer(modifier = Modifier.height(32.dp))
-        }
-
+        )
         if (pinCodeAction == CHECK) {
-            Spacer(modifier = Modifier.height(140.dp))
+            Spacer(modifier = Modifier.height(120.dp))
             TextButton(
                 modifier = Modifier.offset(y = 24.dp),
                 onClick = {
@@ -305,7 +295,7 @@ fun UnlockScreen(
                 )
             }
         } else {
-            Spacer(modifier = Modifier.height(164.dp))
+            Spacer(modifier = Modifier.height(144.dp))
         }
         ButtonsSection(
             modifier = Modifier

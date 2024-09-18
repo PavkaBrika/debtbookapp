@@ -166,4 +166,11 @@
     <string name="enter_new_pin">Enter new PIN</string>
     <string name="login_in_the_debtbook">Login in the DebtBook</string>
     <string name="scan_your_fingerprint">Scan your fingerprint</string>
+    <string name="authentication_error">Authentication error %1$s</string>
+    <string name="authentication_failed">Authentication failed</string>
+    <string name="authentication_not_set">Authentication not set</string>
+    <string name="authentication_success">Authentication success</string>
+    <string name="feature_unavailable">Feature unavailable</string>
+    <string name="hardware_unavailable">Hardware unavailable</string>
+    <string name="something_went_wrong_please_login_with_your_pin_code">Something went wrong.\nPlease, login with your PIN Code</string>
 </resources>

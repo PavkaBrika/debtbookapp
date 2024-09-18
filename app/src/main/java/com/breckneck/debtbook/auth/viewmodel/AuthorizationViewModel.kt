@@ -13,6 +13,9 @@ import com.breckneck.deptbook.domain.usecase.Settings.GetPINCode
 import com.breckneck.deptbook.domain.usecase.Settings.GetPINCodeEnabled
 import com.breckneck.deptbook.domain.usecase.Settings.SetPINCode
 import com.breckneck.deptbook.domain.usecase.Settings.SetPINCodeEnabled
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class AuthorizationViewModel(
     private val getPINCodeEnabled: GetPINCodeEnabled,
@@ -24,8 +27,8 @@ class AuthorizationViewModel(
 
     val TAG = "AuthorizationVM"
 
-    private val _enteredPINCode = mutableStateOf("") // variable for current entered pin by user
-    val enteredPINCode: State<String>
+    private val _enteredPINCode = MutableStateFlow("") // variable for current entered pin by user
+    val enteredPINCode: StateFlow<String>
         get() = _enteredPINCode
     private val _pastPINCode = mutableStateOf("") // variable that used for ENABLE action and comparing with entered pin code in CONFIRMATION state
     val pastPINCode: State<String>
@@ -36,8 +39,8 @@ class AuthorizationViewModel(
     private val _isPINCodeEnabled = MutableLiveData<Boolean>(false)
     val isPINCodeEnabled: LiveData<Boolean>
         get() = _isPINCodeEnabled
-    private val _pinCodeEnterState = mutableStateOf(PINCodeEnterState.FIRST)
-    val pinCodeEnterState: State<PINCodeEnterState>
+    private val _pinCodeEnterState = MutableStateFlow(PINCodeEnterState.FIRST)
+    val pinCodeEnterState: StateFlow<PINCodeEnterState>
         get() = _pinCodeEnterState
     private val _pinCodeAction = mutableStateOf(PINCodeAction.CHECK)
     val pinCodeAction: State<PINCodeAction>
