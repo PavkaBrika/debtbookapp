@@ -349,6 +349,7 @@ class SettingsFragment : Fragment() {
 
             unlockFingerprintLayout.setOnClickListener {
                 unlockFingerprintSwitch.performClick()
+                vm.setIsFingerprintAuthEnabled(unlockFingerprintSwitch.isChecked)
             }
             unlockFingerprintSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
                 if (buttonView.isPressed) {
@@ -356,18 +357,10 @@ class SettingsFragment : Fragment() {
                 }
             }
 
-
-
             changePINCodeLayout.setOnClickListener {
                 Intent(requireActivity(), AuthorizationActivity::class.java).also {
                     it.putExtra("PINCodeState", PINCodeAction.CHANGE.toString())
                     startActivity(it)
-                }
-            }
-
-            unlockFingerprintSwitch.setOnCheckedChangeListener { _, isChecked ->
-                if (isChecked) {
-
                 }
             }
 

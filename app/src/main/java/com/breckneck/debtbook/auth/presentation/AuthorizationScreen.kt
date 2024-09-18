@@ -2,12 +2,19 @@ package com.breckneck.debtbook.auth.presentation
 
 import android.app.Activity.RESULT_OK
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Build
 import android.provider.Settings
+import android.view.animation.OvershootInterpolator
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -35,10 +42,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
@@ -49,8 +59,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.breakneck.pokedex.ui.theme.DebtBookTheme
 import com.breakneck.pokedex.ui.theme.Green
 import com.breakneck.pokedex.ui.theme.Red
 import com.breckneck.debtbook.R
@@ -63,6 +75,7 @@ import com.breckneck.debtbook.auth.viewmodel.AuthorizationViewModel
 import com.breckneck.debtbook.core.activity.MainActivity
 import com.breckneck.deptbook.domain.util.PINCodeAction
 import org.koin.androidx.compose.koinViewModel
+import kotlin.math.roundToInt
 
 @Composable
 fun AuthorizationScreen(
@@ -195,7 +208,7 @@ fun UnlockScreen(
                 val enrollIntent = Intent(Settings.ACTION_BIOMETRIC_ENROLL).apply {
                     putExtra(
                         Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,
-                        BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.DEVICE_CREDENTIAL
+                        BiometricManager.Authenticators.BIOMETRIC_WEAK
                     )
                 }
                 enrollLauncher.launch(enrollIntent)
@@ -225,8 +238,9 @@ fun UnlockScreen(
 
                 INCORRECT -> stringResource(R.string.pin_code_is_incorrect)
             },
-            fontSize = 32.sp,
-            fontWeight = FontWeight.Bold
+            fontSize = 28.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onBackground
         )
         Spacer(modifier = Modifier.height(28.dp))
         PINCodeSection(
@@ -285,7 +299,7 @@ fun UnlockScreen(
             ) {
                 Text(
                     text = "Close app",
-                    fontSize = 20.sp,
+                    fontSize = 16.sp,
                     color = Red,
                     fontWeight = FontWeight.SemiBold
                 )
@@ -310,12 +324,36 @@ fun PINCodeSection(
     PINCode: String,
     pinCodeEnterState: PINCodeEnterState
 ) {
+    val shake = remember {
+        Animatable(0f)
+    }
+    LaunchedEffect(key1 = pinCodeEnterState) {
+        if (pinCodeEnterState == INCORRECT) {
+            for (i in 0..10) {
+                when (i % 2) {
+                    0 -> shake.animateTo(5f, spring(stiffness = 100_000f))
+                    else -> shake.animateTo(-5f, spring(stiffness = 100_000f))
+                }
+            }
+            shake.animateTo(0f)
+        }
+    }
     Row(
-        modifier = modifier,
+        modifier = modifier
+            .offset { IntOffset(x = shake.value.roundToInt(), y = 0) },
         horizontalArrangement = Arrangement.SpaceEvenly,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         for (i in 1..4) {
+            val scale = animateFloatAsState(
+                targetValue =
+                    if (i <= PINCode.length) 1.3f
+                    else 1f,
+                label = "Anim",
+                animationSpec = tween(
+                    durationMillis = 300
+                )
+            )
             Icon(
                 painter = painterResource(id = R.drawable.baseline_circle_24),
                 contentDescription = stringResource(R.string.pin),
@@ -326,7 +364,9 @@ fun PINCodeSection(
                 } else {
                     Color.Gray
                 },
-                modifier = Modifier.size(32.dp)
+                modifier = Modifier
+                    .size(32.dp)
+                    .scale(scale.value)
             )
         }
     }
@@ -498,14 +538,17 @@ fun ButtonsSection(
 }
 
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun UnlockScreenPreview() {
-    UnlockScreen(
-        pinCodeEnterState = FIRST,
-        enteredPINCode = "11",
-        pinCodeAction = CHECK,
-        promptManager = BiometricPromptManager(AppCompatActivity())
-    )
+    DebtBookTheme {
+        UnlockScreen(
+            pinCodeEnterState = FIRST,
+            enteredPINCode = "11",
+            pinCodeAction = CHECK,
+            promptManager = BiometricPromptManager(AppCompatActivity())
+        )
+    }
 }
 
 @Preview
