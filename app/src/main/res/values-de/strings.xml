@@ -138,4 +138,24 @@
     <string name="it_s_empty_here_for_now">Hier ist es im Moment leer</string>
     <string name="already_saved_sum_can_t_be_greater_than_the_goal_sum">Die bereits gespeicherte Summe kann nicht größer sein als die Zielsumme</string>
     <string name="goal_deadline">Zielfrist</string>
+    <string name="privacy_and_security">Datenschutz und Sicherheit</string>
+    <string name="pin_code_lock">PIN-Code-Sperre</string>
+    <string name="change_pin_code">PIN-Code ändern</string>
+    <string name="unlock_with_fingerprint">Entsperren mit Fingerabdruck</string>
+    <string name="set_pin_code">PIN-Code-Sperre</string>
+    <string name="touch_to_show_fingerprint_scanner">Berühren, um den Fingerabdruckscanner anzuzeigen</string>
+    <string name="app_icon">App-Symbol</string>
+    <string name="enter_pin">PIN eingeben</string>
+    <string name="confirm_your_pin">Bestätigen Sie Ihre PIN</string>
+    <string name="pin_code_is_incorrect">PIN-Code ist falsch</string>
+    <string name="enter_new_pin">Neue PIN eingeben</string>
+    <string name="login_in_the_debtbook">Anmeldung im DebtBook</string>
+    <string name="scan_your_fingerprint">Scannen Sie Ihren Fingerabdruck</string>
+    <string name="authentication_error">Authentifizierungsfehler %1$s</string>
+    <string name="authentication_failed">Authentifizierung fehlgeschlagen</string>
+    <string name="authentication_not_set">Authentifizierung nicht eingestellt</string>
+    <string name="authentication_success">Erfolgreiche Authentifizierung</string>
+    <string name="feature_unavailable">Funktion nicht verfügbar</string>
+    <string name="hardware_unavailable">Hardware nicht verfügbar</string>
+    <string name="something_went_wrong_please_login_with_your_pin_code">Es ist ein Fehler aufgetreten.\nBitte melden Sie sich mit Ihrem PIN-Code an.</string>
 </resources>

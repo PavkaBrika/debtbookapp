@@ -138,4 +138,26 @@
     <string name="it_s_empty_here_for_now">Здесь пока что пусто</string>
     <string name="already_saved_sum_can_t_be_greater_than_the_goal_sum">Уже накопленная сумма не может быть больше, чем сумма цели</string>
     <string name="goal_deadline">Срок выполнения цели</string>
+    <string name="privacy_and_security">Конфиденциальность и безопасность</string>
+    <string name="pin_code_lock">Блокировка PIN-кодом</string>
+    <string name="change_pin_code">Изменить PIN-код</string>
+    <string name="unlock_with_fingerprint">Разблокировка отпечатком пальца</string>
+    <string name="set_pin_code">Блокировка PIN-кодом</string>
+    <string name="touch_to_show_fingerprint_scanner">Нажмите, чтобы показать сканер отпечатков пальцев</string>
+    <string name="app_icon">Иконка приложения</string>
+    <string name="enter_pin">Введите PIN-код</string>
+    <string name="confirm_your_pin">Подтвердите свой PIN-код</string>
+    <string name="pin_code_is_incorrect">PIN-код неверный</string>
+    <string name="enter_new_pin">Введите новый PIN-код</string>
+    <string name="login_in_the_debtbook">Вход в Книгу Долгов</string>
+    <string name="scan_your_fingerprint">Отсканируйте отпечаток пальца</string>
+    <string name="authentication_error">Ошибка аутентификации %1$s</string>
+    <string name="authentication_failed">Аутентификация не удалась</string>
+    <string name="authentication_not_set">Аутентификация не установлена</string>
+    <string name="authentication_success">Успешная аутентификация</string>
+    <string name="feature_unavailable">Функция недоступна</string>
+    <string name="hardware_unavailable">Оборудование недоступно</string>
+    <string name="something_went_wrong_please_login_with_your_pin_code">Что-то пошло не так.\nПожалуйста, войдите с помощью PIN-кода</string>
+
+
 </resources>

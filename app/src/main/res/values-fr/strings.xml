@@ -138,4 +138,24 @@
     <string name="it_s_empty_here_for_now">La salle est vide pour l\'instant</string>
     <string name="already_saved_sum_can_t_be_greater_than_the_goal_sum">Le montant déjà épargné ne peut pas être supérieur au montant de l\'objectif.</string>
     <string name="goal_deadline">Délai de l\'objectif</string>
+    <string name="privacy_and_security">Vie privée et sécurité</string>
+    <string name="pin_code_lock">Verrouillage par code PIN</string>
+    <string name="change_pin_code">Modifier le code PIN</string>
+    <string name="unlock_with_fingerprint">Déverrouillage par empreinte digitale</string>
+    <string name="set_pin_code">Verrouillage par code PIN</string>
+    <string name="touch_to_show_fingerprint_scanner">Touchez pour afficher le lecteur d\'empreintes digitales</string>
+    <string name="app_icon">Icône de l\'application</string>
+    <string name="enter_pin">Saisir le code PIN</string>
+    <string name="confirm_your_pin">Confirmez votre code PIN</string>
+    <string name="pin_code_is_incorrect">Le code PIN est incorrect</string>
+    <string name="enter_new_pin">Saisir un nouveau code PIN</string>
+    <string name="login_in_the_debtbook">Connexion au livre de la dette</string>
+    <string name="scan_your_fingerprint">Scannez votre empreinte digitale</string>
+    <string name="authentication_error">Erreur d\'authentification %1$s</string>
+    <string name="authentication_failed">Échec de l\'authentification</string>
+    <string name="authentication_not_set">L\'authentification n\'est pas définie</string>
+    <string name="authentication_success">Succès de l\'authentification</string>
+    <string name="feature_unavailable">Fonction indisponible</string>
+    <string name="hardware_unavailable">Matériel indisponible</string>
+    <string name="something_went_wrong_please_login_with_your_pin_code">Un problème s\'est produit.\nVeuillez vous connecter avec votre code PIN</string>
 </resources>
