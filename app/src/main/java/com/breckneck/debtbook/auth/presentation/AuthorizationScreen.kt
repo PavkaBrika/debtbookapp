@@ -79,12 +79,10 @@ import kotlin.math.roundToInt
 @Composable
 fun AuthorizationScreen(
     activity: AppCompatActivity,
-    vm: AuthorizationViewModel = koinViewModel()
+    vm: AuthorizationViewModel = koinViewModel(),
+    biometricPromptManager: BiometricPromptManager
 ) {
     val pinCodeEnterState by vm.pinCodeEnterState.collectAsState()
-    val promptManager by lazy {
-        BiometricPromptManager(activity)
-    }
     val enteredPINCode by vm.enteredPINCode.collectAsState()
     val startMainLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult(),
@@ -154,9 +152,9 @@ fun AuthorizationScreen(
         pinCodeEnterState = pinCodeEnterState,
         enteredPINCode = enteredPINCode,
         pinCodeAction = vm.pinCodeAction.value,
-        promptManager = promptManager,
+        promptManager = biometricPromptManager,
         onFingerprintButtonClick = {
-            promptManager.showBiometricPrompt(
+            biometricPromptManager.showBiometricPrompt(
                 title = activity.getString(R.string.login_in_the_debtbook),
                 description = activity.getString(R.string.scan_your_fingerprint),
                 authenticators = BIOMETRIC_STRONG,

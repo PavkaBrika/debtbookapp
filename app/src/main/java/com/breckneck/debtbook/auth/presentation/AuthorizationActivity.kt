@@ -9,6 +9,7 @@ import android.os.Vibrator
 import android.os.VibratorManager
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -17,6 +18,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.breakneck.pokedex.ui.theme.DebtBookTheme
+import com.breckneck.debtbook.R
+import com.breckneck.debtbook.auth.util.BiometricPromptManager
 import com.breckneck.deptbook.domain.util.PINCodeAction.*
 import com.breckneck.debtbook.auth.viewmodel.AuthorizationViewModel
 import com.breckneck.debtbook.core.activity.MainActivity
@@ -27,6 +30,8 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class AuthorizationActivity : AppCompatActivity() {
 
     private val vm by viewModel<AuthorizationViewModel>()
+
+    val biometricPromptManager = BiometricPromptManager(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,17 +77,27 @@ class AuthorizationActivity : AppCompatActivity() {
             }
         }
 
-
         setContent {
             DebtBookTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    AuthorizationScreen(activity = this)
+                    AuthorizationScreen(activity = this, biometricPromptManager = biometricPromptManager)
                 }
             }
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (vm.isFingerprintAuthEnabled.value && vm.pinCodeAction.value == CHECK)
+            biometricPromptManager.showBiometricPrompt(
+                title = getString(R.string.login_in_the_debtbook),
+                description = getString(R.string.scan_your_fingerprint),
+                authenticators = BIOMETRIC_STRONG,
+                negativeButtonText = getString(R.string.cancel)
+            )
     }
 }
 
