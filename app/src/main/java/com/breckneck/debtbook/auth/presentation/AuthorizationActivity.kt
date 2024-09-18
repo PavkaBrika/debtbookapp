@@ -55,10 +55,9 @@ class AuthorizationActivity : AppCompatActivity() {
                     CHANGE.toString() -> CHANGE
                     else -> pinCodeAction
                 }
-
         vm.setPINCodeAction(pinCodeAction)
 
-        if (pinCodeAction == CHECK) {
+        if (vm.pinCodeAction.value == CHECK) {
             vm.isPINCodeEnabled.observe(this) { isPINCodeEnabled ->
                 if (!isPINCodeEnabled)
                     startActivity(Intent(this, MainActivity::class.java).apply { addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP) })

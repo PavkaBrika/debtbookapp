@@ -172,7 +172,7 @@ fun AuthorizationScreen(
         onCloseAppButtonClick = {
             activity.finishAndRemoveTask()
         },
-        showFingerprintButton = vm.isFingerprintAuthEnabled.value
+        showFingerprintButton = vm.isFingerprintAuthEnabled.value && vm.pinCodeAction.value == CHECK
     )
 }
 
@@ -206,7 +206,7 @@ fun UnlockScreen(
                 val enrollIntent = Intent(Settings.ACTION_BIOMETRIC_ENROLL).apply {
                     putExtra(
                         Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,
-                        BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.DEVICE_CREDENTIAL
+                        BIOMETRIC_STRONG
                     )
                 }
                 enrollLauncher.launch(enrollIntent)
