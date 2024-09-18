@@ -37,8 +37,7 @@ class SettingsAdapter(
         val setting = settingsList[position]
 
         holder.settingNameTextView.text = setting
-        if (selectedSetting == position)
-            holder.settingRadioButton.isChecked = true
+        holder.settingRadioButton.isChecked = selectedSetting == position
 
         holder.itemView.setOnClickListener {
             settingsSelectListener.onSelect()

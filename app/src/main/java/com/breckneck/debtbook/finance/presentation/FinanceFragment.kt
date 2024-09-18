@@ -95,13 +95,7 @@ class FinanceFragment : Fragment() {
             setExpandedTitleTypeface(Typeface.DEFAULT_BOLD)
         }
 
-        val currencyNames = listOf(
-            getString(R.string.usd), getString(R.string.eur), getString(R.string.rub),
-            getString(R.string.byn), getString(R.string.uah), getString(R.string.kzt),
-            getString(R.string.jpy), getString(R.string.gpb), getString(R.string.aud),
-            getString(R.string.cad), getString(R.string.chf), getString(R.string.cny),
-            getString(R.string.sek), getString(R.string.mxn)
-        )
+        val currencyNames = resources.getStringArray(R.array.currencies).toList()
 
         val financeIntervalNames = listOf(getString(R.string.day),
             getString(R.string.week), getString(R.string.month), getString(R.string.year_full))

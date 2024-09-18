@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="currencies">
+        <item>@string/usd</item>
+        <item>@string/eur</item>
+        <item>@string/rub</item>
+        <item>@string/byn</item>
+        <item>@string/uah</item>
+        <item>@string/kzt</item>
+        <item>@string/jpy</item>
+        <item>@string/gpb</item>
+        <item>@string/aud</item>
+        <item>@string/cad</item>
+        <item>@string/chf</item>
+        <item>@string/cny</item>
+        <item>@string/sek</item>
+        <item>@string/mxn</item>
+        <item>@string/pln</item>
+        <item>@string/aed</item>
+        <item>@string/ron</item>
+        <item>@string/sar</item>
+        <item>@string/rsd</item>
+        <item>@string/tjs</item>
+        <item>@string/tryс</item>
+        <item>@string/uzs</item>
+        <item>@string/mnt</item>
+        <item>@string/czk</item>
+        <item>@string/azn</item>
+        <item>@string/amd</item>
+        <item>@string/bgn</item>
+    </string-array>
+</resources>

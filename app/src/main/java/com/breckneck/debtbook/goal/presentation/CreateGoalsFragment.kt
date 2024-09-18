@@ -93,13 +93,7 @@ class CreateGoalsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val goalNameEditText: EditText = view.findViewById(R.id.goalNameEditText)
         val goalCurrencyTextView: TextView = view.findViewById(R.id.goalCurrencyTextView)
-        val currencyNames = listOf(
-            getString(R.string.usd), getString(R.string.eur), getString(R.string.rub),
-            getString(R.string.byn), getString(R.string.uah), getString(R.string.kzt),
-            getString(R.string.jpy), getString(R.string.gpb), getString(R.string.aud),
-            getString(R.string.cad), getString(R.string.chf), getString(R.string.cny),
-            getString(R.string.sek), getString(R.string.mxn)
-        )
+        val currencyNames = resources.getStringArray(R.array.currencies).toList()
 
         val collaps: CollapsingToolbarLayout = view.findViewById(R.id.collapsNewGoal)
         collaps.apply {

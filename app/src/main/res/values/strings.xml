@@ -5,6 +5,7 @@
     <string name="comment">Comment</string>
     <string name="year">y.</string>
     <string name="date">Date</string>
+<!-- USE HTML DEC CODE https://emojigraph.org/ru/flag-united-arab-emirates/ -->
     <string name="usd" translatable="false">&#127482;&#127480; USD</string>
     <string name="eur" translatable="false">&#127466;&#127482; EUR</string>
     <string name="rub" translatable="false">&#127479;&#127482; RUB</string>
@@ -19,6 +20,19 @@
     <string name="cny" translatable="false">&#127464;&#127475; CNY</string>
     <string name="sek" translatable="false">&#127480;&#127466; SEK</string>
     <string name="mxn" translatable="false">&#127474;&#127485; MXN</string>
+    <string name="pln" translatable="false">&#127477;&#127473; PLN</string>
+    <string name="aed" translatable="false">&#127462;&#127466; AED</string>
+    <string name="ron" translatable="false">&#127479;&#127476; RON</string>
+    <string name="sar" translatable="false">&#127480;&#127462; SAR</string>
+    <string name="rsd" translatable="false">&#127479;&#127480; RSD</string>
+    <string name="tjs" translatable="false">&#127481;&#127471; TJS</string>
+    <string name="tryс" translatable="false">&#127481;&#127479; TRY</string>
+    <string name="uzs" translatable="false">&#127482;&#127487; UZS</string>
+    <string name="mnt" translatable="false">&#127474;&#127475; MNT</string>
+    <string name="czk" translatable="false">&#127464;&#127487; CZK</string>
+    <string name="azn" translatable="false">&#127462;&#127487; AZN</string>
+    <string name="amd" translatable="false">&#127462;&#127474; AMD</string>
+    <string name="bgn" translatable="false">&#127463;&#127468; BGN</string>
     <string name="youmustentername">You didn\'t enter all the information</string>
     <string name="delete">Delete</string>
     <string name="edit">Edit</string>
