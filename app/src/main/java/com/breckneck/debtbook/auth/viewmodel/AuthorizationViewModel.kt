@@ -1,11 +1,13 @@
 package com.breckneck.debtbook.auth.viewmodel
 
+import android.os.Build
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.breckneck.debtbook.auth.util.CryptoManager
 import com.breckneck.deptbook.domain.usecase.Settings.GetIsFingerprintAuthEnabled
 import com.breckneck.deptbook.domain.util.PINCodeAction
 import com.breckneck.deptbook.domain.util.PINCodeEnterState
@@ -15,7 +17,7 @@ import com.breckneck.deptbook.domain.usecase.Settings.SetPINCode
 import com.breckneck.deptbook.domain.usecase.Settings.SetPINCodeEnabled
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import java.io.File
 
 class AuthorizationViewModel(
     private val getPINCodeEnabled: GetPINCodeEnabled,
@@ -27,6 +29,12 @@ class AuthorizationViewModel(
 
     val TAG = "AuthorizationVM"
 
+    val cryptoManager = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        CryptoManager()
+    } else {
+        null
+    }
+
     private val _enteredPINCode = MutableStateFlow("") // variable for current entered pin by user
     val enteredPINCode: StateFlow<String>
         get() = _enteredPINCode
@@ -36,7 +44,7 @@ class AuthorizationViewModel(
     private val _currentPINCode = mutableStateOf(getPINCode.execute()) // variable for existing PIN code in memory
     val currentPINCode: State<String>
         get() = _currentPINCode
-    private val _isPINCodeEnabled = MutableLiveData<Boolean>(false)
+    private val _isPINCodeEnabled = MutableLiveData(false)
     val isPINCodeEnabled: LiveData<Boolean>
         get() = _isPINCodeEnabled
     private val _pinCodeEnterState = MutableStateFlow(PINCodeEnterState.FIRST)
@@ -60,11 +68,15 @@ class AuthorizationViewModel(
         _currentPINCode.value = getPINCode.execute()
     }
 
+    fun setDecryptedPINCode(code: String) {
+        _currentPINCode.value = code
+    }
+
     fun getPINCodeEnabled() {
         _isPINCodeEnabled.value = getPINCodeEnabled.execute()
     }
 
-    fun changePINCode(PINCode: String) {
+    fun changeEnteredPINCode(PINCode: String) {
         _enteredPINCode.value = PINCode
     }
 
@@ -77,7 +89,7 @@ class AuthorizationViewModel(
     }
 
     fun setPastPINCode() {
-        _pastPINCode.value = _enteredPINCode.value
+        _pastPINCode.value = enteredPINCode.value
         _enteredPINCode.value = ""
     }
 

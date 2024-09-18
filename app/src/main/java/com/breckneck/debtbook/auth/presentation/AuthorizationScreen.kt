@@ -8,7 +8,6 @@ import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.animateFloatAsState
@@ -67,20 +66,26 @@ import com.breakneck.pokedex.ui.theme.Red
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.auth.util.BiometricPromptManager
 import com.breckneck.debtbook.auth.util.BiometricPromptManager.*
+import com.breckneck.debtbook.auth.util.CryptoManager
 import com.breckneck.deptbook.domain.util.PINCodeAction.*
 import com.breckneck.deptbook.domain.util.PINCodeEnterState
 import com.breckneck.deptbook.domain.util.PINCodeEnterState.*
 import com.breckneck.debtbook.auth.viewmodel.AuthorizationViewModel
 import com.breckneck.debtbook.core.activity.MainActivity
+import com.breckneck.deptbook.domain.util.CRYPTO_FILE_NAME
 import com.breckneck.deptbook.domain.util.PINCodeAction
 import org.koin.androidx.compose.koinViewModel
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
 import kotlin.math.roundToInt
 
 @Composable
 fun AuthorizationScreen(
     activity: AppCompatActivity,
     vm: AuthorizationViewModel = koinViewModel(),
-    biometricPromptManager: BiometricPromptManager
+    biometricPromptManager: BiometricPromptManager,
+    cryptoManager: CryptoManager?
 ) {
     val pinCodeEnterState by vm.pinCodeEnterState.collectAsState()
     val enteredPINCode by vm.enteredPINCode.collectAsState()
@@ -98,7 +103,15 @@ fun AuthorizationScreen(
                         vm.setPastPINCode()
                         vm.setPINCodeEnterState(CONFIRMATION)
                     } else if ((vm.pinCodeEnterState.value == CONFIRMATION) && (vm.pastPINCode.value == vm.enteredPINCode.value)) {
-                        vm.setPINCode()
+                        val file = File(activity.filesDir, CRYPTO_FILE_NAME)
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            cryptoManager?.encrypt(
+                                bytes = vm.enteredPINCode.value.encodeToByteArray(),
+                                outputStream = FileOutputStream(file)
+                            )
+                        } else {
+                            vm.setPINCode()
+                        }
                         vm.enablePINCode()
                         val intent = Intent()
                         intent.putExtra("PINCodeState", vm.pinCodeAction.value.toString())
@@ -113,7 +126,7 @@ fun AuthorizationScreen(
                 DISABLE -> {
                     if (vm.enteredPINCode.value == vm.currentPINCode.value) {
                         vm.turnOffPINCode()
-                        vm.changePINCode("") //pin code doesnt match
+                        vm.changeEnteredPINCode("") //pin code doesnt match
                         Intent().also {
                             it.putExtra("PINCodeState", vm.pinCodeAction.value.toString())
                             activity.setResult(RESULT_OK, it)
@@ -162,12 +175,12 @@ fun AuthorizationScreen(
             )
         },
         onDigitButtonClick = { digit ->
-            vm.changePINCode(PINCode = enteredPINCode + digit)
+            vm.changeEnteredPINCode(PINCode = enteredPINCode + digit)
             if (pinCodeEnterState == INCORRECT)
                 vm.setPINCodeEnterState(FIRST)
         },
         onBackspaceButtonClick = {
-            vm.changePINCode(PINCode = enteredPINCode.dropLast(1))
+            vm.changeEnteredPINCode(PINCode = enteredPINCode.dropLast(1))
         },
         onCloseAppButtonClick = {
             activity.finishAndRemoveTask()

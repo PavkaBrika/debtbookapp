@@ -16,6 +16,8 @@ const val LAST_CHECKED_POSITION_NOT_EXISTS = -1
 const val SWITCH_STATE_REVENUES = true
 const val SWITCH_STATE_INCOMES = false
 
+const val CRYPTO_FILE_NAME = "crypto.txt"
+
 val categoryColorList = listOf(
     "#EF9A9A",
     "#F48FB1",
@@ -78,3 +80,4 @@ val incomesCategoryEnglishNameList = listOf(
     "Investments",
     "Other",
 )
+
