@@ -4,6 +4,7 @@ import android.os.Build
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import androidx.annotation.RequiresApi
+import com.breckneck.deptbook.domain.util.ENCRYPTION_ALIAS
 import java.io.InputStream
 import java.io.OutputStream
 import java.security.KeyStore
@@ -39,7 +40,7 @@ class CryptoManager {
         return KeyGenerator.getInstance(ALGORITHM).apply {
             init(
                 KeyGenParameterSpec.Builder(
-                    "PIN",
+                    ENCRYPTION_ALIAS,
                     KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
                 )
                     .setBlockModes(BLOCK_MODE)

@@ -17,6 +17,7 @@ const val SWITCH_STATE_REVENUES = true
 const val SWITCH_STATE_INCOMES = false
 
 const val CRYPTO_FILE_NAME = "crypto.txt"
+const val ENCRYPTION_ALIAS = "PIN"
 
 val categoryColorList = listOf(
     "#EF9A9A",

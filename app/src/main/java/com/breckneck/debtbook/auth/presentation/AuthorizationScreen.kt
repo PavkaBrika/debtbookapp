@@ -29,6 +29,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -254,6 +256,11 @@ fun UnlockScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Bottom
     ) {
+//        Icon(
+//            imageVector = Icons.Default.MailOutline,
+//            contentDescription = stringResource(id = R.string.write_email_to_developer),
+//            modifier = Modifier.align(Alignment.TopEnd)
+//        )
         Image(
             modifier = Modifier.size(100.dp),
             painter = painterResource(id = R.drawable.app_icon),
