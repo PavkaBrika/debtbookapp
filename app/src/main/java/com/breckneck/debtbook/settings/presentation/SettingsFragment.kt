@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.graphics.Typeface
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
@@ -364,13 +365,17 @@ class SettingsFragment : Fragment() {
                     unlockFingerprintSwitch.visibility = View.GONE
                 }
                 BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
-                    val enrollIntent = Intent(Settings.ACTION_BIOMETRIC_ENROLL).apply {
-                        putExtra(
-                            Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,
-                            BIOMETRIC_STRONG
-                        )
+                    if (Build.VERSION.SDK_INT >= 30) {
+                        val enrollIntent = Intent(Settings.ACTION_BIOMETRIC_ENROLL).apply {
+                            putExtra(
+                                Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,
+                                BIOMETRIC_STRONG
+                            )
+                        }
+                        startActivity(enrollIntent)
+                    } else {
+                        unlockFingerprintLayout.visibility = View.GONE
                     }
-                    startActivity(enrollIntent)
                 }
             }
 

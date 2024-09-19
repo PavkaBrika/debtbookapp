@@ -19,12 +19,11 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -67,11 +66,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ChainStyle
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
+import androidx.constraintlayout.compose.atLeastWrapContent
 import com.breakneck.pokedex.ui.theme.DebtBookTheme
 import com.breakneck.pokedex.ui.theme.Red
 import com.breckneck.debtbook.BuildConfig
@@ -98,6 +102,18 @@ fun AuthorizationScreen(
     biometricPromptManager: BiometricPromptManager,
     cryptoManager: CryptoManager?
 ) {
+    fun setPINCode() {
+        val file = File(activity.filesDir, CRYPTO_FILE_NAME)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            cryptoManager?.encrypt(
+                bytes = vm.enteredPINCode.value.encodeToByteArray(),
+                outputStream = FileOutputStream(file)
+            )
+        } else {
+            vm.setPINCode()
+        }
+    }
+
     val pinCodeEnterState by vm.pinCodeEnterState.collectAsState()
     val enteredPINCode by vm.enteredPINCode.collectAsState()
     val startActivityLauncher = rememberLauncherForActivityResult(
@@ -114,15 +130,7 @@ fun AuthorizationScreen(
                         vm.setPastPINCode()
                         vm.setPINCodeEnterState(CONFIRMATION)
                     } else if ((vm.pinCodeEnterState.value == CONFIRMATION) && (vm.pastPINCode.value == vm.enteredPINCode.value)) {
-                        val file = File(activity.filesDir, CRYPTO_FILE_NAME)
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            cryptoManager?.encrypt(
-                                bytes = vm.enteredPINCode.value.encodeToByteArray(),
-                                outputStream = FileOutputStream(file)
-                            )
-                        } else {
-                            vm.setPINCode()
-                        }
+                        setPINCode()
                         vm.enablePINCode()
                         val intent = Intent()
                         intent.putExtra("PINCodeState", vm.pinCodeAction.value.toString())
@@ -154,7 +162,7 @@ fun AuthorizationScreen(
                         vm.setPastPINCode()
                         vm.setPINCodeEnterState(CONFIRMATION)
                     } else if (vm.pinCodeEnterState.value == CONFIRMATION) {
-                        vm.setPINCode()
+                        setPINCode()
                         activity.finish()
                     } else {
                         vm.resetPINCodes() //pin codes doesnt match
@@ -292,7 +300,6 @@ fun UnlockScreen(
                     .background(color = MaterialTheme.colorScheme.surface)
                     .border(1.dp, color = MaterialTheme.colorScheme.outline, shape = CircleShape)
                     .padding(8.dp)
-
             ) {
                 Icon(
                     imageVector = Icons.Default.MailOutline,
@@ -302,16 +309,30 @@ fun UnlockScreen(
             }
         }
     ) { contentPadding ->
-        Column(
+        ConstraintLayout(
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
                 .padding(contentPadding),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Bottom
         ) {
+
+            val (appIcon, pinCodeSection, errorText, buttonSection) = createRefs()
+            createVerticalChain(
+                appIcon,
+                pinCodeSection,
+                errorText,
+                buttonSection,
+                chainStyle = ChainStyle.SpreadInside
+            )
+
             Image(
                 modifier = Modifier
+                    .constrainAs(appIcon) {
+                        top.linkTo(parent.top)
+                        bottom.linkTo(pinCodeSection.top)
+                        centerHorizontallyTo(parent)
+                        height = Dimension.fillToConstraints
+                    }
                     .size(100.dp)
                     .pointerInput(Unit) {
                         detectTapGestures(
@@ -323,63 +344,93 @@ fun UnlockScreen(
                 painter = painterResource(id = R.drawable.app_icon),
                 contentDescription = stringResource(R.string.app_icon)
             )
-            Spacer(modifier = Modifier.height(36.dp))
-            Text(
-                text = when (pinCodeEnterState) {
-                    FIRST -> stringResource(R.string.enter_pin)
-                    CONFIRMATION ->
-                        if (pinCodeAction == CHANGE) stringResource(R.string.enter_new_pin)
-                        else stringResource(R.string.confirm_your_pin)
+            Column(
+                modifier = Modifier
+                    .constrainAs(pinCodeSection) {
+                        top.linkTo(appIcon.bottom)
+                        bottom.linkTo(errorText.top)
+                        centerHorizontallyTo(parent)
+                        height = Dimension.fillToConstraints
+                    },
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceEvenly
+            ) {
+                Text(
+                    text = when (pinCodeEnterState) {
+                        FIRST -> stringResource(R.string.enter_pin)
+                        CONFIRMATION ->
+                            if (pinCodeAction == CHANGE) stringResource(R.string.enter_new_pin)
+                            else stringResource(R.string.confirm_your_pin)
 
-                    INCORRECT -> stringResource(R.string.pin_code_is_incorrect)
-                },
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-            Spacer(modifier = Modifier.height(28.dp))
-            PINCodeSection(
-                modifier = Modifier.fillMaxWidth(0.5f),
-                PINCode = enteredPINCode,
-                pinCodeEnterState = pinCodeEnterState
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = stringResource(R.string.something_went_wrong_please_login_with_your_pin_code),
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .padding(horizontal = 48.dp)
-                    .alpha(
-                        if (biometricResult is BiometricResult.AuthenticationError) 1f
-                        else 0f
-                    )
-            )
-            if (pinCodeAction == CHECK) {
-                Spacer(modifier = Modifier.height(120.dp))
-                TextButton(
-                    modifier = Modifier.offset(y = 24.dp),
-                    onClick = {
-                        onCloseAppButtonClick()
-                    }
-                ) {
-                    Text(
-                        text = stringResource(R.string.exit),
-                        fontSize = 16.sp,
-                        color = Red,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                }
-            } else {
-                Spacer(modifier = Modifier.height(144.dp))
+                        INCORRECT -> stringResource(R.string.pin_code_is_incorrect)
+                    },
+                    fontSize = 28.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+                PINCodeSection(
+                    modifier = Modifier
+                        .fillMaxWidth(0.5f),
+                    PINCode = enteredPINCode,
+                    pinCodeEnterState = pinCodeEnterState
+                )
             }
-            ButtonsSection(
+            Box(
                 modifier = Modifier
-                    .fillMaxWidth(),
-                onFingerprintButtonClick = onFingerprintButtonClick,
-                onDigitButtonClick = onDigitButtonClick,
-                onBackspaceButtonClick = onBackspaceButtonClick,
-                showFingerprintButton = showFingerprintButton
-            )
+                    .constrainAs(errorText) {
+                        top.linkTo(pinCodeSection.bottom)
+                        bottom.linkTo(buttonSection.top)
+                        centerHorizontallyTo(parent)
+                        centerVerticallyTo(parent)
+                        height = Dimension.fillToConstraints
+                    }
+                    .padding(horizontal = 40.dp)
+                    .alpha(
+                        1f
+//                        if (biometricResult is BiometricResult.AuthenticationError) 1f
+//                        else 0f
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = stringResource(R.string.something_went_wrong_please_login_with_your_pin_code),
+                    textAlign = TextAlign.Center
+                )
+            }
+            Column(
+                modifier = Modifier
+                    .constrainAs(buttonSection) {
+                        top.linkTo(errorText.bottom)
+                        bottom.linkTo(parent.bottom)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                        height = Dimension.wrapContent
+                    }
+                    .height(IntrinsicSize.Min),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                if (pinCodeAction == CHECK) {
+                    TextButton(
+                        modifier = Modifier.offset(y = 24.dp),
+                        onClick = {
+                            onCloseAppButtonClick()
+                        }
+                    ) {
+                        Text(
+                            text = stringResource(R.string.exit),
+                            fontSize = 16.sp,
+                            color = Red,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+                }
+                ButtonsSection(
+                    onFingerprintButtonClick = onFingerprintButtonClick,
+                    onDigitButtonClick = onDigitButtonClick,
+                    onBackspaceButtonClick = onBackspaceButtonClick,
+                    showFingerprintButton = showFingerprintButton
+                )
+            }
         }
     }
 }
@@ -578,13 +629,16 @@ fun ButtonsSection(
         shape = RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp)
     )
     Surface(
-        modifier = modifier,
+        modifier = modifier
+            .fillMaxWidth()
+            .height(IntrinsicSize.Max),
         shape = RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp),
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
     ) {
         Column(
             verticalArrangement = Arrangement.Bottom,
-            modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+            modifier = Modifier
+                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
         ) {
             DigitsButtonsRow(
                 modifier = Modifier,
@@ -612,7 +666,7 @@ fun ButtonsSection(
     }
 }
 
-@Preview
+@Preview(device = Devices.NEXUS_5)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun UnlockScreenPreview() {
@@ -626,12 +680,12 @@ fun UnlockScreenPreview() {
     }
 }
 
-@Preview
-@Composable
-fun ButtonsSectionPreview() {
-    ButtonsSection(
-        modifier = Modifier
-            .background(MaterialTheme.colorScheme.background)
-            .padding(32.dp)
-    )
-}
+//@Preview
+//@Composable
+//fun ButtonsSectionPreview() {
+//    ButtonsSection(
+//        modifier = Modifier
+//            .background(MaterialTheme.colorScheme.background)
+//            .padding(32.dp)
+//    )
+//}
