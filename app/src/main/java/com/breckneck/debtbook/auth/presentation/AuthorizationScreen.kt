@@ -386,9 +386,8 @@ fun UnlockScreen(
                     }
                     .padding(horizontal = 40.dp)
                     .alpha(
-                        1f
-//                        if (biometricResult is BiometricResult.AuthenticationError) 1f
-//                        else 0f
+                        if (biometricResult is BiometricResult.AuthenticationError) 1f
+                        else 0f
                     ),
                 contentAlignment = Alignment.Center
             ) {
