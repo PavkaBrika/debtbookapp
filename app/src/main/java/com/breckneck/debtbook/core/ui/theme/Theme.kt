@@ -52,7 +52,7 @@ private object DebtBookRippleTheme : RippleTheme {
     // Using that will override the ripple color set in DarkMode
     // or when you set light parameter to false
     @Composable
-    override fun defaultColor(): Color = Color.Black
+    override fun defaultColor(): Color = Color.Gray
 
     @Composable
     override fun rippleAlpha(): RippleAlpha = RippleTheme.defaultRippleAlpha(

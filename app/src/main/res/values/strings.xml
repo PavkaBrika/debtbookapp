@@ -33,6 +33,7 @@
     <string name="azn" translatable="false">&#127462;&#127487; AZN</string>
     <string name="amd" translatable="false">&#127462;&#127474; AMD</string>
     <string name="bgn" translatable="false">&#127463;&#127468; BGN</string>
+    <string name="ils" translatable="false">&#127470;&#127473; ILS</string>
     <string name="youmustentername">You didn\'t enter all the information</string>
     <string name="delete">Delete</string>
     <string name="edit">Edit</string>
@@ -187,4 +188,5 @@
     <string name="feature_unavailable">Feature unavailable</string>
     <string name="hardware_unavailable">Hardware unavailable</string>
     <string name="something_went_wrong_please_login_with_your_pin_code">Something went wrong.\nPlease, login with your PIN Code</string>
+    <string name="exit">Exit</string>
 </resources>

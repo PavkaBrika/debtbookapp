@@ -158,4 +158,5 @@
     <string name="feature_unavailable">Funktion nicht verfügbar</string>
     <string name="hardware_unavailable">Hardware nicht verfügbar</string>
     <string name="something_went_wrong_please_login_with_your_pin_code">Es ist ein Fehler aufgetreten.\nBitte melden Sie sich mit Ihrem PIN-Code an.</string>
+    <string name="exit">Ausfahrt</string>
 </resources>

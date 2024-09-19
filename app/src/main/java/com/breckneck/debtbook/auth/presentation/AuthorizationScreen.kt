@@ -3,12 +3,14 @@ package com.breckneck.debtbook.auth.presentation
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.content.res.Configuration
+import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
@@ -16,6 +18,10 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,6 +40,7 @@ import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -49,10 +56,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -65,6 +74,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.breakneck.pokedex.ui.theme.DebtBookTheme
 import com.breakneck.pokedex.ui.theme.Red
+import com.breckneck.debtbook.BuildConfig
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.auth.util.BiometricPromptManager
 import com.breckneck.debtbook.auth.util.BiometricPromptManager.*
@@ -78,7 +88,6 @@ import com.breckneck.deptbook.domain.util.CRYPTO_FILE_NAME
 import com.breckneck.deptbook.domain.util.PINCodeAction
 import org.koin.androidx.compose.koinViewModel
 import java.io.File
-import java.io.FileInputStream
 import java.io.FileOutputStream
 import kotlin.math.roundToInt
 
@@ -91,7 +100,7 @@ fun AuthorizationScreen(
 ) {
     val pinCodeEnterState by vm.pinCodeEnterState.collectAsState()
     val enteredPINCode by vm.enteredPINCode.collectAsState()
-    val startMainLauncher = rememberLauncherForActivityResult(
+    val startActivityLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult(),
         onResult = {
             println("Activity result: $it")
@@ -155,7 +164,11 @@ fun AuthorizationScreen(
 
                 CHECK ->
                     if (vm.enteredPINCode.value == vm.currentPINCode.value)
-                        startMainLauncher.launch(Intent(activity, MainActivity::class.java).apply { addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP) })
+                        startActivityLauncher.launch(
+                            Intent(
+                                activity,
+                                MainActivity::class.java
+                            ).apply { addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP) })
                     else {
                         vm.resetPINCodes()
                         vm.setPINCodeEnterState(INCORRECT)
@@ -187,6 +200,22 @@ fun AuthorizationScreen(
         onCloseAppButtonClick = {
             activity.finishAndRemoveTask()
         },
+        onWriteToDevelopersButtonClick = {
+            startActivityLauncher.launch(Intent(Intent.ACTION_SENDTO).apply {
+                data = Uri.parse("mailto:pavlikbrichkin@yandex.ru")
+                putExtra(
+                    Intent.EXTRA_SUBJECT,
+                    "${activity.getString(R.string.email_subject)} ${BuildConfig.VERSION_NAME}"
+                )
+            })
+        },
+        onSuperButtonClick = {
+            startActivityLauncher.launch(
+                Intent(
+                    activity,
+                    MainActivity::class.java
+                ).apply { addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP) })
+        },
         showFingerprintButton = vm.isFingerprintAuthEnabled.value && vm.pinCodeAction.value == CHECK
     )
 }
@@ -201,6 +230,8 @@ fun UnlockScreen(
     onDigitButtonClick: (String) -> Unit = {},
     onBackspaceButtonClick: () -> Unit = {},
     onCloseAppButtonClick: () -> Unit = {},
+    onWriteToDevelopersButtonClick: () -> Unit = {},
+    onSuperButtonClick: () -> Unit = {},
     showFingerprintButton: Boolean = true
 ) {
     val biometricResult by promptManager.promptResults.collectAsState(
@@ -249,80 +280,107 @@ fun UnlockScreen(
         }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Bottom
-    ) {
-//        Icon(
-//            imageVector = Icons.Default.MailOutline,
-//            contentDescription = stringResource(id = R.string.write_email_to_developer),
-//            modifier = Modifier.align(Alignment.TopEnd)
-//        )
-        Image(
-            modifier = Modifier.size(100.dp),
-            painter = painterResource(id = R.drawable.app_icon),
-            contentDescription = stringResource(R.string.app_icon)
-        )
-        Spacer(modifier = Modifier.height(36.dp))
-        Text(
-            text = when (pinCodeEnterState) {
-                FIRST -> stringResource(R.string.enter_pin)
-                CONFIRMATION ->
-                    if (pinCodeAction == CHANGE) stringResource(R.string.enter_new_pin)
-                    else stringResource(R.string.confirm_your_pin)
+    Scaffold(
+        topBar = {
+            IconButton(
+                onClick = { onWriteToDevelopersButtonClick() },
+                modifier = Modifier
+                    .padding(16.dp)
+                    .size(40.dp)
+                    .shadow(10.dp, shape = CircleShape)
+                    .clip(CircleShape)
+                    .background(color = MaterialTheme.colorScheme.surface)
+                    .border(1.dp, color = MaterialTheme.colorScheme.outline, shape = CircleShape)
+                    .padding(8.dp)
 
-                INCORRECT -> stringResource(R.string.pin_code_is_incorrect)
-            },
-            fontSize = 28.sp,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onBackground
-        )
-        Spacer(modifier = Modifier.height(28.dp))
-        PINCodeSection(
-            modifier = Modifier.fillMaxWidth(0.5f),
-            PINCode = enteredPINCode,
-            pinCodeEnterState = pinCodeEnterState
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = stringResource(R.string.something_went_wrong_please_login_with_your_pin_code),
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .padding(horizontal = 48.dp)
-                .alpha(
-                    if (biometricResult is BiometricResult.AuthenticationError) 1f
-                    else 0f
-                )
-        )
-        if (pinCodeAction == CHECK) {
-            Spacer(modifier = Modifier.height(120.dp))
-            TextButton(
-                modifier = Modifier.offset(y = 24.dp),
-                onClick = {
-                    onCloseAppButtonClick()
-                }
             ) {
-                Text(
-                    text = "Close app",
-                    fontSize = 16.sp,
-                    color = Red,
-                    fontWeight = FontWeight.SemiBold
+                Icon(
+                    imageVector = Icons.Default.MailOutline,
+                    contentDescription = stringResource(id = R.string.write_email_to_developer),
+                    tint = MaterialTheme.colorScheme.onSurface
                 )
             }
-        } else {
-            Spacer(modifier = Modifier.height(144.dp))
         }
-        ButtonsSection(
+    ) { contentPadding ->
+        Column(
             modifier = Modifier
-                .fillMaxWidth(),
-            onFingerprintButtonClick = onFingerprintButtonClick,
-            onDigitButtonClick = onDigitButtonClick,
-            onBackspaceButtonClick = onBackspaceButtonClick,
-            showFingerprintButton = showFingerprintButton
-        )
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .padding(contentPadding),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Bottom
+        ) {
+            Image(
+                modifier = Modifier
+                    .size(100.dp)
+                    .pointerInput(Unit) {
+                        detectTapGestures(
+                            onLongPress = {
+                                onSuperButtonClick()
+                            }
+                        )
+                    },
+                painter = painterResource(id = R.drawable.app_icon),
+                contentDescription = stringResource(R.string.app_icon)
+            )
+            Spacer(modifier = Modifier.height(36.dp))
+            Text(
+                text = when (pinCodeEnterState) {
+                    FIRST -> stringResource(R.string.enter_pin)
+                    CONFIRMATION ->
+                        if (pinCodeAction == CHANGE) stringResource(R.string.enter_new_pin)
+                        else stringResource(R.string.confirm_your_pin)
+
+                    INCORRECT -> stringResource(R.string.pin_code_is_incorrect)
+                },
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+            Spacer(modifier = Modifier.height(28.dp))
+            PINCodeSection(
+                modifier = Modifier.fillMaxWidth(0.5f),
+                PINCode = enteredPINCode,
+                pinCodeEnterState = pinCodeEnterState
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = stringResource(R.string.something_went_wrong_please_login_with_your_pin_code),
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .padding(horizontal = 48.dp)
+                    .alpha(
+                        if (biometricResult is BiometricResult.AuthenticationError) 1f
+                        else 0f
+                    )
+            )
+            if (pinCodeAction == CHECK) {
+                Spacer(modifier = Modifier.height(120.dp))
+                TextButton(
+                    modifier = Modifier.offset(y = 24.dp),
+                    onClick = {
+                        onCloseAppButtonClick()
+                    }
+                ) {
+                    Text(
+                        text = stringResource(R.string.exit),
+                        fontSize = 16.sp,
+                        color = Red,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+            } else {
+                Spacer(modifier = Modifier.height(144.dp))
+            }
+            ButtonsSection(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                onFingerprintButtonClick = onFingerprintButtonClick,
+                onDigitButtonClick = onDigitButtonClick,
+                onBackspaceButtonClick = onBackspaceButtonClick,
+                showFingerprintButton = showFingerprintButton
+            )
+        }
     }
 }
 
@@ -353,25 +411,34 @@ fun PINCodeSection(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         for (i in 1..4) {
-            val scale = animateFloatAsState(
-                targetValue =
-                    if (i <= PINCode.length) 1.3f
-                    else 1f,
-                label = "Anim",
-                animationSpec = tween(
-                    durationMillis = 300
-                )
-            )
-            Icon(
-                painter = painterResource(id = R.drawable.baseline_circle_24),
-                contentDescription = stringResource(R.string.pin),
-                tint = if (pinCodeEnterState == INCORRECT) {
+            val color = animateColorAsState(
+                targetValue = if (pinCodeEnterState == INCORRECT) {
                     Color.Red
                 } else if (PINCode.length >= i) {
                     MaterialTheme.colorScheme.onBackground
                 } else {
                     Color.Gray
                 },
+                label = "Color",
+                animationSpec = tween(
+                    durationMillis = 300
+                )
+            )
+
+            val scale = animateFloatAsState(
+                targetValue =
+                if (i <= PINCode.length) 1.3f
+                else 1f,
+                label = "Anim",
+                animationSpec = tween(
+                    durationMillis = 300
+                )
+            )
+
+            Icon(
+                painter = painterResource(id = R.drawable.baseline_circle_24),
+                contentDescription = stringResource(R.string.pin),
+                tint = color.value,
                 modifier = Modifier
                     .size(32.dp)
                     .scale(scale.value)
