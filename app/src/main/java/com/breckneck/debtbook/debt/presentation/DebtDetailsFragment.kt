@@ -244,6 +244,8 @@ class DebtDetailsFragment : Fragment() {
                 if (it.isNotEmpty()) {
                     debtAdapter.updateDebtList(debtList = it)
                     vm.onSetListState(ListState.FILLED)
+                } else {
+                    vm.onSetListState(ListState.EMPTY)
                 }
             }
         }, 400)

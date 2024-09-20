@@ -98,7 +98,7 @@ class DebtDetailsViewModel(
 
     fun getAllDebts() {
         val getDebtsSingle = Single.create {
-            Log.e(TAG, "Open Debt Details of Human id = $humanId")
+            Log.e(TAG, "Open Debt Details of Human id = ${humanId.value}")
             it.onSuccess(getAllDebtsByIdUseCase.execute(id = humanId.value!!))
         }
             .subscribeOn(Schedulers.io())
@@ -196,14 +196,15 @@ class DebtDetailsViewModel(
         val deleteDebtCompletable = Completable.create {
             deleteDebtUseCase.execute(debtDomain)
             addSumUseCase.execute(humanId = _humanId.value!!, sum = (debtDomain.sum * (-1.0)))
-            getOverallSum()
-            getAllDebts()
             Log.e(TAG, "Debt delete success")
             it.onComplete()
         }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
+                _isDebtsSorted.value = false
+                getOverallSum()
+                getAllDebts()
                 Log.e(TAG, "Debts load success")
             },{
                 Log.e(TAG, it.message.toString())
