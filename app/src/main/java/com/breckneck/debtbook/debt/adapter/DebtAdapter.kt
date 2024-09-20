@@ -14,7 +14,7 @@ import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 
 class DebtAdapter(
-    private val debtDomainListImmutable: List<DebtDomain>,
+    debtDomainListImmutable: List<DebtDomain>,
     private val debtClickListener: OnDebtClickListener,
     private val currencyText: String
 ) : RecyclerView.Adapter<DebtAdapter.DebtViewHolder>() {

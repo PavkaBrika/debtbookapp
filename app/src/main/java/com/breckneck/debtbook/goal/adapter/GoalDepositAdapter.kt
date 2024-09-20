@@ -14,7 +14,7 @@ import java.text.DecimalFormatSymbols
 import java.text.SimpleDateFormat
 
 class GoalDepositAdapter(
-    private val goalDepositListImmutable: List<GoalDeposit>,
+    goalDepositListImmutable: List<GoalDeposit>,
     private val currency: String
 ): RecyclerView.Adapter<GoalDepositAdapter.GoalDepositViewHolder>() {
 

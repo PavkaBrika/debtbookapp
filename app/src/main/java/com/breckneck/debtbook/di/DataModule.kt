@@ -8,7 +8,6 @@ import com.breckneck.deptbook.data.storage.GoalDepositStorage
 import com.breckneck.deptbook.data.storage.GoalStorage
 import com.breckneck.deptbook.data.storage.HumanStorage
 import com.breckneck.deptbook.data.storage.SettingsStorage
-import com.breckneck.deptbook.domain.model.GoalDeposit
 import com.breckneck.deptbook.domain.repository.AdRepository
 import database.DataBaseDebtStorageImpl
 import database.DataBaseHumanStorageImpl

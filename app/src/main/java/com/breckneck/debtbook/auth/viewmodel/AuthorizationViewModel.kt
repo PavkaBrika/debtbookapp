@@ -17,7 +17,6 @@ import com.breckneck.deptbook.domain.usecase.Settings.SetPINCode
 import com.breckneck.deptbook.domain.usecase.Settings.SetPINCodeEnabled
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import java.io.File
 
 class AuthorizationViewModel(
     private val getPINCodeEnabled: GetPINCodeEnabled,

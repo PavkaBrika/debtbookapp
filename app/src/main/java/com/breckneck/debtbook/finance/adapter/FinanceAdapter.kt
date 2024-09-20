@@ -15,7 +15,7 @@ import java.text.DecimalFormatSymbols
 import java.text.SimpleDateFormat
 
 class FinanceAdapter(
-    private val financeListImmutable: List<Finance>,
+    financeListImmutable: List<Finance>,
     private val financeClickListener: OnFinanceClickListener,
     private val currencyText: String
 ) : RecyclerView.Adapter<FinanceAdapter.FinanceViewHolder>() {
@@ -43,8 +43,6 @@ class FinanceAdapter(
         val currency: TextView = itemView.findViewById(R.id.currencyTextVew)
         val infoLayout: LinearLayout = itemView.findViewById(R.id.infoLayout)
         val financeCardView: CardView = itemView.findViewById(R.id.financeCardView)
-        val greenColor = itemView.resources.getColor(R.color.green)
-        val redColor = itemView.resources.getColor(R.color.red)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FinanceViewHolder {

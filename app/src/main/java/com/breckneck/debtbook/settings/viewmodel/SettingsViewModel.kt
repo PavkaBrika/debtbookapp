@@ -10,7 +10,6 @@ import com.breckneck.deptbook.domain.usecase.Settings.GetDefaultCurrency
 import com.breckneck.deptbook.domain.usecase.Settings.GetFirstMainCurrency
 import com.breckneck.deptbook.domain.usecase.Settings.GetIsAuthorized
 import com.breckneck.deptbook.domain.usecase.Settings.GetIsFingerprintAuthEnabled
-import com.breckneck.deptbook.domain.usecase.Settings.GetPINCodeEnabled
 import com.breckneck.deptbook.domain.usecase.Settings.GetSecondMainCurrency
 import com.breckneck.deptbook.domain.usecase.Settings.GetUserData
 import com.breckneck.deptbook.domain.usecase.Settings.SetAddSumInShareText
@@ -18,7 +17,6 @@ import com.breckneck.deptbook.domain.usecase.Settings.SetAppTheme
 import com.breckneck.deptbook.domain.usecase.Settings.SetDefaultCurrency
 import com.breckneck.deptbook.domain.usecase.Settings.SetFirstMainCurrency
 import com.breckneck.deptbook.domain.usecase.Settings.SetIsFingerprintAuthEnabled
-import com.breckneck.deptbook.domain.usecase.Settings.SetPINCodeEnabled
 import com.breckneck.deptbook.domain.usecase.Settings.SetSecondMainCurrency
 
 class SettingsViewModel(

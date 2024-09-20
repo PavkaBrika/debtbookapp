@@ -75,7 +75,6 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import androidx.constraintlayout.compose.atLeastWrapContent
 import com.breakneck.pokedex.ui.theme.DebtBookTheme
 import com.breakneck.pokedex.ui.theme.Red
 import com.breckneck.debtbook.BuildConfig
