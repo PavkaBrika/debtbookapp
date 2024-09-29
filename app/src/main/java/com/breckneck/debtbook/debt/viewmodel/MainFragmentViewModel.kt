@@ -1,9 +1,11 @@
 package com.breckneck.debtbook.debt.viewmodel
 
 import android.util.Log
+import android.widget.SearchView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.breckneck.deptbook.domain.util.Filter
 import com.breckneck.deptbook.domain.model.HumanDomain
 import com.breckneck.deptbook.domain.usecase.Human.*
@@ -14,10 +16,23 @@ import com.breckneck.deptbook.domain.usecase.Settings.SetHumanOrder
 import com.breckneck.deptbook.domain.util.HumanOrderAttribute
 import com.breckneck.deptbook.domain.util.ListState
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.BackpressureStrategy
 import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
+import java.util.Collections
+import java.util.Comparator
+import java.util.concurrent.TimeUnit
 
 class MainFragmentViewModel(
     private val getAllHumansUseCase: GetAllHumansUseCase,
@@ -65,9 +80,23 @@ class MainFragmentViewModel(
     private val sortHumans by lazy { SortHumans() }
     private val disposeBag = CompositeDisposable()
 
+    private val _searchHumanList = MutableLiveData<List<HumanDomain>>()
+    val searchHumanList: LiveData<List<HumanDomain>>
+        get() = _searchHumanList
+    val _searchQuery = MutableStateFlow("")
+    val searchQuery = _searchQuery.asStateFlow()
+
     init {
         Log.e(TAG, "MainFragment VM created")
         init()
+
+        _searchQuery
+            .debounce(500)
+            .map { query ->
+                _searchHumanList.value = _resultHumanList.value!!.filter { human ->
+                    human.name.contains(query)
+                }
+            }.launchIn(viewModelScope)
     }
 
     override fun onCleared() {
@@ -208,5 +237,11 @@ class MainFragmentViewModel(
 
     fun onChangeDebtNameDialogClose() {
         _isChangeDebtNameDialogOpened.value = false
+    }
+
+    fun setSearchQuery(query: String) {
+        viewModelScope.launch {
+            _searchQuery.emit(query)
+        }
     }
 }

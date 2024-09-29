@@ -81,6 +81,15 @@
                         android:foreground="?android:attr/selectableItemBackground"
                         android:src="@drawable/baseline_sort_24" />
 
+                    <SearchView
+                        android:id="@+id/humanSearchView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:iconifiedByDefault="true"
+                        android:layout_gravity="end"
+                        android:theme="@style/searchViewStyle"
+                        android:queryHint="@string/enter_your_query" />
+
                 </androidx.appcompat.widget.Toolbar>
 
             </com.google.android.material.appbar.CollapsingToolbarLayout>

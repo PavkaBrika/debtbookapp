@@ -195,6 +195,22 @@ class MainFragment : Fragment() {
                 overallNegativeSumTextView.text = it.second
             }
         }
+
+        val humanDebtSearchView = view.findViewById<SearchView>(R.id.humanSearchView)
+        humanDebtSearchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                vm.setSearchQuery(newText!!)
+                return true
+            }
+        })
+
+        vm.searchHumanList.observe(viewLifecycleOwner) { humanList ->
+            humanAdapter.updateHumansList(humanList)
+        }
     }
 
     override fun onResume() {
