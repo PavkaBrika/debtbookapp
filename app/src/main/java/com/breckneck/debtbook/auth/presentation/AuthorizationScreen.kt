@@ -170,13 +170,14 @@ fun AuthorizationScreen(
                 }
 
                 CHECK ->
-                    if (vm.enteredPINCode.value == vm.currentPINCode.value)
+                    if (vm.enteredPINCode.value == vm.currentPINCode.value) {
                         startActivityLauncher.launch(
                             Intent(
                                 activity,
                                 MainActivity::class.java
-                            ).apply { addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP) })
-                    else {
+                            ).apply { addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP and Intent.FLAG_ACTIVITY_NEW_TASK) })
+                        activity.finish()
+                    } else {
                         vm.resetPINCodes()
                         vm.setPINCodeEnterState(INCORRECT)
                     }
