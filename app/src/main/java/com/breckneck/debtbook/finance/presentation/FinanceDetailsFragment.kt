@@ -135,7 +135,7 @@ class FinanceDetailsFragment: Fragment() {
                     loadingFinancesLayout.visibility = View.VISIBLE
                     shimmerLayout.startShimmerAnimation()
                 }
-                ListState.FILLED -> {
+                ListState.RECEIVED -> {
                     val transition = Fade()
                     transition.duration = 200
                     transition.addTarget(financesLayout)
@@ -171,7 +171,7 @@ class FinanceDetailsFragment: Fragment() {
             vm.financeList.observe(this) { financeList ->
                 if (financeList.isNotEmpty()) {
                     financeAdapter.updateFinanceList(financeList = financeList)
-                    vm.setFinanceListState(ListState.FILLED)
+                    vm.setFinanceListState(ListState.RECEIVED)
                     Log.e(TAG, "Finance list updated in adapter")
                 }
             }

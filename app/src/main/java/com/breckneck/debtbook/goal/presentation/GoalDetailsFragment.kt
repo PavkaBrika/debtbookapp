@@ -173,7 +173,7 @@ class GoalDetailsFragment : Fragment() {
                     loadingGoalTransactionLayout.visibility = View.VISIBLE
                     shimmerLayout.startShimmerAnimation()
                 }
-                ListState.FILLED -> {
+                ListState.RECEIVED -> {
                     val transition = Fade()
                     transition.duration = 200
                     transition.addTarget(goalTransactionLayout)
@@ -305,7 +305,7 @@ class GoalDetailsFragment : Fragment() {
                 if (goalDepositList.isNotEmpty()) {
                     goalDepositAdapter.updateGoalDepositList(goalDepositList)
                     Log.e(TAG, "data in adapter link success")
-                    vm.setGoalListState(state = ListState.FILLED)
+                    vm.setGoalListState(state = ListState.RECEIVED)
                 } else {
                     vm.setGoalListState(ListState.EMPTY)
                 }
@@ -361,7 +361,7 @@ class GoalDetailsFragment : Fragment() {
                     vm.updateGoalSum(sum = savedSumDouble)
                     val goalDeposit = GoalDeposit(sum = savedSumDouble, date = Date(), goalId = vm.goal.value!!.id)
                     goalDepositAdapter.addGoalDeposit(goalDeposit = goalDeposit)
-                    vm.setGoalListState(state = ListState.FILLED)
+                    vm.setGoalListState(state = ListState.RECEIVED)
                     vm.setGoalDeposit(goalDeposit = goalDeposit)
                     dialog.dismiss()
                 }

@@ -96,7 +96,7 @@ class GoalsFragment: Fragment() {
                     loadingGoalsLayout.visibility = View.VISIBLE
                     shimmerLayout.startShimmerAnimation()
                 }
-                ListState.FILLED -> {
+                ListState.RECEIVED -> {
                     val transition = Fade()
                     transition.duration = 200
                     transition.addTarget(goalsLayout)
@@ -152,7 +152,7 @@ class GoalsFragment: Fragment() {
                 if (goalList.isNotEmpty()) {
                     goalAdapter.updateGoalList(goalList)
                     Log.e(TAG, "data in adapter link success")
-                    vm.setListState(state = ListState.FILLED)
+                    vm.setListState(state = ListState.RECEIVED)
                 } else {
                     vm.setListState(ListState.EMPTY)
                 }

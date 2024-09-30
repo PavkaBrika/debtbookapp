@@ -167,7 +167,7 @@ class DebtDetailsFragment : Fragment() {
                         loadingDebtsLayout.visibility = View.VISIBLE
                         shimmerLayout.startShimmerAnimation()
                     }
-                    ListState.FILLED -> {
+                    ListState.RECEIVED -> {
                         val transition = Fade()
                         transition.duration = 200
                         transition.addTarget(debtsLayout)
@@ -243,7 +243,7 @@ class DebtDetailsFragment : Fragment() {
             vm.resultDebtList.observe(viewLifecycleOwner) {
                 if (it.isNotEmpty()) {
                     debtAdapter.updateDebtList(debtList = it)
-                    vm.onSetListState(ListState.FILLED)
+                    vm.onSetListState(ListState.RECEIVED)
                 } else {
                     vm.onSetListState(ListState.EMPTY)
                 }

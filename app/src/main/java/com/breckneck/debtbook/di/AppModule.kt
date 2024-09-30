@@ -23,8 +23,6 @@ val appModule = module {
         MainFragmentViewModel(
             getAllDebtsSumUseCase = get(),
             getAllHumansUseCase = get(),
-            getPositiveHumansUseCase = get(),
-            getNegativeHumansUseCase = get(),
             getFirstMainCurrency = get(),
             getSecondMainCurrency = get(),
             getHumanOrder = get(),

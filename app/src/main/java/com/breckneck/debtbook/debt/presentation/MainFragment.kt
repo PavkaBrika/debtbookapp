@@ -5,8 +5,6 @@ import android.content.pm.ActivityInfo
 import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.transition.Fade
 import android.transition.TransitionManager
 import android.util.Log
@@ -73,14 +71,13 @@ class MainFragment : Fragment() {
         requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         setFragmentResultListener("mainFragmentKey") { requestKey, bundle ->
             if (bundle.getBoolean("isListModified"))
-                vm.init()
+                vm.getHumanInfo()
             else if (mainActivityVM.isNeedDebtDataUpdate.value == true)
-                vm.init()
+                vm.getHumanInfo()
             else if (mainActivityVM.isNeedUpdateDebtSums.value == true)
                 vm.getMainSums()
         }
         Log.e(TAG, "MainFragment create view")
-        vm.setListState(ListState.LOADING)
         return inflater.inflate(R.layout.fragment_main, container, false)
     }
 
@@ -106,15 +103,15 @@ class MainFragment : Fragment() {
         val loadingDebtsLayout: ConstraintLayout = view.findViewById(R.id.loadingHumansLayout)
         val shimmerLayout: ShimmerFrameLayout = view.findViewById(R.id.shimmerLayout)
 
-        vm.humanListState.observe(viewLifecycleOwner) { state ->
+        vm.screenState.observe(viewLifecycleOwner) { state ->
             when (state) {
-                ListState.LOADING -> {
+                ScreenState.LOADING -> {
                     humansLayout.visibility = View.GONE
                     emptyHumansLayout.visibility = View.GONE
                     loadingDebtsLayout.visibility = View.VISIBLE
                     shimmerLayout.startShimmerAnimation()
                 }
-                ListState.FILLED -> {
+                ScreenState.SUCCESS -> {
                     val transition = Fade()
                     transition.duration = 200
                     transition.addTarget(humansLayout)
@@ -124,7 +121,7 @@ class MainFragment : Fragment() {
                     loadingDebtsLayout.visibility = View.GONE
                     shimmerLayout.stopShimmerAnimation()
                 }
-                ListState.EMPTY -> {
+                ScreenState.EMPTY -> {
                     val transition = Fade()
                     transition.duration = 200
                     transition.addTarget(emptyHumansLayout)
@@ -169,9 +166,9 @@ class MainFragment : Fragment() {
             changeFilterButtonColor(it)
         }
 
-        vm.humanOrder.observe(viewLifecycleOwner) {
-            vm.sortHumans()
-        }
+//        vm.humanOrder.observe(viewLifecycleOwner) {
+//            vm.sortHumans()
+//        }
 
         val overallPositiveSumTextView: TextView =
             view.findViewById(R.id.overallPositiveSumTextView)
@@ -208,26 +205,31 @@ class MainFragment : Fragment() {
             }
         })
 
-        vm.searchHumanList.observe(viewLifecycleOwner) { humanList ->
-            humanAdapter.updateHumansList(humanList)
+        vm.resultedHumanList.observe(viewLifecycleOwner) {
+            humanAdapter.updateHumansList(it)
+            Log.e(TAG, "data in adapter link success")
         }
+
+//        vm.searchHumanList.observe(viewLifecycleOwner) { humanList ->
+//            humanAdapter.updateHumansList(humanList)
+//        }
     }
 
     override fun onResume() {
         super.onResume()
 
         //TODO THIS CODE IS UPDATING RECYCLER VIEW WITHOUT LAGGING AND GHOSTING BUT WITH SHOWING PROGRESS BAR AFTER CHANGING ORIENTATION
-        Handler(Looper.getMainLooper()).postDelayed({
-            vm.resultHumanList.observe(this) {
-                if (it.isNotEmpty()) {
-                    humanAdapter.updateHumansList(it)
-                    Log.e(TAG, "data in adapter link success")
-                    vm.setListState(ListState.FILLED)
-                } else {
-                    vm.setListState(ListState.EMPTY)
-                }
-            }
-        }, 400)
+//        Handler(Looper.getMainLooper()).postDelayed({
+//            vm.resultHumanList.observe(this) {
+//                if (it.isNotEmpty()) {
+//                    humanAdapter.updateHumansList(it)
+//                    Log.e(TAG, "data in adapter link success")
+//                    vm.setScreenState(ListState.RECEIVED)
+//                } else {
+//                    vm.setScreenState(ListState.EMPTY)
+//                }
+//            }
+//        }, 400)
 
         //TODO THIS CODE IS UPDATING RECYCLER VIEW WITHOUT LAGGING BUT WITH GHOSTING OF PREVIOUS FRAGMENT
 //        vm.resultHumanList.observe(viewLifecycleOwner) {
@@ -314,13 +316,11 @@ class MainFragment : Fragment() {
                     sortHumansAttribute = HumanOrderAttribute.Sum
                 }
             }
-            val order = Pair(sortHumansAttribute, sortByIncrease)
-            if (vm.humanFilter.value!! != humansFilter) {
-                vm.onSetHumanFilter(filter = humansFilter)
-                if (vm.humanOrder.value!! == order)
-                    vm.sortHumans()
-            }
 
+            if (vm.humanFilter.value!! != humansFilter)
+                vm.onSetHumanFilter(filter = humansFilter)
+
+            val order = Pair(sortHumansAttribute, sortByIncrease)
             if (vm.humanOrder.value!! != order)
                 vm.onSetHumanOrder(order = order)
 

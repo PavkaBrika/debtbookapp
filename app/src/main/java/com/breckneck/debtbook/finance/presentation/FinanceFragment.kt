@@ -332,7 +332,7 @@ class FinanceFragment : Fragment() {
                     loadingNotesLayout.visibility = View.VISIBLE
                     shimmerLayout.startShimmerAnimation()
                 }
-                ListState.FILLED -> {
+                ListState.RECEIVED -> {
                     val transition = Fade()
                     transition.duration = 200
                     transition.addTarget(categoryLayout)
@@ -377,7 +377,7 @@ class FinanceFragment : Fragment() {
             vm.categoriesWithFinancesList.observe(this) { categoryList ->
                 if (categoryList.isNotEmpty()) {
                     usedFinanceCategoryAdapter.updateUsedFinanceCategoryList(usedFinanceCategoryList = categoryList, currency = vm.currency.value!!)
-                    vm.setFinanceListState(ListState.FILLED)
+                    vm.setFinanceListState(ListState.RECEIVED)
                 } else {
                     vm.setFinanceListState(ListState.EMPTY)
                 }
