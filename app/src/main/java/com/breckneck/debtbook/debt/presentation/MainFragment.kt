@@ -205,8 +205,10 @@ class MainFragment : Fragment() {
 
         val humanDebtSearchView = view.findViewById<SearchView>(R.id.humanSearchView)
         humanDebtSearchView.setOnSearchClickListener {
-            vm.onStartSearch()
-            vm.setIsSearching(isSearching = true)
+            if (vm.screenState.value != ScreenState.EMPTY) {
+                vm.onStartSearch()
+                vm.setIsSearching(isSearching = true)
+            }
         }
         humanDebtSearchView.setOnCloseListener {
             vm.onStopSearch()

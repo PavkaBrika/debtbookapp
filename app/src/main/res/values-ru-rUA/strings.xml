@@ -159,5 +159,5 @@
     <string name="hardware_unavailable">Оборудование недоступно</string>
     <string name="something_went_wrong_please_login_with_your_pin_code">Что-то пошло не так.\nПожалуйста, войдите с помощью PIN-кода</string>
     <string name="exit">Выйти</string>
-
+    <string name="enter_your_query">Введите свой запрос</string>
 </resources>
