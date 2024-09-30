@@ -1,7 +1,6 @@
-package com.breckneck.deptbook.domain.usecase.Human
+package com.breckneck.deptbook.domain.util
 
 import com.breckneck.deptbook.domain.model.HumanDomain
-import com.breckneck.deptbook.domain.util.HumanOrderAttribute
 
 fun orderHumans(debtList: List<HumanDomain>, order: Pair<HumanOrderAttribute, Boolean>): List<HumanDomain> {
     val sortedList: List<HumanDomain>

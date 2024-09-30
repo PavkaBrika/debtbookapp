@@ -9,12 +9,18 @@ import android.transition.Fade
 import android.transition.TransitionManager
 import android.util.Log
 import android.view.*
+import android.view.animation.Animation
+import android.view.animation.Animation.AnimationListener
+import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.debt.adapter.HumanAdapter
@@ -30,6 +36,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -60,6 +68,21 @@ class MainFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val humanClickListener = object : HumanAdapter.OnHumanClickListener {
+            override fun onHumanClick(humanDomain: HumanDomain, position: Int) {
+                buttonClickListener?.onHumanClick(
+                    idHuman = humanDomain.id,
+                    currency = humanDomain.currency,
+                    name = humanDomain.name
+                )
+                Log.e(TAG, "Click on human with id = ${humanDomain.id}")
+            }
+
+            override fun onHumanLongClick(humanDomain: HumanDomain, position: Int) {
+                openChangeDebtNameDialog(humanDomain = humanDomain, position = position)
+            }
+        }
+        humanAdapter = HumanAdapter(listOf(), humanClickListener)
         Log.e(TAG, "MainFragment created")
     }
 
@@ -135,21 +158,6 @@ class MainFragment : Fragment() {
         }
 
         humanRecyclerView = view.findViewById(R.id.humanRecyclerView)
-        val humanClickListener = object : HumanAdapter.OnHumanClickListener {
-            override fun onHumanClick(humanDomain: HumanDomain, position: Int) {
-                buttonClickListener?.onHumanClick(
-                    idHuman = humanDomain.id,
-                    currency = humanDomain.currency,
-                    name = humanDomain.name
-                )
-                Log.e(TAG, "Click on human with id = ${humanDomain.id}")
-            }
-
-            override fun onHumanLongClick(humanDomain: HumanDomain, position: Int) {
-                openChangeDebtNameDialog(humanDomain = humanDomain, position = position)
-            }
-        }
-        humanAdapter = HumanAdapter(listOf(), humanClickListener)
         humanRecyclerView.adapter = humanAdapter
 
         val addButton: FloatingActionButton = view.findViewById(R.id.addHumanButton)
@@ -158,6 +166,12 @@ class MainFragment : Fragment() {
         }
 
         filterButton = view.findViewById(R.id.filterHumanButton)
+        vm.isSearching.observe(viewLifecycleOwner) { isSearching ->
+            if (isSearching)
+                filterButton.visibility = View.GONE
+            else
+                filterButton.visibility = View.VISIBLE
+        }
         filterButton.setOnClickListener {
             showHumanSortDialog()
         }
@@ -165,10 +179,6 @@ class MainFragment : Fragment() {
         vm.humanFilter.observe(viewLifecycleOwner) {
             changeFilterButtonColor(it)
         }
-
-//        vm.humanOrder.observe(viewLifecycleOwner) {
-//            vm.sortHumans()
-//        }
 
         val overallPositiveSumTextView: TextView =
             view.findViewById(R.id.overallPositiveSumTextView)
@@ -194,6 +204,15 @@ class MainFragment : Fragment() {
         }
 
         val humanDebtSearchView = view.findViewById<SearchView>(R.id.humanSearchView)
+        humanDebtSearchView.setOnSearchClickListener {
+            vm.onStartSearch()
+            vm.setIsSearching(isSearching = true)
+        }
+        humanDebtSearchView.setOnCloseListener {
+            vm.onStopSearch()
+            vm.setIsSearching(isSearching = false)
+            false
+        }
         humanDebtSearchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return true
@@ -209,10 +228,6 @@ class MainFragment : Fragment() {
             humanAdapter.updateHumansList(it)
             Log.e(TAG, "data in adapter link success")
         }
-
-//        vm.searchHumanList.observe(viewLifecycleOwner) { humanList ->
-//            humanAdapter.updateHumansList(humanList)
-//        }
     }
 
     override fun onResume() {

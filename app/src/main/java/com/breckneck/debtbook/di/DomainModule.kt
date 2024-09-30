@@ -39,14 +39,6 @@ val domainModule = module {
         GetAllHumansUseCase(humanRepository = get())
     }
 
-    factory<GetPositiveHumansUseCase> {
-        GetPositiveHumansUseCase(humanRepository = get())
-    }
-
-    factory<GetNegativeHumansUseCase> {
-        GetNegativeHumansUseCase(humanRepository = get())
-    }
-
     factory<GetLastHumanIdUseCase> {
         GetLastHumanIdUseCase(humanRepository = get())
     }

@@ -26,6 +26,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 
 @OptIn(FlowPreview::class)
@@ -41,7 +42,7 @@ class MainFragmentViewModel(
 
     private val TAG = "MainFragmentViewModel"
 
-    private val _screenState = MutableLiveData<ScreenState>(ScreenState.LOADING)
+    private val _screenState = MutableLiveData(ScreenState.LOADING)
     val screenState: LiveData<ScreenState>
         get() = _screenState
     private val _listState: MutableStateFlow<HumanListState> =
@@ -80,23 +81,14 @@ class MainFragmentViewModel(
 
     private val disposeBag = CompositeDisposable()
 
-    private val _searchHumanList = MutableLiveData<List<HumanDomain>>()
-    val searchHumanList: LiveData<List<HumanDomain>>
-        get() = _searchHumanList
+    private val _isSearching = MutableLiveData(false)
+    val isSearching: LiveData<Boolean>
+        get() = _isSearching
+    private val _resultHumanListCopyForSearching = MutableLiveData<List<HumanDomain>>()
     private val _searchQuery = MutableStateFlow("")
 
     init {
         Log.e(TAG, "MainFragment VM created")
-        getHumanInfo()
-
-        _searchQuery
-            .debounce(500)
-            .onEach { query ->
-                _searchHumanList.value = _resultedHumanList.value!!.filter { human ->
-                    human.name.contains(query)
-                }
-            }.launchIn(viewModelScope)
-
 
         viewModelScope.launch {
             _listState.collectLatest { state ->
@@ -207,7 +199,7 @@ class MainFragmentViewModel(
     private fun orderHumans() {
         val result = Single.create {
             it.onSuccess(
-                orderHumans(
+                com.breckneck.deptbook.domain.util.orderHumans(
                     debtList = _sortedHumanList.value!!,
                     order = humanOrder.value!!
                 )
@@ -280,6 +272,31 @@ class MainFragmentViewModel(
         viewModelScope.launch {
             _searchQuery.emit(query)
         }
+    }
+
+    fun onStartSearch() {
+        _searchQuery
+            .debounce(500)
+            .onStart {
+                _resultHumanListCopyForSearching.value = _resultedHumanList.value
+                Log.e(TAG, "SEARCH FLOW STARTED")
+            }
+            .onEach { query ->
+                _resultedHumanList.value = _resultHumanListCopyForSearching.value!!.filter { human ->
+                    human.name.lowercase().trim().contains(query.lowercase().trim())
+                }
+                Log.e(TAG, "SEARCH")
+            }.launchIn(viewModelScope)
+    }
+
+    fun onStopSearch() {
+        if (_resultHumanListCopyForSearching.value != null)
+            _resultedHumanList.value = _resultHumanListCopyForSearching.value
+        Log.e(TAG, "RESULT")
+    }
+
+    fun setIsSearching(isSearching: Boolean) {
+        _isSearching.value = isSearching
     }
 
     override fun onCleared() {
