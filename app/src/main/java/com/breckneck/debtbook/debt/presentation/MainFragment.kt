@@ -296,13 +296,13 @@ class MainFragment : Fragment() {
         var humansFilter: Filter = vm.humanFilter.value!!
 
         when (vm.humanFilter.value!!) {
-            Filter.All -> bottomSheetDialogFilter.findViewById<RadioButton>(R.id.showAllRadioButton)!!.isChecked =
+            Filter.ALL -> bottomSheetDialogFilter.findViewById<RadioButton>(R.id.showAllRadioButton)!!.isChecked =
                 true
 
-            Filter.Negative -> bottomSheetDialogFilter.findViewById<RadioButton>(R.id.showNegativeRadioButton)!!.isChecked =
+            Filter.NEGATIVE -> bottomSheetDialogFilter.findViewById<RadioButton>(R.id.showNegativeRadioButton)!!.isChecked =
                 true
 
-            Filter.Positive -> bottomSheetDialogFilter.findViewById<RadioButton>(R.id.showPositiveRadioButton)!!.isChecked =
+            Filter.POSITIVE -> bottomSheetDialogFilter.findViewById<RadioButton>(R.id.showPositiveRadioButton)!!.isChecked =
                 true
         }
 
@@ -312,15 +312,15 @@ class MainFragment : Fragment() {
         bottomSheetDialogFilter.findViewById<Button>(R.id.confirmButton)!!.setOnClickListener {
             when (bottomSheetDialogFilter.findViewById<RadioGroup>(R.id.filterRadioGroup)!!.checkedRadioButtonId) {
                 R.id.showAllRadioButton -> {
-                    humansFilter = Filter.All
+                    humansFilter = Filter.ALL
                 }
 
                 R.id.showPositiveRadioButton -> {
-                    humansFilter = Filter.Positive
+                    humansFilter = Filter.POSITIVE
                 }
 
                 R.id.showNegativeRadioButton -> {
-                    humansFilter = Filter.Negative
+                    humansFilter = Filter.NEGATIVE
                 }
             }
 
@@ -362,7 +362,7 @@ class MainFragment : Fragment() {
     private fun changeFilterButtonColor(humansFilter: Filter) {
         if (view != null) {
             when (humansFilter) {
-                Filter.All -> {
+                Filter.ALL -> {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                         if (resources.configuration.isNightModeActive)
                             filterButton.setColorFilter(
@@ -388,11 +388,11 @@ class MainFragment : Fragment() {
                     }
                 }
 
-                Filter.Negative -> {
+                Filter.NEGATIVE -> {
                     filterButton.setColorFilter(ContextCompat.getColor(requireActivity(), R.color.red))
                 }
 
-                Filter.Positive -> {
+                Filter.POSITIVE -> {
                     filterButton.setColorFilter(
                         ContextCompat.getColor(
                             requireActivity(),

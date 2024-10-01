@@ -452,13 +452,13 @@ class DebtDetailsFragment : Fragment() {
 
         var debtFilter = vm.debtFilter.value!!
         when (debtFilter) {
-            Filter.All -> orderDialog.findViewById<RadioButton>(R.id.showAllRadioButton)!!.isChecked =
+            Filter.ALL -> orderDialog.findViewById<RadioButton>(R.id.showAllRadioButton)!!.isChecked =
                 true
 
-            Filter.Negative -> orderDialog.findViewById<RadioButton>(R.id.showNegativeRadioButton)!!.isChecked =
+            Filter.NEGATIVE -> orderDialog.findViewById<RadioButton>(R.id.showNegativeRadioButton)!!.isChecked =
                 true
 
-            Filter.Positive -> orderDialog.findViewById<RadioButton>(R.id.showPositiveRadioButton)!!.isChecked =
+            Filter.POSITIVE -> orderDialog.findViewById<RadioButton>(R.id.showPositiveRadioButton)!!.isChecked =
                 true
         }
 
@@ -466,17 +466,9 @@ class DebtDetailsFragment : Fragment() {
         orderDialog.findViewById<Button>(R.id.confirmButton)!!.setOnClickListener {
 
             when (orderDialog.findViewById<RadioGroup>(R.id.filterRadioGroup)!!.checkedRadioButtonId) {
-                R.id.showAllRadioButton -> {
-                    debtFilter = Filter.All
-                }
-
-                R.id.showPositiveRadioButton -> {
-                    debtFilter = Filter.Positive
-                }
-
-                R.id.showNegativeRadioButton -> {
-                    debtFilter = Filter.Negative
-                }
+                R.id.showAllRadioButton -> debtFilter = Filter.ALL
+                R.id.showPositiveRadioButton -> debtFilter = Filter.POSITIVE
+                R.id.showNegativeRadioButton -> debtFilter = Filter.NEGATIVE
             }
 
             when (orderDialog.findViewById<RadioGroup>(R.id.orderRadioGroup)!!.checkedRadioButtonId) {
@@ -529,7 +521,7 @@ class DebtDetailsFragment : Fragment() {
     private fun changeFilterButtonColor(filter: Filter) {
         if (view != null) {
             when (filter) {
-                Filter.All -> {
+                Filter.ALL -> {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                         if (resources.configuration.isNightModeActive)
                             sortButton.setColorFilter(
@@ -555,7 +547,7 @@ class DebtDetailsFragment : Fragment() {
                     }
                 }
 
-                Filter.Negative -> {
+                Filter.NEGATIVE -> {
                     sortButton.setColorFilter(
                         ContextCompat.getColor(
                             requireActivity(),
@@ -564,7 +556,7 @@ class DebtDetailsFragment : Fragment() {
                     )
                 }
 
-                Filter.Positive -> {
+                Filter.POSITIVE -> {
                     sortButton.setColorFilter(
                         ContextCompat.getColor(
                             requireActivity(),

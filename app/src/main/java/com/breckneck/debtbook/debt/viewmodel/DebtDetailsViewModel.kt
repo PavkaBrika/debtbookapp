@@ -68,7 +68,7 @@ class DebtDetailsViewModel(
     private val _debtOrder = MutableLiveData<Pair<DebtOrderAttribute, Boolean>>()
     val debtOrder: LiveData<Pair<DebtOrderAttribute, Boolean>>
         get() = _debtOrder
-    private val _debtFilter = MutableLiveData<Filter>(Filter.All)
+    private val _debtFilter = MutableLiveData<Filter>(Filter.ALL)
     val debtFilter: LiveData<Filter>
         get() = _debtFilter
     private val _debtListState = MutableLiveData<ListState>(ListState.LOADING)
@@ -120,9 +120,9 @@ class DebtDetailsViewModel(
         if ((_debtList.value != null) && (_isDebtsSorted.value == false)) {
             val result = Single.create {
                 when (debtFilter.value!!) {
-                    Filter.All -> it.onSuccess(sortDebtsUseCase.execute(debtList = _debtList.value!!, order = debtOrder.value!!))
-                    Filter.Negative ->  it.onSuccess(sortDebtsUseCase.execute(debtList = filterDebts.execute(debtList = _debtList.value!!, filter = debtFilter.value!!), order = debtOrder.value!!))
-                    Filter.Positive -> it.onSuccess(sortDebtsUseCase.execute(debtList = filterDebts.execute(debtList = _debtList.value!!, filter = debtFilter.value!!), order = debtOrder.value!!))
+                    Filter.ALL -> it.onSuccess(sortDebtsUseCase.execute(debtList = _debtList.value!!, order = debtOrder.value!!))
+                    Filter.NEGATIVE ->  it.onSuccess(sortDebtsUseCase.execute(debtList = filterDebts.execute(debtList = _debtList.value!!, filter = debtFilter.value!!), order = debtOrder.value!!))
+                    Filter.POSITIVE -> it.onSuccess(sortDebtsUseCase.execute(debtList = filterDebts.execute(debtList = _debtList.value!!, filter = debtFilter.value!!), order = debtOrder.value!!))
                 }
             }
                 .subscribeOn(Schedulers.io())

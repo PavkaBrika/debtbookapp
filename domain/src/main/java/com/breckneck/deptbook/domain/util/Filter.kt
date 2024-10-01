@@ -1,8 +1,6 @@
 package com.breckneck.deptbook.domain.util
 
-sealed class Filter {
-    data object All: Filter()
-    data object Positive : Filter()
-    data object Negative : Filter()
+enum class Filter {
+    ALL, NEGATIVE, POSITIVE
 }
 

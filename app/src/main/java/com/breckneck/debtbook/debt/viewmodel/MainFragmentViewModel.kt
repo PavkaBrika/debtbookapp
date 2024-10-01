@@ -12,7 +12,7 @@ import com.breckneck.deptbook.domain.usecase.Settings.GetFirstMainCurrency
 import com.breckneck.deptbook.domain.usecase.Settings.GetHumanOrder
 import com.breckneck.deptbook.domain.usecase.Settings.GetSecondMainCurrency
 import com.breckneck.deptbook.domain.usecase.Settings.SetHumanOrder
-import com.breckneck.deptbook.domain.util.HumanListState
+import com.breckneck.deptbook.domain.util.DebtLogicListState
 import com.breckneck.deptbook.domain.util.HumanOrderAttribute
 import com.breckneck.deptbook.domain.util.ScreenState
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -45,8 +45,8 @@ class MainFragmentViewModel(
     private val _screenState = MutableLiveData(ScreenState.LOADING)
     val screenState: LiveData<ScreenState>
         get() = _screenState
-    private val _listState: MutableStateFlow<HumanListState> =
-        MutableStateFlow(HumanListState.Loading)
+    private val _listState: MutableStateFlow<DebtLogicListState> =
+        MutableStateFlow(DebtLogicListState.Loading)
 
     private val _mainSums = MutableLiveData<Pair<String, String>>()
     val mainSums: LiveData<Pair<String, String>>
@@ -58,7 +58,7 @@ class MainFragmentViewModel(
     private val _sortedHumanList = MutableLiveData<List<HumanDomain>>()
     private val _initialHumanList = MutableLiveData<List<HumanDomain>>()
 
-    private val _humanFilter = MutableLiveData<Filter>(Filter.All)
+    private val _humanFilter = MutableLiveData<Filter>(Filter.ALL)
     val humanFilter: LiveData<Filter>
         get() = _humanFilter
     private val _humanOrder = MutableLiveData<Pair<HumanOrderAttribute, Boolean>>()
@@ -93,14 +93,14 @@ class MainFragmentViewModel(
         viewModelScope.launch {
             _listState.collectLatest { state ->
                 when (state) {
-                    is HumanListState.Loading -> {
+                    is DebtLogicListState.Loading -> {
                         _screenState.value = ScreenState.LOADING
                         getHumans()
                         getMainSums()
                         getHumanOrder()
                     }
 
-                    is HumanListState.Received -> {
+                    is DebtLogicListState.Received -> {
                         Completable.create {
                             if (state.needToSetFilter == true)
                                 filterHumans()
@@ -112,11 +112,11 @@ class MainFragmentViewModel(
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe {
                                 if (_sortedHumanList.value!!.isNotEmpty())
-                                    _listState.value = HumanListState.Sorted
+                                    _listState.value = DebtLogicListState.Sorted
                             }
                     }
 
-                    is HumanListState.Sorted -> {
+                    is DebtLogicListState.Sorted -> {
                         _resultedHumanList.value = _sortedHumanList.value
                         _screenState.value = ScreenState.SUCCESS
                     }
@@ -141,7 +141,7 @@ class MainFragmentViewModel(
                     _initialHumanList.value = it
                     _sortedHumanList.value = it
                     _listState.value =
-                        HumanListState.Received(needToSetFilter = true, needToSetOrder = true)
+                        DebtLogicListState.Received(needToSetFilter = true, needToSetOrder = true)
                     Log.e(TAG, "humans loaded in VM")
                 } else
                     _screenState.value = ScreenState.EMPTY
@@ -177,9 +177,9 @@ class MainFragmentViewModel(
     private fun filterHumans() {
         val result = Single.create {
             when (humanFilter.value!!) {
-                Filter.All -> it.onSuccess(_initialHumanList.value!!)
-                Filter.Negative -> it.onSuccess(_initialHumanList.value!!.filter { human -> human.sumDebt <= 0 })
-                Filter.Positive -> it.onSuccess(_initialHumanList.value!!.filter { human -> human.sumDebt >= 0 })
+                Filter.ALL -> it.onSuccess(_initialHumanList.value!!)
+                Filter.NEGATIVE -> it.onSuccess(_initialHumanList.value!!.filter { human -> human.sumDebt <= 0 })
+                Filter.POSITIVE -> it.onSuccess(_initialHumanList.value!!.filter { human -> human.sumDebt >= 0 })
             }
         }
             .subscribeOn(Schedulers.io())
@@ -221,13 +221,13 @@ class MainFragmentViewModel(
 
     fun onSetHumanFilter(filter: Filter) {
         _humanFilter.value = filter
-        _listState.value = HumanListState.Received(needToSetFilter = true, needToSetOrder = false)
+        _listState.value = DebtLogicListState.Received(needToSetFilter = true, needToSetOrder = false)
         Log.e(TAG, "Human filter set $filter")
     }
 
     fun onSetHumanOrder(order: Pair<HumanOrderAttribute, Boolean>) {
         _humanOrder.value = order
-        _listState.value = HumanListState.Received(needToSetFilter = false, needToSetOrder = true)
+        _listState.value = DebtLogicListState.Received(needToSetFilter = false, needToSetOrder = true)
         Log.e(TAG, "Human order set ${order.first}, ${order.second}")
     }
 

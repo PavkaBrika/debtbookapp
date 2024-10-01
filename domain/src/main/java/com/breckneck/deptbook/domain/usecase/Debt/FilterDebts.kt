@@ -8,15 +8,15 @@ class FilterDebts {
     fun execute(debtList: List<DebtDomain>, filter: Filter): List<DebtDomain> {
         val resultDebtList = ArrayList<DebtDomain>()
         when (filter) {
-            Filter.All -> {
+            Filter.ALL -> {
                 return debtList
             }
-            Filter.Negative -> {
+            Filter.NEGATIVE -> {
                 for (debt in debtList)
                     if (debt.sum <= 0)
                         resultDebtList.add(debt)
             }
-            Filter.Positive -> {
+            Filter.POSITIVE -> {
                 for (debt in debtList)
                     if (debt.sum >= 0)
                         resultDebtList.add(debt)
