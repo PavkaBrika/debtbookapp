@@ -6,6 +6,7 @@ import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -112,9 +113,9 @@ fun AuthorizationScreen(
             vm.setPINCode()
         }
     }
-
     val pinCodeEnterState by vm.pinCodeEnterState.collectAsState()
     val enteredPINCode by vm.enteredPINCode.collectAsState()
+
     val startActivityLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult(),
         onResult = {
@@ -144,7 +145,6 @@ fun AuthorizationScreen(
                 DISABLE -> {
                     if (vm.enteredPINCode.value == vm.currentPINCode.value) {
                         vm.turnOffPINCode()
-                        vm.changeEnteredPINCode("") //pin code doesnt match
                         Intent().also {
                             it.putExtra("PINCodeState", vm.pinCodeAction.value.toString())
                             activity.setResult(RESULT_OK, it)
@@ -218,11 +218,14 @@ fun AuthorizationScreen(
             })
         },
         onSuperButtonClick = {
+            vm.turnOffPINCode()
+            Toast.makeText(activity,
+                stringResource(R.string.your_pin_code_is_reset), Toast.LENGTH_SHORT).show()
             startActivityLauncher.launch(
                 Intent(
                     activity,
                     MainActivity::class.java
-                ).apply { addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP) })
+                ).apply { addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP and Intent.FLAG_ACTIVITY_NEW_TASK) })
         },
         showFingerprintButton = vm.isFingerprintAuthEnabled.value && vm.pinCodeAction.value == CHECK
     )
@@ -335,11 +338,13 @@ fun UnlockScreen(
                     }
                     .size(100.dp)
                     .pointerInput(Unit) {
-                        detectTapGestures(
-                            onLongPress = {
-                                onSuperButtonClick()
-                            }
-                        )
+                        if (pinCodeAction == CHECK) {
+                            detectTapGestures(
+                                onLongPress = {
+                                    onSuperButtonClick()
+                                }
+                            )
+                        }
                     },
                 painter = painterResource(id = R.drawable.app_icon),
                 contentDescription = stringResource(R.string.app_icon)

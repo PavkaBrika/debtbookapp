@@ -160,4 +160,5 @@
     <string name="something_went_wrong_please_login_with_your_pin_code">Что-то пошло не так.\nПожалуйста, войдите с помощью PIN-кода</string>
     <string name="exit">Выйти</string>
     <string name="enter_your_query">Введите свой запрос</string>
+    <string name="your_pin_code_is_reset">Ваш PIN-код сброшен</string>
 </resources>

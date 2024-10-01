@@ -160,4 +160,6 @@
     <string name="something_went_wrong_please_login_with_your_pin_code">Un problème s\'est produit.\nVeuillez vous connecter avec votre code PIN</string>
     <string name="exit">Sortie</string>
     <string name="enter_your_query">Saisissez votre requête</string>
+    <string name="your_pin_code_is_reset">Votre code PIN est réinitialisé</string>
+
 </resources>

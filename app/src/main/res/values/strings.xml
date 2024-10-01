@@ -190,4 +190,5 @@
     <string name="something_went_wrong_please_login_with_your_pin_code">Something went wrong.\nPlease, login with your PIN Code</string>
     <string name="exit">Exit</string>
     <string name="enter_your_query">Enter your query</string>
+    <string name="your_pin_code_is_reset">Your PIN code is reset</string>
 </resources>
