@@ -219,8 +219,7 @@ fun AuthorizationScreen(
         },
         onSuperButtonClick = {
             vm.turnOffPINCode()
-            Toast.makeText(activity,
-                stringResource(R.string.your_pin_code_is_reset), Toast.LENGTH_SHORT).show()
+            Toast.makeText(activity, R.string.your_pin_code_is_reset, Toast.LENGTH_SHORT).show()
             startActivityLauncher.launch(
                 Intent(
                     activity,
