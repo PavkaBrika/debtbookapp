@@ -106,20 +106,18 @@ class DebtDetailsViewModel(
                     DebtLogicListState.Loading -> {
                         _screenState.value = ScreenState.LOADING
                         if (_newHuman == true) {
-                            getNewHumanId()
-                                .subscribe({
-                                    _humanId = it
-                                    getDebtOrder()
-                                    getAllDebts()
-                                    getOverallSum()
-                                    Log.e(TAG, "New human id is $it")
-                                }, {
-                                    Log.e(TAG, it.stackTraceToString())
-                                })
+                            disposeBag.add(
+                                getNewHumanId() //need to refactor this hardcode
+                                    .subscribe({
+                                        _humanId = it
+                                        getDebtInfo()
+                                        Log.e(TAG, "New human id is $it")
+                                    }, {
+                                        Log.e(TAG, it.stackTraceToString())
+                                    })
+                            ) 
                         } else {
-                            getDebtOrder()
-                            getAllDebts()
-                            getOverallSum()
+                            getDebtInfo()
                         }
                     }
 
@@ -146,6 +144,12 @@ class DebtDetailsViewModel(
                 }
             }
         }
+    }
+
+    private fun getDebtInfo() {
+        getDebtOrder()
+        getAllDebts()
+        getOverallSum()
     }
 
     override fun onCleared() {

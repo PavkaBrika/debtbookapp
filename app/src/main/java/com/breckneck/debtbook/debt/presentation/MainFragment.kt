@@ -9,18 +9,12 @@ import android.transition.Fade
 import android.transition.TransitionManager
 import android.util.Log
 import android.view.*
-import android.view.animation.Animation
-import android.view.animation.Animation.AnimationListener
-import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.debt.adapter.HumanAdapter
@@ -36,8 +30,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -94,9 +86,9 @@ class MainFragment : Fragment() {
         requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         setFragmentResultListener("mainFragmentKey") { requestKey, bundle ->
             if (bundle.getBoolean("isListModified"))
-                vm.getHumanInfo()
+                vm.setListStateLoading()
             else if (mainActivityVM.isNeedDebtDataUpdate.value == true)
-                vm.getHumanInfo()
+                vm.setListStateLoading()
             else if (mainActivityVM.isNeedUpdateDebtSums.value == true)
                 vm.getMainSums()
         }
@@ -334,12 +326,8 @@ class MainFragment : Fragment() {
                 }
             }
 
-            if (vm.humanFilter.value!! != humansFilter)
-                vm.onSetHumanFilter(filter = humansFilter)
-
             val order = Pair(sortHumansAttribute, sortByIncrease)
-            if (vm.humanOrder.value!! != order)
-                vm.onSetHumanOrder(order = order)
+            vm.onSetHumanSort(filter = humansFilter, order = order)
 
             if (bottomSheetDialogFilter.findViewById<CheckBox>(R.id.rememberChoiceCheckBox)!!.isChecked)
                 vm.saveHumanOrder(order = order)

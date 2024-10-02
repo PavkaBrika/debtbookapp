@@ -95,25 +95,14 @@ class MainFragmentViewModel(
                 when (state) {
                     is DebtLogicListState.Loading -> {
                         _screenState.value = ScreenState.LOADING
-                        getHumans()
-                        getMainSums()
                         getHumanOrder()
+                        getMainSums()
+                        getHumans()
                     }
 
                     is DebtLogicListState.Received -> {
-                        Completable.create {
-                            if (state.needToSetFilter == true)
-                                filterHumans()
-                            if (state.needToSetOrder == true)
-                                sortHumans()
-                            it.onComplete()
-                        }
-                            .subscribeOn(Schedulers.single())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe {
-                                if (_sortedHumanList.value!!.isNotEmpty())
-                                    _listState.value = DebtLogicListState.Sorted
-                            }
+                        _screenState.value = ScreenState.LOADING
+                        sortHumans(state = state)
                     }
 
                     is DebtLogicListState.Sorted -> {
@@ -125,9 +114,8 @@ class MainFragmentViewModel(
         }
     }
 
-    fun getHumanInfo() {
-        getHumans()
-        getMainSums()
+    fun setListStateLoading() {
+        _listState.value = DebtLogicListState.Loading
     }
 
     private fun getHumans() {
@@ -141,7 +129,7 @@ class MainFragmentViewModel(
                     _initialHumanList.value = it
                     _sortedHumanList.value = it
                     _listState.value =
-                        DebtLogicListState.Received(needToSetFilter = true, needToSetOrder = true)
+                        DebtLogicListState.Received(needToSetFilter = true)
                     Log.e(TAG, "humans loaded in VM")
                 } else
                     _screenState.value = ScreenState.EMPTY
@@ -174,20 +162,39 @@ class MainFragmentViewModel(
         _humanOrder.value = getHumanOrder.execute()
     }
 
-    private fun filterHumans() {
+    private fun filterHumans(list: List<HumanDomain>): List<HumanDomain> {
+        return when (humanFilter.value!!) {
+            Filter.ALL -> list
+            Filter.NEGATIVE -> list.filter { human -> human.sumDebt <= 0 }
+            Filter.POSITIVE -> list.filter { human -> human.sumDebt >= 0 }
+        }
+    }
+
+    private fun orderHumans(list: List<HumanDomain>): List<HumanDomain> {
+        return com.breckneck.deptbook.domain.util.sortHumans(
+            debtList = list,
+            order = humanOrder.value!!
+        )
+    }
+
+    private fun sortHumans(state: DebtLogicListState) {
         val result = Single.create {
-            when (humanFilter.value!!) {
-                Filter.ALL -> it.onSuccess(_initialHumanList.value!!)
-                Filter.NEGATIVE -> it.onSuccess(_initialHumanList.value!!.filter { human -> human.sumDebt <= 0 })
-                Filter.POSITIVE -> it.onSuccess(_initialHumanList.value!!.filter { human -> human.sumDebt >= 0 })
+            var list = _sortedHumanList.value
+            if (state.needToSetFilter == true) {
+                list = filterHumans(list!!)
+                Log.e(TAG, "FILTERED")
             }
+            list = orderHumans(list!!)
+            Log.e(TAG, "SORTED")
+            it.onSuccess(list)
         }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
+                Log.e(TAG, "RECEIVED")
                 if (it.isNotEmpty()) {
                     _sortedHumanList.value = it
-                    Log.e(TAG, "Humans filtered")
+                    _listState.value = DebtLogicListState.Sorted
                 } else
                     _screenState.value = ScreenState.EMPTY
             }, {
@@ -196,39 +203,23 @@ class MainFragmentViewModel(
         disposeBag.add(result)
     }
 
-    private fun sortHumans() {
-        val result = Single.create {
-            it.onSuccess(
-                com.breckneck.deptbook.domain.util.sortHumans(
-                    debtList = _sortedHumanList.value!!,
-                    order = humanOrder.value!!
-                )
-            )
+    fun onSetHumanSort(filter: Filter, order: Pair<HumanOrderAttribute, Boolean>) {
+        if (humanFilter.value!! != filter && humanOrder.value!! == order) {
+            _humanFilter.value = filter
+            _sortedHumanList.value = _initialHumanList.value
+            _listState.value =
+                DebtLogicListState.Received(needToSetFilter = true)
+        } else if (humanFilter.value!! == filter && humanOrder.value!! != order) {
+            _humanOrder.value = order
+            _listState.value =
+                DebtLogicListState.Received(needToSetFilter = false)
+        } else if (humanFilter.value!! != filter && humanOrder.value!! != order) {
+            _humanFilter.value = filter
+            _humanOrder.value = order
+            _sortedHumanList.value = _initialHumanList.value
+            _listState.value =
+                DebtLogicListState.Received(needToSetFilter = true)
         }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                if (it.isNotEmpty()) {
-                    _sortedHumanList.value = it
-                    Log.e(TAG, "Humans ordered")
-                } else
-                    _screenState.value = ScreenState.EMPTY
-            }, {
-                Log.e(TAG, it.stackTraceToString())
-            })
-        disposeBag.add(result)
-    }
-
-    fun onSetHumanFilter(filter: Filter) {
-        _humanFilter.value = filter
-        _listState.value = DebtLogicListState.Received(needToSetFilter = true, needToSetOrder = false)
-        Log.e(TAG, "Human filter set $filter")
-    }
-
-    fun onSetHumanOrder(order: Pair<HumanOrderAttribute, Boolean>) {
-        _humanOrder.value = order
-        _listState.value = DebtLogicListState.Received(needToSetFilter = false, needToSetOrder = true)
-        Log.e(TAG, "Human order set ${order.first}, ${order.second}")
     }
 
     fun saveHumanOrder(order: Pair<HumanOrderAttribute, Boolean>) {
@@ -282,9 +273,10 @@ class MainFragmentViewModel(
                 Log.e(TAG, "SEARCH FLOW STARTED")
             }
             .onEach { query ->
-                _resultedHumanList.value = _resultHumanListCopyForSearching.value!!.filter { human ->
-                    human.name.lowercase().trim().contains(query.lowercase().trim())
-                }
+                _resultedHumanList.value =
+                    _resultHumanListCopyForSearching.value!!.filter { human ->
+                        human.name.lowercase().trim().contains(query.lowercase().trim())
+                    }
                 Log.e(TAG, "SEARCH")
             }.launchIn(viewModelScope)
     }
