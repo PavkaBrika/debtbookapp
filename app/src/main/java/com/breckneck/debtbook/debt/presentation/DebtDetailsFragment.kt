@@ -8,8 +8,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
-import android.os.Handler
-import android.os.Looper
 import android.transition.Fade
 import android.transition.TransitionManager
 import android.util.Log
@@ -39,9 +37,9 @@ import com.breckneck.deptbook.domain.usecase.Debt.*
 import com.breckneck.deptbook.domain.usecase.Settings.GetAddSumInShareText
 import com.breckneck.deptbook.domain.util.DebtOrderAttribute
 import com.breckneck.deptbook.domain.util.Filter
-import com.breckneck.deptbook.domain.util.ListState
 import com.breckneck.deptbook.domain.util.ROTATE_DEGREE_DEBT_IMAGE_VIEW_BY_DECREASE
 import com.breckneck.deptbook.domain.util.ROTATE_DEGREE_DEBT_IMAGE_VIEW_BY_INCREASE
+import com.breckneck.deptbook.domain.util.ScreenState
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -102,20 +100,16 @@ class DebtDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 //        postponeEnterTransition()
-        vm.onSetListState(ListState.LOADING)
 
         val recyclerView: RecyclerView = view.findViewById(R.id.debtsRecyclerView)
 //        recyclerView.doOnPreDraw {
 //            startPostponedEnterTransition()
 //        }
 
-        val humanId = arguments?.getInt("idHuman", 0)
-        val newHuman = arguments?.getBoolean("newHuman", false)
-        val currency = arguments?.getString("currency")
-        val humanName = arguments?.getString("name")
-
         val collaps: CollapsingToolbarLayout = view.findViewById(R.id.collaps)
-        collaps.title = humanName
+        vm.humanName.observe(viewLifecycleOwner) { name ->
+            collaps.title = name
+        }
         collaps.apply {
             setCollapsedTitleTypeface(Typeface.DEFAULT_BOLD)
             setExpandedTitleTypeface(Typeface.DEFAULT_BOLD)
@@ -123,25 +117,14 @@ class DebtDetailsFragment : Fragment() {
 
         debtClickListener = object : DebtAdapter.OnDebtClickListener { //ALERT DIALOG
             override fun onDebtClick(debtDomain: DebtDomain, position: Int) {
-                showDebtSettings(debtDomain = debtDomain, currency = currency!!, name = humanName!!)
+                showDebtSettings(debtDomain = debtDomain, currency = vm.humanCurrency!!, name = vm.humanName.value!!)
                 Log.e(TAG, "Click on debt with id = ${debtDomain.id}")
             }
         }
-        debtAdapter = DebtAdapter(listOf(), debtClickListener, currency!!)
+        debtAdapter = DebtAdapter(listOf(), debtClickListener, vm.humanCurrency!!)
         recyclerView.adapter = debtAdapter
 
         vm.apply {
-            if (vm.resultDebtList.value == null) {
-                if (newHuman == true) {
-                    getAllInfoAboutNewHuman()
-                } else {
-                    onSetHumanId(humanId!!)
-                    getDebtOrder()
-                    getAllDebts()
-                    getOverallSum()
-                }
-            }
-
             if ((isSortDialogShown.value != null) && (isSortDialogShown.value == true))
                 showSortDialog()
 
@@ -149,25 +132,25 @@ class DebtDetailsFragment : Fragment() {
                 showDeleteHumanDialog()
 
             if ((isShareDialogShown.value != null) && (isShareDialogShown.value == true))
-                showShareDialog(humanName, currency)
+                showShareDialog(humanName.value, humanCurrency)
 
             if ((isDebtSettingsDialogShown.value != null) && (isDebtSettingsDialogShown.value == true))
-                showDebtSettings(vm.settingDebt.value!!, currency = currency, name = humanName!!)
+                showDebtSettings(settingDebt.value!!, currency = humanCurrency!!, name = humanName.value!!)
 
             val debtsLayout: ConstraintLayout = view.findViewById(R.id.debtsLayout)
             val emptyDebtsLayout: ConstraintLayout = view.findViewById(R.id.emptyDebtsLayout)
             val loadingDebtsLayout: ConstraintLayout = view.findViewById(R.id.loadingDebtsLayout)
             val shimmerLayout: ShimmerFrameLayout = view.findViewById(R.id.shimmerLayout)
 
-            debtListState.observe(viewLifecycleOwner) { state ->
+            screenState.observe(viewLifecycleOwner) { state ->
                 when (state) {
-                    ListState.LOADING -> {
+                    ScreenState.LOADING -> {
                         debtsLayout.visibility = View.GONE
                         emptyDebtsLayout.visibility = View.GONE
                         loadingDebtsLayout.visibility = View.VISIBLE
                         shimmerLayout.startShimmerAnimation()
                     }
-                    ListState.RECEIVED -> {
+                    ScreenState.SUCCESS -> {
                         val transition = Fade()
                         transition.duration = 200
                         transition.addTarget(debtsLayout)
@@ -177,7 +160,7 @@ class DebtDetailsFragment : Fragment() {
                         loadingDebtsLayout.visibility = View.GONE
                         shimmerLayout.stopShimmerAnimation()
                     }
-                    ListState.EMPTY -> {
+                    ScreenState.EMPTY -> {
                         val transition = Fade()
                         transition.duration = 200
                         transition.addTarget(emptyDebtsLayout)
@@ -190,13 +173,8 @@ class DebtDetailsFragment : Fragment() {
                 }
             }
 
-            debtOrder.observe(viewLifecycleOwner) {
-                if (vm.resultDebtList.value != null)
-                    sortDebts()
-            }
-
             overallSum.observe(viewLifecycleOwner) {
-                setOverallSumText(sum = it, currency = currency, view = view)
+                setOverallSumText(sum = it, currency = humanCurrency!!, view = view)
             }
 
             debtFilter.observe(viewLifecycleOwner) { filter ->
@@ -216,16 +194,16 @@ class DebtDetailsFragment : Fragment() {
 
         val shareHumanButton: ImageView = view.findViewById(R.id.shareHumanButton)
         shareHumanButton.setOnClickListener {
-            showShareDialog(humanName, currency)
+            showShareDialog(vm.humanName.value, vm.humanName.value)
         }
 
         val addDebtButton: FloatingActionButton = view.findViewById(R.id.addDebtButton)
         addDebtButton.setOnClickListener {
-            if (vm.humanId.value != null)
+            if (vm.humanId != null)
                 buttonClickListener?.addNewDebtFragment(
-                    idHuman = vm.humanId.value!!,
-                    currency = currency!!,
-                    name = humanName!!
+                    idHuman = vm.humanId!!,
+                    currency = vm.humanCurrency!!,
+                    name = vm.humanName.value!!
                 )
         }
 
@@ -233,30 +211,11 @@ class DebtDetailsFragment : Fragment() {
         backButton.setOnClickListener {
             buttonClickListener?.onBackButtonClick()
         }
-    }
 
-    override fun onResume() {
-        super.onResume()
-
-
-        Handler(Looper.getMainLooper()).postDelayed({
-            vm.resultDebtList.observe(viewLifecycleOwner) {
-                if (it.isNotEmpty()) {
-                    debtAdapter.updateDebtList(debtList = it)
-                    vm.onSetListState(ListState.RECEIVED)
-                } else {
-                    vm.onSetListState(ListState.EMPTY)
-                }
-            }
-        }, 400)
-
-
-//        vm.resultDebtList.observe(viewLifecycleOwner) {
-//            if (it.isNotEmpty()) {
-//                debtAdapter.updateDebtList(debtList = it)
-//                vm.onSetListState(ListState.FILLED)
-//            }
-//        }
+        vm.resultedDebtList.observe(viewLifecycleOwner) {
+            debtAdapter.updateDebtList(it)
+            Log.e(TAG, "data in adapter link success")
+        }
     }
 
     fun setOverallSumText(sum: Double, currency: String, view: View) {
@@ -351,7 +310,7 @@ class DebtDetailsFragment : Fragment() {
             intent.putExtra(
                 EXTRA_TEXT,
                 getDebtShareString.execute(
-                    debtList = vm.resultDebtList.value!!,
+                    debtList = vm.resultedDebtList.value!!,
                     name = humanName!!,
                     currency = currency!!,
                     sum = vm.overallSum.value!!,
@@ -373,7 +332,7 @@ class DebtDetailsFragment : Fragment() {
                 getString(R.string.comment)
             )
             val excelFile = ExportDebtDataInExcelUseCase().execute(
-                debtList = vm.resultDebtList.value!!,
+                debtList = vm.resultedDebtList.value!!,
                 sheetName = "${humanName}_debts",
                 rootFolder = rootFolder,
                 sheetTitles = sheetTitles
@@ -485,13 +444,11 @@ class DebtDetailsFragment : Fragment() {
                 }
             }
 
-            val order = Pair(orderAttribute, sortByIncrease)
             if (vm.debtFilter.value != debtFilter) {
                 vm.onSetDebtFilter(filter = debtFilter)
-                if (vm.debtOrder.value == order)
-                    vm.sortDebts()
             }
 
+            val order = Pair(orderAttribute, sortByIncrease)
             if (order != vm.debtOrder.value) {
                 vm.onSetDebtOrder(Pair(orderAttribute, sortByIncrease))
             }

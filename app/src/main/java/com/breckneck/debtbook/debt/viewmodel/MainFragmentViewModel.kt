@@ -52,11 +52,11 @@ class MainFragmentViewModel(
     val mainSums: LiveData<Pair<String, String>>
         get() = _mainSums
 
+    private val _initialHumanList = MutableLiveData<List<HumanDomain>>()
+    private val _sortedHumanList = MutableLiveData<List<HumanDomain>>()
     private val _resultedHumanList = MutableLiveData<List<HumanDomain>>()
     val resultedHumanList: LiveData<List<HumanDomain>>
         get() = _resultedHumanList
-    private val _sortedHumanList = MutableLiveData<List<HumanDomain>>()
-    private val _initialHumanList = MutableLiveData<List<HumanDomain>>()
 
     private val _humanFilter = MutableLiveData<Filter>(Filter.ALL)
     val humanFilter: LiveData<Filter>
@@ -79,13 +79,13 @@ class MainFragmentViewModel(
     val changedHumanPosition: LiveData<Int>
         get() = _changedHumanPosition
 
-    private val disposeBag = CompositeDisposable()
-
     private val _isSearching = MutableLiveData(false)
     val isSearching: LiveData<Boolean>
         get() = _isSearching
     private val _resultHumanListCopyForSearching = MutableLiveData<List<HumanDomain>>()
     private val _searchQuery = MutableStateFlow("")
+
+    private val disposeBag = CompositeDisposable()
 
     init {
         Log.e(TAG, "MainFragment VM created")
@@ -105,7 +105,7 @@ class MainFragmentViewModel(
                             if (state.needToSetFilter == true)
                                 filterHumans()
                             if (state.needToSetOrder == true)
-                                orderHumans()
+                                sortHumans()
                             it.onComplete()
                         }
                             .subscribeOn(Schedulers.single())
@@ -146,7 +146,7 @@ class MainFragmentViewModel(
                 } else
                     _screenState.value = ScreenState.EMPTY
             }, {
-                Log.e(TAG, it.message.toString())
+                Log.e(TAG, it.stackTraceToString())
             })
         disposeBag.add(result)
     }
@@ -165,7 +165,7 @@ class MainFragmentViewModel(
             .subscribe({
                 _mainSums.value = it
             }, {
-                Log.e(TAG, it.message.toString())
+                Log.e(TAG, it.stackTraceToString())
             })
         disposeBag.add(result)
     }
@@ -191,15 +191,15 @@ class MainFragmentViewModel(
                 } else
                     _screenState.value = ScreenState.EMPTY
             }, {
-                Log.e(TAG, it.message.toString())
+                Log.e(TAG, it.stackTraceToString())
             })
         disposeBag.add(result)
     }
 
-    private fun orderHumans() {
+    private fun sortHumans() {
         val result = Single.create {
             it.onSuccess(
-                com.breckneck.deptbook.domain.util.orderHumans(
+                com.breckneck.deptbook.domain.util.sortHumans(
                     debtList = _sortedHumanList.value!!,
                     order = humanOrder.value!!
                 )
@@ -214,7 +214,7 @@ class MainFragmentViewModel(
                 } else
                     _screenState.value = ScreenState.EMPTY
             }, {
-                Log.e(TAG, it.message.toString())
+                Log.e(TAG, it.stackTraceToString())
             })
         disposeBag.add(result)
     }
@@ -245,7 +245,7 @@ class MainFragmentViewModel(
             .subscribe({
                 Log.e(TAG, "human updated")
             }, {
-                Log.e(TAG, it.message.toString())
+                Log.e(TAG, it.stackTraceToString())
             })
         disposeBag.add(result)
     }

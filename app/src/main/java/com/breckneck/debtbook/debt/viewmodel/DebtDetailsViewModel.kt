@@ -3,27 +3,32 @@ package com.breckneck.debtbook.debt.viewmodel
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.breckneck.deptbook.domain.model.DebtDomain
 import com.breckneck.deptbook.domain.usecase.Debt.DeleteDebtUseCase
 import com.breckneck.deptbook.domain.usecase.Debt.DeleteDebtsByHumanIdUseCase
-import com.breckneck.deptbook.domain.usecase.Debt.FilterDebts
 import com.breckneck.deptbook.domain.usecase.Debt.GetAllDebtsByIdUseCase
-import com.breckneck.deptbook.domain.usecase.Debt.SortDebts
 import com.breckneck.deptbook.domain.usecase.Human.AddSumUseCase
 import com.breckneck.deptbook.domain.usecase.Human.DeleteHumanUseCase
 import com.breckneck.deptbook.domain.usecase.Human.GetHumanSumDebtUseCase
 import com.breckneck.deptbook.domain.usecase.Human.GetLastHumanIdUseCase
 import com.breckneck.deptbook.domain.usecase.Settings.GetDebtOrder
 import com.breckneck.deptbook.domain.usecase.Settings.SetDebtOrder
+import com.breckneck.deptbook.domain.util.DebtLogicListState
 import com.breckneck.deptbook.domain.util.DebtOrderAttribute
 import com.breckneck.deptbook.domain.util.Filter
-import com.breckneck.deptbook.domain.util.ListState
+import com.breckneck.deptbook.domain.util.ScreenState
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
 
 class DebtDetailsViewModel(
     private val getAllDebtsByIdUseCase: GetAllDebtsByIdUseCase,
@@ -35,21 +40,38 @@ class DebtDetailsViewModel(
     private val addSumUseCase: AddSumUseCase,
     private val getDebtOrder: GetDebtOrder,
     private val setDebtOrder: SetDebtOrder,
-    private val filterDebts: FilterDebts
-): ViewModel() {
+    private val savedStateHandle: SavedStateHandle
+) : ViewModel() {
 
     private val TAG = "DebtDetailsViewModel"
 
-    private val _debtList = MutableLiveData<List<DebtDomain>>()
-    private val _resultDebtList = MutableLiveData<List<DebtDomain>>()
-    val resultDebtList: LiveData<List<DebtDomain>>
-        get() = _resultDebtList
-    private val _humanId = MutableLiveData<Int>()
-    val humanId: LiveData<Int>
+    private val _screenState = MutableLiveData(ScreenState.LOADING)
+    val screenState: LiveData<ScreenState>
+        get() = _screenState
+    private val _listState: MutableStateFlow<DebtLogicListState> =
+        MutableStateFlow(DebtLogicListState.Loading)
+
+    private val _initialDebtList = MutableLiveData<List<DebtDomain>>()
+    private val _sortedDebtList = MutableLiveData<List<DebtDomain>>()
+    private val _resultedDebtList = MutableLiveData<List<DebtDomain>>()
+    val resultedDebtList: LiveData<List<DebtDomain>>
+        get() = _resultedDebtList
+
+    private var _humanId = savedStateHandle.get<Int>("idHuman")
+    val humanId: Int?
         get() = _humanId
+    private val _humanName = savedStateHandle.getLiveData<String>("name")
+    val humanName: LiveData<String>
+        get() = _humanName
+    private val _humanCurrency = savedStateHandle.get<String>("currency")
+    val humanCurrency: String?
+        get() = _humanCurrency
+    private val _newHuman = savedStateHandle.get<Boolean>("newHuman")
+
     private val _overallSum = MutableLiveData<Double>()
     val overallSum: LiveData<Double>
         get() = _overallSum
+
     private val _isSortDialogShown by lazy { MutableLiveData<Boolean>() }
     val isSortDialogShown: LiveData<Boolean>
         get() = _isSortDialogShown
@@ -65,21 +87,65 @@ class DebtDetailsViewModel(
     private val _settingDebt by lazy { MutableLiveData<DebtDomain>() }
     val settingDebt: LiveData<DebtDomain>
         get() = _settingDebt
+
     private val _debtOrder = MutableLiveData<Pair<DebtOrderAttribute, Boolean>>()
     val debtOrder: LiveData<Pair<DebtOrderAttribute, Boolean>>
         get() = _debtOrder
     private val _debtFilter = MutableLiveData<Filter>(Filter.ALL)
     val debtFilter: LiveData<Filter>
         get() = _debtFilter
-    private val _debtListState = MutableLiveData<ListState>(ListState.LOADING)
-    val debtListState: LiveData<ListState>
-        get() = _debtListState
-    private val _isDebtsSorted = MutableLiveData<Boolean>(false)
+
     private val disposeBag = CompositeDisposable()
-    private val sortDebtsUseCase by lazy { SortDebts() }
 
     init {
         Log.e(TAG, "Debt Fragment View Model Started")
+
+        viewModelScope.launch {
+            _listState.collectLatest { state ->
+                when (state) {
+                    DebtLogicListState.Loading -> {
+                        _screenState.value = ScreenState.LOADING
+                        if (_newHuman == true) {
+                            getNewHumanId()
+                                .subscribe({
+                                    _humanId = it
+                                    getDebtOrder()
+                                    getAllDebts()
+                                    getOverallSum()
+                                    Log.e(TAG, "New human id is $it")
+                                }, {
+                                    Log.e(TAG, it.stackTraceToString())
+                                })
+                        } else {
+                            getDebtOrder()
+                            getAllDebts()
+                            getOverallSum()
+                        }
+                    }
+
+                    is DebtLogicListState.Received -> {
+                        Completable.create {
+                            if (state.needToSetFilter == true)
+                                filterDebts()
+                            if (state.needToSetOrder == true)
+                                sortDebts()
+                            it.onComplete()
+                        }
+                            .subscribeOn(Schedulers.single())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe {
+                                if (_sortedDebtList.value!!.isNotEmpty())
+                                    _listState.value = DebtLogicListState.Sorted
+                            }
+                    }
+
+                    DebtLogicListState.Sorted -> {
+                        _resultedDebtList.value = _sortedDebtList.value
+                        _screenState.value = ScreenState.SUCCESS
+                    }
+                }
+            }
+        }
     }
 
     override fun onCleared() {
@@ -88,7 +154,7 @@ class DebtDetailsViewModel(
         Log.e(TAG, "Debt Fragment View Model cleared")
     }
 
-    fun getDebtOrder() {
+    private fun getDebtOrder() {
         _debtOrder.value = getDebtOrder.execute()
     }
 
@@ -96,98 +162,121 @@ class DebtDetailsViewModel(
         setDebtOrder.execute(order = order)
     }
 
-    fun getAllDebts() {
+    private fun getAllDebts() {
         val getDebtsSingle = Single.create {
-            Log.e(TAG, "Open Debt Details of Human id = ${humanId.value}")
-            it.onSuccess(getAllDebtsByIdUseCase.execute(id = humanId.value!!))
+            it.onSuccess(getAllDebtsByIdUseCase.execute(id = humanId!!))
+            Log.e(TAG, "Open Debt Details of Human id = ${humanId}")
         }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .doOnSubscribe {
-                _debtListState.value = ListState.LOADING
-            }
             .subscribe({
-                _debtList.value = it
-                sortDebts()
-                Log.e(TAG, "Debts load success")
+                if (it.isNotEmpty()) {
+                    _initialDebtList.value = it
+                    _sortedDebtList.value = it
+                    _listState.value =
+                        DebtLogicListState.Received(needToSetFilter = true, needToSetOrder = true)
+                    Log.e(TAG, "Debts load success")
+                } else
+                    _screenState.value = ScreenState.EMPTY
             }, {
-                Log.e(TAG, it.message.toString())
+                Log.e(TAG, it.stackTraceToString())
             })
         disposeBag.add(getDebtsSingle)
     }
 
-    fun sortDebts() {
-        if ((_debtList.value != null) && (_isDebtsSorted.value == false)) {
-            val result = Single.create {
-                when (debtFilter.value!!) {
-                    Filter.ALL -> it.onSuccess(sortDebtsUseCase.execute(debtList = _debtList.value!!, order = debtOrder.value!!))
-                    Filter.NEGATIVE ->  it.onSuccess(sortDebtsUseCase.execute(debtList = filterDebts.execute(debtList = _debtList.value!!, filter = debtFilter.value!!), order = debtOrder.value!!))
-                    Filter.POSITIVE -> it.onSuccess(sortDebtsUseCase.execute(debtList = filterDebts.execute(debtList = _debtList.value!!, filter = debtFilter.value!!), order = debtOrder.value!!))
-                }
+    private fun filterDebts() {
+        val result = Single.create {
+            when (debtFilter.value!!) {
+                Filter.ALL -> it.onSuccess(_initialDebtList.value!!)
+                Filter.NEGATIVE -> it.onSuccess(_initialDebtList.value!!.filter { debt -> debt.sum <= 0 })
+                Filter.POSITIVE -> it.onSuccess(_initialDebtList.value!!.filter { debt -> debt.sum >= 0 })
             }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe {
-                    _debtListState.value = ListState.LOADING
-                }
-                .subscribe({
-                    _resultDebtList.value = it
-                    _isDebtsSorted.value = true
-                    if (_resultDebtList.value!!.isEmpty())
-                        _debtListState.value = ListState.EMPTY
-//                    else
-//                        _debtListState.value = ListState.FILLED
-                }, {
-                    Log.e(TAG, it.message.toString())
-                })
-            disposeBag.add(result)
-            Log.e(TAG, "Debts sorted")
-        }
-    }
-
-    fun getAllInfoAboutNewHuman() {
-        val getLastHumanIdSingle = Single.create {
-            it.onSuccess(getLastHumanIdUseCase.exectute())
         }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                _humanId.value = it
-                getDebtOrder()
-                getAllDebts()
-                getOverallSum()
+                if (it.isNotEmpty()) {
+                    _sortedDebtList.value = it
+                    Log.e(TAG, "Debts filtered")
+                } else
+                    _screenState.value = ScreenState.EMPTY
             }, {
-                Log.e(TAG, it.message.toString())
+                Log.e(TAG, it.stackTraceToString())
             })
-        disposeBag.add(getLastHumanIdSingle)
+        disposeBag.add(result)
     }
 
-    fun getOverallSum() {
+    private fun sortDebts() {
+        val result = Single.create {
+            it.onSuccess(
+                com.breckneck.deptbook.domain.util.sortDebts(
+                    debtList = _sortedDebtList.value!!,
+                    order = debtOrder.value!!
+                )
+            )
+        }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                if (it.isNotEmpty()) {
+                    _sortedDebtList.value = it
+                    Log.e(TAG, "Debts ordered")
+                } else
+                    _screenState.value = ScreenState.EMPTY
+            }, {
+                Log.e(TAG, it.stackTraceToString())
+            })
+        disposeBag.add(result)
+    }
+
+    private fun getNewHumanId() = Single.create {
+        it.onSuccess(getLastHumanIdUseCase.exectute())
+    }
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+
+
+//    private fun getNewHumanId() {
+//        val getLastHumanIdSingle = Single.create {
+//            it.onSuccess(getLastHumanIdUseCase.exectute())
+//        }
+//            .subscribeOn(Schedulers.io())
+//            .observeOn(AndroidSchedulers.mainThread())
+//            .subscribe({
+//                _humanId = it
+//                Log.e(TAG, "New human id is $it")
+//            }, {
+//                Log.e(TAG, it.stackTraceToString())
+//            })
+//        disposeBag.add(getLastHumanIdSingle)
+//    }
+
+    private fun getOverallSum() {
         val getOverallSumSingle = Single.create {
-            it.onSuccess(getHumanSumDebtUseCase.execute(humanId = humanId.value!!))
+            it.onSuccess(getHumanSumDebtUseCase.execute(humanId = humanId!!))
         }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 _overallSum.value = it
             }, {
-                Log.e(TAG, it.message.toString())
+                Log.e(TAG, it.stackTraceToString())
             })
         disposeBag.add(getOverallSumSingle)
     }
 
     fun deleteHuman() {
         val deleteHumanCompletable = Completable.create {
-            deleteHumanUseCase.execute(id = _humanId.value!!)
-            deleteDebtsByHumanIdUseCase.execute(id = _humanId.value!!)
+            deleteHumanUseCase.execute(id = humanId!!)
+            deleteDebtsByHumanIdUseCase.execute(id = humanId!!)
             it.onComplete()
         }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                Log.e(TAG, "Deleted human with id = ${_humanId.value}")
+                Log.e(TAG, "Deleted human with id = ${humanId}")
             }, {
-                Log.e(TAG, it.message.toString())
+                Log.e(TAG, it.stackTraceToString())
             })
         disposeBag.add(deleteHumanCompletable)
     }
@@ -195,29 +284,18 @@ class DebtDetailsViewModel(
     fun deleteDebt(debtDomain: DebtDomain) {
         val deleteDebtCompletable = Completable.create {
             deleteDebtUseCase.execute(debtDomain)
-            addSumUseCase.execute(humanId = _humanId.value!!, sum = (debtDomain.sum * (-1.0)))
+            addSumUseCase.execute(humanId = humanId!!, sum = (debtDomain.sum * (-1.0)))
             Log.e(TAG, "Debt delete success")
             it.onComplete()
         }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                _isDebtsSorted.value = false
-                getOverallSum()
-                getAllDebts()
-                Log.e(TAG, "Debts load success")
-            },{
-                Log.e(TAG, it.message.toString())
+                _listState.value = DebtLogicListState.Loading
+            }, {
+                Log.e(TAG, it.stackTraceToString())
             })
         disposeBag.add(deleteDebtCompletable)
-    }
-
-    fun onSetHumanId(id: Int) {
-        _humanId.value = id
-    }
-
-    fun onSetListState(state: ListState) {
-        _debtListState.value = state
     }
 
     fun onHumanDeleteDialogOpen() {
@@ -257,12 +335,14 @@ class DebtDetailsViewModel(
     }
 
     fun onSetDebtOrder(order: Pair<DebtOrderAttribute, Boolean>) {
-        _isDebtsSorted.value = false
         _debtOrder.value = order
+        _listState.value =
+            DebtLogicListState.Received(needToSetFilter = false, needToSetOrder = true)
     }
 
     fun onSetDebtFilter(filter: Filter) {
-        _isDebtsSorted.value = false
         _debtFilter.value = filter
+        _listState.value =
+            DebtLogicListState.Received(needToSetFilter = true, needToSetOrder = false)
     }
 }
