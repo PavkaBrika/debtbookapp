@@ -207,18 +207,15 @@ class MainFragmentViewModel(
         if (humanFilter.value!! != filter && humanOrder.value!! == order) {
             _humanFilter.value = filter
             _sortedHumanList.value = _initialHumanList.value
-            _listState.value =
-                DebtLogicListState.Received(needToSetFilter = true)
+            _listState.value = DebtLogicListState.Received(needToSetFilter = true)
         } else if (humanFilter.value!! == filter && humanOrder.value!! != order) {
             _humanOrder.value = order
-            _listState.value =
-                DebtLogicListState.Received(needToSetFilter = false)
+            _listState.value = DebtLogicListState.Received(needToSetFilter = false)
         } else if (humanFilter.value!! != filter && humanOrder.value!! != order) {
             _humanFilter.value = filter
             _humanOrder.value = order
             _sortedHumanList.value = _initialHumanList.value
-            _listState.value =
-                DebtLogicListState.Received(needToSetFilter = true)
+            _listState.value = DebtLogicListState.Received(needToSetFilter = true)
         }
     }
 

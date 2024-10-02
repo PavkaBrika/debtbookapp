@@ -444,14 +444,8 @@ class DebtDetailsFragment : Fragment() {
                 }
             }
 
-            if (vm.debtFilter.value != debtFilter) {
-                vm.onSetDebtFilter(filter = debtFilter)
-            }
-
             val order = Pair(orderAttribute, sortByIncrease)
-            if (order != vm.debtOrder.value) {
-                vm.onSetDebtOrder(Pair(orderAttribute, sortByIncrease))
-            }
+            vm.onSetDebtSort(filter = debtFilter, order = order)
 
             if (rememberChoiceCheckBox!!.isChecked) {
                 vm.saveDebtOrder(Pair(orderAttribute, sortByIncrease))

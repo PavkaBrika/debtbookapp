@@ -27,7 +27,6 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 
 class DebtDetailsViewModel(
@@ -115,26 +114,15 @@ class DebtDetailsViewModel(
                                     }, {
                                         Log.e(TAG, it.stackTraceToString())
                                     })
-                            ) 
+                            )
                         } else {
                             getDebtInfo()
                         }
                     }
 
                     is DebtLogicListState.Received -> {
-                        Completable.create {
-                            if (state.needToSetFilter == true)
-                                filterDebts()
-                            if (state.needToSetOrder == true)
-                                sortDebts()
-                            it.onComplete()
-                        }
-                            .subscribeOn(Schedulers.single())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe {
-                                if (_sortedDebtList.value!!.isNotEmpty())
-                                    _listState.value = DebtLogicListState.Sorted
-                            }
+                        _screenState.value = ScreenState.LOADING
+                        sortDebts(state = state)
                     }
 
                     DebtLogicListState.Sorted -> {
@@ -178,7 +166,7 @@ class DebtDetailsViewModel(
                     _initialDebtList.value = it
                     _sortedDebtList.value = it
                     _listState.value =
-                        DebtLogicListState.Received(needToSetFilter = true, needToSetOrder = true)
+                        DebtLogicListState.Received(needToSetFilter = true)
                     Log.e(TAG, "Debts load success")
                 } else
                     _screenState.value = ScreenState.EMPTY
@@ -188,20 +176,32 @@ class DebtDetailsViewModel(
         disposeBag.add(getDebtsSingle)
     }
 
-    private fun filterDebts() {
+    private fun filterDebts(list: List<DebtDomain>): List<DebtDomain> {
+        return when (debtFilter.value!!) {
+            Filter.ALL -> list
+            Filter.NEGATIVE -> list.filter { debt -> debt.sum <= 0 }
+            Filter.POSITIVE -> list.filter { debt -> debt.sum >= 0 }
+        }
+    }
+
+    private fun sortDebts(state: DebtLogicListState) {
         val result = Single.create {
-            when (debtFilter.value!!) {
-                Filter.ALL -> it.onSuccess(_initialDebtList.value!!)
-                Filter.NEGATIVE -> it.onSuccess(_initialDebtList.value!!.filter { debt -> debt.sum <= 0 })
-                Filter.POSITIVE -> it.onSuccess(_initialDebtList.value!!.filter { debt -> debt.sum >= 0 })
+            var list = _sortedDebtList.value
+            if (state.needToSetFilter == true) {
+                list = filterDebts(list!!)
+                Log.e(TAG, "FILTERED")
             }
+            list = orderDebts(list!!)
+            Log.e(TAG, "SORTED")
+            it.onSuccess(list)
         }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
+                Log.e(TAG, "RECEIVED")
                 if (it.isNotEmpty()) {
                     _sortedDebtList.value = it
-                    Log.e(TAG, "Debts filtered")
+                    _listState.value = DebtLogicListState.Sorted
                 } else
                     _screenState.value = ScreenState.EMPTY
             }, {
@@ -210,27 +210,11 @@ class DebtDetailsViewModel(
         disposeBag.add(result)
     }
 
-    private fun sortDebts() {
-        val result = Single.create {
-            it.onSuccess(
-                com.breckneck.deptbook.domain.util.sortDebts(
-                    debtList = _sortedDebtList.value!!,
-                    order = debtOrder.value!!
-                )
-            )
-        }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                if (it.isNotEmpty()) {
-                    _sortedDebtList.value = it
-                    Log.e(TAG, "Debts ordered")
-                } else
-                    _screenState.value = ScreenState.EMPTY
-            }, {
-                Log.e(TAG, it.stackTraceToString())
-            })
-        disposeBag.add(result)
+    private fun orderDebts(list: List<DebtDomain>): List<DebtDomain> {
+        return com.breckneck.deptbook.domain.util.sortDebts(
+            debtList = list,
+            order = debtOrder.value!!
+        )
     }
 
     private fun getNewHumanId() = Single.create {
@@ -238,22 +222,6 @@ class DebtDetailsViewModel(
     }
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
-
-
-//    private fun getNewHumanId() {
-//        val getLastHumanIdSingle = Single.create {
-//            it.onSuccess(getLastHumanIdUseCase.exectute())
-//        }
-//            .subscribeOn(Schedulers.io())
-//            .observeOn(AndroidSchedulers.mainThread())
-//            .subscribe({
-//                _humanId = it
-//                Log.e(TAG, "New human id is $it")
-//            }, {
-//                Log.e(TAG, it.stackTraceToString())
-//            })
-//        disposeBag.add(getLastHumanIdSingle)
-//    }
 
     private fun getOverallSum() {
         val getOverallSumSingle = Single.create {
@@ -338,15 +306,19 @@ class DebtDetailsViewModel(
         _isSortDialogShown.value = false
     }
 
-    fun onSetDebtOrder(order: Pair<DebtOrderAttribute, Boolean>) {
-        _debtOrder.value = order
-        _listState.value =
-            DebtLogicListState.Received(needToSetFilter = false, needToSetOrder = true)
-    }
-
-    fun onSetDebtFilter(filter: Filter) {
-        _debtFilter.value = filter
-        _listState.value =
-            DebtLogicListState.Received(needToSetFilter = true, needToSetOrder = false)
+    fun onSetDebtSort(filter: Filter, order: Pair<DebtOrderAttribute, Boolean>) {
+        if (debtFilter.value!! != filter && debtOrder.value!! == order) {
+            _debtFilter.value = filter
+            _sortedDebtList.value = _initialDebtList.value
+            _listState.value = DebtLogicListState.Received(needToSetFilter = true)
+        } else if (debtFilter.value!! == filter && debtOrder.value!! != order) {
+            _debtOrder.value = order
+            _listState.value = DebtLogicListState.Received(needToSetFilter = false)
+        } else if (debtFilter.value!! != filter && debtOrder.value!! != order) {
+            _debtFilter.value = filter
+            _debtOrder.value = order
+            _sortedDebtList.value = _initialDebtList.value
+            _listState.value = DebtLogicListState.Received(needToSetFilter = true)
+        }
     }
 }
