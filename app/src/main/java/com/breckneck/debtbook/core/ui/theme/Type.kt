@@ -1,4 +1,4 @@
-package com.breakneck.pokedex.ui.theme
+package com.breckneck.debtbook.core.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

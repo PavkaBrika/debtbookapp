@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.breakneck.pokedex.ui.theme.DebtBookTheme
+import com.breckneck.debtbook.core.ui.theme.DebtBookTheme
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.auth.util.BiometricPromptManager
 import com.breckneck.debtbook.auth.util.CryptoManager
