@@ -1,0 +1,44 @@
+---
+description: Auto-update module documentation in .cursor/docs/ after code changes
+alwaysApply: true
+---
+
+# Documentation Sync Rule
+
+Project documentation lives in `.cursor/docs/`. After making **structural changes** (new files, renamed classes, new dependencies, changed models, new screens, modified DI bindings, new DB entities/migrations), update the relevant doc.
+
+**Skip update** for: bug fixes, style changes, string edits, layout tweaks, or changes that don't alter the module's structure/API.
+
+## File → Doc mapping
+
+| Changed files (glob) | Update doc |
+|----------------------|-----------|
+| `domain/**/model/**` | `DOMAIN_MODULE.md` → Модели |
+| `domain/**/repository/**` | `DOMAIN_MODULE.md` → Интерфейсы репозиториев |
+| `domain/**/usecase/**` | `DOMAIN_MODULE.md` → Use Cases |
+| `domain/**/util/**` | `DOMAIN_MODULE.md` → Утилиты |
+| `data/**/database/**`, `data/**/entity/**` | `DATA_MODULE.md` → Room Database / Entities |
+| `data/**/repository/**`, `data/**/storage/**` | `DATA_MODULE.md` → Storage / Repository Impl |
+| `data/**/sharedprefs/**` | `DATA_MODULE.md` → SharedPreferences |
+| `app/**/debt/**` | `APP_DEBT_FEATURE.md` |
+| `app/**/finance/**` | `APP_FINANCE_FEATURE.md` |
+| `app/**/goal/**` | `APP_GOAL_FEATURE.md` |
+| `app/**/settings/**` | `APP_SETTINGS_FEATURE.md` |
+| `app/**/auth/**`, `app/**/core/**`, `app/**/di/**`, `app/**/app/**` | `APP_CORE.md` |
+| `**/nav_graph.xml`, `**/build.gradle`, `AndroidManifest.xml` | `PROJECT_OVERVIEW.md` |
+
+## What to update
+
+- **New file added**: add to structure tree + brief description
+- **File removed**: remove from structure tree
+- **New ViewModel / dependency**: update Зависимости + State tables
+- **New domain model**: add to Модели section with fields
+- **New use case**: add to corresponding use case table
+- **New DB entity**: update entity mapping table + DAO section
+- **New Koin binding**: update DI section in `APP_CORE.md`
+- **New nav destination**: update navigation tree in `PROJECT_OVERVIEW.md`
+- **Changed enum values**: update enum table in `DOMAIN_MODULE.md`
+
+## How to update
+
+Use `StrReplace` on the relevant `.md` file. Keep the existing format: tables, code blocks, structure trees. Be concise — one line per item, no verbose explanations.
