@@ -7,7 +7,7 @@ todos:
     status: completed
   - id: phase1-gradle
     content: "Фаза 1.1: Обновить Gradle 7.3.3→8.9+, AGP 7.2.1→8.8+, Kotlin 1.9.0→2.1+, Java 8→17, KAPT→KSP"
-    status: pending
+    status: completed
   - id: phase1-deps
     content: "Фаза 1.2: Обновить все зависимости (Room, Lifecycle, Compose BOM, Navigation, Koin, Biometric, Glide/Coil, Yandex Ads)"
     status: pending
