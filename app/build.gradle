@@ -49,9 +49,14 @@ android {
             ]
         }
     }
-    applicationVariants.all { variant ->
-        variant.outputs.all { output ->
-            outputFileName = "SimpleDebtBook-v${variant.versionName}(${variant.versionCode}).apk"
+}
+
+androidComponents {
+    onVariants(selector().all()) { variant ->
+        variant.outputs.forEach { output ->
+            output.outputFileName.set(
+                "SimpleDebtBook-v${android.defaultConfig.versionName}(${android.defaultConfig.versionCode}).apk"
+            )
         }
     }
 }
