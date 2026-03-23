@@ -53,6 +53,11 @@ android {
             ]
         }
     }
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            outputFileName = "SimpleDebtBook-v${variant.versionName}(${variant.versionCode}).apk"
+        }
+    }
 }
 
 
