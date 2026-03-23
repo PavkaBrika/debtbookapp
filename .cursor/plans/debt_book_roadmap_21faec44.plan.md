@@ -56,7 +56,7 @@ isProject: false
 
 **Стек (актуально после Фазы 0 + 1.1):**
 
-- AGP `8.8.0`, Gradle `8.10.2`, Kotlin `2.1.0` ✅
+- AGP `9.1.0`, Gradle `9.4.1`, Kotlin `2.3.20`, KSP `2.3.6` ✅
 - Java compatibility `17`, KSP вместо KAPT ✅
 - Compose compiler plugin `2.1.0` (новый механизм, без `composeOptions`) ✅
 - `compileSdk 35`, `targetSdk 35` — соответствует требованиям Google Play ✅
@@ -107,15 +107,16 @@ isProject: false
 
 ### 1.1 Обновление Gradle / AGP / Kotlin ✅ ВЫПОЛНЕНО
 
-- Gradle Wrapper: `7.3.3` → `8.10.2` ✅
-- Android Gradle Plugin: `7.2.1` → `8.8.0` ✅
-- Kotlin: `1.9.0` → `2.1.0` ✅
+- Gradle Wrapper: `7.3.3` → `9.4.1` ✅
+- Android Gradle Plugin: `7.2.1` → `9.1.0` ✅
+- Kotlin: `1.9.0` → `2.3.20` ✅
+- KSP: `kotlin-kapt` → `com.google.devtools.ksp:2.3.6` ✅ (с KSP 2.3.0 версия независима от Kotlin)
 - Java compatibility: `1.8` → `17` ✅
-- Переход с `KAPT` на `KSP` (для Room) ✅
 - `compileSdk` / `targetSdk`: `34` → `35` ✅
-- Compose compiler plugin `org.jetbrains.kotlin.plugin.compose` (вместо `composeOptions`) ✅
-- `buildConfig true` явно включён (AGP 8 отключает по умолчанию) ✅
-- `packagingOptions` → `packaging` (новый DSL AGP 8) ✅
+- Compose compiler plugin `org.jetbrains.kotlin.plugin.compose:2.3.20` (вместо `composeOptions`) ✅
+- `buildConfig true` явно включён (AGP 8+ отключает по умолчанию) ✅
+- `packagingOptions` → `packaging` (новый DSL AGP 8+) ✅
+- `namespace` вынесен в `build.gradle` (требование AGP 8+) ✅
 
 Ключевые файлы: `[build.gradle](build.gradle)`, `[app/build.gradle](app/build.gradle)`, `[gradle/wrapper/gradle-wrapper.properties](gradle/wrapper/gradle-wrapper.properties)`
 
