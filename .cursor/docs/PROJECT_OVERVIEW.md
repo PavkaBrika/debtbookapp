@@ -46,7 +46,7 @@ Android-приложение для учёта долгов, финансов и
 | UI (Compose) | Compose BOM, Material3, Activity Compose | 2026.03.00 |
 | Навигация | Navigation Component (single nav_graph.xml) | 2.9.7 |
 | Lifecycle | ViewModel, LiveData | 2.10.0 |
-| Реактивность | RxJava 3 + Kotlin Coroutines/Flow | — |
+| Реактивность | Kotlin Coroutines/Flow | — |
 | Изображения | Glide | 4.16.0 |
 | Shimmer | Facebook Shimmer | 0.1.0 |
 | Безопасность | androidx.biometric (BiometricPrompt) | — |
@@ -136,7 +136,7 @@ com.breckneck.debtbook
 ## Важные особенности
 
 - **Пакетный typo**: `:domain` и `:data` используют `com.breckneck.deptbook`, а `:app` — `com.breckneck.debtbook`. Это отражается в импортах.
-- **Hybrid Async**: ViewModel'ы используют и RxJava 3, и Coroutines/Flow.
+- **Async**: ViewModel'ы используют исключительно Kotlin Coroutines/Flow (`viewModelScope`, `StateFlow`).
 - **Room DB version 14**: 6 таблиц (`Human`, `Debt`, `FinanceData`, `FinanceCategoryData`, `GoalData`, `GoalDepositData`).
 - **Compose** используется только для экрана авторизации (`AuthorizationScreen`); остальной UI — View Binding + XML.
 - **Google Drive Sync**: `DriveServiceHelper` + `SynchronizationViewModel` обеспечивают backup/restore всех данных.

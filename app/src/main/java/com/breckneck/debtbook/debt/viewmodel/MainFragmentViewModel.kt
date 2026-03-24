@@ -15,11 +15,7 @@ import com.breckneck.deptbook.domain.usecase.Settings.SetHumanOrder
 import com.breckneck.deptbook.domain.util.DebtLogicListState
 import com.breckneck.deptbook.domain.util.HumanOrderAttribute
 import com.breckneck.deptbook.domain.util.ScreenState
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Completable
-import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -28,6 +24,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @OptIn(FlowPreview::class)
 class MainFragmentViewModel(
@@ -85,8 +82,6 @@ class MainFragmentViewModel(
     private val _resultHumanListCopyForSearching = MutableLiveData<List<HumanDomain>>()
     private val _searchQuery = MutableStateFlow("")
 
-    private val disposeBag = CompositeDisposable()
-
     init {
         Log.e(TAG, "MainFragment VM created")
 
@@ -119,43 +114,37 @@ class MainFragmentViewModel(
     }
 
     private fun getHumans() {
-        val result = Single.create {
-            it.onSuccess(getAllHumansUseCase.execute())
-        }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                if (it.isNotEmpty()) {
-                    _initialHumanList.value = it
-                    _sortedHumanList.value = it
-                    _listState.value =
-                        DebtLogicListState.Received(needToSetFilter = true)
+        viewModelScope.launch {
+            try {
+                val humans = withContext(Dispatchers.IO) { getAllHumansUseCase.execute() }
+                if (humans.isNotEmpty()) {
+                    _initialHumanList.value = humans
+                    _sortedHumanList.value = humans
+                    _listState.value = DebtLogicListState.Received(needToSetFilter = true)
                     Log.e(TAG, "humans loaded in VM")
-                } else
+                } else {
                     _screenState.value = ScreenState.EMPTY
-            }, {
-                Log.e(TAG, it.stackTraceToString())
-            })
-        disposeBag.add(result)
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, e.stackTraceToString())
+            }
+        }
     }
 
     fun getMainSums() {
-        val result = Single.create {
-            it.onSuccess(
-                getAllDebtsSumUseCase.execute(
-                    getFirstMainCurrency.execute(),
-                    getSecondMainCurrency.execute()
-                )
-            )
+        viewModelScope.launch {
+            try {
+                val sums = withContext(Dispatchers.IO) {
+                    getAllDebtsSumUseCase.execute(
+                        getFirstMainCurrency.execute(),
+                        getSecondMainCurrency.execute()
+                    )
+                }
+                _mainSums.value = sums
+            } catch (e: Exception) {
+                Log.e(TAG, e.stackTraceToString())
+            }
         }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                _mainSums.value = it
-            }, {
-                Log.e(TAG, it.stackTraceToString())
-            })
-        disposeBag.add(result)
     }
 
     fun getHumanOrder() {
@@ -177,30 +166,28 @@ class MainFragmentViewModel(
         )
     }
 
-    private fun sortHumans(state: DebtLogicListState) {
-        val result = Single.create {
-            var list = _sortedHumanList.value
-            if (state.needToSetFilter == true) {
-                list = filterHumans(list!!)
-                Log.e(TAG, "FILTERED")
+    private suspend fun sortHumans(state: DebtLogicListState) {
+        try {
+            val sorted = withContext(Dispatchers.Default) {
+                var list = _sortedHumanList.value
+                if (state.needToSetFilter == true) {
+                    list = filterHumans(list!!)
+                    Log.e(TAG, "FILTERED")
+                }
+                list = orderHumans(list!!)
+                Log.e(TAG, "SORTED")
+                list
             }
-            list = orderHumans(list!!)
-            Log.e(TAG, "SORTED")
-            it.onSuccess(list)
+            Log.e(TAG, "RECEIVED")
+            if (sorted.isNotEmpty()) {
+                _sortedHumanList.value = sorted
+                _listState.value = DebtLogicListState.Sorted
+            } else {
+                _screenState.value = ScreenState.EMPTY
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, e.stackTraceToString())
         }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                Log.e(TAG, "RECEIVED")
-                if (it.isNotEmpty()) {
-                    _sortedHumanList.value = it
-                    _listState.value = DebtLogicListState.Sorted
-                } else
-                    _screenState.value = ScreenState.EMPTY
-            }, {
-                Log.e(TAG, it.stackTraceToString())
-            })
-        disposeBag.add(result)
     }
 
     fun onSetHumanSort(filter: Filter, order: Pair<HumanOrderAttribute, Boolean>) {
@@ -224,18 +211,14 @@ class MainFragmentViewModel(
     }
 
     fun updateHuman(human: HumanDomain) {
-        val result = Completable.create {
-            updateHuman.execute(humanDomain = human)
-            it.onComplete()
-        }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
+        viewModelScope.launch {
+            try {
+                withContext(Dispatchers.IO) { updateHuman.execute(humanDomain = human) }
                 Log.e(TAG, "human updated")
-            }, {
-                Log.e(TAG, it.stackTraceToString())
-            })
-        disposeBag.add(result)
+            } catch (e: Exception) {
+                Log.e(TAG, e.stackTraceToString())
+            }
+        }
     }
 
     fun onHumanSortDialogOpen() {
@@ -290,7 +273,6 @@ class MainFragmentViewModel(
 
     override fun onCleared() {
         Log.e(TAG, "MainFragment VM cleared")
-        disposeBag.clear()
         super.onCleared()
     }
 }

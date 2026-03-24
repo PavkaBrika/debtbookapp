@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.breckneck.debtbook.settings.util.DriveServiceHelper
 import com.breckneck.deptbook.domain.model.AppDataLists
 import com.breckneck.deptbook.domain.usecase.Debt.GetAllDebts
@@ -24,11 +25,9 @@ import com.breckneck.deptbook.domain.usecase.Settings.GetLastSyncDate
 import com.breckneck.deptbook.domain.usecase.Settings.SetIsAuthorized
 import com.breckneck.deptbook.domain.usecase.Settings.SetLastSyncDate
 import com.breckneck.deptbook.domain.usecase.Settings.SetUserData
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Completable
-import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Calendar
 
 class SynchronizationViewModel(
@@ -91,17 +90,10 @@ class SynchronizationViewModel(
     val lastSyncDate: LiveData<String>
         get() = _lastSyncDate
 
-    val disposeBag = CompositeDisposable()
-
     init {
         getIsAuthorized()
         getAppDataForSync()
         getLastSyncDate()
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        disposeBag.dispose()
     }
 
     fun setLastSyncDate() {
@@ -155,47 +147,42 @@ class SynchronizationViewModel(
     }
 
     fun getAppDataForSync() {
-        val disposable = Single.create {
-            it.onSuccess(
-                AppDataLists(
-                    humanList = getAllHumansUseCase.execute(),
-                    debtList = getAllDebts.execute(),
-                    financeList = getAllFinances.execute(),
-                    financeCategoryList = getAllFinanceCategories.execute(),
-                    goalList = getAllGoals.execute(),
-                    goalDepositList = getAllGoalDeposits.execute()
-                )
-            )
+        viewModelScope.launch {
+            try {
+                val appData = withContext(Dispatchers.IO) {
+                    AppDataLists(
+                        humanList = getAllHumansUseCase.execute(),
+                        debtList = getAllDebts.execute(),
+                        financeList = getAllFinances.execute(),
+                        financeCategoryList = getAllFinanceCategories.execute(),
+                        goalList = getAllGoals.execute(),
+                        goalDepositList = getAllGoalDeposits.execute()
+                    )
+                }
+                _appDataInfoForSync.value = appData
+            } catch (e: Exception) {
+                Log.e(TAG, e.stackTrace.toString())
+            }
         }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                _appDataInfoForSync.value = it
-            }, {
-                Log.e(TAG, it.stackTrace.toString())
-            })
-        disposeBag.add(disposable)
     }
 
     fun replaceAllData(appDataLists: AppDataLists) {
-        val disposable = Completable.create {
-            replaceAllHumans.execute(appDataLists.humanList)
-            replaceAllDebts.execute(appDataLists.debtList)
-            replaceAllFinanceCategories.execute(appDataLists.financeCategoryList)
-            replaceAllFinances.execute(appDataLists.financeList)
-            replaceAllGoals.execute(appDataLists.goalList)
-            replaceAllGoalDeposits.execute(appDataLists.goalDepositList)
-            it.onComplete()
-        }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
+        viewModelScope.launch {
+            try {
+                withContext(Dispatchers.IO) {
+                    replaceAllHumans.execute(appDataLists.humanList)
+                    replaceAllDebts.execute(appDataLists.debtList)
+                    replaceAllFinanceCategories.execute(appDataLists.financeCategoryList)
+                    replaceAllFinances.execute(appDataLists.financeList)
+                    replaceAllGoals.execute(appDataLists.goalList)
+                    replaceAllGoalDeposits.execute(appDataLists.goalDepositList)
+                }
                 _isRestoring.value = false
                 _isListModified.value = true
-            }, {
-                Log.e(TAG, it.stackTrace.toString())
-            })
-        disposeBag.add(disposable)
+            } catch (e: Exception) {
+                Log.e(TAG, e.stackTrace.toString())
+            }
+        }
     }
 
     fun setFileId(fileId: String) {

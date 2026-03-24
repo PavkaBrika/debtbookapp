@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.breckneck.deptbook.domain.model.Goal
 import com.breckneck.deptbook.domain.model.GoalDeposit
 import com.breckneck.deptbook.domain.usecase.Goal.DeleteGoal
@@ -12,11 +13,9 @@ import com.breckneck.deptbook.domain.usecase.Goal.UpdateGoal
 import com.breckneck.deptbook.domain.usecase.GoalDeposit.DeleteGoalDepositsByGoalId
 import com.breckneck.deptbook.domain.usecase.GoalDeposit.SetGoalDeposit
 import com.breckneck.deptbook.domain.util.ListState
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Completable
-import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class GoalsFragmentViewModel(
     private val getAllGoals: GetAllGoals,
@@ -48,32 +47,25 @@ class GoalsFragmentViewModel(
     val goalListNeedToUpdate: Boolean
         get() = _goalListNeedToUpdate
 
-    private val disposeBag = CompositeDisposable()
-
     init {
         Log.e(TAG, "initialized")
         getAllGoals()
     }
 
     fun getAllGoals() {
-        val result = Single.create {
-            it.onSuccess(getAllGoals.execute())
-        }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .doOnSubscribe {
-                _goalListState.value = ListState.LOADING
-            }
-            .subscribe({
-                _goalList.value = it
+        _goalListState.value = ListState.LOADING
+        viewModelScope.launch {
+            try {
+                val goals = withContext(Dispatchers.IO) { getAllGoals.execute() }
+                _goalList.value = goals
                 if (_goalList.value!!.isEmpty())
                     _goalListState.value = ListState.EMPTY
                 _goalListNeedToUpdate = false
                 Log.e(TAG, "Goals loaded")
-            }, {
-                Log.e(TAG, it.message.toString())
-            })
-        disposeBag.add(result)
+            } catch (e: Exception) {
+                Log.e(TAG, e.message.toString())
+            }
+        }
     }
 
     fun setListState(state: ListState) {
@@ -93,55 +85,44 @@ class GoalsFragmentViewModel(
     }
 
     fun updateGoal(goal: Goal) {
-        val result = Completable.create {
-            updateGoal.execute(goal = goal)
-            it.onComplete()
-        }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
+        viewModelScope.launch {
+            try {
+                withContext(Dispatchers.IO) { updateGoal.execute(goal = goal) }
                 Log.e(TAG, "goal updated")
-            }, {
-                Log.e(TAG, it.message.toString())
-            })
-        disposeBag.add(result)
+            } catch (e: Exception) {
+                Log.e(TAG, e.message.toString())
+            }
+        }
     }
 
     fun deleteGoal(goal: Goal) {
-        val result = Completable.create {
-            deleteGoal.execute(goal = goal)
-            deleteGoalDepositsByGoalId.execute(goalId = goal.id)
-            it.onComplete()
-        }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
+        viewModelScope.launch {
+            try {
+                withContext(Dispatchers.IO) {
+                    deleteGoal.execute(goal = goal)
+                    deleteGoalDepositsByGoalId.execute(goalId = goal.id)
+                }
                 _goalListNeedToUpdate = true
                 Log.e(TAG, "goal deleted")
-            }, {
-                Log.e(TAG, it.message.toString())
-            })
-        disposeBag.add(result)
+            } catch (e: Exception) {
+                Log.e(TAG, e.message.toString())
+            }
+        }
     }
 
     fun setGoalDeposit(goalDeposit: GoalDeposit) {
-        val result = Completable.create {
-            setGoalDeposit.execute(goalDeposit = goalDeposit)
-            it.onComplete()
-        }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
+        viewModelScope.launch {
+            try {
+                withContext(Dispatchers.IO) { setGoalDeposit.execute(goalDeposit = goalDeposit) }
                 Log.e(TAG, "goal deposit added")
-            }, {
-                Log.e(TAG, it.message.toString())
-            })
-        disposeBag.add(result)
+            } catch (e: Exception) {
+                Log.e(TAG, e.message.toString())
+            }
+        }
     }
 
     override fun onCleared() {
         super.onCleared()
-        disposeBag.clear()
         Log.e(TAG, "cleared")
     }
 }

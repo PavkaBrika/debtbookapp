@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.breckneck.deptbook.domain.usecase.Ad.SaveClicksUseCase
 import com.breckneck.deptbook.domain.usecase.Ad.GetClicksUseCase
 import com.breckneck.deptbook.domain.usecase.Debt.GetDebtQuantity
@@ -14,10 +15,9 @@ import com.breckneck.deptbook.domain.usecase.Settings.SetDebtQuantityForAppRateD
 import com.breckneck.deptbook.domain.usecase.Settings.SetIsFingerprintAuthEnabled
 import com.breckneck.deptbook.domain.usecase.Settings.SetPINCodeEnabled
 import com.breckneck.deptbook.domain.util.DEBT_QUANTITY_FOR_NEXT_SHOW_APP_RATE_DIALOG
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivityViewModel(
     private val getDebtQuantity: GetDebtQuantity,
@@ -73,8 +73,6 @@ class MainActivityViewModel(
     val isPINCodeEnabled: LiveData<Boolean>
         get() = _isPINCodeEnabled
 
-    private val disposeBag = CompositeDisposable()
-
     init {
         Log.e(TAG, "Main Activity View Model Started")
         getDebtQuantityForAppRateDialogShow()
@@ -86,22 +84,18 @@ class MainActivityViewModel(
     override fun onCleared() {
         super.onCleared()
         saveClicks.execute(adClicksCounter.value!!)
-        disposeBag.clear()
         Log.e(TAG, "Main Activity View Model cleared")
     }
 
     private fun getDebtQuantity() {
-        val result = Single.create {
-            it.onSuccess(getDebtQuantity.execute())
+        viewModelScope.launch {
+            try {
+                val quantity = withContext(Dispatchers.IO) { getDebtQuantity.execute() }
+                _debtQuantity.value = quantity
+            } catch (e: Exception) {
+                Log.e(TAG, e.message.toString())
+            }
         }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                _debtQuantity.value = it
-            }, {
-                Log.e(TAG, it.message.toString())
-            })
-        disposeBag.add(result)
     }
 
     fun setAppRateDialogShown(shown: Boolean) {

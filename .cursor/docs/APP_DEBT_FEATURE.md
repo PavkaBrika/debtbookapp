@@ -68,7 +68,7 @@ app/src/main/java/com/breckneck/debtbook/debt/
 - **Фильтрация**: ALL (все), POSITIVE (мне должны), NEGATIVE (я должен)
 - **Сортировка**: по имени, сумме, дате; ASC/DESC — через `sortHumans()` из domain
 - **Поиск**: debounce 500ms через `StateFlow`, фильтр по имени (case-insensitive)
-- **Async**: RxJava `Single` + `CompositeDisposable` для загрузки; Coroutines `StateFlow` для state machine и поиска
+- **Async**: `viewModelScope.launch` + `withContext(Dispatchers.IO/Default)` для всех IO-операций; `StateFlow` для state machine и поиска
 
 ### Действия
 | Метод | Что делает |

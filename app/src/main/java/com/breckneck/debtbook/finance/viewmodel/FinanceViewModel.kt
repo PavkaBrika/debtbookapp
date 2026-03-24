@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.breckneck.deptbook.domain.model.Finance
 import com.breckneck.deptbook.domain.model.FinanceCategoryWithFinances
 import com.breckneck.deptbook.domain.usecase.FinanceCategory.GetAllCategoriesWithFinances
@@ -13,10 +14,9 @@ import com.breckneck.deptbook.domain.usecase.Settings.SetFinanceCurrency
 import com.breckneck.deptbook.domain.util.FinanceCategoryState
 import com.breckneck.deptbook.domain.util.FinanceInterval
 import com.breckneck.deptbook.domain.util.ListState
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Calendar
 import kotlin.math.roundToInt
 
@@ -68,8 +68,6 @@ class FinanceViewModel(
     val financeListState: LiveData<ListState>
         get() = _financeListState
 
-    private val disposeBag = CompositeDisposable()
-
     init {
         getFinanceCurrency()
         getFinanceInterval()
@@ -78,7 +76,6 @@ class FinanceViewModel(
 
     override fun onCleared() {
         super.onCleared()
-        disposeBag.clear()
         Log.e(TAG, "Cleared")
     }
 
@@ -233,75 +230,57 @@ class FinanceViewModel(
     }
 
     fun getAllCategoriesWithFinances() {
-        val result = Single.create {
-            var overallSum = 0.0
-            val categoriesWithFinancesList = getAllCategoriesWithFinances.execute()
-            val deleteFinancesList: MutableList<Finance> = mutableListOf()
-            val deleteCategoriesList: MutableList<FinanceCategoryWithFinances> = mutableListOf()
-            for (categoriesWithFinances in categoriesWithFinancesList) {
-                if (categoriesWithFinances.financeCategory.state == financeCategoryState.value) {
-                    if (categoriesWithFinances.financeList.isEmpty())
-                        deleteCategoriesList.add(categoriesWithFinances)
-                    else {
-                        for (finance in categoriesWithFinances.financeList) {
-                            if ((finance.date.time < financeIntervalUnix.value!!.first) || (finance.date.time > financeIntervalUnix.value!!.second))
-                                deleteFinancesList.add(finance)
+        _financeListState.value = ListState.LOADING
+        val currentCategoryState = financeCategoryState.value
+        val currentInterval = financeIntervalUnix.value!!
+        viewModelScope.launch {
+            try {
+                val (list, sum) = withContext(Dispatchers.IO) {
+                    var overallSum = 0.0
+                    val categoriesWithFinancesList = getAllCategoriesWithFinances.execute()
+                    val deleteFinancesList: MutableList<Finance> = mutableListOf()
+                    val deleteCategoriesList: MutableList<FinanceCategoryWithFinances> = mutableListOf()
+                    for (categoriesWithFinances in categoriesWithFinancesList) {
+                        if (categoriesWithFinances.financeCategory.state == currentCategoryState) {
+                            if (categoriesWithFinances.financeList.isEmpty())
+                                deleteCategoriesList.add(categoriesWithFinances)
                             else {
-                                overallSum += finance.sum
-                                categoriesWithFinances.categorySum += finance.sum
+                                for (finance in categoriesWithFinances.financeList) {
+                                    if ((finance.date.time < currentInterval.first) || (finance.date.time > currentInterval.second))
+                                        deleteFinancesList.add(finance)
+                                    else {
+                                        overallSum += finance.sum
+                                        categoriesWithFinances.categorySum += finance.sum
+                                    }
+                                }
+                                categoriesWithFinances.financeList.removeAll(deleteFinancesList)
+                                if (categoriesWithFinances.financeList.isEmpty())
+                                    deleteCategoriesList.add(categoriesWithFinances)
+                                deleteFinancesList.clear()
                             }
-                        }
-                        categoriesWithFinances.financeList.removeAll(deleteFinancesList)
-                        if (categoriesWithFinances.financeList.isEmpty())
+                        } else {
                             deleteCategoriesList.add(categoriesWithFinances)
-                        deleteFinancesList.clear()
+                        }
                     }
-                } else {
-                    deleteCategoriesList.add(categoriesWithFinances)
+                    categoriesWithFinancesList.removeAll(deleteCategoriesList)
+
+                    for (categoriesWithFinances in categoriesWithFinancesList) {
+                        categoriesWithFinances.categoryPercentage = ((categoriesWithFinances.categorySum * 100) / overallSum).roundToInt()
+                    }
+                    categoriesWithFinancesList.sortBy { financeCategoryWithFinances -> financeCategoryWithFinances.categoryPercentage }
+
+                    Pair(categoriesWithFinancesList, overallSum)
                 }
-            }
-            categoriesWithFinancesList.removeAll(deleteCategoriesList)
-
-            for (categoriesWithFinances in categoriesWithFinancesList) {
-                categoriesWithFinances.categoryPercentage = ((categoriesWithFinances.categorySum * 100) / overallSum).roundToInt()
-            }
-            categoriesWithFinancesList.sortBy { financeCategoryWithFinances -> financeCategoryWithFinances.categoryPercentage }
-
-            it.onSuccess(Pair(categoriesWithFinancesList, overallSum))
-        }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .doOnSubscribe {
-                _financeListState.value = ListState.LOADING
-            }
-            .subscribe({
-                _categoriesWithFinancesList.value = it.first!!
-                _overallSum.value = it.second!!
+                _categoriesWithFinancesList.value = list
+                _overallSum.value = sum
                 if (_categoriesWithFinancesList.value!!.isEmpty())
                     _financeListState.value = ListState.EMPTY
-//                else
-//                    _financeListState.value = ListState.FILLED
                 Log.e(TAG, "Categories with finances load success")
-            }, {
-                Log.e(TAG, it.message.toString())
-            })
-        disposeBag.add(result)
+            } catch (e: Exception) {
+                Log.e(TAG, e.message.toString())
+            }
+        }
     }
-
-//    fun getAllFinances() {
-//        val result = Single.create {
-//            it.onSuccess(getAllFinances.execute())
-//        }
-//            .subscribeOn(Schedulers.io())
-//            .observeOn(AndroidSchedulers.mainThread())
-//            .subscribe({
-//                _financeList.value = it
-//                Log.e(TAG, "finances loaded in VM")
-//            }, {
-//                Log.e(TAG, it.message.toString())
-//            })
-//        disposeBag.add(result)
-//    }
 
     fun onCurrencyDialogOpen(selectedCurrencyPosition: Int) {
         _isCurrencyDialogOpened.value = true
@@ -346,18 +325,4 @@ class FinanceViewModel(
     fun setFinanceListState(state: ListState) {
         _financeListState.value = state
     }
-
-//    fun onChangeFinanceListStateSwitch() {
-//        when (_financeListState.value) {
-//            FinanceListState.CATEGORIES -> {
-//                _financeListState.value = FinanceListState.HISTORY
-//                getAllFinances()
-//            }
-//            FinanceListState.HISTORY -> {
-//                _financeListState.value = FinanceListState.CATEGORIES
-//                getAllCategoriesWithFinances()
-//            }
-//            null -> {}
-//        }
-//    }
 }

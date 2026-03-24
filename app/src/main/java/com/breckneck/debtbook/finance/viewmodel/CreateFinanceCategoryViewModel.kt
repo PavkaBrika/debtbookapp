@@ -4,21 +4,19 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.breckneck.deptbook.domain.model.FinanceCategory
 import com.breckneck.deptbook.domain.usecase.FinanceCategory.SetFinanceCategory
 import com.breckneck.deptbook.domain.util.FinanceCategoryState
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Completable
-import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class CreateFinanceCategoryViewModel(
     private val setFinanceCategory: SetFinanceCategory
 ): ViewModel() {
 
     val TAG = "CreateFinanceCatFragVM"
-
-    private val disposeBag = CompositeDisposable()
 
     private val _checkedImage = MutableLiveData<Int>()
     val checkedImage: LiveData<Int>
@@ -40,12 +38,6 @@ class CreateFinanceCategoryViewModel(
         Log.e(TAG, "Initialized")
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        disposeBag.clear()
-        Log.e(TAG, "Cleared")
-    }
-
     fun setCheckedImage(image: Int) {
         _checkedImage.value = image
     }
@@ -63,18 +55,16 @@ class CreateFinanceCategoryViewModel(
     }
 
     fun setFinanceCategory(financeCategory: FinanceCategory) {
-        val result = Completable.create {
-            setFinanceCategory.execute(financeCategory = financeCategory)
-            it.onComplete()
-        }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
+        viewModelScope.launch {
+            try {
+                withContext(Dispatchers.IO) {
+                    setFinanceCategory.execute(financeCategory = financeCategory)
+                }
                 Log.e(TAG, "New category added")
-            }, {
-                Log.e(TAG, it.message.toString())
-            })
-        disposeBag.add(result)
+            } catch (e: Exception) {
+                Log.e(TAG, e.message.toString())
+            }
+        }
     }
 
     fun setFinanceCategoryState(financeCategoryState: FinanceCategoryState) {

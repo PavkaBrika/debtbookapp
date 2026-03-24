@@ -45,7 +45,6 @@ import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import io.reactivex.rxjava3.disposables.CompositeDisposable
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
@@ -75,8 +74,6 @@ class DebtDetailsFragment : Fragment() {
         super.onAttach(context)
         buttonClickListener = context as OnButtonClickListener
     }
-
-    val disposeBag = CompositeDisposable()
 
     private val vm by viewModel<DebtDetailsViewModel>()
 
@@ -520,7 +517,6 @@ class DebtDetailsFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        disposeBag.clear()
         super.onDestroyView()
     }
 }

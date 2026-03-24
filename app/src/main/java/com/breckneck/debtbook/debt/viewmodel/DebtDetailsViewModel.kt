@@ -20,14 +20,11 @@ import com.breckneck.deptbook.domain.util.DebtLogicListState
 import com.breckneck.deptbook.domain.util.DebtOrderAttribute
 import com.breckneck.deptbook.domain.util.Filter
 import com.breckneck.deptbook.domain.util.ScreenState
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Completable
-import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class DebtDetailsViewModel(
     private val getAllDebtsByIdUseCase: GetAllDebtsByIdUseCase,
@@ -94,8 +91,6 @@ class DebtDetailsViewModel(
     val debtFilter: LiveData<Filter>
         get() = _debtFilter
 
-    private val disposeBag = CompositeDisposable()
-
     init {
         Log.e(TAG, "Debt Fragment View Model Started")
 
@@ -105,16 +100,15 @@ class DebtDetailsViewModel(
                     DebtLogicListState.Loading -> {
                         _screenState.value = ScreenState.LOADING
                         if (_newHuman == true) {
-                            disposeBag.add(
-                                getNewHumanId() //need to refactor this hardcode
-                                    .subscribe({
-                                        _humanId = it
-                                        getDebtInfo()
-                                        Log.e(TAG, "New human id is $it")
-                                    }, {
-                                        Log.e(TAG, it.stackTraceToString())
-                                    })
-                            )
+                            try {
+                                _humanId = withContext(Dispatchers.IO) {
+                                    getLastHumanIdUseCase.exectute()
+                                }
+                                getDebtInfo()
+                                Log.e(TAG, "New human id is ${_humanId}")
+                            } catch (e: Exception) {
+                                Log.e(TAG, e.stackTraceToString())
+                            }
                         } else {
                             getDebtInfo()
                         }
@@ -142,7 +136,6 @@ class DebtDetailsViewModel(
 
     override fun onCleared() {
         super.onCleared()
-        disposeBag.clear()
         Log.e(TAG, "Debt Fragment View Model cleared")
     }
 
@@ -155,25 +148,24 @@ class DebtDetailsViewModel(
     }
 
     private fun getAllDebts() {
-        val getDebtsSingle = Single.create {
-            it.onSuccess(getAllDebtsByIdUseCase.execute(id = humanId!!))
-            Log.e(TAG, "Open Debt Details of Human id = ${humanId}")
-        }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                if (it.isNotEmpty()) {
-                    _initialDebtList.value = it
-                    _sortedDebtList.value = it
-                    _listState.value =
-                        DebtLogicListState.Received(needToSetFilter = true)
+        viewModelScope.launch {
+            try {
+                val debts = withContext(Dispatchers.IO) {
+                    getAllDebtsByIdUseCase.execute(id = humanId!!)
+                        .also { Log.e(TAG, "Open Debt Details of Human id = ${humanId}") }
+                }
+                if (debts.isNotEmpty()) {
+                    _initialDebtList.value = debts
+                    _sortedDebtList.value = debts
+                    _listState.value = DebtLogicListState.Received(needToSetFilter = true)
                     Log.e(TAG, "Debts load success")
-                } else
+                } else {
                     _screenState.value = ScreenState.EMPTY
-            }, {
-                Log.e(TAG, it.stackTraceToString())
-            })
-        disposeBag.add(getDebtsSingle)
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, e.stackTraceToString())
+            }
+        }
     }
 
     private fun filterDebts(list: List<DebtDomain>): List<DebtDomain> {
@@ -184,30 +176,28 @@ class DebtDetailsViewModel(
         }
     }
 
-    private fun sortDebts(state: DebtLogicListState) {
-        val result = Single.create {
-            var list = _sortedDebtList.value
-            if (state.needToSetFilter == true) {
-                list = filterDebts(list!!)
-                Log.e(TAG, "FILTERED")
+    private suspend fun sortDebts(state: DebtLogicListState) {
+        try {
+            val sorted = withContext(Dispatchers.Default) {
+                var list = _sortedDebtList.value
+                if (state.needToSetFilter == true) {
+                    list = filterDebts(list!!)
+                    Log.e(TAG, "FILTERED")
+                }
+                list = orderDebts(list!!)
+                Log.e(TAG, "SORTED")
+                list
             }
-            list = orderDebts(list!!)
-            Log.e(TAG, "SORTED")
-            it.onSuccess(list)
+            Log.e(TAG, "RECEIVED")
+            if (sorted.isNotEmpty()) {
+                _sortedDebtList.value = sorted
+                _listState.value = DebtLogicListState.Sorted
+            } else {
+                _screenState.value = ScreenState.EMPTY
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, e.stackTraceToString())
         }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                Log.e(TAG, "RECEIVED")
-                if (it.isNotEmpty()) {
-                    _sortedDebtList.value = it
-                    _listState.value = DebtLogicListState.Sorted
-                } else
-                    _screenState.value = ScreenState.EMPTY
-            }, {
-                Log.e(TAG, it.stackTraceToString())
-            })
-        disposeBag.add(result)
     }
 
     private fun orderDebts(list: List<DebtDomain>): List<DebtDomain> {
@@ -217,57 +207,46 @@ class DebtDetailsViewModel(
         )
     }
 
-    private fun getNewHumanId() = Single.create {
-        it.onSuccess(getLastHumanIdUseCase.exectute())
-    }
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-
     private fun getOverallSum() {
-        val getOverallSumSingle = Single.create {
-            it.onSuccess(getHumanSumDebtUseCase.execute(humanId = humanId!!))
+        viewModelScope.launch {
+            try {
+                val sum = withContext(Dispatchers.IO) {
+                    getHumanSumDebtUseCase.execute(humanId = humanId!!)
+                }
+                _overallSum.value = sum
+            } catch (e: Exception) {
+                Log.e(TAG, e.stackTraceToString())
+            }
         }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                _overallSum.value = it
-            }, {
-                Log.e(TAG, it.stackTraceToString())
-            })
-        disposeBag.add(getOverallSumSingle)
     }
 
     fun deleteHuman() {
-        val deleteHumanCompletable = Completable.create {
-            deleteHumanUseCase.execute(id = humanId!!)
-            deleteDebtsByHumanIdUseCase.execute(id = humanId!!)
-            it.onComplete()
-        }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
+        viewModelScope.launch {
+            try {
+                withContext(Dispatchers.IO) {
+                    deleteHumanUseCase.execute(id = humanId!!)
+                    deleteDebtsByHumanIdUseCase.execute(id = humanId!!)
+                }
                 Log.e(TAG, "Deleted human with id = ${humanId}")
-            }, {
-                Log.e(TAG, it.stackTraceToString())
-            })
-        disposeBag.add(deleteHumanCompletable)
+            } catch (e: Exception) {
+                Log.e(TAG, e.stackTraceToString())
+            }
+        }
     }
 
     fun deleteDebt(debtDomain: DebtDomain) {
-        val deleteDebtCompletable = Completable.create {
-            deleteDebtUseCase.execute(debtDomain)
-            addSumUseCase.execute(humanId = humanId!!, sum = (debtDomain.sum * (-1.0)))
-            Log.e(TAG, "Debt delete success")
-            it.onComplete()
-        }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
+        viewModelScope.launch {
+            try {
+                withContext(Dispatchers.IO) {
+                    deleteDebtUseCase.execute(debtDomain)
+                    addSumUseCase.execute(humanId = humanId!!, sum = (debtDomain.sum * (-1.0)))
+                    Log.e(TAG, "Debt delete success")
+                }
                 _listState.value = DebtLogicListState.Loading
-            }, {
-                Log.e(TAG, it.stackTraceToString())
-            })
-        disposeBag.add(deleteDebtCompletable)
+            } catch (e: Exception) {
+                Log.e(TAG, e.stackTraceToString())
+            }
+        }
     }
 
     fun onHumanDeleteDialogOpen() {

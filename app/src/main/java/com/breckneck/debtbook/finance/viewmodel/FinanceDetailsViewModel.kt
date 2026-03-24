@@ -4,15 +4,14 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.breckneck.deptbook.domain.model.Finance
 import com.breckneck.deptbook.domain.usecase.Finance.DeleteFinance
 import com.breckneck.deptbook.domain.usecase.Finance.GetFinanceByCategoryId
 import com.breckneck.deptbook.domain.util.ListState
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Completable
-import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class FinanceDetailsViewModel(
     private val getFinanceByCategoryId: GetFinanceByCategoryId,
@@ -43,53 +42,45 @@ class FinanceDetailsViewModel(
     val financeListState: LiveData<ListState>
         get() = _financeListState
 
-    private val disposeBag = CompositeDisposable()
-
     init {
         Log.e(TAG, "Created")
     }
 
     override fun onCleared() {
         super.onCleared()
-        disposeBag.clear()
         Log.e(TAG, "Cleared")
     }
 
     fun getFinanceByCategoryId(categoryId: Int) {
-        val result = Single.create {
-            val financeList = getFinanceByCategoryId.execute(categoryId = categoryId)
-            it.onSuccess(financeList.sortedByDescending { finance -> finance.date })
-        }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .doOnSubscribe {
-                _financeListState.value = ListState.LOADING
-            }
-            .subscribe({
-                _financeList.value = it
+        _financeListState.value = ListState.LOADING
+        viewModelScope.launch {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    getFinanceByCategoryId.execute(categoryId = categoryId)
+                        .sortedByDescending { finance -> finance.date }
+                }
+                _financeList.value = result
                 if (_financeList.value!!.isEmpty())
                     _financeListState.value = ListState.EMPTY
                 Log.e(TAG, "Finances load success")
-            }, {
-                Log.e(TAG, it.message.toString())
-            })
-        disposeBag.add(result)
+            } catch (e: Exception) {
+                Log.e(TAG, e.message.toString())
+            }
+        }
     }
 
     fun deleteFinance(finance: Finance) {
-        val result = Completable.create {
-            deleteFinance.execute(finance = finance)
-            it.onComplete()
-        }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
+        viewModelScope.launch {
+            try {
+                withContext(Dispatchers.IO) {
+                    deleteFinance.execute(finance = finance)
+                }
                 getFinanceByCategoryId(categoryId = categoryId.value!!)
                 Log.e(TAG, "Finance delete success")
-            }, {
-                Log.e(TAG, it.message.toString())
-            })
-        disposeBag.add(result)
+            } catch (e: Exception) {
+                Log.e(TAG, e.message.toString())
+            }
+        }
     }
 
     fun setFinanceListState(state: ListState) {

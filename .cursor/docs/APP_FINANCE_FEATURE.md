@@ -71,7 +71,7 @@ app/src/main/java/com/breckneck/debtbook/finance/
 - **Фильтрация категорий**: по `FinanceCategoryState` (расходы/доходы) + по временному интервалу
 - **Процент по категории**: `categoryPercentage = (categorySum * 100) / overallSum`
 - **Сортировка**: категории сортируются по `categoryPercentage`
-- Загрузка через RxJava `Single` + фильтрация в IO-потоке
+- Загрузка через `viewModelScope.launch` + `withContext(Dispatchers.IO)` + фильтрация в IO-потоке
 
 ### Действия
 | Метод | Что делает |

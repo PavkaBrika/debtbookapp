@@ -5,15 +5,15 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.breckneck.deptbook.domain.model.Goal
 import com.breckneck.deptbook.domain.usecase.Goal.SetGoal
 import com.breckneck.deptbook.domain.usecase.Goal.UpdateGoal
 import com.breckneck.deptbook.domain.usecase.Settings.GetDefaultCurrency
 import com.breckneck.deptbook.domain.util.CreateFragmentState
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Completable
-import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Date
 
 class CreateGoalsFragmentViewModel(
@@ -49,40 +49,31 @@ class CreateGoalsFragmentViewModel(
     val goal: Goal?
         get() = _goal
 
-    private val disposeBag = CompositeDisposable()
-
     init {
         Log.e(TAG, "Initialized")
         getDefaultCurrency()
     }
 
     fun setGoal(goal: Goal) {
-        val result = Completable.create {
-            setGoal.execute(goal = goal)
-            it.onComplete()
-        }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
+        viewModelScope.launch {
+            try {
+                withContext(Dispatchers.IO) { setGoal.execute(goal = goal) }
                 Log.e(TAG, "Goal added")
-            }, {
-                Log.e(TAG, it.message.toString())
-            })
-        disposeBag.add(result)
+            } catch (e: Exception) {
+                Log.e(TAG, e.message.toString())
+            }
+        }
     }
 
     fun editGoal(goal: Goal) {
-        var result = Completable.create {
-            updateGoal.execute(goal = goal)
-            it.onComplete()
-        }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
+        viewModelScope.launch {
+            try {
+                withContext(Dispatchers.IO) { updateGoal.execute(goal = goal) }
                 Log.e(TAG, "Goal edited")
-            }, {
-                Log.e(TAG, it.message.toString())
-            })
+            } catch (e: Exception) {
+                Log.e(TAG, e.message.toString())
+            }
+        }
     }
 
     fun onCurrencyDialogOpen(selectedCurrencyPosition: Int) {
@@ -124,7 +115,6 @@ class CreateGoalsFragmentViewModel(
 
     override fun onCleared() {
         super.onCleared()
-        disposeBag.clear()
         Log.e(TAG, "Cleared")
     }
 }
