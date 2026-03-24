@@ -202,3 +202,19 @@ com.breckneck.debtbook
 2. Зарегистрировать в `di/DomainModule.kt` как `factory` (или `single` для Settings)
 3. Добавить в конструктор нужного ViewModel
 4. Обновить binding в `di/AppModule.kt`
+
+---
+
+## CI / GitHub Actions
+
+Конфигурация: `.github/workflows/tests.yml`  
+Триггеры: push и pull_request в `main`, `master`, `develop`
+
+| Шаг | Команда |
+|-----|---------|
+| Checkout | `actions/checkout@v4` |
+| JDK 17 | `actions/setup-java@v4` (Temurin) |
+| Domain unit tests | `./gradlew :domain:test` |
+| App unit tests | `./gradlew :app:testDebugUnitTest` |
+| Data unit tests | `./gradlew :data:test` |
+| Upload results | `actions/upload-artifact@v4` (retention 7 дней) |

@@ -277,9 +277,21 @@ Getter/Setter пары для каждой настройки. Примеры:
 
 ## Тесты
 
+**Инструменты**: JUnit 5, Mockito 5, mockito-kotlin 5, `junit-platform-launcher`  
+**Итог**: 137 тестов, 0 failures — все use cases покрыты (>95% из 80 use cases)
+
 | Файл | Покрытие |
 |------|---------|
-| `FilterDebtsTest.kt` | Фильтрация долгов |
+| `FilterDebtsTest.kt` | Фильтрация долгов (ALL/NEGATIVE/POSITIVE) |
 | `FormatDebtSumTest.kt` | Форматирование суммы |
-| `GetAllDebtsSumUseCaseTest.kt` | Агрегация сумм |
-| `GetAllHumansUseCaseTest.kt` | Загрузка людей |
+| `GetAllDebtsSumUseCaseTest.kt` | Агрегация сумм по валютам |
+| `GetAllHumansUseCaseTest.kt` | Загрузка списка людей |
+| `HumanUseCasesTest.kt` | SetHuman, Delete, GetSum, GetLastId, AddSum, Update, ReplaceAll |
+| `DebtUseCasesTest.kt` | GetAll, GetById, GetQty, Set, Delete, DeleteByHuman, Edit, Replace, UpdateCurrentSum, GetCurrentDate |
+| `FinanceUseCasesTest.kt` | GetAll, GetByCategoryId, Set, Delete, Update, DeleteByCategoryId, ReplaceAll |
+| `FinanceCategoryUseCasesTest.kt` | GetAll, GetWithFinances, GetByState, Set, Delete, ReplaceAll |
+| `GoalUseCasesTest.kt` | GetAll, Set, Update, Delete, ReplaceAll |
+| `GoalDepositUseCasesTest.kt` | GetAll, GetByGoalId, Set, DeleteByGoalId, ReplaceAll |
+| `SettingsUseCasesTest.kt` | Все 30 Settings use cases (Get/Set для всех настроек) |
+| `AdUseCasesTest.kt` | GetClicks, SaveClicks |
+| `SortUtilTest.kt` | sortHumans (Date asc/desc, Sum asc/desc), sortDebts (CreationDate, Sum, Date asc/desc) |

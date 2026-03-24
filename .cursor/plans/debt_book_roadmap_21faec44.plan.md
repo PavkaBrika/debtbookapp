@@ -16,7 +16,7 @@ todos:
     status: completed
   - id: phase1-tests
     content: "Фаза 1.4: Улучшить тестовое покрытие domain (70%+), добавить ViewModel тесты, настроить CI/GitHub Actions"
-    status: pending
+    status: completed
   - id: phase2-hilt
     content: "Фаза 2.1: Мигрировать DI с Koin на Hilt (AppModule, DataModule, DomainModule, ViewModels)"
     status: pending

@@ -227,6 +227,18 @@ PIN управляется из `SettingsFragment` → `MainActivityViewModel.se
 
 ---
 
+## Unit-тесты ViewModel
+
+**Инструменты**: JUnit 4, Mockito 5, `core-testing:2.2.0` (InstantTaskExecutorRule), `kotlinx-coroutines-test:1.9.0`  
+**Итог**: 23 теста, 0 failures
+
+| Файл | ViewModel | Покрытие |
+|------|-----------|---------|
+| `MainFragmentViewModelTest.kt` | `MainFragmentViewModel` | getHumanOrder, saveHumanOrder, setIsSearching, sort dialog open/close |
+| `SettingsViewModelTest.kt` | `SettingsViewModel` | init загрузка данных, set/get валют, тема, share text, fingerprint, getUserData, диалог настроек |
+
+---
+
 ## Ресурсы
 
 ### Локализация

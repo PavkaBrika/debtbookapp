@@ -22,7 +22,7 @@ class FilterDebtsTest {
 
     @Test
     fun `should return all debts`() {
-        val testFilter = Filter.All
+        val testFilter = Filter.ALL
         val useCase = FilterDebts()
 
         val actual = useCase.execute(debtList = debtList, filter = testFilter)
@@ -32,7 +32,7 @@ class FilterDebtsTest {
 
     @Test
     fun `should return negative debts`() {
-        val testFilter = Filter.Negative
+        val testFilter = Filter.NEGATIVE
         val useCase = FilterDebts()
 
         val actual = useCase.execute(debtList = debtList, filter = testFilter)
@@ -49,7 +49,7 @@ class FilterDebtsTest {
 
     @Test
     fun `should return positive debts`() {
-        val testFilter = Filter.Positive
+        val testFilter = Filter.POSITIVE
         val useCase = FilterDebts()
 
         val actual = useCase.execute(debtList = debtList, filter = testFilter)
