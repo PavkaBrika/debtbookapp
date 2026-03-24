@@ -10,7 +10,7 @@ todos:
     status: completed
   - id: phase1-deps
     content: "Фаза 1.2: Обновить все зависимости (Room, Lifecycle, Compose BOM, Navigation, Koin, Biometric, Glide/Coil, Yandex Ads)"
-    status: pending
+    status: completed
   - id: phase1-rx
     content: "Фаза 1.3: Мигрировать RxJava 3 → Kotlin Coroutines + Flow во всех ViewModels и use cases"
     status: pending
