@@ -1,14 +1,10 @@
 package com.breckneck.debtbook.core.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material.ripple.LocalRippleTheme
-import androidx.compose.material.ripple.RippleAlpha
-import androidx.compose.material.ripple.RippleTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
 
 private val DarkColorPalette = darkColorScheme(
@@ -25,7 +21,7 @@ private val LightColorPalette = lightColorScheme(
     background = Color.White,
     onBackground = Color.Black,
     surface = Color.White,
-    onSurface = Color.Black, 
+    onSurface = Color.Black,
     outline = Color.LightGray
 )
 
@@ -41,22 +37,6 @@ fun DebtBookTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composab
         colorScheme = colors,
         typography = Typography,
         shapes = Shapes,
-    ) {
-        CompositionLocalProvider(LocalRippleTheme provides DebtBookRippleTheme, content = content)
-    }
-}
-
-private object DebtBookRippleTheme : RippleTheme {
-    // Here you should return the ripple color you want
-    // and not use the defaultRippleColor extension on RippleTheme.
-    // Using that will override the ripple color set in DarkMode
-    // or when you set light parameter to false
-    @Composable
-    override fun defaultColor(): Color = Color.Gray
-
-    @Composable
-    override fun rippleAlpha(): RippleAlpha = RippleTheme.defaultRippleAlpha(
-        Color.Black,
-        lightTheme = !isSystemInDarkTheme()
+        content = content
     )
 }

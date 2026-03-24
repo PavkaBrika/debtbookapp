@@ -14,7 +14,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.CompoundButton
-import android.widget.CompoundButton.OnCheckedChangeListener
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
@@ -239,12 +238,9 @@ class SettingsFragment : Fragment() {
             addSumShareInTextSwitch.isChecked = it
         }
 
-        addSumShareInTextSwitch.setOnCheckedChangeListener(object : OnCheckedChangeListener {
-            override fun onCheckedChanged(p0: CompoundButton?, p1: Boolean) {
-                vm.setSumInShareText(value = p1)
-//                buttonClickListener.onTickVibration()
-            }
-        })
+        addSumShareInTextSwitch.setOnCheckedChangeListener { _, isChecked ->
+            vm.setSumInShareText(value = isChecked)
+        }
 
         val addSumShareTextLayout: LinearLayout = view.findViewById(R.id.addSumShareTextLayout)
         addSumShareTextLayout.setOnClickListener {

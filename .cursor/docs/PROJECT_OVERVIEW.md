@@ -40,18 +40,18 @@ Android-приложение для учёта долгов, финансов и
 |---------|-----------|--------|
 | Язык | Kotlin | 2.1.0 |
 | Build | AGP / Gradle | 8.8.0 / 8.10.2 |
-| DI | Koin (core, android, compose) | 3.5.3 |
-| БД | Room + KSP compiler | 2.4.2 |
+| DI | Koin (core, android, compose) | 4.1.1 |
+| БД | Room + KSP compiler | 2.8.4 |
 | UI (classic) | View Binding, Material, ConstraintLayout, RecyclerView | — |
-| UI (Compose) | Compose BOM, Material3, Activity Compose | 2024.02.01 |
-| Навигация | Navigation Component (single nav_graph.xml) | 2.7.7 |
-| Lifecycle | ViewModel, LiveData | 2.5.0 |
+| UI (Compose) | Compose BOM, Material3, Activity Compose | 2026.03.00 |
+| Навигация | Navigation Component (single nav_graph.xml) | 2.9.7 |
+| Lifecycle | ViewModel, LiveData | 2.10.0 |
 | Реактивность | RxJava 3 + Kotlin Coroutines/Flow | — |
 | Изображения | Glide | 4.16.0 |
 | Shimmer | Facebook Shimmer | 0.1.0 |
 | Безопасность | androidx.biometric (BiometricPrompt) | — |
 | Облако | Google Sign-In, Google Drive API v3 | — |
-| Реклама | Yandex Mobile Ads | 6.4.0 |
+| Реклама | Yandex Mobile Ads | 7.18.4 |
 | Таблицы | Apache POI (экспорт .xls) | 4.0.0 |
 | JSON | Gson | 2.10.1 |
 | Тесты | JUnit 5, Mockito, Espresso, Compose UI test | — |
@@ -153,7 +153,7 @@ com.breckneck.debtbook
 | `settings.gradle` | Подключение модулей `:app`, `:domain`, `:data` + JitPack |
 | `build.gradle` (root) | Версии плагинов (AGP 8.8.0, Kotlin 2.1.0, KSP) |
 | `app/build.gradle` | Зависимости app-модуля, Compose, View Binding |
-| `data/build.gradle` | Room + KSP, compile SDK 34 |
+| `data/build.gradle` | Room + KSP, compile SDK 35 |
 | `domain/build.gradle` | java-library, POI, Gson |
 | `gradle.properties` | AndroidX flags |
 | `AndroidManifest.xml` | Permissions: READ_CONTACTS, VIBRATE; FileProvider |

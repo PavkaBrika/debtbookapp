@@ -7,7 +7,7 @@
 - **Пакеты в коде**: `com.breckneck.deptbook.data.storage` (интерфейсы), `database`, `entity`, `repository`, `sharedprefs`, `util` (flat-пакеты)
 - **SDK**: compileSdk 34, minSdk 21, targetSdk 34
 - **Java target**: 17
-- **Зависимости**: Room 2.4.2 + KSP, зависимость на `:domain`
+- **Зависимости**: Room 2.8.4 + KSP, зависимость на `:domain`
 
 Модуль отвечает за персистентность данных: Room БД, SharedPreferences, и реализации репозиториев.
 
