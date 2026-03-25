@@ -44,10 +44,10 @@ Android-приложение для учёта долгов, финансов и
 | БД | Room + KSP compiler | 2.8.4 |
 | UI (classic) | View Binding, Material, ConstraintLayout, RecyclerView | — |
 | UI (Compose) | Compose BOM, Material3, Activity Compose | 2026.03.00 |
-| Навигация | Navigation Component (single nav_graph.xml) | 2.9.7 |
+| Навигация | Navigation Component (nav_graph.xml) + navigation-compose | 2.9.7 |
 | Lifecycle | ViewModel, LiveData | 2.10.0 |
 | Реактивность | Kotlin Coroutines/Flow | — |
-| Изображения | Glide | 4.16.0 |
+| Изображения | Glide (Views) / Coil 3 (Compose AsyncImage) | 4.16.0 / 3.1.0 |
 | Shimmer | Facebook Shimmer | 0.1.0 |
 | Безопасность | androidx.biometric (BiometricPrompt) | — |
 | Облако | Google Sign-In, Google Drive API v3 | — |

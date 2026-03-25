@@ -161,4 +161,5 @@
     <string name="exit">Выход</string>
     <string name="enter_your_query">Введите свой запрос</string>
     <string name="your_pin_code_is_reset">Ваш PIN-код сброшен</string>
+    <string name="back">Назад</string>
 </resources>

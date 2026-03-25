@@ -161,5 +161,6 @@
     <string name="exit">Sortie</string>
     <string name="enter_your_query">Saisissez votre requête</string>
     <string name="your_pin_code_is_reset">Votre code PIN est réinitialisé</string>
+    <string name="back">Retour</string>
 
 </resources>

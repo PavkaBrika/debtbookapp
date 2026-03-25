@@ -161,4 +161,5 @@
     <string name="exit">Ausfahrt</string>
     <string name="enter_your_query">Geben Sie Ihre Anfrage ein</string>
     <string name="your_pin_code_is_reset">Ihr PIN-Code wird zurückgesetzt</string>
+    <string name="back">Zurück</string>
 </resources>
