@@ -1,5 +1,6 @@
 package com.breckneck.debtbook.di
 
+import android.content.Context
 import com.breckneck.deptbook.data.storage.AdStorage
 import com.breckneck.deptbook.data.storage.DebtStorage
 import com.breckneck.deptbook.data.storage.FinanceCategoryStorage
@@ -9,10 +10,6 @@ import com.breckneck.deptbook.data.storage.GoalStorage
 import com.breckneck.deptbook.data.storage.HumanStorage
 import com.breckneck.deptbook.data.storage.SettingsStorage
 import com.breckneck.deptbook.domain.repository.AdRepository
-import database.DataBaseDebtStorageImpl
-import database.DataBaseHumanStorageImpl
-import repository.DebtRepositoryImpl
-import repository.HumanRepositoryImpl
 import com.breckneck.deptbook.domain.repository.DebtRepository
 import com.breckneck.deptbook.domain.repository.FinanceCategoryRepository
 import com.breckneck.deptbook.domain.repository.FinanceRepository
@@ -20,99 +17,126 @@ import com.breckneck.deptbook.domain.repository.GoalDepositRepository
 import com.breckneck.deptbook.domain.repository.GoalRepository
 import com.breckneck.deptbook.domain.repository.HumanRepository
 import com.breckneck.deptbook.domain.repository.SettingsRepository
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
+import database.DataBaseDebtStorageImpl
 import database.DataBaseFinanceCategoryStorageImpl
 import database.DataBaseFinanceStorageImpl
 import database.DataBaseGoalDepositStorageImpl
 import database.DataBaseGoalStorageImpl
-import org.koin.dsl.module
+import database.DataBaseHumanStorageImpl
 import repository.AdRepositoryImpl
+import repository.DebtRepositoryImpl
 import repository.FinanceCategoryRepositoryImpl
 import repository.FinanceRepositoryImpl
 import repository.GoalDepositRepositoryImpl
 import repository.GoalRepositoryImpl
+import repository.HumanRepositoryImpl
 import repository.SettingsRepositoryImpl
 import sharedprefs.SharedPrefsAdStorageImpl
 import sharedprefs.SharedPrefsSettingsStorageImpl
+import javax.inject.Singleton
 
-val dataModule = module {
+@Module
+@InstallIn(SingletonComponent::class)
+object DataModule {
 
-    //HUMAN
+    // HUMAN
 
-    factory<HumanStorage> {
-        DataBaseHumanStorageImpl(context = get())
-    }
+    @Provides
+    @Singleton
+    fun provideHumanStorage(@ApplicationContext context: Context): HumanStorage =
+        DataBaseHumanStorageImpl(context = context)
 
-    factory<HumanRepository> {
-        HumanRepositoryImpl(humanStorage = get())
-    }
+    @Provides
+    @Singleton
+    fun provideHumanRepository(humanStorage: HumanStorage): HumanRepository =
+        HumanRepositoryImpl(humanStorage = humanStorage)
 
-    //DEBT
+    // DEBT
 
-    factory<DebtStorage> {
-        DataBaseDebtStorageImpl(context = get())
-    }
+    @Provides
+    @Singleton
+    fun provideDebtStorage(@ApplicationContext context: Context): DebtStorage =
+        DataBaseDebtStorageImpl(context = context)
 
-    factory<DebtRepository> {
-        DebtRepositoryImpl(debtStorage = get())
-    }
+    @Provides
+    @Singleton
+    fun provideDebtRepository(debtStorage: DebtStorage): DebtRepository =
+        DebtRepositoryImpl(debtStorage = debtStorage)
 
-    //SETTINGS
+    // SETTINGS
 
-    single<SettingsStorage> {
-        SharedPrefsSettingsStorageImpl(context = get())
-    }
+    @Provides
+    @Singleton
+    fun provideSettingsStorage(@ApplicationContext context: Context): SettingsStorage =
+        SharedPrefsSettingsStorageImpl(context = context)
 
-    single<SettingsRepository> {
-        SettingsRepositoryImpl(settingsStorage = get())
-    }
+    @Provides
+    @Singleton
+    fun provideSettingsRepository(settingsStorage: SettingsStorage): SettingsRepository =
+        SettingsRepositoryImpl(settingsStorage = settingsStorage)
 
-    //FINANCE
+    // FINANCE
 
-    factory<FinanceStorage> {
-        DataBaseFinanceStorageImpl(context = get())
-    }
+    @Provides
+    @Singleton
+    fun provideFinanceStorage(@ApplicationContext context: Context): FinanceStorage =
+        DataBaseFinanceStorageImpl(context = context)
 
-    factory<FinanceRepository> {
-        FinanceRepositoryImpl(financeStorage = get())
-    }
+    @Provides
+    @Singleton
+    fun provideFinanceRepository(financeStorage: FinanceStorage): FinanceRepository =
+        FinanceRepositoryImpl(financeStorage = financeStorage)
 
-    //FINANCE CATEGORY
+    // FINANCE CATEGORY
 
-    factory<FinanceCategoryStorage> {
-        DataBaseFinanceCategoryStorageImpl(context = get())
-    }
+    @Provides
+    @Singleton
+    fun provideFinanceCategoryStorage(@ApplicationContext context: Context): FinanceCategoryStorage =
+        DataBaseFinanceCategoryStorageImpl(context = context)
 
-    factory<FinanceCategoryRepository> {
-        FinanceCategoryRepositoryImpl(financeCategoryStorage = get())
-    }
+    @Provides
+    @Singleton
+    fun provideFinanceCategoryRepository(financeCategoryStorage: FinanceCategoryStorage): FinanceCategoryRepository =
+        FinanceCategoryRepositoryImpl(financeCategoryStorage = financeCategoryStorage)
 
-    //ADS
+    // ADS
 
-    factory<AdStorage> {
-        SharedPrefsAdStorageImpl(context = get())
-    }
+    @Provides
+    @Singleton
+    fun provideAdStorage(@ApplicationContext context: Context): AdStorage =
+        SharedPrefsAdStorageImpl(context = context)
 
-    factory<AdRepository> {
-        AdRepositoryImpl(adStorage = get())
-    }
+    @Provides
+    @Singleton
+    fun provideAdRepository(adStorage: AdStorage): AdRepository =
+        AdRepositoryImpl(adStorage = adStorage)
 
-    //GOALS
+    // GOALS
 
-    factory<GoalStorage> {
-        DataBaseGoalStorageImpl(context = get())
-    }
+    @Provides
+    @Singleton
+    fun provideGoalStorage(@ApplicationContext context: Context): GoalStorage =
+        DataBaseGoalStorageImpl(context = context)
 
-    factory<GoalRepository> {
-        GoalRepositoryImpl(goalStorage = get())
-    }
+    @Provides
+    @Singleton
+    fun provideGoalRepository(goalStorage: GoalStorage): GoalRepository =
+        GoalRepositoryImpl(goalStorage = goalStorage)
 
-    //GOAL DEPOSITS
+    // GOAL DEPOSITS
 
-    factory<GoalDepositStorage> {
-        DataBaseGoalDepositStorageImpl(context = get())
-    }
+    @Provides
+    @Singleton
+    fun provideGoalDepositStorage(@ApplicationContext context: Context): GoalDepositStorage =
+        DataBaseGoalDepositStorageImpl(context = context)
 
-    factory<GoalDepositRepository> {
-        GoalDepositRepositoryImpl(goalDepositStorage = get())
-    }
+    @Provides
+    @Singleton
+    fun provideGoalDepositRepository(goalDepositStorage: GoalDepositStorage): GoalDepositRepository =
+        GoalDepositRepositoryImpl(goalDepositStorage = goalDepositStorage)
 }

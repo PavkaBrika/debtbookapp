@@ -23,10 +23,13 @@ import com.breckneck.deptbook.domain.util.ScreenState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class DebtDetailsViewModel(
+@HiltViewModel
+class DebtDetailsViewModel @Inject constructor(
     private val getAllDebtsByIdUseCase: GetAllDebtsByIdUseCase,
     private val getLastHumanIdUseCase: GetLastHumanIdUseCase,
     private val getHumanSumDebtUseCase: GetHumanSumDebtUseCase,

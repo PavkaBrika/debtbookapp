@@ -36,16 +36,18 @@ import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import androidx.fragment.app.viewModels
+import dagger.hilt.android.AndroidEntryPoint
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.Calendar
 
+@AndroidEntryPoint
 class FinanceFragment : Fragment() {
 
     private val TAG = "FinanceFragment"
 
-    private val vm by viewModel<FinanceViewModel>()
+    private val vm by viewModels<FinanceViewModel>()
 
     private lateinit var usedFinanceCategoryAdapter: UsedFinanceCategoryAdapter
 

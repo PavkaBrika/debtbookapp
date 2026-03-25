@@ -15,11 +15,14 @@ import com.breckneck.deptbook.domain.usecase.Settings.SetDebtQuantityForAppRateD
 import com.breckneck.deptbook.domain.usecase.Settings.SetIsFingerprintAuthEnabled
 import com.breckneck.deptbook.domain.usecase.Settings.SetPINCodeEnabled
 import com.breckneck.deptbook.domain.util.DEBT_QUANTITY_FOR_NEXT_SHOW_APP_RATE_DIALOG
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class MainActivityViewModel(
+@HiltViewModel
+class MainActivityViewModel @Inject constructor(
     private val getDebtQuantity: GetDebtQuantity,
     private val getDebtQuantityForAppRateDialogShow: GetDebtQuantityForAppRateDialogShow,
     private val setDebtQuantityForAppRateDialogShow: SetDebtQuantityForAppRateDialogShow,

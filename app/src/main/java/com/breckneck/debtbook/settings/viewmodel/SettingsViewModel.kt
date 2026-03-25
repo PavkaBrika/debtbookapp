@@ -18,8 +18,11 @@ import com.breckneck.deptbook.domain.usecase.Settings.SetDefaultCurrency
 import com.breckneck.deptbook.domain.usecase.Settings.SetFirstMainCurrency
 import com.breckneck.deptbook.domain.usecase.Settings.SetIsFingerprintAuthEnabled
 import com.breckneck.deptbook.domain.usecase.Settings.SetSecondMainCurrency
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class SettingsViewModel(
+@HiltViewModel
+class SettingsViewModel @Inject constructor(
     private val setFirstMainCurrency: SetFirstMainCurrency,
     private val getFirstMainCurrency: GetFirstMainCurrency,
     private val setSecondMainCurrency: SetSecondMainCurrency,

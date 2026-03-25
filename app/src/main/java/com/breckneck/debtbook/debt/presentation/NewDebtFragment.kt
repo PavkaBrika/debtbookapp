@@ -48,13 +48,15 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import androidx.fragment.app.viewModels
+import dagger.hilt.android.AndroidEntryPoint
 import java.lang.NullPointerException
+import javax.inject.Inject
 import java.text.DecimalFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
+@AndroidEntryPoint
 class NewDebtFragment: Fragment() {
 
     private val TAG = "NewDebtFragment"
@@ -83,15 +85,15 @@ class NewDebtFragment: Fragment() {
 //        enterTransition = inflater.inflateTransition(R.transition.slide_up)
     }
 
-    private val vm by viewModel<NewDebtViewModel>()
+    private val vm by viewModels<NewDebtViewModel>()
 
-    private val setHumanUseCase: SetHumanUseCase by inject()
-    private val getLastHumanIdUseCase: GetLastHumanIdUseCase by inject()
-    private val addSumUseCase: AddSumUseCase by inject()
+    @Inject lateinit var setHumanUseCase: SetHumanUseCase
+    @Inject lateinit var getLastHumanIdUseCase: GetLastHumanIdUseCase
+    @Inject lateinit var addSumUseCase: AddSumUseCase
 
-    private val setDebtUseCase: SetDebtUseCase by inject()
-    private val editDebtUseCase: EditDebtUseCase by inject()
-    private val updateCurrentSumUseCase: UpdateCurrentSumUseCase by inject()
+    @Inject lateinit var setDebtUseCase: SetDebtUseCase
+    @Inject lateinit var editDebtUseCase: EditDebtUseCase
+    @Inject lateinit var updateCurrentSumUseCase: UpdateCurrentSumUseCase
 
     @SuppressLint("Range")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

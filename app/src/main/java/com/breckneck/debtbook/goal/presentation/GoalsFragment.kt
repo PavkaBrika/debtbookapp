@@ -32,14 +32,16 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import androidx.fragment.app.viewModels
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.Date
 
+@AndroidEntryPoint
 class GoalsFragment: Fragment() {
 
     private val TAG = "GoalsFragment"
 
-    private val vm by viewModel<GoalsFragmentViewModel>()
+    private val vm by viewModels<GoalsFragmentViewModel>()
 
     lateinit var goalsRecyclerView: RecyclerView
     lateinit var goalAdapter: GoalAdapter

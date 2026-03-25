@@ -15,10 +15,13 @@ import com.breckneck.deptbook.domain.usecase.Settings.GetPINCode
 import com.breckneck.deptbook.domain.usecase.Settings.GetPINCodeEnabled
 import com.breckneck.deptbook.domain.usecase.Settings.SetPINCode
 import com.breckneck.deptbook.domain.usecase.Settings.SetPINCodeEnabled
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import javax.inject.Inject
 
-class AuthorizationViewModel(
+@HiltViewModel
+class AuthorizationViewModel @Inject constructor(
     private val getPINCodeEnabled: GetPINCodeEnabled,
     private val setPINCodeEnabled: SetPINCodeEnabled,
     private val setPINCode: SetPINCode,

@@ -17,12 +17,15 @@ import com.breckneck.deptbook.domain.usecase.Settings.GetFinanceCurrency
 import com.breckneck.deptbook.domain.util.CreateFragmentState
 import com.breckneck.deptbook.domain.util.FinanceCategoryState
 import kotlinx.coroutines.Dispatchers
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Date
+import javax.inject.Inject
 
-class CreateFinanceViewModel(
+@HiltViewModel
+class CreateFinanceViewModel @Inject constructor(
     private val setFinance: SetFinance,
     private val getAllFinanceCategories: GetAllFinanceCategories,
     private val getFinanceCurrency: GetFinanceCurrency,

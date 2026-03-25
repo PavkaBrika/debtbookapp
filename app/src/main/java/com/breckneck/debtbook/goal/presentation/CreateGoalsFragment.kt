@@ -40,18 +40,20 @@ import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputLayout
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import androidx.fragment.app.viewModels
+import dagger.hilt.android.AndroidEntryPoint
 import java.lang.NullPointerException
 import java.lang.NumberFormatException
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.Calendar
 
+@AndroidEntryPoint
 class CreateGoalsFragment : Fragment() {
 
     private val TAG = "CreateGoalsFragment"
 
-    private val vm by viewModel<CreateGoalsFragmentViewModel>()
+    private val vm by viewModels<CreateGoalsFragmentViewModel>()
 
     lateinit var getImageUriActivityResult: ActivityResultLauncher<String?>
 

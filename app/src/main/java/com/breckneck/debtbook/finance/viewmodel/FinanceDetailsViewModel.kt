@@ -9,11 +9,14 @@ import com.breckneck.deptbook.domain.model.Finance
 import com.breckneck.deptbook.domain.usecase.Finance.DeleteFinance
 import com.breckneck.deptbook.domain.usecase.Finance.GetFinanceByCategoryId
 import com.breckneck.deptbook.domain.util.ListState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class FinanceDetailsViewModel(
+@HiltViewModel
+class FinanceDetailsViewModel @Inject constructor(
     private val getFinanceByCategoryId: GetFinanceByCategoryId,
     private val deleteFinance: DeleteFinance
 ): ViewModel() {

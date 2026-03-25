@@ -45,7 +45,8 @@ import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import androidx.fragment.app.viewModels
+import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
@@ -53,11 +54,12 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.concurrent.TimeUnit
 
+@AndroidEntryPoint
 class GoalDetailsFragment : Fragment() {
 
     private val TAG = "GoalDetailsFragment"
 
-    private val vm by viewModel<GoalDetailsFragmentViewModel>()
+    private val vm by viewModels<GoalDetailsFragmentViewModel>()
 
     lateinit var goalDepositRecyclerView: RecyclerView
     lateinit var goalDepositAdapter: GoalDepositAdapter

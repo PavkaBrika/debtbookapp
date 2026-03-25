@@ -8,11 +8,14 @@ import androidx.lifecycle.viewModelScope
 import com.breckneck.deptbook.domain.model.FinanceCategory
 import com.breckneck.deptbook.domain.usecase.FinanceCategory.SetFinanceCategory
 import com.breckneck.deptbook.domain.util.FinanceCategoryState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class CreateFinanceCategoryViewModel(
+@HiltViewModel
+class CreateFinanceCategoryViewModel @Inject constructor(
     private val setFinanceCategory: SetFinanceCategory
 ): ViewModel() {
 

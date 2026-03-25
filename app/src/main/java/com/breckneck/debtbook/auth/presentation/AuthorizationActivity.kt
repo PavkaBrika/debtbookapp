@@ -26,14 +26,16 @@ import com.breckneck.debtbook.auth.viewmodel.AuthorizationViewModel
 import com.breckneck.debtbook.core.activity.MainActivity
 import com.breckneck.deptbook.domain.util.CRYPTO_FILE_NAME
 import com.breckneck.deptbook.domain.util.PINCodeEnterState
+import androidx.activity.viewModels
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.io.FileInputStream
 
+@AndroidEntryPoint
 class AuthorizationActivity : AppCompatActivity() {
 
-    private val vm by viewModel<AuthorizationViewModel>()
+    private val vm by viewModels<AuthorizationViewModel>()
 
     val biometricPromptManager = BiometricPromptManager(this)
 

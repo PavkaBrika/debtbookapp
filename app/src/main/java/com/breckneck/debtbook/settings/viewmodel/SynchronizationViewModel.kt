@@ -26,11 +26,14 @@ import com.breckneck.deptbook.domain.usecase.Settings.SetIsAuthorized
 import com.breckneck.deptbook.domain.usecase.Settings.SetLastSyncDate
 import com.breckneck.deptbook.domain.usecase.Settings.SetUserData
 import kotlinx.coroutines.Dispatchers
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Calendar
+import javax.inject.Inject
 
-class SynchronizationViewModel(
+@HiltViewModel
+class SynchronizationViewModel @Inject constructor(
     private val getIsAuthorized: GetIsAuthorized,
     private val setIsAuthorized: SetIsAuthorized,
     private val getAllDebts: GetAllDebts,

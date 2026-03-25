@@ -24,11 +24,13 @@ import com.breckneck.deptbook.domain.util.categoryImageList
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputLayout
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import androidx.fragment.app.viewModels
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class CreateFinanceCategoryFragment : Fragment() {
 
-    private val vm by viewModel<CreateFinanceCategoryViewModel>()
+    private val vm by viewModels<CreateFinanceCategoryViewModel>()
 
     interface OnClickListener {
         fun onBackButtonClick()

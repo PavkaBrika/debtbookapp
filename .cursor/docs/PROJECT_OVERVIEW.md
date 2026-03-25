@@ -13,7 +13,7 @@ Android-приложение для учёта долгов, финансов и
 ```
 :app  (com.android.application)
   ├── Presentation (Fragments, Adapters, ViewModels)
-  ├── DI (Koin modules)
+  ├── DI (Hilt modules)
   └── Core (MainActivity, Theme, Navigation)
 
 :domain  (java-library)
@@ -40,7 +40,7 @@ Android-приложение для учёта долгов, финансов и
 |---------|-----------|--------|
 | Язык | Kotlin | 2.1.0 |
 | Build | AGP / Gradle | 8.8.0 / 8.10.2 |
-| DI | Koin (core, android, compose) | 4.1.1 |
+| DI | Hilt (android, hilt-navigation-compose) | 2.55 |
 | БД | Room + KSP compiler | 2.8.4 |
 | UI (classic) | View Binding, Material, ConstraintLayout, RecyclerView | — |
 | UI (Compose) | Compose BOM, Material3, Activity Compose | 2026.03.00 |
@@ -99,7 +99,7 @@ MainActivity (NavHostFragment + BottomNav)
 
 ```
 com.breckneck.debtbook
-├── app/                  # Application class (Koin + Yandex Ads init)
+├── app/                  # Application class (@HiltAndroidApp + Yandex Ads init)
 ├── auth/
 │   ├── presentation/     # AuthorizationActivity, AuthorizationScreen (Compose)
 │   ├── viewmodel/        # AuthorizationViewModel
@@ -128,7 +128,7 @@ com.breckneck.debtbook
 │   ├── presentation/     # SettingsFragment, SynchronizationFragment
 │   ├── util/             # DriveServiceHelper
 │   └── viewmodel/        # SettingsViewModel, SynchronizationViewModel
-└── di/                   # AppModule, DataModule, DomainModule (Koin)
+└── di/                   # DataModule, DomainModule (Hilt)
 ```
 
 ---
@@ -167,7 +167,7 @@ com.breckneck.debtbook
 | `PROJECT_OVERVIEW.md` | Архитектура, tech stack, навигация, общая картина | Всегда первым |
 | `DOMAIN_MODULE.md` | Модели, репозитории, use cases, enum'ы, util | Работа с бизнес-логикой, добавление use case |
 | `DATA_MODULE.md` | Room DB, DAO, entities, storage, маппинг | Работа с БД, миграции, новые таблицы |
-| `APP_CORE.md` | App init, MainActivity, DI (Koin), навигация, Auth (PIN/Bio) | DI-конфигурация, добавление VM, auth-логика |
+| `APP_CORE.md` | App init, MainActivity, DI (Hilt), навигация, Auth (PIN/Bio) | DI-конфигурация, добавление VM, auth-логика |
 | `APP_DEBT_FEATURE.md` | Фича долгов (3 экрана, 3 VM, 3 адаптера) | Изменения в долгах |
 | `APP_FINANCE_FEATURE.md` | Фича финансов (4 экрана, 4 VM, 5 адаптеров) | Изменения в финансах |
 | `APP_GOAL_FEATURE.md` | Фича целей (3 экрана, 3 VM, 2 адаптера) | Изменения в целях |
@@ -181,9 +181,9 @@ com.breckneck.debtbook
 1. Создать `Fragment` в `app/.../feature/presentation/`
 2. Создать layout XML в `res/layout/`
 3. Создать `ViewModel` в `app/.../feature/viewmodel/`
-4. Зарегистрировать VM в `di/AppModule.kt` через `viewModel<T> { T(...) }`
+4. Аннотировать Fragment через `@AndroidEntryPoint`, VM через `@HiltViewModel @Inject constructor`
 5. Добавить destination + action в `res/navigation/nav_graph.xml`
-6. При необходимости — добавить use cases в `di/DomainModule.kt`
+6. При необходимости — добавить `@Provides` в `di/DomainModule.kt`
 
 ### Добавление новой таблицы (Entity)
 1. Создать domain model в `domain/.../model/`
@@ -199,9 +199,8 @@ com.breckneck.debtbook
 
 ### Добавление нового use case
 1. Создать класс в `domain/.../usecase/Category/` с `fun execute(...)`
-2. Зарегистрировать в `di/DomainModule.kt` как `factory` (или `single` для Settings)
-3. Добавить в конструктор нужного ViewModel
-4. Обновить binding в `di/AppModule.kt`
+2. Добавить `@Provides` в `di/DomainModule.kt` (с `@Singleton` для Settings use cases)
+3. Добавить параметр в конструктор нужного `@HiltViewModel`
 
 ---
 

@@ -15,12 +15,15 @@ import com.breckneck.deptbook.domain.util.FinanceCategoryState
 import com.breckneck.deptbook.domain.util.FinanceInterval
 import com.breckneck.deptbook.domain.util.ListState
 import kotlinx.coroutines.Dispatchers
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Calendar
+import javax.inject.Inject
 import kotlin.math.roundToInt
 
-class FinanceViewModel(
+@HiltViewModel
+class FinanceViewModel @Inject constructor(
     private val getFinanceCurrency: GetFinanceCurrency,
     private val setFinanceCurrency: SetFinanceCurrency,
     private val getAllCategoriesWithFinances: GetAllCategoriesWithFinances

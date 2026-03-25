@@ -90,7 +90,7 @@ import com.breckneck.debtbook.auth.viewmodel.AuthorizationViewModel
 import com.breckneck.debtbook.core.activity.MainActivity
 import com.breckneck.deptbook.domain.util.CRYPTO_FILE_NAME
 import com.breckneck.deptbook.domain.util.PINCodeAction
-import org.koin.androidx.compose.koinViewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import java.io.File
 import java.io.FileOutputStream
 import kotlin.math.roundToInt
@@ -98,7 +98,7 @@ import kotlin.math.roundToInt
 @Composable
 fun AuthorizationScreen(
     activity: AppCompatActivity,
-    vm: AuthorizationViewModel = koinViewModel(),
+    vm: AuthorizationViewModel = hiltViewModel(),
     biometricPromptManager: BiometricPromptManager,
     cryptoManager: CryptoManager?
 ) {

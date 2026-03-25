@@ -37,13 +37,15 @@ import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputLayout
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import androidx.fragment.app.viewModels
+import dagger.hilt.android.AndroidEntryPoint
 import java.text.DecimalFormat
 import java.util.Calendar
 
+@AndroidEntryPoint
 class CreateFinanceFragment : Fragment() {
 
-    private val vm by viewModel<CreateFinanceViewModel>()
+    private val vm by viewModels<CreateFinanceViewModel>()
 
     interface OnClickListener {
         fun onBackButtonClick()

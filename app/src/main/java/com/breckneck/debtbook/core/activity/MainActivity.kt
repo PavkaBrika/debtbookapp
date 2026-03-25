@@ -52,9 +52,11 @@ import com.yandex.mobile.ads.interstitial.InterstitialAd
 import com.yandex.mobile.ads.interstitial.InterstitialAdEventListener
 import com.yandex.mobile.ads.interstitial.InterstitialAdLoadListener
 import com.yandex.mobile.ads.interstitial.InterstitialAdLoader
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import androidx.activity.viewModels
+import dagger.hilt.android.AndroidEntryPoint
 import kotlin.math.roundToInt
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener,
     NewDebtFragment.OnButtonClickListener, DebtDetailsFragment.OnButtonClickListener,
     SettingsFragment.OnButtonClickListener, SynchronizationFragment.SynchronizationInterface,
@@ -70,7 +72,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener,
     private val bannerTAG = "BANNER AD"
     private val interstitialTAG = "INTERSTITIAL AD"
 
-    private val vm by viewModel<MainActivityViewModel>()
+    private val vm by viewModels<MainActivityViewModel>()
     lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {

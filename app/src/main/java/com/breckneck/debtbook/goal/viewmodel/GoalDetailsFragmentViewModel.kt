@@ -14,11 +14,14 @@ import com.breckneck.deptbook.domain.usecase.GoalDeposit.GetGoalDepositsByGoalId
 import com.breckneck.deptbook.domain.usecase.GoalDeposit.SetGoalDeposit
 import com.breckneck.deptbook.domain.util.ChangeGoalSavedSumDialogState
 import com.breckneck.deptbook.domain.util.ListState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class GoalDetailsFragmentViewModel(
+@HiltViewModel
+class GoalDetailsFragmentViewModel @Inject constructor(
     private val updateGoal: UpdateGoal,
     private val setGoalDeposit: SetGoalDeposit,
     private val getGoalDepositsByGoalId: GetGoalDepositsByGoalId,

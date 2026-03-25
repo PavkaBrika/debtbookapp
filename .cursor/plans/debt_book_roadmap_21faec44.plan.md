@@ -19,7 +19,7 @@ todos:
     status: completed
   - id: phase2-hilt
     content: "Фаза 2.1: Мигрировать DI с Koin на Hilt (AppModule, DataModule, DomainModule, ViewModels)"
-    status: pending
+    status: completed
   - id: phase2-compose
     content: "Фаза 2.2: Мигрировать все 11 фрагментов с XML на Jetpack Compose (по экрану за раз)"
     status: pending

@@ -30,15 +30,17 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import org.koin.androidx.viewmodel.ext.android.activityViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainFragment : Fragment() {
 
     private val TAG = "MainFragment"
 
-    private val vm by viewModel<MainFragmentViewModel>()
-    private val mainActivityVM by activityViewModel<MainActivityViewModel>()
+    private val vm by viewModels<MainFragmentViewModel>()
+    private val mainActivityVM by activityViewModels<MainActivityViewModel>()
 
     private lateinit var filterButton: ImageView
     private lateinit var humanAdapter: HumanAdapter

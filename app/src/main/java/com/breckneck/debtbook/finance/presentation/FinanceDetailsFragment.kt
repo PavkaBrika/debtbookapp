@@ -30,14 +30,16 @@ import com.breckneck.deptbook.domain.util.ListState
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import androidx.fragment.app.viewModels
+import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 
+@AndroidEntryPoint
 class FinanceDetailsFragment: Fragment() {
 
     private val TAG = "FinanceDetailsFragment"
 
-    private val vm by viewModel<FinanceDetailsViewModel>()
+    private val vm by viewModels<FinanceDetailsViewModel>()
 
     lateinit var financeAdapter: FinanceAdapter
 

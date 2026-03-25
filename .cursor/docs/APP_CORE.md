@@ -2,7 +2,7 @@
 
 ## Назначение
 
-Корневые компоненты приложения: Application class, MainActivity, DI-конфигурация (Koin), Compose-тема, кастомные View, навигация, авторизация (PIN + биометрия).
+Корневые компоненты приложения: Application class, MainActivity, DI-конфигурация (Hilt), Compose-тема, кастомные View, навигация, авторизация (PIN + биометрия).
 
 ---
 
@@ -34,9 +34,8 @@ app/src/main/java/com/breckneck/debtbook/
 │       ├── Type.kt
 │       └── Theme.kt
 └── di/
-    ├── AppModule.kt                   # Koin: ViewModels
-    ├── DataModule.kt                  # Koin: Storage + Repository bindings
-    └── DomainModule.kt                # Koin: Use Cases
+    ├── DataModule.kt                  # Hilt: Storage + Repository bindings
+    └── DomainModule.kt                # Hilt: Use Cases
 ```
 
 ---
@@ -46,7 +45,7 @@ app/src/main/java/com/breckneck/debtbook/
 `Application` subclass. Инициализация при старте:
 
 1. **Yandex Mobile Ads SDK**: `MobileAds.initialize()`
-2. **Koin DI**: `startKoin { modules(appModule, domainModule, dataModule) }`
+2. **Hilt DI**: аннотирован `@HiltAndroidApp` — Hilt автоматически инициализирует граф зависимостей.
 
 ---
 
@@ -102,44 +101,44 @@ app/src/main/java/com/breckneck/debtbook/
 
 ---
 
-## DI — Koin Modules
+## DI — Hilt Modules
 
-### AppModule (`di/AppModule.kt`)
-Регистрирует **14 ViewModel'ов** через `viewModel<T> { T(...use cases...) }`. Все — Koin `viewModel` scope (пересоздаются с ViewModelStore владельца).
+DI мигрирован с **Koin 4.x** на **Hilt 2.55** (Фаза 2.1). Все ViewModels аннотированы `@HiltViewModel @Inject constructor`, Activities и Fragments — `@AndroidEntryPoint`.
 
-Полный список: `MainFragmentViewModel`, `MainActivityViewModel`, `DebtDetailsViewModel`, `SettingsViewModel`, `NewDebtViewModel`, `SynchronizationViewModel`, `FinanceViewModel`, `CreateFinanceViewModel`, `CreateFinanceCategoryViewModel`, `FinanceDetailsViewModel`, `GoalsFragmentViewModel`, `CreateGoalsFragmentViewModel`, `GoalDetailsFragmentViewModel`, `AuthorizationViewModel`.
+### ViewModels (14 штук)
+Провайдятся автоматически через `@HiltViewModel`. Полный список: `MainFragmentViewModel`, `MainActivityViewModel`, `DebtDetailsViewModel`, `SettingsViewModel`, `NewDebtViewModel`, `SynchronizationViewModel`, `FinanceViewModel`, `CreateFinanceViewModel`, `CreateFinanceCategoryViewModel`, `FinanceDetailsViewModel`, `GoalsFragmentViewModel`, `CreateGoalsFragmentViewModel`, `GoalDetailsFragmentViewModel`, `AuthorizationViewModel`.
 
 ### DataModule (`di/DataModule.kt`)
-Binding Storage → Implementation, Repository → Implementation:
+`@Module @InstallIn(SingletonComponent::class)`. Binding Storage → Implementation, Repository → Implementation через `@Provides`:
 
-| Binding | Type | Реализация |
-|---------|------|-----------|
-| `HumanStorage` | factory | `DataBaseHumanStorageImpl` |
-| `HumanRepository` | factory | `HumanRepositoryImpl` |
-| `DebtStorage` | factory | `DataBaseDebtStorageImpl` |
-| `DebtRepository` | factory | `DebtRepositoryImpl` |
-| `SettingsStorage` | **single** | `SharedPrefsSettingsStorageImpl` |
-| `SettingsRepository` | **single** | `SettingsRepositoryImpl` |
-| `FinanceStorage` / `FinanceRepository` | factory | DB impl |
-| `FinanceCategoryStorage` / `FinanceCategoryRepository` | factory | DB impl |
-| `AdStorage` / `AdRepository` | factory | SharedPrefs impl |
-| `GoalStorage` / `GoalRepository` | factory | DB impl |
-| `GoalDepositStorage` / `GoalDepositRepository` | factory | DB impl |
+| Binding | Scope | Реализация |
+|---------|-------|-----------|
+| `HumanStorage` | **`@Singleton`** | `DataBaseHumanStorageImpl` |
+| `HumanRepository` | **`@Singleton`** | `HumanRepositoryImpl` |
+| `DebtStorage` | **`@Singleton`** | `DataBaseDebtStorageImpl` |
+| `DebtRepository` | **`@Singleton`** | `DebtRepositoryImpl` |
+| `SettingsStorage` | **`@Singleton`** | `SharedPrefsSettingsStorageImpl` |
+| `SettingsRepository` | **`@Singleton`** | `SettingsRepositoryImpl` |
+| `FinanceStorage` / `FinanceRepository` | **`@Singleton`** | DB impl |
+| `FinanceCategoryStorage` / `FinanceCategoryRepository` | **`@Singleton`** | DB impl |
+| `AdStorage` / `AdRepository` | **`@Singleton`** | SharedPrefs impl |
+| `GoalStorage` / `GoalRepository` | **`@Singleton`** | DB impl |
+| `GoalDepositStorage` / `GoalDepositRepository` | **`@Singleton`** | DB impl |
 
-**Важно**: `SettingsStorage` и `SettingsRepository` — **singleton**, остальные — **factory**.
+**Важно**: все Storage и Repository — **`@Singleton`**, т.к. каждый `DataBase*StorageImpl` создаёт `RoomDatabase` внутри.
 
 ### DomainModule (`di/DomainModule.kt`)
-Регистрирует **80+ use cases**:
-- Human (8): `GetAllHumansUseCase`, `SetHumanUseCase`, `DeleteHumanUseCase` и др.
-- Debt (15): `GetAllDebts`, `SetDebtUseCase`, `ExportDebtDataInExcelUseCase` и др.
-- Settings (31): Get/Set пары для каждой настройки — все **single**
-- Finance (7): CRUD + bulk replace
-- FinanceCategory (6): CRUD + bulk replace
-- Ad (2): Get/SaveClicks
-- Goal (5): CRUD + replace
-- GoalDeposit (5): CRUD + replace
+`@Module @InstallIn(SingletonComponent::class)`. Регистрирует use cases через `@Provides`:
+- Human (9 use cases): transient
+- Debt (12 use cases): transient
+- Settings (22 use cases): все **`@Singleton`** — Get/Set пары для каждой настройки
+- Finance (7 use cases): **`@Singleton`**
+- FinanceCategory (6 use cases): **`@Singleton`**
+- Ad (2 use cases): transient
+- Goal (5 use cases): transient
+- GoalDeposit (5 use cases): transient
 
-**Важно**: Settings use cases — **single**, остальные — **factory**.
+**Важно**: Settings и Finance use cases — **`@Singleton`**, остальные — transient.
 
 ---
 

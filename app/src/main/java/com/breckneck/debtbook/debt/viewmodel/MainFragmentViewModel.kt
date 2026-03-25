@@ -23,11 +23,14 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
+@HiltViewModel
 @OptIn(FlowPreview::class)
-class MainFragmentViewModel(
+class MainFragmentViewModel @Inject constructor(
     private val getAllHumansUseCase: GetAllHumansUseCase,
     private val getAllDebtsSumUseCase: GetAllDebtsSumUseCase,
     private val getFirstMainCurrency: GetFirstMainCurrency,

@@ -41,9 +41,11 @@ import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import org.koin.androidx.viewmodel.ext.android.activityViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SettingsFragment : Fragment() {
 
     private val TAG = "SettingsFragment"
@@ -58,8 +60,8 @@ class SettingsFragment : Fragment() {
 
     lateinit var buttonClickListener: OnButtonClickListener
 
-    private val vm by viewModel<SettingsViewModel>()
-    private val mainActivityVM by activityViewModel<MainActivityViewModel>()
+    private val vm by viewModels<SettingsViewModel>()
+    private val mainActivityVM by activityViewModels<MainActivityViewModel>()
 
     private lateinit var startActivityForResult : ActivityResultLauncher<Intent>
 

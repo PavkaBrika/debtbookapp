@@ -11,12 +11,15 @@ import com.breckneck.deptbook.domain.usecase.Goal.SetGoal
 import com.breckneck.deptbook.domain.usecase.Goal.UpdateGoal
 import com.breckneck.deptbook.domain.usecase.Settings.GetDefaultCurrency
 import com.breckneck.deptbook.domain.util.CreateFragmentState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Date
+import javax.inject.Inject
 
-class CreateGoalsFragmentViewModel(
+@HiltViewModel
+class CreateGoalsFragmentViewModel @Inject constructor(
     private val setGoal: SetGoal,
     private val getDefaultCurrency: GetDefaultCurrency,
     private val updateGoal: UpdateGoal

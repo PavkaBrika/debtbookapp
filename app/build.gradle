@@ -1,6 +1,8 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.plugin.compose'
+    id 'com.google.devtools.ksp'
+    id 'com.google.dagger.hilt.android'
 }
 
 android {
@@ -128,13 +130,10 @@ dependencies {
         exclude group: "org.apache.httpcomponents"
     }
 
-    //Koin
-    def koin_version = "4.1.1"
-    implementation "io.insert-koin:koin-core:$koin_version"
-    implementation "io.insert-koin:koin-android:$koin_version"
-    implementation "io.insert-koin:koin-androidx-compose:$koin_version"
-    //Testing
-    testImplementation "io.insert-koin:koin-test:$koin_version"
+    //Hilt
+    implementation 'com.google.dagger:hilt-android:2.59.2'
+    ksp 'com.google.dagger:hilt-compiler:2.59.2'
+    implementation 'androidx.hilt:hilt-navigation-compose:1.2.0'
 
     //Shimmer (pre-loading recycler view effect)
     implementation "com.facebook.shimmer:shimmer:0.1.0@aar"

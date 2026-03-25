@@ -7,8 +7,11 @@ import androidx.lifecycle.ViewModel
 import com.breckneck.deptbook.domain.usecase.Debt.GetCurrentDateUseCase
 import com.breckneck.deptbook.domain.usecase.Debt.SetDateUseCase
 import com.breckneck.deptbook.domain.usecase.Settings.GetDefaultCurrency
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class NewDebtViewModel(
+@HiltViewModel
+class NewDebtViewModel @Inject constructor(
     private val getDefaultCurrency: GetDefaultCurrency,
     private val getCurrentDateUseCase: GetCurrentDateUseCase,
     private val setDateUseCase: SetDateUseCase

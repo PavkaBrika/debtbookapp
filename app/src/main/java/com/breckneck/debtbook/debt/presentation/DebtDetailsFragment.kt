@@ -45,13 +45,15 @@ import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import androidx.fragment.app.viewModels
+import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
+import javax.inject.Inject
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 
 
+@AndroidEntryPoint
 class DebtDetailsFragment : Fragment() {
 
     private val TAG = "DebtDetailsFragment"
@@ -75,10 +77,10 @@ class DebtDetailsFragment : Fragment() {
         buttonClickListener = context as OnButtonClickListener
     }
 
-    private val vm by viewModel<DebtDetailsViewModel>()
+    private val vm by viewModels<DebtDetailsViewModel>()
 
-    private val getDebtShareString: GetDebtShareString by inject()
-    private val getAddSumInShareText: GetAddSumInShareText by inject()
+    @Inject lateinit var getDebtShareString: GetDebtShareString
+    @Inject lateinit var getAddSumInShareText: GetAddSumInShareText
 
     private lateinit var debtClickListener: DebtAdapter.OnDebtClickListener
     private lateinit var overallSumTextView: TextView

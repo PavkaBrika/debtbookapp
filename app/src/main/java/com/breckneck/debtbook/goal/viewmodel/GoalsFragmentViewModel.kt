@@ -13,11 +13,14 @@ import com.breckneck.deptbook.domain.usecase.Goal.UpdateGoal
 import com.breckneck.deptbook.domain.usecase.GoalDeposit.DeleteGoalDepositsByGoalId
 import com.breckneck.deptbook.domain.usecase.GoalDeposit.SetGoalDeposit
 import com.breckneck.deptbook.domain.util.ListState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class GoalsFragmentViewModel(
+@HiltViewModel
+class GoalsFragmentViewModel @Inject constructor(
     private val getAllGoals: GetAllGoals,
     private val updateGoal: UpdateGoal,
     private val deleteGoal: DeleteGoal,

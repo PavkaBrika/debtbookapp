@@ -39,9 +39,11 @@ import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveScopes
 import com.google.api.services.drive.model.FileList
 import com.google.gson.Gson
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import androidx.fragment.app.viewModels
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.Collections
 
+@AndroidEntryPoint
 class SynchronizationFragment : Fragment() {
 
     interface SynchronizationInterface {
@@ -51,7 +53,7 @@ class SynchronizationFragment : Fragment() {
     private val TAG = "Sync fragment"
     private val REQUEST_CODE_SIGN_IN = 1
 
-    private val vm by viewModel<SynchronizationViewModel>()
+    private val vm by viewModels<SynchronizationViewModel>()
     private val fileName = "DebtBookSync.json"
     private var synchronizationInterface: SynchronizationInterface? = null
     private val gson = Gson()
