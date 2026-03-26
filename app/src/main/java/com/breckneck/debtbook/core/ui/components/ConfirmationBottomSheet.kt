@@ -9,10 +9,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -20,15 +21,14 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.core.ui.theme.DebtBookTheme
 
 /**
- * Confirmation bottom sheet with title, message and Yes/No buttons (replaces dialog_are_you_sure.xml).
+ * Confirmation bottom sheet with title, message and action buttons (replaces dialog_are_you_sure.xml).
+ * Follows M3 button hierarchy: destructive confirm = FilledTonal(error), dismiss = TextButton.
  * Used in: DebtDetails, CreateFinance, Synchronization.
  */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -71,38 +71,37 @@ internal fun ConfirmationContent(
         modifier = Modifier
             .fillMaxWidth()
             .navigationBarsPadding()
-            .padding(horizontal = 24.dp, vertical = 8.dp)
-            .padding(bottom = 16.dp)
+            .padding(horizontal = 24.dp)
+            .padding(top = 8.dp, bottom = 24.dp)
     ) {
         Text(
             text = title,
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onSurface
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = message,
-            fontSize = 16.sp,
-            color = MaterialTheme.colorScheme.onSurface
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         Spacer(modifier = Modifier.height(24.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.End
         ) {
-            OutlinedButton(
-                onClick = onDismiss,
-                modifier = Modifier.padding(end = 8.dp)
-            ) {
+            TextButton(onClick = onDismiss) {
                 Text(text = dismissText)
             }
-            TextButton(onClick = onConfirm) {
-                Text(
-                    text = confirmText,
-                    color = MaterialTheme.colorScheme.error,
-                    fontWeight = FontWeight.SemiBold
+            FilledTonalButton(
+                onClick = onConfirm,
+                modifier = Modifier.padding(start = 8.dp),
+                colors = ButtonDefaults.filledTonalButtonColors(
+                    containerColor = MaterialTheme.colorScheme.errorContainer,
+                    contentColor = MaterialTheme.colorScheme.onErrorContainer
                 )
+            ) {
+                Text(text = confirmText)
             }
         }
     }
@@ -112,7 +111,7 @@ internal fun ConfirmationContent(
 @Preview(name = "Confirmation — dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun ConfirmationBottomSheetPreview() {
-    DebtBookTheme {
+    DebtBookTheme(dynamicColor = false) {
         Surface {
             ConfirmationContent(
                 title = "Are you sure?",

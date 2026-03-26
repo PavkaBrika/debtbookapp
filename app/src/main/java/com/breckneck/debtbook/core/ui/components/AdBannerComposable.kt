@@ -48,7 +48,7 @@ private fun rememberBannerAdView(context: Context, adUnitId: String): BannerAdVi
     val screenWidthPx = context.resources.displayMetrics.widthPixels
     val adWidthDp = (screenWidthPx / density).toInt()
 
-    val bannerAdView = remember {
+    val bannerAdView = remember(adUnitId) {
         BannerAdView(context).apply {
             setAdUnitId(adUnitId)
             setAdSize(BannerAdSize.stickySize(context, adWidthDp))
@@ -74,16 +74,17 @@ private fun rememberBannerAdView(context: Context, adUnitId: String): BannerAdVi
 @Preview(name = "AdBanner — placeholder")
 @Composable
 private fun AdBannerPreview() {
-    DebtBookTheme {
+    DebtBookTheme(dynamicColor = false) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp)
-                .background(MaterialTheme.colorScheme.surfaceVariant),
+                .background(MaterialTheme.colorScheme.surfaceContainerHigh),
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "Ad Banner (320×50)",
+                text = "Ad Banner (320\u00d750)",
+                style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }

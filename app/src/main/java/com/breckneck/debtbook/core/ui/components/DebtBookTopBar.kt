@@ -9,14 +9,11 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.breckneck.debtbook.R
@@ -33,7 +30,6 @@ fun DebtBookTopBar(
         title = {
             Text(
                 text = title,
-                fontWeight = FontWeight.Bold,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -48,13 +44,7 @@ fun DebtBookTopBar(
                 }
             }
         },
-        actions = actions,
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-            titleContentColor = MaterialTheme.colorScheme.onSurface,
-            navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
-            actionIconContentColor = MaterialTheme.colorScheme.onSurface
-        )
+        actions = actions
     )
 }
 
@@ -62,7 +52,7 @@ fun DebtBookTopBar(
 @Preview(name = "TopBar — root screen (dark)", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun DebtBookTopBarRootPreview() {
-    DebtBookTheme {
+    DebtBookTheme(dynamicColor = false) {
         Surface {
             DebtBookTopBar(
                 title = "Debts",
@@ -83,7 +73,7 @@ private fun DebtBookTopBarRootPreview() {
 @Preview(name = "TopBar — inner screen (dark)", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun DebtBookTopBarInnerPreview() {
-    DebtBookTheme {
+    DebtBookTheme(dynamicColor = false) {
         Surface {
             DebtBookTopBar(
                 title = "John Doe — very long name that should be ellipsized",

@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBalance
 import androidx.compose.material3.Icon
@@ -32,17 +31,15 @@ import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.breckneck.debtbook.core.ui.theme.DebtBookTheme
 
 /**
- * Shows a skeleton shimmer while loading, then an empty-state message with icon once loaded.
+ * Empty-state view: centered icon with supporting text for when a list has no items.
  */
 @Composable
 fun EmptyListPlaceholder(
@@ -60,21 +57,21 @@ fun EmptyListPlaceholder(
         Icon(
             imageVector = emptyIcon,
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.outline,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.size(72.dp)
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = emptyText,
-            fontSize = 16.sp,
-            color = MaterialTheme.colorScheme.outline,
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center
         )
     }
 }
 
 /**
- * Shows a column of shimmer skeleton rows for loading state.
+ * Loading skeleton: column of shimmer rows using theme-aware tonal surface colors.
  */
 @Composable
 fun ShimmerListPlaceholder(
@@ -93,7 +90,7 @@ fun ShimmerListPlaceholder(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(rowHeight)
-                    .clip(RoundedCornerShape(12.dp))
+                    .clip(MaterialTheme.shapes.medium)
                     .shimmerEffect()
             )
         }
@@ -104,7 +101,7 @@ fun ShimmerListPlaceholder(
 @Preview(name = "EmptyList — dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun EmptyListPlaceholderPreview() {
-    DebtBookTheme {
+    DebtBookTheme(dynamicColor = false) {
         Surface {
             EmptyListPlaceholder(
                 emptyText = "There are no debts yet.\nClick the button below to add.",
@@ -118,7 +115,7 @@ private fun EmptyListPlaceholderPreview() {
 @Preview(name = "ShimmerList — dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun ShimmerListPlaceholderPreview() {
-    DebtBookTheme {
+    DebtBookTheme(dynamicColor = false) {
         Surface(modifier = Modifier.fillMaxWidth()) {
             ShimmerListPlaceholder(rowCount = 5, rowHeight = 72.dp)
         }
@@ -126,6 +123,8 @@ private fun ShimmerListPlaceholderPreview() {
 }
 
 fun Modifier.shimmerEffect(): Modifier = composed {
+    val shimmerBase = MaterialTheme.colorScheme.surfaceContainerHighest
+    val shimmerHighlight = MaterialTheme.colorScheme.surfaceContainerLow
     val transition = rememberInfiniteTransition(label = "shimmer")
     val translateAnimation by transition.animateFloat(
         initialValue = 0f,
@@ -138,11 +137,7 @@ fun Modifier.shimmerEffect(): Modifier = composed {
     )
     background(
         brush = Brush.linearGradient(
-            colors = listOf(
-                Color.LightGray.copy(alpha = 0.6f),
-                Color.LightGray.copy(alpha = 0.2f),
-                Color.LightGray.copy(alpha = 0.6f)
-            ),
+            colors = listOf(shimmerBase, shimmerHighlight, shimmerBase),
             start = Offset(translateAnimation - 500f, 0f),
             end = Offset(translateAnimation, 0f)
         )

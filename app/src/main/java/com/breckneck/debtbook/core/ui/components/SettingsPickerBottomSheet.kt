@@ -7,10 +7,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -21,10 +22,8 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.breckneck.debtbook.core.ui.theme.DebtBookTheme
 
 /**
@@ -40,7 +39,7 @@ fun SettingsPickerBottomSheet(
     onItemSelected: (Int) -> Unit,
     onDismiss: () -> Unit
 ) {
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -66,24 +65,28 @@ internal fun SettingsPickerContent(
         modifier = Modifier
             .fillMaxWidth()
             .navigationBarsPadding()
-            .padding(bottom = 16.dp)
+            .padding(bottom = 24.dp)
     ) {
         Text(
             text = title,
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
+            modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp)
         )
-        Spacer(modifier = Modifier.height(8.dp))
-        LazyColumn {
-            itemsIndexed(options) { index, option ->
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(max = 400.dp)
+                .verticalScroll(rememberScrollState())
+        ) {
+            options.forEachIndexed { index, option ->
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable { onItemSelected(index) }
-                        .padding(horizontal = 16.dp, vertical = 4.dp)
+                        .padding(horizontal = 16.dp)
+                        .heightIn(min = 48.dp)
                 ) {
                     RadioButton(
                         selected = index == selectedIndex,
@@ -91,9 +94,9 @@ internal fun SettingsPickerContent(
                     )
                     Text(
                         text = option,
-                        fontSize = 16.sp,
+                        style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.padding(start = 8.dp)
+                        modifier = Modifier.padding(start = 12.dp)
                     )
                 }
             }
@@ -105,7 +108,7 @@ internal fun SettingsPickerContent(
 @Preview(name = "SettingsPicker — dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun SettingsPickerPreview() {
-    DebtBookTheme {
+    DebtBookTheme(dynamicColor = false) {
         Surface {
             SettingsPickerContent(
                 title = "Select currency",
