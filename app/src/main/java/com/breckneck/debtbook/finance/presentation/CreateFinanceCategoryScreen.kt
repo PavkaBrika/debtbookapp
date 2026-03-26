@@ -63,6 +63,7 @@ import com.breckneck.debtbook.finance.viewmodel.CreateFinanceCategoryViewModel
 import com.breckneck.deptbook.domain.model.FinanceCategory
 import com.breckneck.deptbook.domain.util.categoryColorList
 import com.breckneck.deptbook.domain.util.categoryImageList
+import androidx.core.graphics.toColorInt
 
 @Composable
 fun CreateFinanceCategoryScreen(
@@ -313,7 +314,7 @@ private fun CategoryPreview(
     val hasImage = selectedImageIndex != null
 
     val bgColor = if (selectedColorIndex != null)
-        Color(android.graphics.Color.parseColor(categoryColorList[selectedColorIndex]))
+        Color(categoryColorList[selectedColorIndex].toColorInt())
     else
         MaterialTheme.colorScheme.surfaceContainerHighest
 
@@ -390,6 +391,7 @@ private fun CategoryImageItem(
         modifier = Modifier
             .size(56.dp)
             .scale(scale)
+            .clip(RoundedCornerShape(12.dp))
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(12.dp),
         color = if (isSelected)
