@@ -7,7 +7,7 @@ todos:
     status: completed
   - id: screen-01-create-finance-category
     content: "Мигрировать CreateFinanceCategoryFragment -> CreateFinanceCategoryScreen (Simple: grid picker иконок/цветов + форма)"
-    status: pending
+    status: completed
   - id: screen-02-finance-details
     content: "Мигрировать FinanceDetailsFragment -> FinanceDetailsScreen (Medium: список финансов + ExtraFunctions sheet)"
     status: pending
@@ -97,7 +97,7 @@ flowchart LR
 
 - `**DebtBookTopBar.kt`** -- общий TopAppBar с back-кнопкой, заголовком, опциональными action-иконками (sort, search, settings). Используется практически во всех экранах.
 - `**SettingsPickerBottomSheet.kt`** -- Compose `ModalBottomSheet` с `LazyColumn` + `RadioButton` для выбора из списка (замена `dialog_setting.xml` + `SettingsAdapter`). Используется в: NewDebt (валюта), CreateGoals (валюта), Finance (валюта, интервал), Settings (валюта x3, тема).
-- `**ConfirmationBottomSheet.kt**` -- Compose `ModalBottomSheet` с текстом + кнопками (замена `dialog_are_you_sure.xml`). Используется в: DebtDetails, CreateFinance, Synchronization.
+- `**ConfirmationBottomSheet.kt`** -- Compose `ModalBottomSheet` с текстом + кнопками (замена `dialog_are_you_sure.xml`). Используется в: DebtDetails, CreateFinance, Synchronization.
 - `**ExtraFunctionsBottomSheet.kt**` -- Compose `ModalBottomSheet` с опциями "Редактировать / Удалить / Отмена" (замена `dialog_extra_functions.xml`). Используется в: DebtDetails, FinanceDetails, GoalDetails.
 - `**SortFilterBottomSheet.kt**` -- Compose `ModalBottomSheet` с RadioGroup для сортировки/фильтрации (замена `dialog_sort.xml`). Используется в: MainFragment, DebtDetails.
 - `**EmptyListPlaceholder.kt**` -- заглушка для пустых списков (shimmer-эффект + empty state).

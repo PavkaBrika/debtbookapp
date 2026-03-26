@@ -21,7 +21,8 @@ app/src/main/java/com/breckneck/debtbook/finance/
 ├── presentation/
 │   ├── FinanceFragment.kt               # Основной экран финансов
 │   ├── CreateFinanceFragment.kt         # Создание/редактирование записи
-│   ├── CreateFinanceCategoryFragment.kt # Создание/редактирование категории
+│   ├── CreateFinanceCategoryFragment.kt # Фрагмент-хост для Compose экрана категории
+│   ├── CreateFinanceCategoryScreen.kt   # Compose UI создания категории
 │   └── FinanceDetailsFragment.kt        # Детали категории (история)
 ├── util/
 │   └── GetFinanceCategoryNameInLocalLanguage.kt  # Локализация имён категорий
