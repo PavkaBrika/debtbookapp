@@ -1,15 +1,28 @@
 package com.breckneck.debtbook.finance.presentation
 
 import android.content.res.Configuration
-import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
@@ -20,10 +33,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -33,15 +43,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -69,8 +78,9 @@ fun CreateFinanceCategoryScreen(
 
     var categoryName by rememberSaveable { mutableStateOf("") }
     var nameError by rememberSaveable { mutableStateOf<String?>(null) }
+    var imageError by rememberSaveable { mutableStateOf<String?>(null) }
+    var colorError by rememberSaveable { mutableStateOf<String?>(null) }
 
-    val context = LocalContext.current
     val mustEnterNameError = stringResource(R.string.youmustentername)
     val mustSelectColorError = stringResource(R.string.you_must_select_color)
     val mustSelectImageError = stringResource(R.string.you_must_select_image)
@@ -78,6 +88,8 @@ fun CreateFinanceCategoryScreen(
     CreateFinanceCategoryContent(
         categoryName = categoryName,
         nameError = nameError,
+        imageError = imageError,
+        colorError = colorError,
         selectedImageIndex = checkedImagePosition,
         selectedColorIndex = checkedColorPosition,
         onBackClick = onBackClick,
@@ -90,10 +102,12 @@ fun CreateFinanceCategoryScreen(
         onImageSelected = { index, image ->
             vm.setCheckedImage(image)
             vm.setCheckedImagePosition(index)
+            imageError = null
         },
         onColorSelected = { index, color ->
             vm.setCheckedColor(color)
             vm.setCheckedColorPosition(index)
+            colorError = null
         },
         onSaveClick = {
             var isValid = true
@@ -105,14 +119,18 @@ fun CreateFinanceCategoryScreen(
                 nameError = null
             }
 
-            if (checkedColor == null) {
-                Toast.makeText(context, mustSelectColorError, Toast.LENGTH_SHORT).show()
+            if (checkedImage == null) {
+                imageError = mustSelectImageError
                 isValid = false
+            } else {
+                imageError = null
             }
 
-            if (checkedImage == null) {
-                Toast.makeText(context, mustSelectImageError, Toast.LENGTH_SHORT).show()
+            if (checkedColor == null) {
+                colorError = mustSelectColorError
                 isValid = false
+            } else {
+                colorError = null
             }
 
             if (isValid && financeCategoryState != null) {
@@ -130,10 +148,13 @@ fun CreateFinanceCategoryScreen(
     )
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun CreateFinanceCategoryContent(
     categoryName: String,
     nameError: String?,
+    imageError: String?,
+    colorError: String?,
     selectedImageIndex: Int?,
     selectedColorIndex: Int?,
     onBackClick: () -> Unit,
@@ -142,6 +163,9 @@ fun CreateFinanceCategoryContent(
     onColorSelected: (index: Int, color: String) -> Unit,
     onSaveClick: () -> Unit
 ) {
+    val errorEnter = expandVertically() + fadeIn(tween(200))
+    val errorExit = shrinkVertically() + fadeOut(tween(150))
+
     Scaffold(
         topBar = {
             DebtBookTopBar(
@@ -164,29 +188,51 @@ fun CreateFinanceCategoryContent(
                 .padding(padding)
                 .verticalScroll(rememberScrollState())
         ) {
+            CategoryPreview(
+                name = categoryName,
+                selectedImageIndex = selectedImageIndex,
+                selectedColorIndex = selectedColorIndex
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
             OutlinedTextField(
                 value = categoryName,
                 onValueChange = onNameChange,
                 label = { Text(stringResource(R.string.name)) },
                 isError = nameError != null,
-                supportingText = nameError?.let { error -> { Text(error) } },
                 singleLine = true,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 8.dp)
-                    .padding(top = 16.dp)
+                    .padding(horizontal = 16.dp)
             )
+            AnimatedVisibility(
+                visible = nameError != null,
+                enter = errorEnter,
+                exit = errorExit
+            ) {
+                Text(
+                    text = nameError.orEmpty(),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.padding(start = 32.dp, top = 4.dp)
+                )
+            }
 
-            HorizontalDivider(modifier = Modifier.padding(top = 8.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
             Text(
                 text = stringResource(R.string.image),
-                fontSize = 24.sp,
-                modifier = Modifier.padding(start = 8.dp, top = 16.dp, bottom = 16.dp)
+                style = MaterialTheme.typography.titleMedium,
+                color = if (imageError != null)
+                    MaterialTheme.colorScheme.error
+                else
+                    MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(start = 16.dp, bottom = 12.dp)
             )
 
             LazyRow(
-                contentPadding = PaddingValues(horizontal = 8.dp),
+                contentPadding = PaddingValues(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 itemsIndexed(categoryImageList) { index, image ->
@@ -198,20 +244,40 @@ fun CreateFinanceCategoryContent(
                 }
             }
 
-            HorizontalDivider(modifier = Modifier.padding(top = 16.dp))
+            AnimatedVisibility(
+                visible = imageError != null,
+                enter = errorEnter,
+                exit = errorExit
+            ) {
+                Text(
+                    text = imageError.orEmpty(),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.padding(start = 32.dp, top = 8.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
 
             Text(
                 text = stringResource(R.string.color),
-                fontSize = 24.sp,
-                modifier = Modifier.padding(start = 8.dp, top = 16.dp, bottom = 16.dp)
+                style = MaterialTheme.typography.titleMedium,
+                color = if (colorError != null)
+                    MaterialTheme.colorScheme.error
+                else
+                    MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(start = 16.dp, bottom = 12.dp)
             )
 
-            LazyRow(
-                contentPadding = PaddingValues(horizontal = 8.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.padding(bottom = 16.dp)
+            FlowRow(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+                maxItemsInEachRow = 7
             ) {
-                itemsIndexed(categoryColorList) { index, color ->
+                categoryColorList.forEachIndexed { index, color ->
                     CategoryColorItem(
                         colorHex = color,
                         isSelected = selectedColorIndex == index,
@@ -219,6 +285,82 @@ fun CreateFinanceCategoryContent(
                     )
                 }
             }
+
+            AnimatedVisibility(
+                visible = colorError != null,
+                enter = errorEnter,
+                exit = errorExit
+            ) {
+                Text(
+                    text = colorError.orEmpty(),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.padding(start = 32.dp, top = 8.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+        }
+    }
+}
+
+@Composable
+private fun CategoryPreview(
+    name: String,
+    selectedImageIndex: Int?,
+    selectedColorIndex: Int?
+) {
+    val hasImage = selectedImageIndex != null
+
+    val bgColor = if (selectedColorIndex != null)
+        Color(android.graphics.Color.parseColor(categoryColorList[selectedColorIndex]))
+    else
+        MaterialTheme.colorScheme.surfaceContainerHighest
+
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+            .padding(top = 16.dp),
+        shape = RoundedCornerShape(16.dp),
+        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(72.dp)
+                    .clip(CircleShape)
+                    .background(bgColor),
+                contentAlignment = Alignment.Center
+            ) {
+                if (hasImage) {
+                    Text(
+                        text = String(Character.toChars(categoryImageList[selectedImageIndex!!])),
+                        fontSize = 32.sp,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Text(
+                text = name.ifBlank { stringResource(R.string.name) },
+                style = if (name.isNotBlank())
+                    MaterialTheme.typography.titleMedium
+                else
+                    MaterialTheme.typography.bodyMedium,
+                color = if (name.isNotBlank())
+                    MaterialTheme.colorScheme.onSurface
+                else
+                    MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
     }
 }
@@ -229,21 +371,34 @@ private fun CategoryImageItem(
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
+    val scale by animateFloatAsState(
+        targetValue = if (isSelected) 1.08f else 1f,
+        animationSpec = tween(200),
+        label = "imageScale"
+    )
+
+    val borderColor by animateColorAsState(
+        targetValue = if (isSelected)
+            MaterialTheme.colorScheme.primary
+        else
+            MaterialTheme.colorScheme.outlineVariant,
+        animationSpec = tween(200),
+        label = "imageBorder"
+    )
+
     Surface(
         modifier = Modifier
             .size(56.dp)
+            .scale(scale)
             .clickable(onClick = onClick),
-        shape = RoundedCornerShape(8.dp),
+        shape = RoundedCornerShape(12.dp),
         color = if (isSelected)
             MaterialTheme.colorScheme.primaryContainer
         else
             MaterialTheme.colorScheme.surface,
         border = BorderStroke(
             width = if (isSelected) 2.dp else 1.dp,
-            color = if (isSelected)
-                MaterialTheme.colorScheme.primary
-            else
-                MaterialTheme.colorScheme.outline
+            color = borderColor
         )
     ) {
         Box(contentAlignment = Alignment.Center) {
@@ -262,28 +417,38 @@ private fun CategoryColorItem(
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
-    Card(
+    val parsedColor = Color(android.graphics.Color.parseColor(colorHex))
+    val scale by animateFloatAsState(
+        targetValue = if (isSelected) 1.15f else 1f,
+        animationSpec = tween(200),
+        label = "colorScale"
+    )
+
+    Box(
         modifier = Modifier
-            .size(48.dp)
+            .size(40.dp)
+            .scale(scale)
+            .then(
+                if (isSelected)
+                    Modifier.border(
+                        width = 2.5.dp,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        shape = CircleShape
+                    )
+                else Modifier
+            )
+            .clip(CircleShape)
+            .background(parsedColor)
             .clickable(onClick = onClick),
-        shape = CircleShape,
-        colors = CardDefaults.cardColors(
-            containerColor = Color(android.graphics.Color.parseColor(colorHex))
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        contentAlignment = Alignment.Center
     ) {
         if (isSelected) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Check,
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier.size(24.dp)
-                )
-            }
+            Icon(
+                imageVector = Icons.Default.Check,
+                contentDescription = null,
+                tint = Color.White,
+                modifier = Modifier.size(20.dp)
+            )
         }
     }
 }
@@ -296,6 +461,8 @@ private fun CreateFinanceCategoryPreviewEmpty() {
         CreateFinanceCategoryContent(
             categoryName = "",
             nameError = null,
+            imageError = null,
+            colorError = null,
             selectedImageIndex = null,
             selectedColorIndex = null,
             onBackClick = {},
@@ -315,6 +482,8 @@ private fun CreateFinanceCategoryPreviewFilled() {
         CreateFinanceCategoryContent(
             categoryName = "Food",
             nameError = null,
+            imageError = null,
+            colorError = null,
             selectedImageIndex = 5,
             selectedColorIndex = 3,
             onBackClick = {},
@@ -332,8 +501,10 @@ private fun CreateFinanceCategoryPreviewError() {
     DebtBookTheme(dynamicColor = false) {
         CreateFinanceCategoryContent(
             categoryName = "",
-            nameError = "You didn't enter all the information",
-            selectedImageIndex = 2,
+            nameError = "You must enter a name",
+            imageError = "You must select an image",
+            colorError = "You must select a color",
+            selectedImageIndex = null,
             selectedColorIndex = null,
             onBackClick = {},
             onNameChange = {},
