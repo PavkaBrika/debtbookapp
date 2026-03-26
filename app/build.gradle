@@ -149,4 +149,10 @@ dependencies {
 
     //Biometric auth
     implementation("androidx.biometric:biometric:1.1.0")
+
+    //Orbit MVI
+    implementation "org.orbit-mvi:orbit-core:10.0.0"
+    implementation "org.orbit-mvi:orbit-viewmodel:10.0.0"
+    implementation "org.orbit-mvi:orbit-compose:10.0.0"
+    testImplementation "org.orbit-mvi:orbit-test:10.0.0"
 }

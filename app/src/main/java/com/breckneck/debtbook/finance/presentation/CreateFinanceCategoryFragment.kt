@@ -36,15 +36,13 @@ class CreateFinanceCategoryFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        if (vm.financeCategoryState.value == null)
-            vm.setFinanceCategoryState(
-                financeCategoryState =
-                when (arguments?.getString("categoryState").toString()) {
-                    FinanceCategoryState.EXPENSE.toString() -> FinanceCategoryState.EXPENSE
-                    FinanceCategoryState.INCOME.toString() -> FinanceCategoryState.INCOME
-                    else -> FinanceCategoryState.EXPENSE
-                }
-            )
+        vm.setFinanceCategoryState(
+            financeCategoryState = when (arguments?.getString("categoryState").toString()) {
+                FinanceCategoryState.EXPENSE.toString() -> FinanceCategoryState.EXPENSE
+                FinanceCategoryState.INCOME.toString() -> FinanceCategoryState.INCOME
+                else -> FinanceCategoryState.EXPENSE
+            }
+        )
 
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
@@ -52,16 +50,16 @@ class CreateFinanceCategoryFragment : Fragment() {
                 DebtBookTheme {
                     CreateFinanceCategoryScreen(
                         vm = vm,
-                        onBackClick = { onClickListener!!.onBackButtonClick() },
+                        onBackClick = { onClickListener?.onBackButtonClick() },
                         onCategorySaved = {
                             setFragmentResult(
                                 "createFinanceFragmentKey",
                                 bundleOf(
                                     "isListModified" to true,
-                                    "categoryState" to vm.financeCategoryState.value!!.toString()
+                                    "categoryState" to vm.container.stateFlow.value.financeCategoryState.toString()
                                 )
                             )
-                            onClickListener!!.onBackButtonClick()
+                            onClickListener?.onBackButtonClick()
                         }
                     )
                 }

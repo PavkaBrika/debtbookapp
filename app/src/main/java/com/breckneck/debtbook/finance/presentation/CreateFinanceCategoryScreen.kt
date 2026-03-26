@@ -42,10 +42,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -59,8 +57,8 @@ import androidx.compose.ui.unit.sp
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.core.ui.components.DebtBookTopBar
 import com.breckneck.debtbook.core.ui.theme.DebtBookTheme
+import com.breckneck.debtbook.finance.viewmodel.CreateFinanceCategorySideEffect
 import com.breckneck.debtbook.finance.viewmodel.CreateFinanceCategoryViewModel
-import com.breckneck.deptbook.domain.model.FinanceCategory
 import com.breckneck.deptbook.domain.util.categoryColorList
 import com.breckneck.deptbook.domain.util.categoryImageList
 import androidx.core.graphics.toColorInt
@@ -71,81 +69,30 @@ fun CreateFinanceCategoryScreen(
     onBackClick: () -> Unit,
     onCategorySaved: () -> Unit
 ) {
-    val checkedImagePosition by vm.checkedImagePosition.observeAsState()
-    val checkedColorPosition by vm.checkedColorPosition.observeAsState()
-    val checkedImage by vm.checkedImage.observeAsState()
-    val checkedColor by vm.checkedColor.observeAsState()
-    val financeCategoryState by vm.financeCategoryState.observeAsState()
-
-    var categoryName by rememberSaveable { mutableStateOf("") }
-    var nameError by rememberSaveable { mutableStateOf<String?>(null) }
-    var imageError by rememberSaveable { mutableStateOf<String?>(null) }
-    var colorError by rememberSaveable { mutableStateOf<String?>(null) }
+    val state by vm.collectAsState()
 
     val mustEnterNameError = stringResource(R.string.youmustentername)
     val mustSelectColorError = stringResource(R.string.you_must_select_color)
     val mustSelectImageError = stringResource(R.string.you_must_select_image)
 
-    CreateFinanceCategoryContent(
-        categoryName = categoryName,
-        nameError = nameError,
-        imageError = imageError,
-        colorError = colorError,
-        selectedImageIndex = checkedImagePosition,
-        selectedColorIndex = checkedColorPosition,
-        onBackClick = onBackClick,
-        onNameChange = { newValue ->
-            if (newValue.length <= 20) {
-                categoryName = newValue
-                if (newValue.trim().isNotEmpty()) nameError = null
-            }
-        },
-        onImageSelected = { index, image ->
-            vm.setCheckedImage(image)
-            vm.setCheckedImagePosition(index)
-            imageError = null
-        },
-        onColorSelected = { index, color ->
-            vm.setCheckedColor(color)
-            vm.setCheckedColorPosition(index)
-            colorError = null
-        },
-        onSaveClick = {
-            var isValid = true
-
-            if (categoryName.trim().isEmpty()) {
-                nameError = mustEnterNameError
-                isValid = false
-            } else {
-                nameError = null
-            }
-
-            if (checkedImage == null) {
-                imageError = mustSelectImageError
-                isValid = false
-            } else {
-                imageError = null
-            }
-
-            if (checkedColor == null) {
-                colorError = mustSelectColorError
-                isValid = false
-            } else {
-                colorError = null
-            }
-
-            if (isValid && financeCategoryState != null) {
-                vm.setFinanceCategory(
-                    FinanceCategory(
-                        name = categoryName.trim(),
-                        color = checkedColor!!,
-                        state = financeCategoryState!!,
-                        image = checkedImage!!
-                    )
-                )
-                onCategorySaved()
-            }
+    vm.collectSideEffect { effect ->
+        when (effect) {
+            CreateFinanceCategorySideEffect.CategorySaved -> onCategorySaved()
         }
+    }
+
+    CreateFinanceCategoryContent(
+        categoryName = state.categoryName,
+        nameError = state.nameError,
+        imageError = state.imageError,
+        colorError = state.colorError,
+        selectedImageIndex = state.selectedImageIndex,
+        selectedColorIndex = state.selectedColorIndex,
+        onBackClick = onBackClick,
+        onNameChange = vm::onNameChange,
+        onImageSelected = vm::onImageSelected,
+        onColorSelected = vm::onColorSelected,
+        onSaveClick = { vm.onSaveClick(mustEnterNameError, mustSelectImageError, mustSelectColorError) }
     )
 }
 

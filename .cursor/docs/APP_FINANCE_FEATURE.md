@@ -101,14 +101,38 @@ app/src/main/java/com/breckneck/debtbook/finance/
 
 ## CreateFinanceCategoryViewModel
 
+Реализует `ContainerHost<CreateFinanceCategoryState, CreateFinanceCategorySideEffect>` (Orbit MVI).
+
 ### Зависимости
 - `SetFinanceCategory` — создание категории
+- `orbit-viewmodel` / `orbit-core` — контейнер состояния
 
-### Ключевая логика
-- Выбор цвета из палитры (19 HEX-цветов)
-- Выбор emoji-иконки (21 Unicode codepoints)
-- Задание имени категории
-- Выбор state (EXPENSE / INCOME)
+### State (`CreateFinanceCategoryState`)
+| Поле | Тип | Описание |
+|------|-----|---------|
+| `categoryName` | `String` | Текущее имя категории |
+| `selectedImageIndex` | `Int?` | Индекс выбранного emoji |
+| `selectedImage` | `Int?` | Unicode codepoint выбранного emoji |
+| `selectedColorIndex` | `Int?` | Индекс выбранного цвета |
+| `selectedColor` | `String?` | HEX-строка выбранного цвета |
+| `financeCategoryState` | `FinanceCategoryState` | EXPENSE / INCOME |
+| `nameError` | `String?` | Ошибка валидации имени |
+| `imageError` | `String?` | Ошибка валидации иконки |
+| `colorError` | `String?` | Ошибка валидации цвета |
+
+### Side effects (`CreateFinanceCategorySideEffect`)
+| Эффект | Когда |
+|--------|-------|
+| `CategorySaved` | После успешной записи в БД — инициирует навигацию назад |
+
+### Intent-функции
+| Метод | Что делает |
+|-------|-----------|
+| `onNameChange(value)` | Обновляет имя, сбрасывает `nameError` если непусто; ограничение 20 символов |
+| `onImageSelected(index, image)` | Сохраняет выбор emoji, сбрасывает `imageError` |
+| `onColorSelected(index, color)` | Сохраняет выбор цвета, сбрасывает `colorError` |
+| `setFinanceCategoryState(state)` | Задаёт EXPENSE / INCOME |
+| `onSaveClick(nameErr, imgErr, colorErr)` | Валидация → `reduce` ошибок → `withContext(IO) { setFinanceCategory.execute(...) }` → `postSideEffect(CategorySaved)` |
 
 ---
 

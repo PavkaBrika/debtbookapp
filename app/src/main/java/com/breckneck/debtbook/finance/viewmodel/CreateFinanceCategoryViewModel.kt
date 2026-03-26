@@ -1,76 +1,119 @@
 package com.breckneck.debtbook.finance.viewmodel
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.breckneck.deptbook.domain.model.FinanceCategory
 import com.breckneck.deptbook.domain.usecase.FinanceCategory.SetFinanceCategory
 import com.breckneck.deptbook.domain.util.FinanceCategoryState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.orbitmvi.orbit.ContainerHost
+import org.orbitmvi.orbit.syntax.simple.intent
+import org.orbitmvi.orbit.syntax.simple.postSideEffect
+import org.orbitmvi.orbit.syntax.simple.reduce
+import org.orbitmvi.orbit.viewmodel.container
 import javax.inject.Inject
+
+data class CreateFinanceCategoryState(
+    val categoryName: String = "",
+    val selectedImageIndex: Int? = null,
+    val selectedImage: Int? = null,
+    val selectedColorIndex: Int? = null,
+    val selectedColor: String? = null,
+    val financeCategoryState: FinanceCategoryState = FinanceCategoryState.EXPENSE,
+    val nameError: String? = null,
+    val imageError: String? = null,
+    val colorError: String? = null,
+)
+
+sealed class CreateFinanceCategorySideEffect {
+    data object CategorySaved : CreateFinanceCategorySideEffect()
+}
 
 @HiltViewModel
 class CreateFinanceCategoryViewModel @Inject constructor(
     private val setFinanceCategory: SetFinanceCategory
-): ViewModel() {
+) : ViewModel(), ContainerHost<CreateFinanceCategoryState, CreateFinanceCategorySideEffect> {
 
-    val TAG = "CreateFinanceCatFragVM"
+    private val TAG = "CreateFinanceCatFragVM"
 
-    private val _checkedImage = MutableLiveData<Int>()
-    val checkedImage: LiveData<Int>
-        get() = _checkedImage
-    private val _checkedImagePosition = MutableLiveData<Int>()
-    val checkedImagePosition: LiveData<Int>
-        get() = _checkedImagePosition
-    private val _checkedColor = MutableLiveData<String>()
-    val checkedColor: LiveData<String>
-        get() = _checkedColor
-    private val _checkedColorPosition = MutableLiveData<Int>()
-    val checkedColorPosition: LiveData<Int>
-        get() = _checkedColorPosition
-    private val _financeCategoryState = MutableLiveData<FinanceCategoryState>()
-    val financeCategoryState: LiveData<FinanceCategoryState>
-        get() = _financeCategoryState
+    override val container = container(CreateFinanceCategoryState())
 
     init {
         Log.e(TAG, "Initialized")
     }
 
-    fun setCheckedImage(image: Int) {
-        _checkedImage.value = image
-    }
-
-    fun setCheckedImagePosition(position: Int) {
-        _checkedImagePosition.value = position
-    }
-
-    fun setCheckedColor(color: String) {
-        _checkedColor.value = color
-    }
-
-    fun setCheckedColorPosition(position: Int) {
-        _checkedColorPosition.value = position
-    }
-
-    fun setFinanceCategory(financeCategory: FinanceCategory) {
-        viewModelScope.launch {
-            try {
-                withContext(Dispatchers.IO) {
-                    setFinanceCategory.execute(financeCategory = financeCategory)
-                }
-                Log.e(TAG, "New category added")
-            } catch (e: Exception) {
-                Log.e(TAG, e.message.toString())
+    fun onNameChange(value: String) = intent {
+        if (value.length <= 20) {
+            reduce {
+                state.copy(
+                    categoryName = value,
+                    nameError = if (value.trim().isNotEmpty()) null else state.nameError
+                )
             }
         }
     }
 
-    fun setFinanceCategoryState(financeCategoryState: FinanceCategoryState) {
-        _financeCategoryState.value = financeCategoryState
+    fun onImageSelected(index: Int, image: Int) = intent {
+        reduce {
+            state.copy(
+                selectedImageIndex = index,
+                selectedImage = image,
+                imageError = null
+            )
+        }
+    }
+
+    fun onColorSelected(index: Int, color: String) = intent {
+        reduce {
+            state.copy(
+                selectedColorIndex = index,
+                selectedColor = color,
+                colorError = null
+            )
+        }
+    }
+
+    fun setFinanceCategoryState(financeCategoryState: FinanceCategoryState) = intent {
+        reduce { state.copy(financeCategoryState = financeCategoryState) }
+    }
+
+    fun onSaveClick(
+        mustEnterNameError: String,
+        mustSelectImageError: String,
+        mustSelectColorError: String
+    ) = intent {
+        val nameError = if (state.categoryName.trim().isEmpty()) mustEnterNameError else null
+        val imageError = if (state.selectedImage == null) mustSelectImageError else null
+        val colorError = if (state.selectedColor == null) mustSelectColorError else null
+
+        if (nameError != null || imageError != null || colorError != null) {
+            reduce {
+                state.copy(
+                    nameError = nameError,
+                    imageError = imageError,
+                    colorError = colorError
+                )
+            }
+            return@intent
+        }
+
+        try {
+            withContext(Dispatchers.IO) {
+                setFinanceCategory.execute(
+                    financeCategory = FinanceCategory(
+                        name = state.categoryName.trim(),
+                        color = state.selectedColor!!,
+                        state = state.financeCategoryState,
+                        image = state.selectedImage!!
+                    )
+                )
+            }
+            Log.e(TAG, "New category added")
+            postSideEffect(CreateFinanceCategorySideEffect.CategorySaved)
+        } catch (e: Exception) {
+            Log.e(TAG, e.message.toString())
+        }
     }
 }
