@@ -108,6 +108,9 @@ app/src/main/java/com/breckneck/debtbook/finance/
 - `orbit-viewmodel` / `orbit-core` — контейнер состояния
 
 ### State (`CreateFinanceCategoryState`)
+
+Дефолтное состояние: `CreateFinanceCategoryState.initial()`.
+
 | Поле | Тип | Описание |
 |------|-----|---------|
 | `categoryName` | `String` | Текущее имя категории |
@@ -116,9 +119,11 @@ app/src/main/java/com/breckneck/debtbook/finance/
 | `selectedColorIndex` | `Int?` | Индекс выбранного цвета |
 | `selectedColor` | `String?` | HEX-строка выбранного цвета |
 | `financeCategoryState` | `FinanceCategoryState` | EXPENSE / INCOME |
-| `nameError` | `String?` | Ошибка валидации имени |
-| `imageError` | `String?` | Ошибка валидации иконки |
-| `colorError` | `String?` | Ошибка валидации цвета |
+| `isNameErrorVisible` | `Boolean` | Показывать ошибку валидации имени |
+| `isImageErrorVisible` | `Boolean` | Показывать ошибку валидации иконки |
+| `isColorErrorVisible` | `Boolean` | Показывать ошибку валидации цвета |
+
+Строки ошибок резолвятся в UI через `stringResource` только когда флаг `true`.
 
 ### Side effects (`CreateFinanceCategorySideEffect`)
 | Эффект | Когда |
@@ -128,11 +133,11 @@ app/src/main/java/com/breckneck/debtbook/finance/
 ### Intent-функции
 | Метод | Что делает |
 |-------|-----------|
-| `onNameChange(value)` | Обновляет имя, сбрасывает `nameError` если непусто; ограничение 20 символов |
-| `onImageSelected(index, image)` | Сохраняет выбор emoji, сбрасывает `imageError` |
-| `onColorSelected(index, color)` | Сохраняет выбор цвета, сбрасывает `colorError` |
+| `onNameChange(value)` | Обновляет имя, сбрасывает `isNameErrorVisible` если непусто; ограничение 20 символов |
+| `onImageSelected(index, image)` | Сохраняет выбор emoji, сбрасывает `isImageErrorVisible` |
+| `onColorSelected(index, color)` | Сохраняет выбор цвета, сбрасывает `isColorErrorVisible` |
 | `setFinanceCategoryState(state)` | Задаёт EXPENSE / INCOME |
-| `onSaveClick(nameErr, imgErr, colorErr)` | Валидация → `reduce` ошибок → `withContext(IO) { setFinanceCategory.execute(...) }` → `postSideEffect(CategorySaved)` |
+| `onSaveClick()` | Валидация → `reduce` флагов ошибок → `withContext(IO) { setFinanceCategory.execute(...) }` → `postSideEffect(CategorySaved)` |
 
 ---
 

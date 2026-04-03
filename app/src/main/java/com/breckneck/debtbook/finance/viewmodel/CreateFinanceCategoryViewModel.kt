@@ -9,23 +9,34 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.orbitmvi.orbit.ContainerHost
-import org.orbitmvi.orbit.syntax.simple.intent
-import org.orbitmvi.orbit.syntax.simple.postSideEffect
-import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.viewmodel.container
 import javax.inject.Inject
 
 data class CreateFinanceCategoryState(
-    val categoryName: String = "",
-    val selectedImageIndex: Int? = null,
-    val selectedImage: Int? = null,
-    val selectedColorIndex: Int? = null,
-    val selectedColor: String? = null,
-    val financeCategoryState: FinanceCategoryState = FinanceCategoryState.EXPENSE,
-    val nameError: String? = null,
-    val imageError: String? = null,
-    val colorError: String? = null,
-)
+    val categoryName: String,
+    val selectedImageIndex: Int?,
+    val selectedImage: Int?,
+    val selectedColorIndex: Int?,
+    val selectedColor: String?,
+    val financeCategoryState: FinanceCategoryState,
+    val isNameErrorVisible: Boolean,
+    val isImageErrorVisible: Boolean,
+    val isColorErrorVisible: Boolean,
+) {
+    companion object {
+        fun initial() = CreateFinanceCategoryState(
+            categoryName = "",
+            selectedImageIndex = null,
+            selectedImage = null,
+            selectedColorIndex = null,
+            selectedColor = null,
+            financeCategoryState = FinanceCategoryState.EXPENSE,
+            isNameErrorVisible = false,
+            isImageErrorVisible = false,
+            isColorErrorVisible = false,
+        )
+    }
+}
 
 sealed class CreateFinanceCategorySideEffect {
     data object CategorySaved : CreateFinanceCategorySideEffect()
@@ -38,7 +49,9 @@ class CreateFinanceCategoryViewModel @Inject constructor(
 
     private val TAG = "CreateFinanceCatFragVM"
 
-    override val container = container(CreateFinanceCategoryState())
+    override val container = container<CreateFinanceCategoryState, CreateFinanceCategorySideEffect>(
+        CreateFinanceCategoryState.initial()
+    )
 
     init {
         Log.e(TAG, "Initialized")
@@ -49,7 +62,7 @@ class CreateFinanceCategoryViewModel @Inject constructor(
             reduce {
                 state.copy(
                     categoryName = value,
-                    nameError = if (value.trim().isNotEmpty()) null else state.nameError
+                    isNameErrorVisible = if (value.trim().isNotEmpty()) false else state.isNameErrorVisible
                 )
             }
         }
@@ -60,7 +73,7 @@ class CreateFinanceCategoryViewModel @Inject constructor(
             state.copy(
                 selectedImageIndex = index,
                 selectedImage = image,
-                imageError = null
+                isImageErrorVisible = false
             )
         }
     }
@@ -70,7 +83,7 @@ class CreateFinanceCategoryViewModel @Inject constructor(
             state.copy(
                 selectedColorIndex = index,
                 selectedColor = color,
-                colorError = null
+                isColorErrorVisible = false
             )
         }
     }
@@ -79,21 +92,17 @@ class CreateFinanceCategoryViewModel @Inject constructor(
         reduce { state.copy(financeCategoryState = financeCategoryState) }
     }
 
-    fun onSaveClick(
-        mustEnterNameError: String,
-        mustSelectImageError: String,
-        mustSelectColorError: String
-    ) = intent {
-        val nameError = if (state.categoryName.trim().isEmpty()) mustEnterNameError else null
-        val imageError = if (state.selectedImage == null) mustSelectImageError else null
-        val colorError = if (state.selectedColor == null) mustSelectColorError else null
+    fun onSaveClick() = intent {
+        val nameInvalid = state.categoryName.trim().isEmpty()
+        val imageInvalid = state.selectedImage == null
+        val colorInvalid = state.selectedColor == null
 
-        if (nameError != null || imageError != null || colorError != null) {
+        if (nameInvalid || imageInvalid || colorInvalid) {
             reduce {
                 state.copy(
-                    nameError = nameError,
-                    imageError = imageError,
-                    colorError = colorError
+                    isNameErrorVisible = nameInvalid,
+                    isImageErrorVisible = imageInvalid,
+                    isColorErrorVisible = colorInvalid
                 )
             }
             return@intent

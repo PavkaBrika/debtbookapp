@@ -2,6 +2,8 @@ package com.breckneck.debtbook.finance.presentation
 
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -42,26 +44,33 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import org.orbitmvi.orbit.compose.collectAsState
-import org.orbitmvi.orbit.compose.collectSideEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.graphics.toColorInt
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.core.ui.components.DebtBookTopBar
 import com.breckneck.debtbook.core.ui.theme.DebtBookTheme
+import com.breckneck.debtbook.core.ui.theme.spacing
+import com.breckneck.debtbook.finance.viewmodel.CreateFinanceCategoryState
 import com.breckneck.debtbook.finance.viewmodel.CreateFinanceCategorySideEffect
 import com.breckneck.debtbook.finance.viewmodel.CreateFinanceCategoryViewModel
 import com.breckneck.deptbook.domain.util.categoryColorList
 import com.breckneck.deptbook.domain.util.categoryImageList
-import androidx.core.graphics.toColorInt
+import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
+
+private val errorEnterAnimation: EnterTransition = expandVertically() + fadeIn(tween(200))
+private val errorExitAnimation: ExitTransition = shrinkVertically() + fadeOut(tween(150))
 
 @Composable
 fun CreateFinanceCategoryScreen(
@@ -71,10 +80,6 @@ fun CreateFinanceCategoryScreen(
 ) {
     val state by vm.collectAsState()
 
-    val mustEnterNameError = stringResource(R.string.youmustentername)
-    val mustSelectColorError = stringResource(R.string.you_must_select_color)
-    val mustSelectImageError = stringResource(R.string.you_must_select_image)
-
     vm.collectSideEffect { effect ->
         when (effect) {
             CreateFinanceCategorySideEffect.CategorySaved -> onCategorySaved()
@@ -82,37 +87,29 @@ fun CreateFinanceCategoryScreen(
     }
 
     CreateFinanceCategoryContent(
-        categoryName = state.categoryName,
-        nameError = state.nameError,
-        imageError = state.imageError,
-        colorError = state.colorError,
-        selectedImageIndex = state.selectedImageIndex,
-        selectedColorIndex = state.selectedColorIndex,
+        state = state,
         onBackClick = onBackClick,
         onNameChange = vm::onNameChange,
         onImageSelected = vm::onImageSelected,
         onColorSelected = vm::onColorSelected,
-        onSaveClick = { vm.onSaveClick(mustEnterNameError, mustSelectImageError, mustSelectColorError) }
+        onSaveClick = vm::onSaveClick
     )
 }
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun CreateFinanceCategoryContent(
-    categoryName: String,
-    nameError: String?,
-    imageError: String?,
-    colorError: String?,
-    selectedImageIndex: Int?,
-    selectedColorIndex: Int?,
+    state: CreateFinanceCategoryState,
     onBackClick: () -> Unit,
     onNameChange: (String) -> Unit,
     onImageSelected: (index: Int, image: Int) -> Unit,
     onColorSelected: (index: Int, color: String) -> Unit,
     onSaveClick: () -> Unit
 ) {
-    val errorEnter = expandVertically() + fadeIn(tween(200))
-    val errorExit = shrinkVertically() + fadeOut(tween(150))
+    val spacing = MaterialTheme.spacing
+    val nameError = if (state.isNameErrorVisible) stringResource(R.string.youmustentername) else null
+    val imageError = if (state.isImageErrorVisible) stringResource(R.string.you_must_select_image) else null
+    val colorError = if (state.isColorErrorVisible) stringResource(R.string.you_must_select_color) else null
 
     Scaffold(
         topBar = {
@@ -137,118 +134,103 @@ fun CreateFinanceCategoryContent(
                 .verticalScroll(rememberScrollState())
         ) {
             CategoryPreview(
-                name = categoryName,
-                selectedImageIndex = selectedImageIndex,
-                selectedColorIndex = selectedColorIndex
+                name = state.categoryName,
+                selectedImageIndex = state.selectedImageIndex,
+                selectedColorIndex = state.selectedColorIndex
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(spacing.space24))
 
             OutlinedTextField(
-                value = categoryName,
+                value = state.categoryName,
                 onValueChange = onNameChange,
                 label = { Text(stringResource(R.string.name)) },
-                isError = nameError != null,
+                isError = state.isNameErrorVisible,
                 singleLine = true,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
+                    .padding(horizontal = spacing.space16)
             )
-            AnimatedVisibility(
-                visible = nameError != null,
-                enter = errorEnter,
-                exit = errorExit
-            ) {
-                Text(
-                    text = nameError.orEmpty(),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.padding(start = 32.dp, top = 4.dp)
-                )
-            }
+            SectionError(error = nameError, startPadding = spacing.space32)
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(spacing.space24))
 
             Text(
                 text = stringResource(R.string.image),
                 style = MaterialTheme.typography.titleMedium,
-                color = if (imageError != null)
+                color = if (state.isImageErrorVisible)
                     MaterialTheme.colorScheme.error
                 else
                     MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(start = 16.dp, bottom = 12.dp)
+                modifier = Modifier.padding(start = spacing.space16, bottom = spacing.space8)
             )
 
             LazyRow(
-                contentPadding = PaddingValues(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                contentPadding = PaddingValues(horizontal = spacing.space16),
+                horizontalArrangement = Arrangement.spacedBy(spacing.space8)
             ) {
                 itemsIndexed(categoryImageList) { index, image ->
                     CategoryImageItem(
                         image = image,
-                        isSelected = selectedImageIndex == index,
+                        isSelected = state.selectedImageIndex == index,
                         onClick = { onImageSelected(index, image) }
                     )
                 }
             }
 
-            AnimatedVisibility(
-                visible = imageError != null,
-                enter = errorEnter,
-                exit = errorExit
-            ) {
-                Text(
-                    text = imageError.orEmpty(),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.padding(start = 32.dp, top = 8.dp)
-                )
-            }
+            SectionError(error = imageError, startPadding = spacing.space16)
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(spacing.space24))
 
             Text(
                 text = stringResource(R.string.color),
                 style = MaterialTheme.typography.titleMedium,
-                color = if (colorError != null)
+                color = if (state.isColorErrorVisible)
                     MaterialTheme.colorScheme.error
                 else
                     MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(start = 16.dp, bottom = 12.dp)
+                modifier = Modifier.padding(start = spacing.space16, bottom = spacing.space8)
             )
 
             FlowRow(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp),
-                maxItemsInEachRow = 7
+                    .padding(horizontal = spacing.space16),
+                horizontalArrangement = Arrangement.spacedBy(spacing.space12),
+                verticalArrangement = Arrangement.spacedBy(spacing.space12)
             ) {
                 categoryColorList.forEachIndexed { index, color ->
                     CategoryColorItem(
                         colorHex = color,
-                        isSelected = selectedColorIndex == index,
+                        isSelected = state.selectedColorIndex == index,
                         onClick = { onColorSelected(index, color) }
                     )
                 }
             }
 
-            AnimatedVisibility(
-                visible = colorError != null,
-                enter = errorEnter,
-                exit = errorExit
-            ) {
-                Text(
-                    text = colorError.orEmpty(),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.padding(start = 32.dp, top = 8.dp)
-                )
-            }
+            SectionError(error = colorError, startPadding = spacing.space16)
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(spacing.space24))
         }
+    }
+}
+
+@Composable
+private fun SectionError(
+    error: String?,
+    startPadding: Dp
+) {
+    AnimatedVisibility(
+        visible = error != null,
+        enter = errorEnterAnimation,
+        exit = errorExitAnimation
+    ) {
+        Text(
+            text = error.orEmpty(),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.error,
+            modifier = Modifier.padding(start = startPadding, top = 4.dp)
+        )
     }
 }
 
@@ -258,18 +240,18 @@ private fun CategoryPreview(
     selectedImageIndex: Int?,
     selectedColorIndex: Int?
 ) {
-    val hasImage = selectedImageIndex != null
-
     val bgColor = if (selectedColorIndex != null)
         Color(categoryColorList[selectedColorIndex].toColorInt())
     else
         MaterialTheme.colorScheme.surfaceContainerHighest
 
+    val spacing = MaterialTheme.spacing
+
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-            .padding(top = 16.dp),
+            .padding(horizontal = spacing.space16)
+            .padding(top = spacing.space16),
         shape = RoundedCornerShape(16.dp),
         color = MaterialTheme.colorScheme.surfaceContainerHigh,
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
@@ -277,7 +259,7 @@ private fun CategoryPreview(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(24.dp),
+                .padding(spacing.space24),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Box(
@@ -287,16 +269,16 @@ private fun CategoryPreview(
                     .background(bgColor),
                 contentAlignment = Alignment.Center
             ) {
-                if (hasImage) {
+                if (selectedImageIndex != null) {
                     Text(
-                        text = String(Character.toChars(categoryImageList[selectedImageIndex!!])),
+                        text = String(Character.toChars(categoryImageList[selectedImageIndex])),
                         fontSize = 32.sp,
                         textAlign = TextAlign.Center
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(spacing.space12))
 
             Text(
                 text = name.ifBlank { stringResource(R.string.name) },
@@ -335,11 +317,10 @@ private fun CategoryImageItem(
     )
 
     Surface(
+        onClick = onClick,
         modifier = Modifier
             .size(56.dp)
-            .scale(scale)
-            .clip(RoundedCornerShape(12.dp))
-            .clickable(onClick = onClick),
+            .scale(scale),
         shape = RoundedCornerShape(12.dp),
         color = if (isSelected)
             MaterialTheme.colorScheme.primaryContainer
@@ -366,7 +347,9 @@ private fun CategoryColorItem(
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
-    val parsedColor = Color(android.graphics.Color.parseColor(colorHex))
+    val parsedColor = Color(colorHex.toColorInt())
+    val checkTint = if (parsedColor.luminance() > 0.4f) Color.Black else Color.White
+
     val scale by animateFloatAsState(
         targetValue = if (isSelected) 1.15f else 1f,
         animationSpec = tween(200),
@@ -395,7 +378,7 @@ private fun CategoryColorItem(
             Icon(
                 imageVector = Icons.Default.Check,
                 contentDescription = null,
-                tint = Color.White,
+                tint = checkTint,
                 modifier = Modifier.size(20.dp)
             )
         }
@@ -408,12 +391,7 @@ private fun CategoryColorItem(
 private fun CreateFinanceCategoryPreviewEmpty() {
     DebtBookTheme(dynamicColor = false) {
         CreateFinanceCategoryContent(
-            categoryName = "",
-            nameError = null,
-            imageError = null,
-            colorError = null,
-            selectedImageIndex = null,
-            selectedColorIndex = null,
+            state = CreateFinanceCategoryState.initial(),
             onBackClick = {},
             onNameChange = {},
             onImageSelected = { _, _ -> },
@@ -429,12 +407,13 @@ private fun CreateFinanceCategoryPreviewEmpty() {
 private fun CreateFinanceCategoryPreviewFilled() {
     DebtBookTheme(dynamicColor = false) {
         CreateFinanceCategoryContent(
-            categoryName = "Food",
-            nameError = null,
-            imageError = null,
-            colorError = null,
-            selectedImageIndex = 5,
-            selectedColorIndex = 3,
+            state = CreateFinanceCategoryState.initial().copy(
+                categoryName = "Food",
+                selectedImageIndex = 5,
+                selectedImage = categoryImageList[5],
+                selectedColorIndex = 3,
+                selectedColor = categoryColorList[3]
+            ),
             onBackClick = {},
             onNameChange = {},
             onImageSelected = { _, _ -> },
@@ -449,12 +428,11 @@ private fun CreateFinanceCategoryPreviewFilled() {
 private fun CreateFinanceCategoryPreviewError() {
     DebtBookTheme(dynamicColor = false) {
         CreateFinanceCategoryContent(
-            categoryName = "",
-            nameError = "You must enter a name",
-            imageError = "You must select an image",
-            colorError = "You must select a color",
-            selectedImageIndex = null,
-            selectedColorIndex = null,
+            state = CreateFinanceCategoryState.initial().copy(
+                isNameErrorVisible = true,
+                isImageErrorVisible = true,
+                isColorErrorVisible = true
+            ),
             onBackClick = {},
             onNameChange = {},
             onImageSelected = { _, _ -> },
