@@ -165,3 +165,4 @@ app/src/main/java/com/breckneck/debtbook/finance/
 - Дефолтные категории создаются при первом запуске (7 расходов + 4 дохода, определены в `ConstantsDomain.kt`)
 - Имена категорий локализуются через `GetFinanceCategoryNameInLocalLanguage`
 - Emoji отображаются как Unicode codepoints через `String(Character.toChars(codepoint))`
+- Доступны **48 цветов** (пастельные, light и accent оттенки Material) и **72 эмодзи** (еда, спорт, здоровье, шопинг, технологии, развлечения, офис, деньги, природа)
