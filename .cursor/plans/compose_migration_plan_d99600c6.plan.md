@@ -10,7 +10,7 @@ todos:
     status: completed
   - id: screen-02-finance-details
     content: "Мигрировать FinanceDetailsFragment -> FinanceDetailsScreen (Medium: список финансов + ExtraFunctions sheet)"
-    status: pending
+    status: completed
   - id: screen-03-goals
     content: "Мигрировать GoalsFragment -> GoalsScreen (Medium: список целей + add sum sheet + GoalAdapter -> LazyColumn)"
     status: pending

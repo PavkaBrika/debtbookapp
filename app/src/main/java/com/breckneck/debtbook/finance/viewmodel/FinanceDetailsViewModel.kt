@@ -63,8 +63,7 @@ class FinanceDetailsViewModel @Inject constructor(
                         .sortedByDescending { finance -> finance.date }
                 }
                 _financeList.value = result
-                if (_financeList.value!!.isEmpty())
-                    _financeListState.value = ListState.EMPTY
+                _financeListState.value = if (result.isEmpty()) ListState.EMPTY else ListState.RECEIVED
                 Log.e(TAG, "Finances load success")
             } catch (e: Exception) {
                 Log.e(TAG, e.message.toString())

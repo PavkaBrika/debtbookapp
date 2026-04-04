@@ -23,7 +23,8 @@ app/src/main/java/com/breckneck/debtbook/finance/
 │   ├── CreateFinanceFragment.kt         # Создание/редактирование записи
 │   ├── CreateFinanceCategoryFragment.kt # Фрагмент-хост для Compose экрана категории
 │   ├── CreateFinanceCategoryScreen.kt   # Compose UI создания категории
-│   └── FinanceDetailsFragment.kt        # Детали категории (история)
+│   ├── FinanceDetailsFragment.kt        # Фрагмент-хост для Compose экрана деталей
+│   └── FinanceDetailsScreen.kt          # Compose UI деталей категории (история записей)
 ├── util/
 │   └── GetFinanceCategoryNameInLocalLanguage.kt  # Локализация имён категорий
 └── viewmodel/
@@ -145,9 +146,34 @@ app/src/main/java/com/breckneck/debtbook/finance/
 - `GetFinanceByCategoryId` — записи по категории
 - `DeleteFinance` — удаление записи
 
+### State
+| Поле | Тип | Описание |
+|------|-----|---------|
+| `financeList` | `LiveData<List<Finance>>` | Загруженные записи категории, отсортированные по дате (убыв.) |
+| `financeListState` | `LiveData<ListState>` | LOADING / RECEIVED / EMPTY |
+| `isSettingsDialogOpened` | `LiveData<Boolean>` | Открыт ли ExtraFunctions bottom sheet |
+| `settingsFinance` | `LiveData<Finance>` | Запись, выбранная для редактирования / удаления |
+| `categoryId` | `LiveData<Int>` | ID категории |
+| `isExpenses` | `LiveData<Boolean>` | true = расходы, false = доходы |
+
 ### Ключевая логика
 - Отображение истории финансовых записей конкретной категории
-- Удаление отдельных записей
+- Удаление отдельных записей с перезагрузкой списка
+- `getFinanceByCategoryId` выставляет `RECEIVED` / `EMPTY` после загрузки
+
+## FinanceDetailsScreen
+
+Compose UI для экрана деталей категории (история записей).
+
+| Компонент | Описание |
+|-----------|---------|
+| `DebtBookTopBar` | Заголовок = локализованное имя категории, кнопка Back |
+| `AnimatedContent` | Переключение между LOADING / EMPTY / RECEIVED с fade-анимацией |
+| `ShimmerListPlaceholder` | Скелетон при состоянии LOADING |
+| `EmptyListPlaceholder` | Заглушка при EMPTY; текст зависит от isExpenses |
+| `FinanceList` | `LazyColumn` с подзаголовком (Expenses/Revenues) и карточками записей |
+| `FinanceItem` | `Card` с суммой, валютой, датой, опциональной заметкой |
+| `ExtraFunctionsBottomSheet` | Редактирование / удаление записи по клику на карточку |
 
 ---
 
