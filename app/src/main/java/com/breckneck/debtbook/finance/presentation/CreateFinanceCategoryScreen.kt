@@ -13,8 +13,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -248,6 +246,7 @@ private fun SectionError(
     error: String?,
     startPadding: Dp
 ) {
+    val spacing = MaterialTheme.spacing
     AnimatedVisibility(
         visible = error != null,
         enter = errorEnterAnimation,
@@ -257,7 +256,7 @@ private fun SectionError(
             text = error.orEmpty(),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.error,
-            modifier = Modifier.padding(start = startPadding, top = 4.dp)
+            modifier = Modifier.padding(start = startPadding, top = spacing.space4)
         )
     }
 }
@@ -418,31 +417,27 @@ private fun CategoryColorItem(
         label = "colorScale"
     )
 
-    Box(
+    Surface(
+        onClick = onClick,
         modifier = Modifier
             .size(40.dp)
-            .scale(scale)
-            .then(
-                if (isSelected)
-                    Modifier.border(
-                        width = 2.5.dp,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        shape = CircleShape
-                    )
-                else Modifier
-            )
-            .clip(CircleShape)
-            .background(parsedColor)
-            .clickable(onClick = onClick),
-        contentAlignment = Alignment.Center
+            .scale(scale),
+        shape = CircleShape,
+        color = parsedColor,
+        border = if (isSelected) BorderStroke(
+            width = 2.5.dp,
+            color = MaterialTheme.colorScheme.onSurface
+        ) else null
     ) {
         if (isSelected) {
-            Icon(
-                imageVector = Icons.Default.Check,
-                contentDescription = null,
-                tint = checkTint,
-                modifier = Modifier.size(20.dp)
-            )
+            Box(contentAlignment = Alignment.Center) {
+                Icon(
+                    imageVector = Icons.Default.Check,
+                    contentDescription = null,
+                    tint = checkTint,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
         }
     }
 }

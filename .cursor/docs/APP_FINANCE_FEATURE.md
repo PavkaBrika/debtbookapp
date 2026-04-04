@@ -163,5 +163,6 @@ app/src/main/java/com/breckneck/debtbook/finance/
 - Дефолтные категории создаются при первом запуске (7 расходов + 4 дохода, определены в `ConstantsDomain.kt`)
 - Имена категорий локализуются через `GetFinanceCategoryNameInLocalLanguage`
 - Emoji отображаются как Unicode codepoints через `String(Character.toChars(codepoint))`
-- Доступны **48 цветов** (пастельные, light и accent оттенки Material) и **72 эмодзи** (еда, спорт, здоровье, шопинг, технологии, развлечения, офис, деньги, природа)
-- Эмодзи-пикер группирует иконки по **8 категориям** (Food, Shopping, Fun, Health, Education, Finance, Home, Nature) с **10 эмодзи в каждой** (80 всего). Определены в `EmojiGroups.kt`. UI: `SecondaryScrollableTabRow` с текстовыми лейблами + фиксированная сетка 5 колонок (2 ряда)
+- Доступны **24 цвета** (19 пастельных Material 200 + 5 accent оттенков) и **80 эмодзи** (8 категорий × 10)
+- Эмодзи-пикер группирует иконки по **8 категориям** (Food, Shopping, Fun, Health, Education, Finance, Home, Nature) с **10 эмодзи в каждой** (80 всего). Определены в `EmojiGroups.kt`. UI: `SecondaryScrollableTabRow` с текстовыми лейблами + `HorizontalPager` + фиксированная сетка 5 колонок (2 ряда)
+- Цветовой пикер: `FlowRow` с круглыми `Surface(onClick)` элементами 40dp, анимация масштабирования при выборе

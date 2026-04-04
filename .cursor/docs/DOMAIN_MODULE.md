@@ -264,7 +264,7 @@ Getter/Setter пары для каждой настройки. Примеры:
 | `FinanceListState` (enum) | — | Состояние списка финансов |
 
 ### Константы (`ConstantsDomain.kt`)
-- `categoryColorList` — 19 HEX цветов для категорий
+- `categoryColorList` — 24 HEX цвета для категорий (19 пастельных Material 200 + 5 accent)
 - `categoryImageList` — 21 Unicode emoji для категорий
 - `revenuesCategoryEnglishNameList` — дефолтные категории расходов (7)
 - `incomesCategoryEnglishNameList` — дефолтные категории доходов (4)
