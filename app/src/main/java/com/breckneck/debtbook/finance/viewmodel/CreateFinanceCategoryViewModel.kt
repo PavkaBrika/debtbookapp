@@ -14,9 +14,7 @@ import javax.inject.Inject
 
 data class CreateFinanceCategoryState(
     val categoryName: String,
-    val selectedImageIndex: Int?,
     val selectedImage: Int?,
-    val selectedColorIndex: Int?,
     val selectedColor: String?,
     val financeCategoryState: FinanceCategoryState,
     val isNameErrorVisible: Boolean,
@@ -26,9 +24,7 @@ data class CreateFinanceCategoryState(
     companion object {
         fun initial() = CreateFinanceCategoryState(
             categoryName = "",
-            selectedImageIndex = null,
             selectedImage = null,
-            selectedColorIndex = null,
             selectedColor = null,
             financeCategoryState = FinanceCategoryState.EXPENSE,
             isNameErrorVisible = false,
@@ -68,20 +64,18 @@ class CreateFinanceCategoryViewModel @Inject constructor(
         }
     }
 
-    fun onImageSelected(index: Int, image: Int) = intent {
+    fun onImageSelected(image: Int) = intent {
         reduce {
             state.copy(
-                selectedImageIndex = index,
                 selectedImage = image,
                 isImageErrorVisible = false
             )
         }
     }
 
-    fun onColorSelected(index: Int, color: String) = intent {
+    fun onColorSelected(color: String) = intent {
         reduce {
             state.copy(
-                selectedColorIndex = index,
                 selectedColor = color,
                 isColorErrorVisible = false
             )

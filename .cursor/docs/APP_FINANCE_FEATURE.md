@@ -114,9 +114,7 @@ app/src/main/java/com/breckneck/debtbook/finance/
 | Поле | Тип | Описание |
 |------|-----|---------|
 | `categoryName` | `String` | Текущее имя категории |
-| `selectedImageIndex` | `Int?` | Индекс выбранного emoji |
 | `selectedImage` | `Int?` | Unicode codepoint выбранного emoji |
-| `selectedColorIndex` | `Int?` | Индекс выбранного цвета |
 | `selectedColor` | `String?` | HEX-строка выбранного цвета |
 | `financeCategoryState` | `FinanceCategoryState` | EXPENSE / INCOME |
 | `isNameErrorVisible` | `Boolean` | Показывать ошибку валидации имени |
@@ -134,8 +132,8 @@ app/src/main/java/com/breckneck/debtbook/finance/
 | Метод | Что делает |
 |-------|-----------|
 | `onNameChange(value)` | Обновляет имя, сбрасывает `isNameErrorVisible` если непусто; ограничение 20 символов |
-| `onImageSelected(index, image)` | Сохраняет выбор emoji, сбрасывает `isImageErrorVisible` |
-| `onColorSelected(index, color)` | Сохраняет выбор цвета, сбрасывает `isColorErrorVisible` |
+| `onImageSelected(image)` | Сохраняет выбор emoji (codepoint), сбрасывает `isImageErrorVisible` |
+| `onColorSelected(color)` | Сохраняет выбор цвета (hex), сбрасывает `isColorErrorVisible` |
 | `setFinanceCategoryState(state)` | Задаёт EXPENSE / INCOME |
 | `onSaveClick()` | Валидация → `reduce` флагов ошибок → `withContext(IO) { setFinanceCategory.execute(...) }` → `postSideEffect(CategorySaved)` |
 
@@ -166,3 +164,4 @@ app/src/main/java/com/breckneck/debtbook/finance/
 - Имена категорий локализуются через `GetFinanceCategoryNameInLocalLanguage`
 - Emoji отображаются как Unicode codepoints через `String(Character.toChars(codepoint))`
 - Доступны **48 цветов** (пастельные, light и accent оттенки Material) и **72 эмодзи** (еда, спорт, здоровье, шопинг, технологии, развлечения, офис, деньги, природа)
+- Эмодзи-пикер группирует иконки по **8 категориям** (Food, Shopping, Fun, Health, Education, Finance, Home, Nature) с **10 эмодзи в каждой** (80 всего). Определены в `EmojiGroups.kt`. UI: `SecondaryScrollableTabRow` с текстовыми лейблами + фиксированная сетка 5 колонок (2 ряда)

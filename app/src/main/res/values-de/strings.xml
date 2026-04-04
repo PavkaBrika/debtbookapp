@@ -162,4 +162,13 @@
     <string name="enter_your_query">Geben Sie Ihre Anfrage ein</string>
     <string name="your_pin_code_is_reset">Ihr PIN-Code wird zurückgesetzt</string>
     <string name="back">Zurück</string>
+
+    <string name="emoji_tab_food">Essen</string>
+    <string name="emoji_tab_shopping">Einkaufen</string>
+    <string name="emoji_tab_fun">Freizeit</string>
+    <string name="emoji_tab_health">Gesundheit</string>
+    <string name="emoji_tab_education">Bildung</string>
+    <string name="emoji_tab_finance">Finanzen</string>
+    <string name="emoji_tab_home">Zuhause</string>
+    <string name="emoji_tab_nature">Natur</string>
 </resources>

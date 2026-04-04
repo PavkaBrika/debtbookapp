@@ -20,15 +20,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -40,11 +39,17 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SecondaryScrollableTabRow
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
+import kotlinx.coroutines.launch
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
@@ -61,16 +66,18 @@ import com.breckneck.debtbook.R
 import com.breckneck.debtbook.core.ui.components.DebtBookTopBar
 import com.breckneck.debtbook.core.ui.theme.DebtBookTheme
 import com.breckneck.debtbook.core.ui.theme.spacing
+import com.breckneck.debtbook.finance.presentation.model.emojiGroups
 import com.breckneck.debtbook.finance.viewmodel.CreateFinanceCategoryState
 import com.breckneck.debtbook.finance.viewmodel.CreateFinanceCategorySideEffect
 import com.breckneck.debtbook.finance.viewmodel.CreateFinanceCategoryViewModel
 import com.breckneck.deptbook.domain.util.categoryColorList
-import com.breckneck.deptbook.domain.util.categoryImageList
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
 private val errorEnterAnimation: EnterTransition = expandVertically() + fadeIn(tween(200))
 private val errorExitAnimation: ExitTransition = shrinkVertically() + fadeOut(tween(150))
+
+private const val EMOJI_GRID_COLUMNS = 5
 
 @Composable
 fun CreateFinanceCategoryScreen(
@@ -92,7 +99,7 @@ fun CreateFinanceCategoryScreen(
         onNameChange = vm::onNameChange,
         onImageSelected = vm::onImageSelected,
         onColorSelected = vm::onColorSelected,
-        onSaveClick = vm::onSaveClick
+        onSaveClick = vm::onSaveClick,
     )
 }
 
@@ -102,8 +109,8 @@ fun CreateFinanceCategoryContent(
     state: CreateFinanceCategoryState,
     onBackClick: () -> Unit,
     onNameChange: (String) -> Unit,
-    onImageSelected: (index: Int, image: Int) -> Unit,
-    onColorSelected: (index: Int, color: String) -> Unit,
+    onImageSelected: (image: Int) -> Unit,
+    onColorSelected: (color: String) -> Unit,
     onSaveClick: () -> Unit
 ) {
     val spacing = MaterialTheme.spacing
@@ -135,8 +142,8 @@ fun CreateFinanceCategoryContent(
         ) {
             CategoryPreview(
                 name = state.categoryName,
-                selectedImageIndex = state.selectedImageIndex,
-                selectedColorIndex = state.selectedColorIndex
+                selectedImage = state.selectedImage,
+                selectedColor = state.selectedColor
             )
 
             Spacer(modifier = Modifier.height(spacing.space24))
@@ -165,17 +172,38 @@ fun CreateFinanceCategoryContent(
                 modifier = Modifier.padding(start = spacing.space16, bottom = spacing.space8)
             )
 
-            LazyRow(
-                contentPadding = PaddingValues(horizontal = spacing.space16),
-                horizontalArrangement = Arrangement.spacedBy(spacing.space8)
+            val pagerState = rememberPagerState(pageCount = { emojiGroups.size })
+            val coroutineScope = rememberCoroutineScope()
+
+            SecondaryScrollableTabRow(
+                selectedTabIndex = pagerState.currentPage,
+                edgePadding = spacing.space16,
+                divider = {},
+                containerColor = Color.Transparent,
             ) {
-                itemsIndexed(categoryImageList) { index, image ->
-                    CategoryImageItem(
-                        image = image,
-                        isSelected = state.selectedImageIndex == index,
-                        onClick = { onImageSelected(index, image) }
+                emojiGroups.forEachIndexed { index, group ->
+                    Tab(
+                        selected = pagerState.currentPage == index,
+                        onClick = {
+                            coroutineScope.launch { pagerState.animateScrollToPage(index) }
+                        },
+                        text = { Text(text = stringResource(group.labelResId)) }
                     )
                 }
+            }
+
+            Spacer(modifier = Modifier.height(spacing.space8))
+
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier.fillMaxWidth()
+            ) { page ->
+                EmojiGrid(
+                    emojis = emojiGroups[page].emojis,
+                    selectedImage = state.selectedImage,
+                    onImageSelected = onImageSelected,
+                    modifier = Modifier.padding(horizontal = spacing.space16)
+                )
             }
 
             SectionError(error = imageError, startPadding = spacing.space16)
@@ -199,11 +227,11 @@ fun CreateFinanceCategoryContent(
                 horizontalArrangement = Arrangement.spacedBy(spacing.space12),
                 verticalArrangement = Arrangement.spacedBy(spacing.space12)
             ) {
-                categoryColorList.forEachIndexed { index, color ->
+                categoryColorList.forEach { color ->
                     CategoryColorItem(
                         colorHex = color,
-                        isSelected = state.selectedColorIndex == index,
-                        onClick = { onColorSelected(index, color) }
+                        isSelected = state.selectedColor == color,
+                        onClick = { onColorSelected(color) }
                     )
                 }
             }
@@ -237,11 +265,11 @@ private fun SectionError(
 @Composable
 private fun CategoryPreview(
     name: String,
-    selectedImageIndex: Int?,
-    selectedColorIndex: Int?
+    selectedImage: Int?,
+    selectedColor: String?
 ) {
-    val bgColor = if (selectedColorIndex != null)
-        Color(categoryColorList[selectedColorIndex].toColorInt())
+    val bgColor = if (selectedColor != null)
+        Color(selectedColor.toColorInt())
     else
         MaterialTheme.colorScheme.surfaceContainerHighest
 
@@ -269,9 +297,9 @@ private fun CategoryPreview(
                     .background(bgColor),
                 contentAlignment = Alignment.Center
             ) {
-                if (selectedImageIndex != null) {
+                if (selectedImage != null) {
                     Text(
-                        text = String(Character.toChars(categoryImageList[selectedImageIndex])),
+                        text = String(Character.toChars(selectedImage)),
                         fontSize = 32.sp,
                         textAlign = TextAlign.Center
                     )
@@ -296,10 +324,44 @@ private fun CategoryPreview(
 }
 
 @Composable
+private fun EmojiGrid(
+    emojis: List<Int>,
+    selectedImage: Int?,
+    onImageSelected: (Int) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val spacing = MaterialTheme.spacing
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(spacing.space8)
+    ) {
+        emojis.chunked(EMOJI_GRID_COLUMNS).forEach { row ->
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(spacing.space8)
+            ) {
+                row.forEach { codePoint ->
+                    CategoryImageItem(
+                        image = codePoint,
+                        isSelected = selectedImage == codePoint,
+                        onClick = { onImageSelected(codePoint) },
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+                repeat(EMOJI_GRID_COLUMNS - row.size) {
+                    Spacer(modifier = Modifier.weight(1f))
+                }
+            }
+        }
+    }
+}
+
+@Composable
 private fun CategoryImageItem(
     image: Int,
     isSelected: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val scale by animateFloatAsState(
         targetValue = if (isSelected) 1.08f else 1f,
@@ -318,8 +380,8 @@ private fun CategoryImageItem(
 
     Surface(
         onClick = onClick,
-        modifier = Modifier
-            .size(56.dp)
+        modifier = modifier
+            .aspectRatio(1f)
             .scale(scale),
         shape = RoundedCornerShape(12.dp),
         color = if (isSelected)
@@ -394,8 +456,8 @@ private fun CreateFinanceCategoryPreviewEmpty() {
             state = CreateFinanceCategoryState.initial(),
             onBackClick = {},
             onNameChange = {},
-            onImageSelected = { _, _ -> },
-            onColorSelected = { _, _ -> },
+            onImageSelected = {},
+            onColorSelected = {},
             onSaveClick = {}
         )
     }
@@ -409,15 +471,13 @@ private fun CreateFinanceCategoryPreviewFilled() {
         CreateFinanceCategoryContent(
             state = CreateFinanceCategoryState.initial().copy(
                 categoryName = "Food",
-                selectedImageIndex = 5,
-                selectedImage = categoryImageList[5],
-                selectedColorIndex = 3,
-                selectedColor = categoryColorList[3]
+                selectedImage = 0x1F37D,
+                selectedColor = "#A5D6A7"
             ),
             onBackClick = {},
             onNameChange = {},
-            onImageSelected = { _, _ -> },
-            onColorSelected = { _, _ -> },
+            onImageSelected = {},
+            onColorSelected = {},
             onSaveClick = {}
         )
     }
@@ -435,8 +495,8 @@ private fun CreateFinanceCategoryPreviewError() {
             ),
             onBackClick = {},
             onNameChange = {},
-            onImageSelected = { _, _ -> },
-            onColorSelected = { _, _ -> },
+            onImageSelected = {},
+            onColorSelected = {},
             onSaveClick = {}
         )
     }

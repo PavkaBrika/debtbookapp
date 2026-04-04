@@ -163,4 +163,12 @@
     <string name="your_pin_code_is_reset">Votre code PIN est réinitialisé</string>
     <string name="back">Retour</string>
 
+    <string name="emoji_tab_food">Repas</string>
+    <string name="emoji_tab_shopping">Shopping</string>
+    <string name="emoji_tab_fun">Loisirs</string>
+    <string name="emoji_tab_health">Santé</string>
+    <string name="emoji_tab_education">Éducation</string>
+    <string name="emoji_tab_finance">Finance</string>
+    <string name="emoji_tab_home">Maison</string>
+    <string name="emoji_tab_nature">Nature</string>
 </resources>

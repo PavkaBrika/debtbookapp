@@ -192,4 +192,13 @@
     <string name="enter_your_query">Enter your query</string>
     <string name="your_pin_code_is_reset">Your PIN code is reset</string>
     <string name="back">Back</string>
+
+    <string name="emoji_tab_food">Food</string>
+    <string name="emoji_tab_shopping">Shopping</string>
+    <string name="emoji_tab_fun">Fun</string>
+    <string name="emoji_tab_health">Health</string>
+    <string name="emoji_tab_education">Education</string>
+    <string name="emoji_tab_finance">Finance</string>
+    <string name="emoji_tab_home">Home</string>
+    <string name="emoji_tab_nature">Nature</string>
 </resources>

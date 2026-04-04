@@ -162,4 +162,13 @@
     <string name="enter_your_query">Введите свой запрос</string>
     <string name="your_pin_code_is_reset">Ваш PIN-код сброшен</string>
     <string name="back">Назад</string>
+
+    <string name="emoji_tab_food">Еда</string>
+    <string name="emoji_tab_shopping">Покупки</string>
+    <string name="emoji_tab_fun">Досуг</string>
+    <string name="emoji_tab_health">Здоровье</string>
+    <string name="emoji_tab_education">Учёба</string>
+    <string name="emoji_tab_finance">Финансы</string>
+    <string name="emoji_tab_home">Дом</string>
+    <string name="emoji_tab_nature">Природа</string>
 </resources>
