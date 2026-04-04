@@ -44,8 +44,12 @@ import androidx.compose.material3.Text
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import kotlinx.coroutines.launch
 import androidx.compose.ui.Modifier
@@ -116,6 +120,9 @@ fun CreateFinanceCategoryContent(
     val imageError = if (state.isImageErrorVisible) stringResource(R.string.you_must_select_image) else null
     val colorError = if (state.isColorErrorVisible) stringResource(R.string.you_must_select_color) else null
 
+    var pickersReady by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) { pickersReady = true }
+
     Scaffold(
         topBar = {
             DebtBookTopBar(
@@ -158,85 +165,87 @@ fun CreateFinanceCategoryContent(
             )
             SectionError(error = nameError, startPadding = spacing.space32)
 
-            Spacer(modifier = Modifier.height(spacing.space24))
+            if (pickersReady) {
+                Spacer(modifier = Modifier.height(spacing.space32))
 
-            Text(
-                text = stringResource(R.string.image),
-                style = MaterialTheme.typography.titleMedium,
-                color = if (state.isImageErrorVisible)
-                    MaterialTheme.colorScheme.error
-                else
-                    MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(start = spacing.space16, bottom = spacing.space8)
-            )
-
-            val pagerState = rememberPagerState(pageCount = { emojiGroups.size })
-            val coroutineScope = rememberCoroutineScope()
-
-            SecondaryScrollableTabRow(
-                selectedTabIndex = pagerState.currentPage,
-                edgePadding = spacing.space16,
-                divider = {},
-                containerColor = Color.Transparent,
-            ) {
-                emojiGroups.forEachIndexed { index, group ->
-                    Tab(
-                        selected = pagerState.currentPage == index,
-                        onClick = {
-                            coroutineScope.launch { pagerState.animateScrollToPage(index) }
-                        },
-                        text = { Text(text = stringResource(group.labelResId)) }
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(spacing.space8))
-
-            HorizontalPager(
-                state = pagerState,
-                modifier = Modifier.fillMaxWidth()
-            ) { page ->
-                EmojiGrid(
-                    emojis = emojiGroups[page].emojis,
-                    selectedImage = state.selectedImage,
-                    onImageSelected = onImageSelected,
-                    modifier = Modifier.padding(horizontal = spacing.space16)
+                Text(
+                    text = stringResource(R.string.image),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = if (state.isImageErrorVisible)
+                        MaterialTheme.colorScheme.error
+                    else
+                        MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(start = spacing.space16, bottom = spacing.space8)
                 )
-            }
 
-            SectionError(error = imageError, startPadding = spacing.space16)
+                val pagerState = rememberPagerState(pageCount = { emojiGroups.size })
+                val coroutineScope = rememberCoroutineScope()
 
-            Spacer(modifier = Modifier.height(spacing.space24))
+                SecondaryScrollableTabRow(
+                    selectedTabIndex = pagerState.currentPage,
+                    edgePadding = spacing.space16,
+                    divider = {},
+                    containerColor = Color.Transparent,
+                ) {
+                    emojiGroups.forEachIndexed { index, group ->
+                        Tab(
+                            selected = pagerState.currentPage == index,
+                            onClick = {
+                                coroutineScope.launch { pagerState.animateScrollToPage(index) }
+                            },
+                            text = { Text(text = stringResource(group.labelResId)) }
+                        )
+                    }
+                }
 
-            Text(
-                text = stringResource(R.string.color),
-                style = MaterialTheme.typography.titleMedium,
-                color = if (state.isColorErrorVisible)
-                    MaterialTheme.colorScheme.error
-                else
-                    MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(start = spacing.space16, bottom = spacing.space8)
-            )
+                Spacer(modifier = Modifier.height(spacing.space8))
 
-            FlowRow(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = spacing.space16),
-                horizontalArrangement = Arrangement.spacedBy(spacing.space12),
-                verticalArrangement = Arrangement.spacedBy(spacing.space12)
-            ) {
-                categoryColorList.forEach { color ->
-                    CategoryColorItem(
-                        colorHex = color,
-                        isSelected = state.selectedColor == color,
-                        onClick = { onColorSelected(color) }
+                HorizontalPager(
+                    state = pagerState,
+                    modifier = Modifier.fillMaxWidth()
+                ) { page ->
+                    EmojiGrid(
+                        emojis = emojiGroups[page].emojis,
+                        selectedImage = state.selectedImage,
+                        onImageSelected = onImageSelected,
+                        modifier = Modifier.padding(horizontal = spacing.space16)
                     )
                 }
+
+                SectionError(error = imageError, startPadding = spacing.space16)
+
+                Spacer(modifier = Modifier.height(spacing.space16))
+
+                Text(
+                    text = stringResource(R.string.color),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = if (state.isColorErrorVisible)
+                        MaterialTheme.colorScheme.error
+                    else
+                        MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(start = spacing.space16, bottom = spacing.space8)
+                )
+
+                FlowRow(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = spacing.space16),
+                    horizontalArrangement = Arrangement.spacedBy(spacing.space12),
+                    verticalArrangement = Arrangement.spacedBy(spacing.space12)
+                ) {
+                    categoryColorList.forEach { color ->
+                        CategoryColorItem(
+                            colorHex = color,
+                            isSelected = state.selectedColor == color,
+                            onClick = { onColorSelected(color) }
+                        )
+                    }
+                }
+
+                SectionError(error = colorError, startPadding = spacing.space16)
+
+                Spacer(modifier = Modifier.height(spacing.space24))
             }
-
-            SectionError(error = colorError, startPadding = spacing.space16)
-
-            Spacer(modifier = Modifier.height(spacing.space24))
         }
     }
 }
@@ -267,10 +276,10 @@ private fun CategoryPreview(
     selectedImage: Int?,
     selectedColor: String?
 ) {
-    val bgColor = if (selectedColor != null)
-        Color(selectedColor.toColorInt())
-    else
-        MaterialTheme.colorScheme.surfaceContainerHighest
+    val fallbackColor = MaterialTheme.colorScheme.surfaceContainerHighest
+    val bgColor = remember(selectedColor, fallbackColor) {
+        if (selectedColor != null) Color(selectedColor.toColorInt()) else fallbackColor
+    }
 
     val spacing = MaterialTheme.spacing
 
@@ -297,8 +306,11 @@ private fun CategoryPreview(
                 contentAlignment = Alignment.Center
             ) {
                 if (selectedImage != null) {
+                    val emojiString = remember(selectedImage) {
+                        String(Character.toChars(selectedImage))
+                    }
                     Text(
-                        text = String(Character.toChars(selectedImage)),
+                        text = emojiString,
                         fontSize = 32.sp,
                         textAlign = TextAlign.Center
                     )
@@ -362,6 +374,8 @@ private fun CategoryImageItem(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val emojiString = remember(image) { String(Character.toChars(image)) }
+
     val scale by animateFloatAsState(
         targetValue = if (isSelected) 1.08f else 1f,
         animationSpec = tween(200),
@@ -394,7 +408,7 @@ private fun CategoryImageItem(
     ) {
         Box(contentAlignment = Alignment.Center) {
             Text(
-                text = String(Character.toChars(image)),
+                text = emojiString,
                 fontSize = 28.sp,
                 textAlign = TextAlign.Center
             )
@@ -408,8 +422,10 @@ private fun CategoryColorItem(
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
-    val parsedColor = Color(colorHex.toColorInt())
-    val checkTint = if (parsedColor.luminance() > 0.4f) Color.Black else Color.White
+    val parsedColor = remember(colorHex) { Color(colorHex.toColorInt()) }
+    val checkTint = remember(parsedColor) {
+        if (parsedColor.luminance() > 0.4f) Color.Black else Color.White
+    }
 
     val scale by animateFloatAsState(
         targetValue = if (isSelected) 1.15f else 1f,
