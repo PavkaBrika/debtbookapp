@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
@@ -25,9 +26,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.core.ui.theme.DebtBookTheme
+import com.breckneck.debtbook.core.ui.theme.spacing
 
 /**
  * Bottom sheet with Edit / Delete / Cancel actions (replaces dialog_extra_functions.xml).
@@ -46,7 +47,8 @@ fun ExtraFunctionsBottomSheet(
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
-        sheetState = sheetState
+        sheetState = sheetState,
+        dragHandle = null
     ) {
         ExtraFunctionsContent(
             title = title,
@@ -64,19 +66,23 @@ internal fun ExtraFunctionsContent(
     onDelete: () -> Unit,
     onDismiss: () -> Unit
 ) {
+    val spacing = MaterialTheme.spacing
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .navigationBarsPadding()
-            .padding(horizontal = 24.dp)
-            .padding(top = 8.dp, bottom = 24.dp)
+            .padding(horizontal = spacing.space24)
     ) {
+        Spacer(modifier = Modifier.height(spacing.space24))
+
         Text(
             text = title,
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onSurface
         )
-        Spacer(modifier = Modifier.height(24.dp))
+
+        Spacer(modifier = Modifier.height(spacing.space24))
+
         FilledTonalButton(
             onClick = onEdit,
             modifier = Modifier.fillMaxWidth()
@@ -84,11 +90,15 @@ internal fun ExtraFunctionsContent(
             Icon(
                 imageVector = Icons.Outlined.Edit,
                 contentDescription = null,
-                modifier = Modifier.padding(end = 8.dp)
             )
+
+            Spacer(modifier = Modifier.width(spacing.space8))
+
             Text(text = stringResource(R.string.edit))
         }
-        Spacer(modifier = Modifier.height(8.dp))
+
+        Spacer(modifier = Modifier.height(spacing.space8))
+
         FilledTonalButton(
             onClick = onDelete,
             modifier = Modifier.fillMaxWidth(),
@@ -100,17 +110,22 @@ internal fun ExtraFunctionsContent(
             Icon(
                 imageVector = Icons.Outlined.Delete,
                 contentDescription = null,
-                modifier = Modifier.padding(end = 8.dp)
             )
+
+            Spacer(modifier = Modifier.width(spacing.space8))
+
             Text(text = stringResource(R.string.delete))
         }
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(spacing.space8))
+
         TextButton(
             onClick = onDismiss,
             modifier = Modifier.align(Alignment.End)
         ) {
             Text(text = stringResource(R.string.cancel))
         }
+
+        Spacer(modifier = Modifier.height(spacing.space16))
     }
 }
 
