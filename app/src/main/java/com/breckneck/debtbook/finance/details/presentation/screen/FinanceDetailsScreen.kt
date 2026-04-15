@@ -10,7 +10,6 @@ import com.breckneck.debtbook.core.ui.components.ExtraFunctionsBottomSheet
 import com.breckneck.debtbook.finance.details.presentation.FinanceDetailsActions
 import com.breckneck.debtbook.finance.details.presentation.FinanceDetailsViewModel
 import com.breckneck.debtbook.finance.util.GetFinanceCategoryNameInLocalLanguage
-import com.breckneck.deptbook.domain.model.Finance
 import com.breckneck.deptbook.domain.util.FinanceCategoryState
 import org.orbitmvi.orbit.compose.collectAsState
 
@@ -18,7 +17,6 @@ import org.orbitmvi.orbit.compose.collectAsState
 fun FinanceDetailsScreen(
     vm: FinanceDetailsViewModel,
     onBackClick: () -> Unit,
-    onEditFinanceClick: (Finance) -> Unit
 ) {
     val context = LocalContext.current
 
@@ -47,16 +45,14 @@ fun FinanceDetailsScreen(
         }
     )
 
-    if (state.bottomSheet.isOpened && state.bottomSheet.finance != null) {
-        val settingsFinance = state.bottomSheet.finance!!
+    if (state.bottomSheet.isOpened) {
         ExtraFunctionsBottomSheet(
             title = state.bottomSheet.title,
             onEdit = {
-                vm.onAction(FinanceDetailsActions.CloseFinanceSheet)
-                onEditFinanceClick(settingsFinance)
+                vm.onAction(FinanceDetailsActions.EditFinanceClick)
             },
             onDelete = {
-                vm.onAction(FinanceDetailsActions.DeleteFinance(finance = settingsFinance))
+                vm.onAction(FinanceDetailsActions.DeleteFinance)
                 vm.onAction(FinanceDetailsActions.CloseFinanceSheet)
             },
             onDismiss = { vm.onAction(FinanceDetailsActions.CloseFinanceSheet) }

@@ -10,6 +10,7 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
+import com.breckneck.debtbook.common.repeatOnStart
 import com.breckneck.debtbook.core.ui.theme.DebtBookTheme
 import com.breckneck.debtbook.finance.details.presentation.screen.FinanceDetailsScreen
 import com.breckneck.deptbook.domain.model.Finance
@@ -51,11 +52,21 @@ class FinanceDetailsFragment : Fragment() {
                 DebtBookTheme {
                     FinanceDetailsScreen(
                         vm = vm,
-                        onBackClick = { buttonClickListener?.onBackButtonClick() },
-                        onEditFinanceClick = { finance ->
-                            buttonClickListener?.onEditFinanceClick(finance = finance)
-                        }
+                        onBackClick = { buttonClickListener?.onBackButtonClick() }
                     )
+                }
+            }
+        }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        repeatOnStart {
+            vm.container.sideEffectFlow.collect { effect ->
+                when (effect) {
+                    is FinanceDetailsSideEffect.NavigateToEditFinance ->
+                        buttonClickListener?.onEditFinanceClick(finance = effect.finance)
                 }
             }
         }

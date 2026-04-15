@@ -186,6 +186,7 @@ app/src/main/java/com/breckneck/debtbook/finance/
 | `OpenFinanceSheet(finance)` | Открыть bottom sheet и выбрать запись |
 | `CloseFinanceSheet` | Закрыть bottom sheet |
 | `DeleteFinance(finance)` | Удалить запись и перезагрузить список по `state.categoryId` |
+| `EditFinanceClick` | Post side effect для навигации на редактирование выбранной записи |
 | `RefreshListAfterEdit(wasModified)` | После `FragmentResult`: при `wasModified` и заданном `categoryId` — перезагрузка списка |
 
 ### Ключевая логика

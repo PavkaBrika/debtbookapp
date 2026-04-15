@@ -4,6 +4,10 @@ import com.breckneck.debtbook.common.empty
 import com.breckneck.deptbook.domain.model.Finance
 import com.breckneck.deptbook.domain.util.ListState
 
+sealed interface FinanceDetailsSideEffect {
+    data class NavigateToEditFinance(val finance: Finance) : FinanceDetailsSideEffect
+}
+
 data class FinanceDetailsState(
     val financeList: List<Finance>,
     val financeListState: ListState,

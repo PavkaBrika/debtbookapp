@@ -20,11 +20,11 @@ class FinanceDetailsViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val getFinanceByCategoryIdUseCase: GetFinanceByCategoryId,
     private val deleteFinanceUseCase: DeleteFinance,
-) : ViewModel(), ContainerHost<FinanceDetailsState, Nothing> {
+) : ViewModel(), ContainerHost<FinanceDetailsState, FinanceDetailsSideEffect> {
 
     private val TAG = "FinanceDetailsViewModel"
 
-    override val container = container<FinanceDetailsState, Nothing>(
+    override val container = container<FinanceDetailsState, FinanceDetailsSideEffect>(
         initialState = FinanceDetailsState.initial(),
         onCreate = {
             val categoryId = savedStateHandle.get<Int>("categoryId") ?: 0
@@ -58,7 +58,8 @@ class FinanceDetailsViewModel @Inject constructor(
     fun onAction(action: FinanceDetailsActions) = when (action) {
         is FinanceDetailsActions.OpenFinanceSheet -> openFinanceSheet(finance = action.finance)
         FinanceDetailsActions.CloseFinanceSheet -> closeFinanceSheet()
-        is FinanceDetailsActions.DeleteFinance -> deleteFinance(finance = action.finance)
+        is FinanceDetailsActions.DeleteFinance -> deleteFinance()
+        FinanceDetailsActions.EditFinanceClick -> editFinance()
         is FinanceDetailsActions.RefreshListAfterEdit ->
             refreshListAfterEdit(wasModified = action.wasModified)
     }
@@ -80,8 +81,15 @@ class FinanceDetailsViewModel @Inject constructor(
         reduce { state.copy(bottomSheet = FinanceDetailsBottomSheetState.initial()) }
     }
 
-    private fun deleteFinance(finance: Finance) = intent {
-        deleteFinanceUseCase.execute(finance = finance)
+    private fun editFinance() = intent {
+        val finance = state.bottomSheet.finance ?: return@intent
+        postSideEffect(FinanceDetailsSideEffect.NavigateToEditFinance(finance = finance))
+        reduce { state.copy(bottomSheet = FinanceDetailsBottomSheetState.initial()) }
+    }
+
+    private fun deleteFinance() = intent {
+        val finance = state.bottomSheet.finance ?: return@intent
+        deleteFinanceUseCase.execute(finance)
         Log.e(TAG, "Finance delete success")
         loadFinances()
     }

@@ -60,7 +60,7 @@ fun ExtraFunctionsBottomSheet(
 }
 
 @Composable
-internal fun ExtraFunctionsContent(
+private fun ExtraFunctionsContent(
     title: String,
     onEdit: () -> Unit,
     onDelete: () -> Unit,
