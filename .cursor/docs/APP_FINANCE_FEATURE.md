@@ -24,7 +24,9 @@ app/src/main/java/com/breckneck/debtbook/finance/
 │   ├── CreateFinanceCategoryFragment.kt # Фрагмент-хост для Compose экрана категории
 │   ├── CreateFinanceCategoryScreen.kt   # Compose UI создания категории
 │   ├── FinanceDetailsFragment.kt        # Фрагмент-хост для Compose экрана деталей
-│   └── FinanceDetailsScreen.kt          # Compose UI деталей категории (история записей)
+│   ├── FinanceDetailsScreen.kt          # Compose entrypoint: VM binding + sheet orchestration
+│   ├── FinanceDetailsContent.kt         # Compose scaffold/top bar + state switching
+│   └── FinanceDetailsList.kt            # Compose список: badge, month headers, ledger rows + previews
 ├── util/
 │   └── GetFinanceCategoryNameInLocalLanguage.kt  # Локализация имён категорий
 └── viewmodel/
@@ -167,12 +169,12 @@ Compose UI для экрана деталей категории (история
 
 | Компонент | Описание |
 |-----------|---------|
-| `DebtBookTopBar` | Заголовок = локализованное имя категории, кнопка Back |
+| `LargeTopAppBar` | Большой заголовок категории с collapse поведением |
 | `AnimatedContent` | Переключение между LOADING / EMPTY / RECEIVED с fade-анимацией |
 | `ShimmerListPlaceholder` | Скелетон при состоянии LOADING |
 | `EmptyListPlaceholder` | Заглушка при EMPTY; текст зависит от isExpenses |
-| `FinanceList` | `LazyColumn` с подзаголовком (Expenses/Revenues) и карточками записей |
-| `FinanceItem` | `Card` с суммой, валютой, датой, опциональной заметкой |
+| `FinanceDetailsList` | `LazyColumn` с type badge, sticky month headers, ledger rows |
+| `FinanceRow` | Строка списка с суммой, валютой, датой, заметкой и affordance-стрелкой |
 | `ExtraFunctionsBottomSheet` | Редактирование / удаление записи по клику на карточку |
 
 ---
