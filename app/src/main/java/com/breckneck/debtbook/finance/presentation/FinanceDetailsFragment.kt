@@ -14,7 +14,6 @@ import com.breckneck.debtbook.core.ui.theme.DebtBookTheme
 import com.breckneck.debtbook.finance.viewmodel.FinanceDetailsActions
 import com.breckneck.debtbook.finance.viewmodel.FinanceDetailsViewModel
 import com.breckneck.deptbook.domain.model.Finance
-import com.breckneck.deptbook.domain.util.FinanceCategoryState
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -47,19 +46,12 @@ class FinanceDetailsFragment : Fragment() {
             )
         }
 
-        val categoryName = arguments?.getString("categoryName") ?: ""
-        val isExpenses = arguments?.getString("categoryState") == FinanceCategoryState.EXPENSE.toString()
-        val currency = arguments?.getString("currency") ?: ""
-
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 DebtBookTheme {
                     FinanceDetailsScreen(
                         vm = vm,
-                        categoryName = categoryName,
-                        isExpenses = isExpenses,
-                        currency = currency,
                         onBackClick = { buttonClickListener?.onBackButtonClick() },
                         onEditFinanceClick = { finance ->
                             buttonClickListener?.onEditFinanceClick(finance = finance)

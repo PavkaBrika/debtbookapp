@@ -21,9 +21,6 @@ import org.orbitmvi.orbit.compose.collectAsState
 @Composable
 fun FinanceDetailsScreen(
     vm: FinanceDetailsViewModel,
-    categoryName: String,
-    isExpenses: Boolean,
-    currency: String,
     onBackClick: () -> Unit,
     onEditFinanceClick: (Finance) -> Unit
 ) {
@@ -31,14 +28,15 @@ fun FinanceDetailsScreen(
 
     val state by vm.collectAsState()
 
-    val localizedCategoryName = remember(categoryName, isExpenses) {
+    val localizedCategoryName = remember(state.categoryName, state.isExpenses) {
         GetFinanceCategoryNameInLocalLanguage().execute(
-            financeName = categoryName,
-            state = if (isExpenses) FinanceCategoryState.EXPENSE else FinanceCategoryState.INCOME,
+            financeName = state.categoryName,
+            state = if (state.isExpenses) FinanceCategoryState.EXPENSE else FinanceCategoryState.INCOME,
             context = context
         )
     }
-    val subtitle = if (isExpenses) stringResource(R.string.expenses) else stringResource(R.string.revenues)
+    val subtitle =
+        if (state.isExpenses) stringResource(R.string.expenses) else stringResource(R.string.revenues)
 
     val sheetSdf = remember { SimpleDateFormat("d MMM yyyy", Locale.getDefault()) }
     val sheetDecimalFormat = remember {
@@ -49,8 +47,8 @@ fun FinanceDetailsScreen(
     FinanceDetailsContent(
         title = localizedCategoryName,
         subtitle = subtitle,
-        isExpenses = isExpenses,
-        currency = currency,
+        isExpenses = state.isExpenses,
+        currency = state.currency,
         financeList = state.financeList,
         financeListState = state.financeListState,
         onBackClick = onBackClick,
@@ -61,8 +59,8 @@ fun FinanceDetailsScreen(
 
     if (state.isSettingsDialogOpened && state.settingsFinance != null) {
         val settingsFinance = state.settingsFinance!!
-        val sheetTitle = remember(settingsFinance) {
-            "${sheetSdf.format(settingsFinance.date)} : ${sheetDecimalFormat.format(settingsFinance.sum)} $currency"
+        val sheetTitle = remember(settingsFinance, state.currency) {
+            "${sheetSdf.format(settingsFinance.date)} : ${sheetDecimalFormat.format(settingsFinance.sum)} ${state.currency}"
         }
         ExtraFunctionsBottomSheet(
             title = sheetTitle,

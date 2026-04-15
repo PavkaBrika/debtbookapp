@@ -86,7 +86,7 @@ interface AppDao {
     @Query("SELECT * from financedata")
     fun getAllFinances(): List<FinanceData>
 
-    @Query("SELECT * from financedata WHERE financeCategoryId = :categoryId")
+    @Query("SELECT * from financedata WHERE financeCategoryId = :categoryId ORDER BY date DESC")
     suspend fun getFinanceByCategoryId(categoryId: Int): List<FinanceData>
 
     @Query("DELETE FROM financeData WHERE financeCategoryId = :financeCategoryId")

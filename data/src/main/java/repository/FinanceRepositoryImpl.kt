@@ -35,34 +35,28 @@ class FinanceRepositoryImpl(private val financeStorage: FinanceStorage) : Financ
 
     override suspend fun getFinanceByCategoryId(
         categoryId: Int
-    ): List<Finance> {
-        return withContext(Dispatchers.IO) {
-            financeStorage.getFinanceByCategoryId(
-                categoryId = categoryId,
-            ).map { financeData ->
-                Finance(
-                    id = financeData.id,
-                    sum = financeData.sum,
-                    info = financeData.info,
-                    financeCategoryId = financeData.financeCategoryId,
-                    date = financeData.date
-                )
-            }
+    ): List<Finance> = withContext(Dispatchers.IO) {
+        financeStorage.getFinanceByCategoryId(categoryId = categoryId).map { financeData ->
+            Finance(
+                id = financeData.id,
+                sum = financeData.sum,
+                info = financeData.info,
+                financeCategoryId = financeData.financeCategoryId,
+                date = financeData.date
+            )
         }
     }
 
-    override suspend fun deleteFinance(finance: Finance) {
-        withContext(Dispatchers.IO) {
-            financeStorage.deleteFinance(
-                financeData = FinanceData(
-                    id = finance.id,
-                    sum = finance.sum,
-                    date = finance.date,
-                    info = finance.info,
-                    financeCategoryId = finance.financeCategoryId
-                )
+    override suspend fun deleteFinance(finance: Finance) = withContext(Dispatchers.IO) {
+        financeStorage.deleteFinance(
+            financeData = FinanceData(
+                id = finance.id,
+                sum = finance.sum,
+                date = finance.date,
+                info = finance.info,
+                financeCategoryId = finance.financeCategoryId
             )
-        }
+        )
     }
 
     override fun updateFinance(finance: Finance) {
@@ -91,6 +85,7 @@ class FinanceRepositoryImpl(private val financeStorage: FinanceStorage) : Financ
                     info = finance.info,
                     financeCategoryId = finance.financeCategoryId
                 )
-            })
+            }
+        )
     }
 }

@@ -72,7 +72,7 @@ data/src/main/java/
 | Метод | SQL / аннотация |
 |-------|----------------|
 | `getAllFinances()` | `SELECT * FROM financedata` |
-| `getFinanceByCategoryId(categoryId)` | `suspend`, `WHERE financeCategoryId = :categoryId` |
+| `getFinanceByCategoryId(categoryId)` | `suspend`, `WHERE financeCategoryId = :categoryId` + `ORDER BY date DESC` |
 | `deleteAllFinancesByCategoryId(id)` | `DELETE WHERE financeCategoryId` |
 | `insertFinance` / `deleteFinance` / `updateFinance` | CRUD (`deleteFinance` — `suspend`) |
 | `insertAllFinances` / `deleteAllFinances` | Bulk ops |

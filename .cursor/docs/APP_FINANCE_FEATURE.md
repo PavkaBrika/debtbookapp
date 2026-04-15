@@ -145,10 +145,10 @@ app/src/main/java/com/breckneck/debtbook/finance/
 
 ## FinanceDetailsViewModel
 
-Реализует `ContainerHost<FinanceDetailsState, Unit>` (Orbit MVI; side effects не используются).
+Реализует `ContainerHost<FinanceDetailsState, Nothing>` (Orbit MVI; side effects не используются).
 
 ### Зависимости
-- `SavedStateHandle` — аргументы фрагмента (`categoryId`, `categoryState`) для первичной загрузки в `onCreate` контейнера
+- `SavedStateHandle` — аргументы навигации (`categoryId`, `categoryState`, `categoryName`, `currency`) для первичной загрузки в `onCreate` контейнера
 - `GetFinanceByCategoryId` — записи по категории
 - `DeleteFinance` — удаление записи
 - `orbit-viewmodel` / `orbit-core` — контейнер состояния
@@ -164,13 +164,15 @@ app/src/main/java/com/breckneck/debtbook/finance/
 | `isSettingsDialogOpened` | `Boolean` | Открыт ли ExtraFunctions bottom sheet |
 | `settingsFinance` | `Finance?` | Запись, выбранная для редактирования / удаления |
 | `categoryId` | `Int?` | ID категории (заполняется из `SavedStateHandle` при создании контейнера) |
-| `isExpenses` | `Boolean?` | true = расходы, false = доходы (из `categoryState` в аргументах) |
+| `categoryName` | `String` | Имя категории (из аргументов навигации) |
+| `currency` | `String` | Валюта для отображения (из аргументов навигации) |
+| `isExpenses` | `Boolean` | true = расходы, false = доходы (из `categoryState` в аргументах) |
 
 ### Публичный API
 - Единственный публичный метод: `onAction(FinanceDetailsActions)`.
 
 ### `container(..., onCreate = …)`
-При первом обращении к контейнеру выполняется `onCreate`: чтение `categoryId` / `categoryState` из `SavedStateHandle`, `reduce` полей `categoryId` / `isExpenses`, затем загрузка списка (LOADING → RECEIVED / EMPTY).
+При первом обращении к контейнеру выполняется `onCreate`: чтение `categoryId` / `categoryState` / `categoryName` / `currency` из `SavedStateHandle`, `reduce` этих полей в state, затем загрузка списка (LOADING → RECEIVED / EMPTY). Фрагмент не читает `arguments` для UI — только `ViewModel` + `FragmentResult`.
 
 ### `FinanceDetailsActions` (sealed interface)
 | Действие | Что делает |
@@ -187,7 +189,7 @@ app/src/main/java/com/breckneck/debtbook/finance/
 
 ## FinanceDetailsScreen
 
-Compose UI для экрана деталей категории (история записей). Состояние: `vm.collectAsState()`; события — только `vm.onAction(FinanceDetailsActions.…)` (без `LaunchedEffect` для первичной загрузки — она в `onCreate` контейнера).
+Compose UI для экрана деталей категории (история записей). Состояние: `vm.collectAsState()` (включая заголовок, подзаголовок, валюту из state); события — только `vm.onAction(FinanceDetailsActions.…)` (без `LaunchedEffect` для первичной загрузки — она в `onCreate` контейнера).
 
 | Компонент | Описание |
 |-----------|---------|
