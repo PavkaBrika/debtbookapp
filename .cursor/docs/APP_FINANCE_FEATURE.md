@@ -33,7 +33,8 @@ app/src/main/java/com/breckneck/debtbook/finance/
     ├── FinanceViewModel.kt              # VM основного экрана
     ├── CreateFinanceViewModel.kt        # VM создания записи
     ├── CreateFinanceCategoryViewModel.kt # VM создания категории
-    └── FinanceDetailsViewModel.kt       # VM деталей
+    ├── FinanceDetailsActions.kt         # sealed interface интентов экрана деталей
+    └── FinanceDetailsViewModel.kt       # VM деталей (Orbit + FinanceDetailsState)
 ```
 
 ### Layouts
@@ -144,28 +145,49 @@ app/src/main/java/com/breckneck/debtbook/finance/
 
 ## FinanceDetailsViewModel
 
+Реализует `ContainerHost<FinanceDetailsState, Unit>` (Orbit MVI; side effects не используются).
+
 ### Зависимости
+- `SavedStateHandle` — аргументы фрагмента (`categoryId`, `categoryState`) для первичной загрузки в `onCreate` контейнера
 - `GetFinanceByCategoryId` — записи по категории
 - `DeleteFinance` — удаление записи
+- `orbit-viewmodel` / `orbit-core` — контейнер состояния
 
-### State
+### State (`FinanceDetailsState`)
+
+Дефолтное состояние: `FinanceDetailsState.initial()`.
+
 | Поле | Тип | Описание |
 |------|-----|---------|
-| `financeList` | `LiveData<List<Finance>>` | Загруженные записи категории, отсортированные по дате (убыв.) |
-| `financeListState` | `LiveData<ListState>` | LOADING / RECEIVED / EMPTY |
-| `isSettingsDialogOpened` | `LiveData<Boolean>` | Открыт ли ExtraFunctions bottom sheet |
-| `settingsFinance` | `LiveData<Finance>` | Запись, выбранная для редактирования / удаления |
-| `categoryId` | `LiveData<Int>` | ID категории |
-| `isExpenses` | `LiveData<Boolean>` | true = расходы, false = доходы |
+| `financeList` | `List<Finance>` | Загруженные записи категории, отсортированные по дате (убыв.) |
+| `financeListState` | `ListState` | LOADING / RECEIVED / EMPTY |
+| `isSettingsDialogOpened` | `Boolean` | Открыт ли ExtraFunctions bottom sheet |
+| `settingsFinance` | `Finance?` | Запись, выбранная для редактирования / удаления |
+| `categoryId` | `Int?` | ID категории (заполняется из `SavedStateHandle` при создании контейнера) |
+| `isExpenses` | `Boolean?` | true = расходы, false = доходы (из `categoryState` в аргументах) |
+
+### Публичный API
+- Единственный публичный метод: `onAction(FinanceDetailsActions)`.
+
+### `container(..., onCreate = …)`
+При первом обращении к контейнеру выполняется `onCreate`: чтение `categoryId` / `categoryState` из `SavedStateHandle`, `reduce` полей `categoryId` / `isExpenses`, затем загрузка списка (LOADING → RECEIVED / EMPTY).
+
+### `FinanceDetailsActions` (sealed interface)
+| Действие | Что делает |
+|----------|------------|
+| `OpenFinanceSheet(finance)` | Открыть bottom sheet и выбрать запись |
+| `CloseFinanceSheet` | Закрыть bottom sheet |
+| `DeleteFinance(finance)` | Удалить запись и перезагрузить список по `state.categoryId` |
+| `RefreshListAfterEdit(wasModified)` | После `FragmentResult`: при `wasModified` и заданном `categoryId` — перезагрузка списка |
 
 ### Ключевая логика
 - Отображение истории финансовых записей конкретной категории
 - Удаление отдельных записей с перезагрузкой списка
-- `getFinanceByCategoryId` выставляет `RECEIVED` / `EMPTY` после загрузки
+- Загрузка списка выставляет `RECEIVED` / `EMPTY` после успеха
 
 ## FinanceDetailsScreen
 
-Compose UI для экрана деталей категории (история записей).
+Compose UI для экрана деталей категории (история записей). Состояние: `vm.collectAsState()`; события — только `vm.onAction(FinanceDetailsActions.…)` (без `LaunchedEffect` для первичной загрузки — она в `onCreate` контейнера).
 
 | Компонент | Описание |
 |-----------|---------|

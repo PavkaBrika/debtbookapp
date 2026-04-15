@@ -6,9 +6,11 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
-import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import org.mockito.kotlin.any
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
+import kotlinx.coroutines.test.runTest
 import java.util.Date
 
 class FinanceUseCasesTest {
@@ -44,16 +46,16 @@ class FinanceUseCasesTest {
     // --- GetFinanceByCategoryId ---
 
     @Test
-    fun `GetFinanceByCategoryId should return finances for given categoryId`() {
+    fun `GetFinanceByCategoryId should return finances for given categoryId`() = runTest {
         val finances = listOf(createFinance(1, 200.0, 3))
-        Mockito.`when`(financeRepository.getFinanceByCategoryId(3)).thenReturn(finances)
+        whenever(financeRepository.getFinanceByCategoryId(3)).thenReturn(finances)
         val result = GetFinanceByCategoryId(financeRepository).execute(categoryId = 3)
         Assertions.assertEquals(finances, result)
     }
 
     @Test
-    fun `GetFinanceByCategoryId should return empty list for unknown categoryId`() {
-        Mockito.`when`(financeRepository.getFinanceByCategoryId(99)).thenReturn(emptyList())
+    fun `GetFinanceByCategoryId should return empty list for unknown categoryId`() = runTest {
+        whenever(financeRepository.getFinanceByCategoryId(99)).thenReturn(emptyList())
         val result = GetFinanceByCategoryId(financeRepository).execute(categoryId = 99)
         Assertions.assertTrue(result.isEmpty())
     }
@@ -76,7 +78,7 @@ class FinanceUseCasesTest {
     // --- DeleteFinance ---
 
     @Test
-    fun `DeleteFinance should call deleteFinance with provided finance`() {
+    fun `DeleteFinance should call deleteFinance with provided finance`() = runTest {
         val finance = createFinance(5, 75.0)
         DeleteFinance(financeRepository).execute(finance = finance)
         verify(financeRepository).deleteFinance(finance = finance)

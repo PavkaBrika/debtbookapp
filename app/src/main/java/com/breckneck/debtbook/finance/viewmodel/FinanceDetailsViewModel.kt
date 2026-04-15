@@ -1,49 +1,74 @@
 package com.breckneck.debtbook.finance.viewmodel
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.breckneck.deptbook.domain.model.Finance
 import com.breckneck.deptbook.domain.usecase.Finance.DeleteFinance
 import com.breckneck.deptbook.domain.usecase.Finance.GetFinanceByCategoryId
+import com.breckneck.deptbook.domain.util.FinanceCategoryState
 import com.breckneck.deptbook.domain.util.ListState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import org.orbitmvi.orbit.ContainerHost
+import org.orbitmvi.orbit.viewmodel.container
 import javax.inject.Inject
+
+data class FinanceDetailsState(
+    val financeList: List<Finance>,
+    val financeListState: ListState,
+    val isSettingsDialogOpened: Boolean,
+    val settingsFinance: Finance?,
+    val categoryId: Int?,
+    val isExpenses: Boolean?,
+) {
+    companion object {
+        fun initial() = FinanceDetailsState(
+            financeList = emptyList(),
+            financeListState = ListState.LOADING,
+            isSettingsDialogOpened = false,
+            settingsFinance = null,
+            categoryId = null,
+            isExpenses = null,
+        )
+    }
+}
 
 @HiltViewModel
 class FinanceDetailsViewModel @Inject constructor(
-    private val getFinanceByCategoryId: GetFinanceByCategoryId,
-    private val deleteFinance: DeleteFinance
-): ViewModel() {
+    private val savedStateHandle: SavedStateHandle,
+    private val getFinanceByCategoryIdUseCase: GetFinanceByCategoryId,
+    private val deleteFinanceUseCase: DeleteFinance,
+) : ViewModel(), ContainerHost<FinanceDetailsState, Nothing> {
 
     private val TAG = "FinanceDetailsViewModel"
 
-    private val _financeList = MutableLiveData<List<Finance>>()
-    val financeList: LiveData<List<Finance>>
-        get() = _financeList
-    private val _isSettingsDialogOpened = MutableLiveData(false)
-    val isSettingsDialogOpened: LiveData<Boolean>
-        get() = _isSettingsDialogOpened
-    private val _settingsFinance = MutableLiveData<Finance>()
-    val settingsFinance: LiveData<Finance>
-        get() = _settingsFinance
-    private val _categoryName = MutableLiveData<String>()
-    val categoryName: LiveData<String>
-        get() = _categoryName
-    private val _categoryId = MutableLiveData<Int>()
-    val categoryId: LiveData<Int>
-        get() = _categoryId
-    private val _isExpenses = MutableLiveData<Boolean>()
-    val isExpenses: LiveData<Boolean>
-        get() = _isExpenses
-    private val _financeListState = MutableLiveData<ListState>(ListState.LOADING)
-    val financeListState: LiveData<ListState>
-        get() = _financeListState
+    override val container = container<FinanceDetailsState, Nothing>(
+        initialState = FinanceDetailsState.initial(),
+        onCreate = {
+            val categoryId = savedStateHandle.get<Int>("categoryId") ?: 0
+            val categoryState = savedStateHandle.get<String>("categoryState").orEmpty()
+            val isExpenses = categoryState == FinanceCategoryState.EXPENSE.toString()
+            reduce {
+                state.copy(
+                    categoryId = categoryId,
+                    isExpenses = isExpenses,
+                    financeListState = ListState.LOADING,
+                )
+            }
+            try {
+                val result = loadFinances(categoryId = categoryId)
+                reduce {
+                    state.copy(
+                        financeList = result,
+                        financeListState = if (result.isEmpty()) ListState.EMPTY else ListState.RECEIVED,
+                    )
+                }
+                Log.e(TAG, "Finances load success")
+            } catch (e: Exception) {
+                Log.e(TAG, e.message.toString())
+            }
+        },
+    )
 
     init {
         Log.e(TAG, "Created")
@@ -54,58 +79,60 @@ class FinanceDetailsViewModel @Inject constructor(
         Log.e(TAG, "Cleared")
     }
 
-    fun getFinanceByCategoryId(categoryId: Int) {
-        _financeListState.value = ListState.LOADING
-        viewModelScope.launch {
-            try {
-                val result = withContext(Dispatchers.IO) {
-                    getFinanceByCategoryId.execute(categoryId = categoryId)
-                        .sortedByDescending { finance -> finance.date }
+    fun onAction(action: FinanceDetailsActions) = intent {
+        when (action) {
+            is FinanceDetailsActions.OpenFinanceSheet -> reduce {
+                state.copy(
+                    isSettingsDialogOpened = true,
+                    settingsFinance = action.finance,
+                )
+            }
+
+            FinanceDetailsActions.CloseFinanceSheet -> reduce {
+                state.copy(isSettingsDialogOpened = false)
+            }
+
+            is FinanceDetailsActions.DeleteFinance -> {
+                try {
+                    deleteFinanceUseCase.execute(finance = action.finance)
+                    val categoryId = state.categoryId ?: return@intent
+                    reduce { state.copy(financeListState = ListState.LOADING) }
+                    val result = loadFinances(categoryId = categoryId)
+                    reduce {
+                        state.copy(
+                            financeList = result,
+                            financeListState = if (result.isEmpty()) ListState.EMPTY else ListState.RECEIVED,
+                        )
+                    }
+                    Log.e(TAG, "Finances load success")
+                    Log.e(TAG, "Finance delete success")
+                } catch (e: Exception) {
+                    Log.e(TAG, e.message.toString())
                 }
-                _financeList.value = result
-                _financeListState.value = if (result.isEmpty()) ListState.EMPTY else ListState.RECEIVED
-                Log.e(TAG, "Finances load success")
-            } catch (e: Exception) {
-                Log.e(TAG, e.message.toString())
+            }
+
+            is FinanceDetailsActions.RefreshListAfterEdit -> {
+                if (!action.wasModified) return@intent
+                val categoryId = state.categoryId ?: return@intent
+                reduce { state.copy(financeListState = ListState.LOADING) }
+                try {
+                    val result = loadFinances(categoryId = categoryId)
+                    reduce {
+                        state.copy(
+                            financeList = result,
+                            financeListState = if (result.isEmpty()) ListState.EMPTY else ListState.RECEIVED,
+                        )
+                    }
+                    Log.e(TAG, "Finances load success")
+                } catch (e: Exception) {
+                    Log.e(TAG, e.message.toString())
+                }
             }
         }
     }
 
-    fun deleteFinance(finance: Finance) {
-        viewModelScope.launch {
-            try {
-                withContext(Dispatchers.IO) {
-                    deleteFinance.execute(finance = finance)
-                }
-                getFinanceByCategoryId(categoryId = categoryId.value!!)
-                Log.e(TAG, "Finance delete success")
-            } catch (e: Exception) {
-                Log.e(TAG, e.message.toString())
-            }
-        }
-    }
-
-    fun setFinanceListState(state: ListState) {
-        _financeListState.value = state
-    }
-
-    fun onSetSettingFinance(finance: Finance) {
-        _settingsFinance.value = finance
-    }
-
-    fun onFinanceSettingsDialogOpen() {
-        _isSettingsDialogOpened.value = true
-    }
-
-    fun onFinanceSettingsDialogClose() {
-        _isSettingsDialogOpened.value = false
-    }
-
-    fun setCategoryId(categoryId: Int) {
-        _categoryId.value = categoryId
-    }
-
-    fun setExpenses(isExpenses: Boolean) {
-        _isExpenses.value = isExpenses
+    private suspend fun loadFinances(categoryId: Int): List<Finance> {
+        return getFinanceByCategoryIdUseCase.execute(categoryId = categoryId)
+            .sortedByDescending { finance -> finance.date }
     }
 }

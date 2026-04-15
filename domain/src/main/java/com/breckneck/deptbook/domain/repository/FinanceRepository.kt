@@ -8,9 +8,9 @@ interface FinanceRepository {
 
     fun getAllFinance(): List<Finance>
 
-    fun getFinanceByCategoryId(categoryId: Int): List<Finance>
+    suspend fun getFinanceByCategoryId(categoryId: Int): List<Finance>
 
-    fun deleteFinance(finance: Finance)
+    suspend fun deleteFinance(finance: Finance)
 
     fun updateFinance(finance: Finance)
 

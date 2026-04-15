@@ -162,7 +162,7 @@ data class AppDataLists(
 | `replaceAllDebts(debtList)` | Полная замена (sync) |
 
 ### `FinanceRepository`
-CRUD + `getFinanceByCategoryId()`, `deleteAllFinancesByCategoryId()`, `replaceAllFinances()`.
+CRUD + `getFinanceByCategoryId()` (`suspend`), `deleteFinance()` (`suspend`), `deleteAllFinancesByCategoryId()`, `replaceAllFinances()`.
 
 ### `FinanceCategoryRepository`
 CRUD + `getFinanceCategoriesByState()`, `getAllCategoriesWithFinances()`, `replaceAllFinanceCategories()`.
@@ -224,7 +224,7 @@ Key-value хранилище настроек:
 | `ReplaceAllDebts` | Полная замена (sync) |
 
 ### `usecase/Finance/` (7 use cases)
-CRUD + `GetFinanceByCategoryId`, `DeleteAllFinancesByCategoryId`, `ReplaceAllFinances`.
+CRUD + `GetFinanceByCategoryId` (`suspend execute`), `DeleteFinance` (`suspend execute`), `DeleteAllFinancesByCategoryId`, `ReplaceAllFinances`.
 
 ### `usecase/FinanceCategory/` (6 use cases)
 CRUD + `GetAllCategoriesWithFinances`, `GetFinanceCategoriesByState`, `ReplaceAllFinanceCategories`.

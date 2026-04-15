@@ -8,9 +8,9 @@ interface FinanceStorage {
 
     fun getAllFinance(): List<FinanceData>
 
-    fun getFinanceByCategoryId(categoryId: Int): List<FinanceData>
+    suspend fun getFinanceByCategoryId(categoryId: Int): List<FinanceData>
 
-    fun deleteFinance(financeData: FinanceData)
+    suspend fun deleteFinance(financeData: FinanceData)
 
     fun updateFinance(financeData: FinanceData)
 

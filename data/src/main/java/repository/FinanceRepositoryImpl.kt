@@ -4,6 +4,8 @@ import com.breckneck.deptbook.data.storage.FinanceStorage
 import com.breckneck.deptbook.domain.model.Finance
 import com.breckneck.deptbook.domain.repository.FinanceRepository
 import entity.FinanceData
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class FinanceRepositoryImpl(private val financeStorage: FinanceStorage) : FinanceRepository {
 
@@ -31,32 +33,36 @@ class FinanceRepositoryImpl(private val financeStorage: FinanceStorage) : Financ
         }
     }
 
-    override fun getFinanceByCategoryId(
+    override suspend fun getFinanceByCategoryId(
         categoryId: Int
     ): List<Finance> {
-        return financeStorage.getFinanceByCategoryId(
-            categoryId = categoryId,
-        ).map { financeData ->
-            Finance(
-                id = financeData.id,
-                sum = financeData.sum,
-                info = financeData.info,
-                financeCategoryId = financeData.financeCategoryId,
-                date = financeData.date
-            )
+        return withContext(Dispatchers.IO) {
+            financeStorage.getFinanceByCategoryId(
+                categoryId = categoryId,
+            ).map { financeData ->
+                Finance(
+                    id = financeData.id,
+                    sum = financeData.sum,
+                    info = financeData.info,
+                    financeCategoryId = financeData.financeCategoryId,
+                    date = financeData.date
+                )
+            }
         }
     }
 
-    override fun deleteFinance(finance: Finance) {
-        financeStorage.deleteFinance(
-            financeData = FinanceData(
-                id = finance.id,
-                sum = finance.sum,
-                date = finance.date,
-                info = finance.info,
-                financeCategoryId = finance.financeCategoryId
+    override suspend fun deleteFinance(finance: Finance) {
+        withContext(Dispatchers.IO) {
+            financeStorage.deleteFinance(
+                financeData = FinanceData(
+                    id = finance.id,
+                    sum = finance.sum,
+                    date = finance.date,
+                    info = finance.info,
+                    financeCategoryId = finance.financeCategoryId
+                )
             )
-        )
+        }
     }
 
     override fun updateFinance(finance: Finance) {

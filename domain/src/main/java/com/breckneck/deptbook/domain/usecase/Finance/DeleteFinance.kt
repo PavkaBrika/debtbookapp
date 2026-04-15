@@ -5,7 +5,7 @@ import com.breckneck.deptbook.domain.repository.FinanceRepository
 
 class DeleteFinance(private val financeRepository: FinanceRepository) {
 
-    fun execute(finance: Finance) {
+    suspend fun execute(finance: Finance) {
         financeRepository.deleteFinance(finance = finance)
     }
 }

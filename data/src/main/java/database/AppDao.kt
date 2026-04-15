@@ -87,7 +87,7 @@ interface AppDao {
     fun getAllFinances(): List<FinanceData>
 
     @Query("SELECT * from financedata WHERE financeCategoryId = :categoryId")
-    fun getFinanceByCategoryId(categoryId: Int): List<FinanceData>
+    suspend fun getFinanceByCategoryId(categoryId: Int): List<FinanceData>
 
     @Query("DELETE FROM financeData WHERE financeCategoryId = :financeCategoryId")
     fun deleteAllFinancesByCategoryId(financeCategoryId: Int)
@@ -102,7 +102,7 @@ interface AppDao {
     fun insertFinance(financeData: FinanceData)
 
     @Delete
-    fun deleteFinance(financeData: FinanceData)
+    suspend fun deleteFinance(financeData: FinanceData)
 
     @Update
     fun updateFinance(financeData: FinanceData)

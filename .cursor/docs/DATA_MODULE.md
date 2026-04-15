@@ -72,9 +72,9 @@ data/src/main/java/
 | Метод | SQL / аннотация |
 |-------|----------------|
 | `getAllFinances()` | `SELECT * FROM financedata` |
-| `getFinanceByCategoryId(categoryId)` | `WHERE financeCategoryId = :categoryId` |
+| `getFinanceByCategoryId(categoryId)` | `suspend`, `WHERE financeCategoryId = :categoryId` |
 | `deleteAllFinancesByCategoryId(id)` | `DELETE WHERE financeCategoryId` |
-| `insertFinance` / `deleteFinance` / `updateFinance` | CRUD |
+| `insertFinance` / `deleteFinance` / `updateFinance` | CRUD (`deleteFinance` — `suspend`) |
 | `insertAllFinances` / `deleteAllFinances` | Bulk ops |
 
 #### FinanceCategory-запросы
