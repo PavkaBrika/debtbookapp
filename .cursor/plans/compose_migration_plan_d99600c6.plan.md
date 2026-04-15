@@ -99,9 +99,9 @@ flowchart LR
 - `**SettingsPickerBottomSheet.kt`** -- Compose `ModalBottomSheet` с `LazyColumn` + `RadioButton` для выбора из списка (замена `dialog_setting.xml` + `SettingsAdapter`). Используется в: NewDebt (валюта), CreateGoals (валюта), Finance (валюта, интервал), Settings (валюта x3, тема).
 - `**ConfirmationBottomSheet.kt`** -- Compose `ModalBottomSheet` с текстом + кнопками (замена `dialog_are_you_sure.xml`). Используется в: DebtDetails, CreateFinance, Synchronization.
 - `**ExtraFunctionsBottomSheet.kt`** -- Compose `ModalBottomSheet` с опциями "Редактировать / Удалить / Отмена" (замена `dialog_extra_functions.xml`). Используется в: DebtDetails, FinanceDetails, GoalDetails.
-- `**SortFilterBottomSheet.kt**` -- Compose `ModalBottomSheet` с RadioGroup для сортировки/фильтрации (замена `dialog_sort.xml`). Используется в: MainFragment, DebtDetails.
-- `**EmptyListPlaceholder.kt**` -- заглушка для пустых списков (shimmer-эффект + empty state).
-- `**AdBannerComposable.kt**` -- обертка для Yandex Ads баннера через `AndroidView`.
+- `**SortFilterBottomSheet.kt`** -- Compose `ModalBottomSheet` с RadioGroup для сортировки/фильтрации (замена `dialog_sort.xml`). Используется в: MainFragment, DebtDetails.
+- `**EmptyListPlaceholder.kt`** -- заглушка для пустых списков (shimmer-эффект + empty state).
+- `**AdBannerComposable.kt`** -- обертка для Yandex Ads баннера через `AndroidView`.
 
 ---
 
