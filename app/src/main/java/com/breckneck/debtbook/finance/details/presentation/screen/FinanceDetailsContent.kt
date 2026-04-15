@@ -1,16 +1,12 @@
-package com.breckneck.debtbook.finance.presentation
+package com.breckneck.debtbook.finance.details.presentation.screen
 
 import android.content.res.Configuration
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ReceiptLong
-import androidx.compose.material.icons.filled.ReceiptLong
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -70,23 +66,28 @@ internal fun FinanceDetailsContent(
             )
         }
     ) { paddingValues ->
-        AnimatedContent(
+        Crossfade(
             targetState = financeListState,
-            transitionSpec = { fadeIn() togetherWith fadeOut() },
             label = "financeListState",
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
         ) { state ->
             when (state) {
-                ListState.LOADING -> ShimmerListPlaceholder(rowCount = 6, rowHeight = 72.dp)
+                ListState.LOADING -> ShimmerListPlaceholder(
+                    rowCount = 6,
+                    rowHeight = 72.dp,
+                    modifier = Modifier.fillMaxSize(),
+                )
+
                 ListState.EMPTY -> EmptyListPlaceholder(
                     emptyText = if (isExpenses) {
                         stringResource(R.string.there_are_no_expenses_yet)
                     } else {
                         stringResource(R.string.there_are_no_incomes_yet)
                     },
-                    emptyIcon = Icons.AutoMirrored.Filled.ReceiptLong
+                    emptyIcon = Icons.AutoMirrored.Filled.ReceiptLong,
+                    modifier = Modifier.fillMaxSize(),
                 )
 
                 ListState.RECEIVED -> FinanceDetailsList(

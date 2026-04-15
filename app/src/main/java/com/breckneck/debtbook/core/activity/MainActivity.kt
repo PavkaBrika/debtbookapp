@@ -26,7 +26,7 @@ import com.breckneck.debtbook.debt.presentation.MainFragment
 import com.breckneck.debtbook.debt.presentation.NewDebtFragment
 import com.breckneck.debtbook.finance.presentation.CreateFinanceCategoryFragment
 import com.breckneck.debtbook.finance.presentation.CreateFinanceFragment
-import com.breckneck.debtbook.finance.presentation.FinanceDetailsFragment
+import com.breckneck.debtbook.finance.details.presentation.FinanceDetailsFragment
 import com.breckneck.debtbook.finance.presentation.FinanceFragment
 import com.breckneck.debtbook.goal.presentation.CreateGoalsFragment
 import com.breckneck.debtbook.goal.presentation.GoalDetailsFragment
@@ -419,7 +419,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener,
         val args = Bundle()
         args.putString("categoryName", categoryName)
         args.putInt("categoryId", categoryId)
-        args.putString("categoryState", financeCategoryState.toString())
+        args.putString("categoryState", financeCategoryState.name)
         args.putString("currency", currency)
         navController.navigate(R.id.action_financeFragment_to_financeDetailsFragment, args)
         vm.onActionClick()

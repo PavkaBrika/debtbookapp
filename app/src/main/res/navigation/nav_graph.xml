@@ -190,7 +190,7 @@
         tools:layout="@layout/fragment_create_finance_category" />
     <fragment
         android:id="@+id/financeDetailsFragment"
-        android:name="com.breckneck.debtbook.finance.presentation.FinanceDetailsFragment"
+        android:name="com.breckneck.debtbook.finance.details.presentation.FinanceDetailsFragment"
         android:label="FinanceDetailsFragment"
         tools:layout="@layout/fragment_finance_details">
         <action

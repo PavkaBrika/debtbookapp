@@ -1,4 +1,4 @@
-package com.breckneck.debtbook.finance.presentation
+package com.breckneck.debtbook.finance.details.presentation.screen
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -7,15 +7,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.core.ui.components.ExtraFunctionsBottomSheet
+import com.breckneck.debtbook.finance.details.presentation.FinanceDetailsActions
+import com.breckneck.debtbook.finance.details.presentation.FinanceDetailsViewModel
 import com.breckneck.debtbook.finance.util.GetFinanceCategoryNameInLocalLanguage
-import com.breckneck.debtbook.finance.viewmodel.FinanceDetailsActions
-import com.breckneck.debtbook.finance.viewmodel.FinanceDetailsViewModel
 import com.breckneck.deptbook.domain.model.Finance
 import com.breckneck.deptbook.domain.util.FinanceCategoryState
-import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
-import java.text.SimpleDateFormat
-import java.util.Locale
 import org.orbitmvi.orbit.compose.collectAsState
 
 @Composable
@@ -38,12 +34,6 @@ fun FinanceDetailsScreen(
     val subtitle =
         if (state.isExpenses) stringResource(R.string.expenses) else stringResource(R.string.revenues)
 
-    val sheetSdf = remember { SimpleDateFormat("d MMM yyyy", Locale.getDefault()) }
-    val sheetDecimalFormat = remember {
-        val symbols = DecimalFormatSymbols().apply { groupingSeparator = ' ' }
-        DecimalFormat("###,###,###.##", symbols)
-    }
-
     FinanceDetailsContent(
         title = localizedCategoryName,
         subtitle = subtitle,
@@ -57,13 +47,10 @@ fun FinanceDetailsScreen(
         }
     )
 
-    if (state.isSettingsDialogOpened && state.settingsFinance != null) {
-        val settingsFinance = state.settingsFinance!!
-        val sheetTitle = remember(settingsFinance, state.currency) {
-            "${sheetSdf.format(settingsFinance.date)} : ${sheetDecimalFormat.format(settingsFinance.sum)} ${state.currency}"
-        }
+    if (state.bottomSheet.isOpened && state.bottomSheet.finance != null) {
+        val settingsFinance = state.bottomSheet.finance!!
         ExtraFunctionsBottomSheet(
-            title = sheetTitle,
+            title = state.bottomSheet.title,
             onEdit = {
                 vm.onAction(FinanceDetailsActions.CloseFinanceSheet)
                 onEditFinanceClick(settingsFinance)

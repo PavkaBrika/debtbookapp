@@ -1,4 +1,4 @@
-package com.breckneck.debtbook.finance.viewmodel
+package com.breckneck.debtbook.finance.details.presentation
 
 import com.breckneck.deptbook.domain.model.Finance
 

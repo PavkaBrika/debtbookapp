@@ -1,4 +1,4 @@
-package com.breckneck.debtbook.finance.presentation
+package com.breckneck.debtbook.finance.details.presentation
 
 import android.content.Context
 import android.os.Bundle
@@ -11,8 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import com.breckneck.debtbook.core.ui.theme.DebtBookTheme
-import com.breckneck.debtbook.finance.viewmodel.FinanceDetailsActions
-import com.breckneck.debtbook.finance.viewmodel.FinanceDetailsViewModel
+import com.breckneck.debtbook.finance.details.presentation.screen.FinanceDetailsScreen
 import com.breckneck.deptbook.domain.model.Finance
 import dagger.hilt.android.AndroidEntryPoint
 

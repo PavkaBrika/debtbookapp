@@ -1,4 +1,4 @@
-package com.breckneck.debtbook.finance.presentation
+package com.breckneck.debtbook.finance.details.presentation.screen
 
 import android.content.res.Configuration
 import androidx.compose.foundation.clickable
@@ -24,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
@@ -40,6 +41,7 @@ import com.breckneck.deptbook.domain.model.Finance
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Locale
 
 @Composable
@@ -60,7 +62,7 @@ internal fun FinanceDetailsList(
     val groupedFinances = remember(financeList) {
         financeList.groupBy { monthFormatter.format(it.date) }
     }
-    val hintText = androidx.compose.ui.res.stringResource(R.string.details_recycler_view_hint)
+    val hintText = stringResource(R.string.details_recycler_view_hint)
 
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         item(key = "type_badge") {
@@ -234,9 +236,9 @@ private fun FinanceRow(
 @Preview(name = "List Filled - dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun FinanceDetailsListFilledPreview() {
-    val april = java.util.Calendar.getInstance().apply { set(2026, 3, 5) }.time
-    val aprilEarly = java.util.Calendar.getInstance().apply { set(2026, 3, 1) }.time
-    val march = java.util.Calendar.getInstance().apply { set(2026, 2, 28) }.time
+    val april = Calendar.getInstance().apply { set(2026, 3, 5) }.time
+    val aprilEarly = Calendar.getInstance().apply { set(2026, 3, 1) }.time
+    val march = Calendar.getInstance().apply { set(2026, 2, 28) }.time
 
     DebtBookTheme(dynamicColor = false) {
         Surface {
@@ -260,7 +262,7 @@ private fun FinanceDetailsListFilledPreview() {
 @Composable
 private fun FinanceDetailsListIncomePreview() {
     @Suppress("MagicNumber")
-    val date = java.util.Calendar.getInstance().apply { set(2026, 3, 1) }.time
+    val date = Calendar.getInstance().apply { set(2026, 3, 1) }.time
 
     DebtBookTheme(dynamicColor = false) {
         Surface {

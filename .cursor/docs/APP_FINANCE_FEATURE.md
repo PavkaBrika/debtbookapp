@@ -161,12 +161,18 @@ app/src/main/java/com/breckneck/debtbook/finance/
 |------|-----|---------|
 | `financeList` | `List<Finance>` | Загруженные записи категории, отсортированные по дате (убыв.) |
 | `financeListState` | `ListState` | LOADING / RECEIVED / EMPTY |
-| `isSettingsDialogOpened` | `Boolean` | Открыт ли ExtraFunctions bottom sheet |
-| `settingsFinance` | `Finance?` | Запись, выбранная для редактирования / удаления |
+| `bottomSheet` | `FinanceDetailsBottomSheetState` | Состояние ExtraFunctions bottom sheet |
 | `categoryId` | `Int?` | ID категории (заполняется из `SavedStateHandle` при создании контейнера) |
 | `categoryName` | `String` | Имя категории (из аргументов навигации) |
 | `currency` | `String` | Валюта для отображения (из аргументов навигации) |
 | `isExpenses` | `Boolean` | true = расходы, false = доходы (из `categoryState` в аргументах) |
+
+#### Bottom sheet state (`FinanceDetailsBottomSheetState`)
+| Поле | Тип | Описание |
+|------|-----|---------|
+| `isOpened` | `Boolean` | Открыт ли bottom sheet |
+| `finance` | `Finance?` | Выбранная запись |
+| `title` | `String` | Заголовок sheet (дата + сумма + валюта) |
 
 ### Публичный API
 - Единственный публичный метод: `onAction(FinanceDetailsActions)`.
@@ -194,7 +200,7 @@ Compose UI для экрана деталей категории (история
 | Компонент | Описание |
 |-----------|---------|
 | `LargeTopAppBar` | Большой заголовок категории с collapse поведением |
-| `AnimatedContent` | Переключение между LOADING / EMPTY / RECEIVED с fade-анимацией |
+| `Crossfade` | Переключение между LOADING / EMPTY / RECEIVED с fade-анимацией |
 | `ShimmerListPlaceholder` | Скелетон при состоянии LOADING |
 | `EmptyListPlaceholder` | Заглушка при EMPTY; текст зависит от isExpenses |
 | `FinanceDetailsList` | `LazyColumn` с type badge, sticky month headers, ledger rows |
