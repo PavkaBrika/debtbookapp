@@ -61,13 +61,21 @@ class GoalsFragmentViewModel @Inject constructor(
             try {
                 val goals = withContext(Dispatchers.IO) { getAllGoals.execute() }
                 _goalList.value = goals
-                if (_goalList.value!!.isEmpty())
-                    _goalListState.value = ListState.EMPTY
+                _goalListState.value = if (goals.isEmpty()) ListState.EMPTY else ListState.RECEIVED
                 _goalListNeedToUpdate = false
                 Log.e(TAG, "Goals loaded")
             } catch (e: Exception) {
                 Log.e(TAG, e.message.toString())
             }
+        }
+    }
+
+    fun updateGoalInList(goal: Goal) {
+        val list = _goalList.value?.toMutableList() ?: return
+        val idx = list.indexOfFirst { it.id == goal.id }
+        if (idx != -1) {
+            list[idx] = goal
+            _goalList.value = list
         }
     }
 
@@ -105,7 +113,10 @@ class GoalsFragmentViewModel @Inject constructor(
                     deleteGoal.execute(goal = goal)
                     deleteGoalDepositsByGoalId.execute(goalId = goal.id)
                 }
-                _goalListNeedToUpdate = true
+                val updatedList = _goalList.value?.filter { it.id != goal.id } ?: emptyList()
+                _goalList.value = updatedList
+                _goalListState.value = if (updatedList.isEmpty()) ListState.EMPTY else ListState.RECEIVED
+                _goalListNeedToUpdate = false
                 Log.e(TAG, "goal deleted")
             } catch (e: Exception) {
                 Log.e(TAG, e.message.toString())
