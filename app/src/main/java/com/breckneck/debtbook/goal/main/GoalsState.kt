@@ -1,4 +1,4 @@
-package com.breckneck.debtbook.goal.presentation
+package com.breckneck.debtbook.goal.main
 
 import com.breckneck.deptbook.domain.model.Goal
 import com.breckneck.deptbook.domain.util.ListState

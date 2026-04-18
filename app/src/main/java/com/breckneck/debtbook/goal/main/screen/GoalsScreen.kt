@@ -1,4 +1,4 @@
-package com.breckneck.debtbook.goal.presentation.screen
+package com.breckneck.debtbook.goal.main.screen
 
 import android.content.res.Configuration
 import androidx.compose.animation.Crossfade
@@ -33,9 +33,9 @@ import com.breckneck.debtbook.R
 import com.breckneck.debtbook.core.ui.components.EmptyListPlaceholder
 import com.breckneck.debtbook.core.ui.components.ShimmerListPlaceholder
 import com.breckneck.debtbook.core.ui.theme.DebtBookTheme
-import com.breckneck.debtbook.goal.presentation.GoalsAction
-import com.breckneck.debtbook.goal.presentation.GoalsState
-import com.breckneck.debtbook.goal.viewmodel.GoalsFragmentViewModel
+import com.breckneck.debtbook.goal.main.GoalsAction
+import com.breckneck.debtbook.goal.main.GoalsState
+import com.breckneck.debtbook.goal.main.GoalsViewModel
 import com.breckneck.deptbook.domain.model.Goal
 import com.breckneck.deptbook.domain.util.ListState
 import org.orbitmvi.orbit.compose.collectAsState
@@ -43,7 +43,7 @@ import java.util.Date
 
 
 @Composable
-fun GoalsScreen(vm: GoalsFragmentViewModel) {
+fun GoalsScreen(vm: GoalsViewModel) {
     val state by vm.collectAsState()
     GoalsContent(
         state = state,

@@ -1,4 +1,4 @@
-package com.breckneck.debtbook.goal.viewmodel
+package com.breckneck.debtbook.goal.create
 
 import android.net.Uri
 import android.util.Log
@@ -19,7 +19,7 @@ import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
-class CreateGoalsFragmentViewModel @Inject constructor(
+class CreateGoalsViewModel @Inject constructor(
     private val setGoal: SetGoal,
     private val getDefaultCurrency: GetDefaultCurrency,
     private val updateGoal: UpdateGoal

@@ -1,4 +1,4 @@
-package com.breckneck.debtbook.goal.presentation
+package com.breckneck.debtbook.goal.details
 
 import android.content.Context
 import android.graphics.Color
@@ -27,10 +27,10 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.setFragmentResultListener
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
-import com.breckneck.debtbook.goal.adapter.GoalDepositAdapter
-import com.breckneck.debtbook.goal.viewmodel.GoalDetailsFragmentViewModel
+import com.breckneck.debtbook.goal.details.GoalDepositAdapter
 import com.breckneck.deptbook.domain.model.Goal
 import com.breckneck.deptbook.domain.model.GoalDeposit
 import com.breckneck.deptbook.domain.util.ChangeGoalSavedSumDialogState
@@ -45,7 +45,6 @@ import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 import java.text.DecimalFormat
@@ -59,7 +58,7 @@ class GoalDetailsFragment : Fragment() {
 
     private val TAG = "GoalDetailsFragment"
 
-    private val vm by viewModels<GoalDetailsFragmentViewModel>()
+    private val vm by viewModels<GoalDetailsViewModel>()
 
     lateinit var goalDepositRecyclerView: RecyclerView
     lateinit var goalDepositAdapter: GoalDepositAdapter
@@ -315,7 +314,7 @@ class GoalDetailsFragment : Fragment() {
         }, 400)
     }
 
-    private fun openChangeSavedGoalSumDialog(state:ChangeGoalSavedSumDialogState) {
+    private fun openChangeSavedGoalSumDialog(state: ChangeGoalSavedSumDialogState) {
         val dialog = BottomSheetDialog(requireActivity())
         dialog.setContentView(R.layout.dialog_add_goal_sum)
         vm.onOpenChangeSavedSumChangeDialog(
@@ -361,7 +360,11 @@ class GoalDetailsFragment : Fragment() {
                     goalSumTextInput.error = getString(R.string.zerodebt)
                 } else {
                     vm.updateGoalSum(sum = savedSumDouble)
-                    val goalDeposit = GoalDeposit(sum = savedSumDouble, date = Date(), goalId = vm.goal.value!!.id)
+                    val goalDeposit = GoalDeposit(
+                        sum = savedSumDouble,
+                        date = Date(),
+                        goalId = vm.goal.value!!.id
+                    )
                     goalDepositAdapter.addGoalDeposit(goalDeposit = goalDeposit)
                     vm.setGoalListState(state = ListState.RECEIVED)
                     vm.setGoalDeposit(goalDeposit = goalDeposit)

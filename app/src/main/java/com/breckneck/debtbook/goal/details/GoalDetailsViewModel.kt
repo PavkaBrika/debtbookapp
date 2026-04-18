@@ -1,4 +1,4 @@
-package com.breckneck.debtbook.goal.viewmodel
+package com.breckneck.debtbook.goal.details
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -21,7 +21,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class GoalDetailsFragmentViewModel @Inject constructor(
+class GoalDetailsViewModel @Inject constructor(
     private val updateGoal: UpdateGoal,
     private val setGoalDeposit: SetGoalDeposit,
     private val getGoalDepositsByGoalId: GetGoalDepositsByGoalId,

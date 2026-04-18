@@ -1,4 +1,4 @@
-package com.breckneck.debtbook.goal.presentation
+package com.breckneck.debtbook.goal.create
 
 import android.app.DatePickerDialog
 import android.content.Context
@@ -24,11 +24,11 @@ import androidx.core.os.bundleOf
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.settings.adapter.SettingsAdapter
-import com.breckneck.debtbook.goal.viewmodel.CreateGoalsFragmentViewModel
 import com.breckneck.deptbook.domain.model.Goal
 import com.breckneck.deptbook.domain.util.CreateFragmentState
 import com.bumptech.glide.Glide
@@ -40,7 +40,6 @@ import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputLayout
-import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import java.lang.NullPointerException
 import java.lang.NumberFormatException
@@ -53,7 +52,7 @@ class CreateGoalsFragment : Fragment() {
 
     private val TAG = "CreateGoalsFragment"
 
-    private val vm by viewModels<CreateGoalsFragmentViewModel>()
+    private val vm by viewModels<CreateGoalsViewModel>()
 
     lateinit var getImageUriActivityResult: ActivityResultLauncher<String?>
 

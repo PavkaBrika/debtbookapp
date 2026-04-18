@@ -28,9 +28,9 @@ import com.breckneck.debtbook.finance.presentation.CreateFinanceCategoryFragment
 import com.breckneck.debtbook.finance.presentation.CreateFinanceFragment
 import com.breckneck.debtbook.finance.details.presentation.FinanceDetailsFragment
 import com.breckneck.debtbook.finance.presentation.FinanceFragment
-import com.breckneck.debtbook.goal.presentation.CreateGoalsFragment
-import com.breckneck.debtbook.goal.presentation.GoalDetailsFragment
-import com.breckneck.debtbook.goal.presentation.GoalsFragment
+import com.breckneck.debtbook.goal.create.CreateGoalsFragment
+import com.breckneck.debtbook.goal.details.GoalDetailsFragment
+import com.breckneck.debtbook.goal.main.GoalsFragment
 import com.breckneck.debtbook.settings.presentation.SettingsFragment
 import com.breckneck.debtbook.settings.presentation.SynchronizationFragment
 import com.breckneck.debtbook.core.viewmodel.MainActivityViewModel

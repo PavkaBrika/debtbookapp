@@ -1,10 +1,8 @@
-package com.breckneck.debtbook.goal.viewmodel
+package com.breckneck.debtbook.goal.main
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.breckneck.debtbook.goal.presentation.GoalsAction
-import com.breckneck.debtbook.goal.presentation.GoalsState
-import com.breckneck.debtbook.goal.presentation.GoalsSideEffect
+import com.breckneck.debtbook.goal.main.GoalsAction
 import com.breckneck.deptbook.domain.model.Goal
 import com.breckneck.deptbook.domain.model.GoalDeposit
 import com.breckneck.deptbook.domain.usecase.Goal.DeleteGoal
@@ -22,7 +20,7 @@ import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
-class GoalsFragmentViewModel @Inject constructor(
+class GoalsViewModel @Inject constructor(
     private val getAllGoals: GetAllGoals,
     private val updateGoal: UpdateGoal,
     private val deleteGoal: DeleteGoal,
@@ -33,7 +31,7 @@ class GoalsFragmentViewModel @Inject constructor(
     private val TAG = "GoalsFragmentVM"
 
     override val container = container<GoalsState, GoalsSideEffect>(
-        initialState = GoalsState.initial(),
+        initialState = GoalsState.Companion.initial(),
         onCreate = { loadGoals() },
     )
 

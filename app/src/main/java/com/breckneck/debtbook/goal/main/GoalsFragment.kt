@@ -1,4 +1,4 @@
-package com.breckneck.debtbook.goal.presentation
+package com.breckneck.debtbook.goal.main
 
 import android.content.Context
 import android.content.pm.ActivityInfo
@@ -13,15 +13,15 @@ import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import com.breckneck.debtbook.common.repeatOnStart
 import com.breckneck.debtbook.core.ui.theme.DebtBookTheme
-import com.breckneck.debtbook.goal.presentation.screen.GoalsScreen
-import com.breckneck.debtbook.goal.viewmodel.GoalsFragmentViewModel
+import com.breckneck.debtbook.goal.main.screen.GoalsScreen
+import com.breckneck.debtbook.goal.main.GoalsAction
 import com.breckneck.deptbook.domain.model.Goal
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class GoalsFragment : Fragment() {
 
-    private val vm by viewModels<GoalsFragmentViewModel>()
+    private val vm by viewModels<GoalsViewModel>()
 
     interface OnClickListener {
         fun onAddGoalButtonClick()

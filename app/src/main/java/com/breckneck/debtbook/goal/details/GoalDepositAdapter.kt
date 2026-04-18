@@ -1,4 +1,4 @@
-package com.breckneck.debtbook.goal.adapter
+package com.breckneck.debtbook.goal.details
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
