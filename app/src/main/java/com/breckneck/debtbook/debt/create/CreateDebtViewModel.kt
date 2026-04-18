@@ -1,4 +1,4 @@
-package com.breckneck.debtbook.debt.viewmodel
+package com.breckneck.debtbook.debt.create
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -11,7 +11,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class NewDebtViewModel @Inject constructor(
+class CreateDebtViewModel @Inject constructor(
     private val getDefaultCurrency: GetDefaultCurrency,
     private val getCurrentDateUseCase: GetCurrentDateUseCase,
     private val setDateUseCase: SetDateUseCase

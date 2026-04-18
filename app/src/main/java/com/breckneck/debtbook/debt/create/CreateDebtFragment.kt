@@ -1,5 +1,6 @@
-package com.breckneck.debtbook.debt.presentation
+package com.breckneck.debtbook.debt.create
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.content.Context
@@ -25,10 +26,9 @@ import androidx.fragment.app.setFragmentResult
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
-import com.breckneck.debtbook.debt.adapter.ContactsAdapter
+import com.breckneck.debtbook.debt.create.adapter.ContactsAdapter
 import com.breckneck.debtbook.settings.adapter.SettingsAdapter
 import com.breckneck.debtbook.core.customview.CustomSwitchView
-import com.breckneck.debtbook.debt.viewmodel.NewDebtViewModel
 import com.breckneck.deptbook.domain.usecase.Debt.*
 import com.breckneck.deptbook.domain.usecase.Human.AddSumUseCase
 import com.breckneck.deptbook.domain.usecase.Human.GetLastHumanIdUseCase
@@ -41,7 +41,6 @@ import com.google.android.material.textfield.TextInputLayout
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.debounce
@@ -57,7 +56,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 @AndroidEntryPoint
-class NewDebtFragment: Fragment() {
+class CreateDebtFragment: Fragment() {
 
     private val TAG = "NewDebtFragment"
 
@@ -85,7 +84,7 @@ class NewDebtFragment: Fragment() {
 //        enterTransition = inflater.inflateTransition(R.transition.slide_up)
     }
 
-    private val vm by viewModels<NewDebtViewModel>()
+    private val vm by viewModels<CreateDebtViewModel>()
 
     @Inject lateinit var setHumanUseCase: SetHumanUseCase
     @Inject lateinit var getLastHumanIdUseCase: GetLastHumanIdUseCase
@@ -417,11 +416,11 @@ class NewDebtFragment: Fragment() {
         }
 
         contactsLayout.setOnClickListener {
-            if (ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
                 showContacts()
             }
             else {
-                permissionRequestLauncher.launch(android.Manifest.permission.READ_CONTACTS)
+                permissionRequestLauncher.launch(Manifest.permission.READ_CONTACTS)
             }
         }
     }

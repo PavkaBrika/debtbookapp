@@ -21,9 +21,9 @@ import androidx.navigation.ui.setupWithNavController
 import com.breckneck.debtbook.BuildConfig
 import com.breckneck.debtbook.R
 import com.breckneck.deptbook.domain.util.PINCodeAction
-import com.breckneck.debtbook.debt.presentation.DebtDetailsFragment
-import com.breckneck.debtbook.debt.presentation.MainFragment
-import com.breckneck.debtbook.debt.presentation.NewDebtFragment
+import com.breckneck.debtbook.debt.details.DebtDetailsFragment
+import com.breckneck.debtbook.debt.main.DebtFragment
+import com.breckneck.debtbook.debt.create.CreateDebtFragment
 import com.breckneck.debtbook.finance.create_category.CreateFinanceCategoryFragment
 import com.breckneck.debtbook.finance.create.CreateFinanceFragment
 import com.breckneck.debtbook.finance.details.FinanceDetailsFragment
@@ -57,8 +57,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlin.math.roundToInt
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(), MainFragment.OnButtonClickListener,
-    NewDebtFragment.OnButtonClickListener, DebtDetailsFragment.OnButtonClickListener,
+class MainActivity : AppCompatActivity(), DebtFragment.OnButtonClickListener,
+    CreateDebtFragment.OnButtonClickListener, DebtDetailsFragment.OnButtonClickListener,
     SettingsFragment.OnButtonClickListener, SynchronizationFragment.SynchronizationInterface,
     FinanceFragment.OnButtonClickListener, CreateFinanceFragment.OnClickListener,
     CreateFinanceCategoryFragment.OnClickListener, FinanceDetailsFragment.OnClickListener,

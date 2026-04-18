@@ -1,4 +1,4 @@
-package com.breckneck.debtbook.debt.adapter
+package com.breckneck.debtbook.debt.create.adapter
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater

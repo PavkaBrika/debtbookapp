@@ -1,4 +1,4 @@
-package com.breckneck.debtbook.debt.presentation
+package com.breckneck.debtbook.debt.details
 
 import android.content.Context
 import android.content.Intent
@@ -30,8 +30,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
-import com.breckneck.debtbook.debt.adapter.DebtAdapter
-import com.breckneck.debtbook.debt.viewmodel.DebtDetailsViewModel
+import com.breckneck.debtbook.debt.details.adapter.DebtDetailsAdapter
 import com.breckneck.deptbook.domain.model.DebtDomain
 import com.breckneck.deptbook.domain.usecase.Debt.*
 import com.breckneck.deptbook.domain.usecase.Settings.GetAddSumInShareText
@@ -82,9 +81,9 @@ class DebtDetailsFragment : Fragment() {
     @Inject lateinit var getDebtShareString: GetDebtShareString
     @Inject lateinit var getAddSumInShareText: GetAddSumInShareText
 
-    private lateinit var debtClickListener: DebtAdapter.OnDebtClickListener
+    private lateinit var debtClickListener: DebtDetailsAdapter.OnDebtClickListener
     private lateinit var overallSumTextView: TextView
-    private lateinit var debtAdapter: DebtAdapter
+    private lateinit var debtDetailsAdapter: DebtDetailsAdapter
     private lateinit var sortButton: ImageView
 
     override fun onCreateView(
@@ -114,14 +113,14 @@ class DebtDetailsFragment : Fragment() {
             setExpandedTitleTypeface(Typeface.DEFAULT_BOLD)
         }
 
-        debtClickListener = object : DebtAdapter.OnDebtClickListener { //ALERT DIALOG
+        debtClickListener = object : DebtDetailsAdapter.OnDebtClickListener { //ALERT DIALOG
             override fun onDebtClick(debtDomain: DebtDomain, position: Int) {
                 showDebtSettings(debtDomain = debtDomain, currency = vm.humanCurrency!!, name = vm.humanName.value!!)
                 Log.e(TAG, "Click on debt with id = ${debtDomain.id}")
             }
         }
-        debtAdapter = DebtAdapter(listOf(), debtClickListener, vm.humanCurrency!!)
-        recyclerView.adapter = debtAdapter
+        debtDetailsAdapter = DebtDetailsAdapter(listOf(), debtClickListener, vm.humanCurrency!!)
+        recyclerView.adapter = debtDetailsAdapter
 
         vm.apply {
             if ((isSortDialogShown.value != null) && (isSortDialogShown.value == true))
@@ -212,7 +211,7 @@ class DebtDetailsFragment : Fragment() {
         }
 
         vm.resultedDebtList.observe(viewLifecycleOwner) {
-            debtAdapter.updateDebtList(it)
+            debtDetailsAdapter.updateDebtList(it)
             Log.e(TAG, "data in adapter link success")
         }
     }

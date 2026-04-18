@@ -1,4 +1,4 @@
-package com.breckneck.debtbook.debt.adapter
+package com.breckneck.debtbook.debt.details.adapter
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
@@ -13,11 +13,11 @@ import com.breckneck.deptbook.domain.model.DebtDomain
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 
-class DebtAdapter(
+class DebtDetailsAdapter(
     debtDomainListImmutable: List<DebtDomain>,
     private val debtClickListener: OnDebtClickListener,
     private val currencyText: String
-) : RecyclerView.Adapter<DebtAdapter.DebtViewHolder>() {
+) : RecyclerView.Adapter<DebtDetailsAdapter.DebtViewHolder>() {
 
     private val decimalFormat = DecimalFormat("###,###,###.##")
     private val customSymbol: DecimalFormatSymbols = DecimalFormatSymbols()
@@ -79,4 +79,3 @@ class DebtAdapter(
         return debtDomainList.size
     }
 }
-

@@ -1,4 +1,4 @@
-package com.breckneck.debtbook.debt.viewmodel
+package com.breckneck.debtbook.debt.main
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -30,7 +30,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 @OptIn(FlowPreview::class)
-class MainFragmentViewModel @Inject constructor(
+class DebtViewModel @Inject constructor(
     private val getAllHumansUseCase: GetAllHumansUseCase,
     private val getAllDebtsSumUseCase: GetAllDebtsSumUseCase,
     private val getFirstMainCurrency: GetFirstMainCurrency,

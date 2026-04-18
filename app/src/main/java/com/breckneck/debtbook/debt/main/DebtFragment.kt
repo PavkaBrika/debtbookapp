@@ -1,4 +1,4 @@
-package com.breckneck.debtbook.debt.presentation
+package com.breckneck.debtbook.debt.main
 
 import android.content.Context
 import android.content.pm.ActivityInfo
@@ -17,9 +17,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
-import com.breckneck.debtbook.debt.adapter.HumanAdapter
+import com.breckneck.debtbook.debt.main.adapter.HumanAdapter
 import com.breckneck.debtbook.core.viewmodel.MainActivityViewModel
-import com.breckneck.debtbook.debt.viewmodel.MainFragmentViewModel
 import com.breckneck.deptbook.domain.model.HumanDomain
 import com.breckneck.deptbook.domain.util.*
 import com.breckneck.deptbook.domain.util.Filter
@@ -35,11 +34,11 @@ import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainFragment : Fragment() {
+class DebtFragment : Fragment() {
 
     private val TAG = "MainFragment"
 
-    private val vm by viewModels<MainFragmentViewModel>()
+    private val vm by viewModels<DebtViewModel>()
     private val mainActivityVM by activityViewModels<MainActivityViewModel>()
 
     private lateinit var filterButton: ImageView
