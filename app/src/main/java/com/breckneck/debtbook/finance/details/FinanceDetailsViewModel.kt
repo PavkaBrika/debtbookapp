@@ -1,4 +1,4 @@
-package com.breckneck.debtbook.finance.details.presentation
+package com.breckneck.debtbook.finance.details
 
 import android.util.Log
 import androidx.lifecycle.SavedStateHandle

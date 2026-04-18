@@ -1,4 +1,4 @@
-package com.breckneck.debtbook.finance.details.presentation.screen
+package com.breckneck.debtbook.finance.details.screen
 
 import android.content.res.Configuration
 import androidx.compose.animation.Crossfade

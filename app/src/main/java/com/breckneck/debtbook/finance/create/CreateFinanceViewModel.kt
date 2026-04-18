@@ -1,4 +1,4 @@
-package com.breckneck.debtbook.finance.viewmodel
+package com.breckneck.debtbook.finance.create
 
 import android.util.Log
 import androidx.lifecycle.LiveData

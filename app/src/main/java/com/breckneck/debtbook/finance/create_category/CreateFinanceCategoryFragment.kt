@@ -1,4 +1,4 @@
-package com.breckneck.debtbook.finance.presentation
+package com.breckneck.debtbook.finance.create_category
 
 import android.content.Context
 import android.os.Bundle
@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import com.breckneck.debtbook.core.ui.theme.DebtBookTheme
-import com.breckneck.debtbook.finance.viewmodel.CreateFinanceCategoryViewModel
 import com.breckneck.deptbook.domain.util.FinanceCategoryState
 import dagger.hilt.android.AndroidEntryPoint
 

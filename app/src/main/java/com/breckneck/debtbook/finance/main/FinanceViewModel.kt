@@ -1,4 +1,4 @@
-package com.breckneck.debtbook.finance.viewmodel
+package com.breckneck.debtbook.finance.main
 
 import android.text.format.DateFormat
 import android.util.Log

@@ -1,4 +1,4 @@
-package com.breckneck.debtbook.finance.presentation.model
+package com.breckneck.debtbook.finance.create_category.model
 
 import androidx.annotation.StringRes
 import com.breckneck.debtbook.R

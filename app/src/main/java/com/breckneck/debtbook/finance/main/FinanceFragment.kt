@@ -1,4 +1,4 @@
-package com.breckneck.debtbook.finance.presentation
+package com.breckneck.debtbook.finance.main
 
 import android.content.Context
 import android.content.pm.ActivityInfo
@@ -24,10 +24,9 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.settings.adapter.SettingsAdapter
-import com.breckneck.debtbook.finance.adapter.UsedFinanceCategoryAdapter
+import com.breckneck.debtbook.finance.main.adapter.UsedFinanceCategoryAdapter
 import com.breckneck.debtbook.core.customview.CustomSwitchView
-import com.breckneck.debtbook.finance.customview.FinanceProgressBar
-import com.breckneck.debtbook.finance.viewmodel.FinanceViewModel
+import com.breckneck.debtbook.finance.main.customview.FinanceProgressBar
 import com.breckneck.deptbook.domain.model.FinanceCategoryWithFinances
 import com.breckneck.deptbook.domain.util.FinanceCategoryState
 import com.breckneck.deptbook.domain.util.FinanceInterval

@@ -1,4 +1,4 @@
-package com.breckneck.debtbook.finance.adapter
+package com.breckneck.debtbook.finance.main.adapter
 
 import android.annotation.SuppressLint
 import android.graphics.Color

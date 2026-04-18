@@ -1,4 +1,4 @@
-package com.breckneck.debtbook.finance.presentation
+package com.breckneck.debtbook.finance.create_category
 
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
@@ -68,10 +68,7 @@ import com.breckneck.debtbook.R
 import com.breckneck.debtbook.core.ui.components.DebtBookTopBar
 import com.breckneck.debtbook.core.ui.theme.DebtBookTheme
 import com.breckneck.debtbook.core.ui.theme.spacing
-import com.breckneck.debtbook.finance.presentation.model.emojiGroups
-import com.breckneck.debtbook.finance.viewmodel.CreateFinanceCategoryState
-import com.breckneck.debtbook.finance.viewmodel.CreateFinanceCategorySideEffect
-import com.breckneck.debtbook.finance.viewmodel.CreateFinanceCategoryViewModel
+import com.breckneck.debtbook.finance.create_category.model.emojiGroups
 import com.breckneck.deptbook.domain.util.categoryColorList
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect

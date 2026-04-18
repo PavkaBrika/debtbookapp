@@ -144,7 +144,7 @@
         tools:layout="@layout/fragment_synchronization" />
     <fragment
         android:id="@+id/financeFragment"
-        android:name="com.breckneck.debtbook.finance.presentation.FinanceFragment"
+        android:name="com.breckneck.debtbook.finance.main.FinanceFragment"
         android:label="FinanceFragment"
         tools:layout="@layout/fragment_finance">
         <action
@@ -172,7 +172,7 @@
     </fragment>
     <fragment
         android:id="@+id/createFinanceFragment"
-        android:name="com.breckneck.debtbook.finance.presentation.CreateFinanceFragment"
+        android:name="com.breckneck.debtbook.finance.create.CreateFinanceFragment"
         android:label="CreateFinanceFragment"
         tools:layout="@layout/fragment_create_finance">
         <action
@@ -185,12 +185,12 @@
     </fragment>
     <fragment
         android:id="@+id/createFinanceCategoryFragment"
-        android:name="com.breckneck.debtbook.finance.presentation.CreateFinanceCategoryFragment"
+        android:name="com.breckneck.debtbook.finance.create_category.CreateFinanceCategoryFragment"
         android:label="CreateFinanceCategoryFragment"
         tools:layout="@layout/fragment_create_finance_category" />
     <fragment
         android:id="@+id/financeDetailsFragment"
-        android:name="com.breckneck.debtbook.finance.details.presentation.FinanceDetailsFragment"
+        android:name="com.breckneck.debtbook.finance.details.FinanceDetailsFragment"
         android:label="FinanceDetailsFragment"
         tools:layout="@layout/fragment_finance_details">
         <action

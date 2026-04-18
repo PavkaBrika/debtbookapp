@@ -1,4 +1,4 @@
-package com.breckneck.debtbook.finance.adapter
+package com.breckneck.debtbook.finance.create.adapter
 
 import android.graphics.Color
 import android.view.LayoutInflater
@@ -8,7 +8,6 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getString
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.finance.util.GetFinanceCategoryNameInLocalLanguage
@@ -47,7 +46,8 @@ class FinanceCategoryAdapter(
 
     override fun onBindViewHolder(holder: FinanceCategoryViewHolder, position: Int) {
         if (position == financeCategoryList.size) {
-            holder.categoryTextView.text = getString(holder.itemView.context, R.string.add)
+            holder.categoryTextView.text =
+                ContextCompat.getString(holder.itemView.context, R.string.add)
             holder.categoryBackgroundCardView.setCardBackgroundColor(Color.parseColor("#EEEEEE"))
             holder.categoryImageTextView.text = String(Character.toChars(0x2795))
             holder.categoryRootLayout.setOnClickListener {

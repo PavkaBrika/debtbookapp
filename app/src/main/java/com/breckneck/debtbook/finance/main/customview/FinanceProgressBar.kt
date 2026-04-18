@@ -1,4 +1,4 @@
-package com.breckneck.debtbook.finance.customview
+package com.breckneck.debtbook.finance.main.customview
 
 import android.content.Context
 import android.graphics.Canvas

@@ -1,4 +1,4 @@
-package com.breckneck.debtbook.finance.presentation
+package com.breckneck.debtbook.finance.create
 
 import android.app.DatePickerDialog
 import android.content.Context
@@ -23,9 +23,8 @@ import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.setFragmentResultListener
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
-import com.breckneck.debtbook.finance.adapter.FinanceCategoryAdapter
+import com.breckneck.debtbook.finance.create.adapter.FinanceCategoryAdapter
 import com.breckneck.debtbook.core.customview.CustomSwitchView
-import com.breckneck.debtbook.finance.viewmodel.CreateFinanceViewModel
 import com.breckneck.debtbook.finance.util.GetFinanceCategoryNameInLocalLanguage
 import com.breckneck.deptbook.domain.model.Finance
 import com.breckneck.deptbook.domain.model.FinanceCategory

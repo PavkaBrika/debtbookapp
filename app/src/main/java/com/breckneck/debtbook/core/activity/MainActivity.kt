@@ -24,10 +24,10 @@ import com.breckneck.deptbook.domain.util.PINCodeAction
 import com.breckneck.debtbook.debt.presentation.DebtDetailsFragment
 import com.breckneck.debtbook.debt.presentation.MainFragment
 import com.breckneck.debtbook.debt.presentation.NewDebtFragment
-import com.breckneck.debtbook.finance.presentation.CreateFinanceCategoryFragment
-import com.breckneck.debtbook.finance.presentation.CreateFinanceFragment
-import com.breckneck.debtbook.finance.details.presentation.FinanceDetailsFragment
-import com.breckneck.debtbook.finance.presentation.FinanceFragment
+import com.breckneck.debtbook.finance.create_category.CreateFinanceCategoryFragment
+import com.breckneck.debtbook.finance.create.CreateFinanceFragment
+import com.breckneck.debtbook.finance.details.FinanceDetailsFragment
+import com.breckneck.debtbook.finance.main.FinanceFragment
 import com.breckneck.debtbook.goal.create.CreateGoalsFragment
 import com.breckneck.debtbook.goal.details.GoalDetailsFragment
 import com.breckneck.debtbook.goal.main.GoalsFragment

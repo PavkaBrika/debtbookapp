@@ -1,4 +1,4 @@
-package com.breckneck.debtbook.finance.details.presentation.screen
+package com.breckneck.debtbook.finance.details.screen
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -7,8 +7,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.core.ui.components.ExtraFunctionsBottomSheet
-import com.breckneck.debtbook.finance.details.presentation.FinanceDetailsActions
-import com.breckneck.debtbook.finance.details.presentation.FinanceDetailsViewModel
+import com.breckneck.debtbook.finance.details.FinanceDetailsActions
+import com.breckneck.debtbook.finance.details.FinanceDetailsViewModel
 import com.breckneck.debtbook.finance.util.GetFinanceCategoryNameInLocalLanguage
 import com.breckneck.deptbook.domain.util.FinanceCategoryState
 import org.orbitmvi.orbit.compose.collectAsState
