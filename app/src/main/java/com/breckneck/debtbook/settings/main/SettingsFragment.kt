@@ -31,7 +31,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.BuildConfig
 import com.breckneck.debtbook.R
-import com.breckneck.debtbook.auth.presentation.AuthorizationActivity
+import com.breckneck.debtbook.auth.AuthorizationActivity
 import com.breckneck.deptbook.domain.util.PINCodeAction
 import com.breckneck.debtbook.core.adapter.SettingsAdapter
 import com.breckneck.debtbook.core.MainViewModel

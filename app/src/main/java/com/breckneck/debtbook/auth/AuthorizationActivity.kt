@@ -1,6 +1,5 @@
-package com.breckneck.debtbook.auth.presentation
+package com.breckneck.debtbook.auth
 
-import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -22,11 +21,11 @@ import com.breckneck.debtbook.R
 import com.breckneck.debtbook.auth.util.BiometricPromptManager
 import com.breckneck.debtbook.auth.util.CryptoManager
 import com.breckneck.deptbook.domain.util.PINCodeAction.*
-import com.breckneck.debtbook.auth.viewmodel.AuthorizationViewModel
 import com.breckneck.debtbook.core.MainActivity
 import com.breckneck.deptbook.domain.util.CRYPTO_FILE_NAME
 import com.breckneck.deptbook.domain.util.PINCodeEnterState
 import androidx.activity.viewModels
+import com.breckneck.debtbook.auth.screen.AuthorizationScreen
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.io.File
@@ -44,7 +43,7 @@ class AuthorizationActivity : AppCompatActivity() {
 
         val vib = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             val vibratorManager =
-                getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+                getSystemService(VIBRATOR_MANAGER_SERVICE) as VibratorManager
             vibratorManager.defaultVibrator
         } else {
             getSystemService(VIBRATOR_SERVICE) as Vibrator
@@ -106,7 +105,11 @@ class AuthorizationActivity : AppCompatActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    AuthorizationScreen(activity = this, biometricPromptManager = biometricPromptManager, cryptoManager = cryptoManager)
+                    AuthorizationScreen(
+                        activity = this,
+                        biometricPromptManager = biometricPromptManager,
+                        cryptoManager = cryptoManager
+                    )
                 }
             }
         }

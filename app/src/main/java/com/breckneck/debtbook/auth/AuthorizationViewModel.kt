@@ -1,4 +1,4 @@
-package com.breckneck.debtbook.auth.viewmodel
+package com.breckneck.debtbook.auth
 
 import android.os.Build
 import android.util.Log
