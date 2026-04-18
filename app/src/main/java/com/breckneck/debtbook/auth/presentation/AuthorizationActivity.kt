@@ -23,7 +23,7 @@ import com.breckneck.debtbook.auth.util.BiometricPromptManager
 import com.breckneck.debtbook.auth.util.CryptoManager
 import com.breckneck.deptbook.domain.util.PINCodeAction.*
 import com.breckneck.debtbook.auth.viewmodel.AuthorizationViewModel
-import com.breckneck.debtbook.core.activity.MainActivity
+import com.breckneck.debtbook.core.MainActivity
 import com.breckneck.deptbook.domain.util.CRYPTO_FILE_NAME
 import com.breckneck.deptbook.domain.util.PINCodeEnterState
 import androidx.activity.viewModels

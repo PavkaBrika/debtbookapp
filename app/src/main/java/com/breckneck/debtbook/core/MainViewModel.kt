@@ -1,4 +1,4 @@
-package com.breckneck.debtbook.core.viewmodel
+package com.breckneck.debtbook.core
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -22,7 +22,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class MainActivityViewModel @Inject constructor(
+class MainViewModel @Inject constructor(
     private val getDebtQuantity: GetDebtQuantity,
     private val getDebtQuantityForAppRateDialogShow: GetDebtQuantityForAppRateDialogShow,
     private val setDebtQuantityForAppRateDialogShow: SetDebtQuantityForAppRateDialogShow,

@@ -1,4 +1,4 @@
-package com.breckneck.debtbook.settings.adapter
+package com.breckneck.debtbook.core.adapter
 
 import android.view.LayoutInflater
 import android.view.View

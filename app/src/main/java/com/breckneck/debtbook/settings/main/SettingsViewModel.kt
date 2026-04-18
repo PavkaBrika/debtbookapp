@@ -1,9 +1,9 @@
-package com.breckneck.debtbook.settings.viewmodel
+package com.breckneck.debtbook.settings.main
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.breckneck.debtbook.settings.adapter.SettingsAdapter
+import com.breckneck.debtbook.core.adapter.SettingsAdapter
 import com.breckneck.deptbook.domain.usecase.Settings.GetAddSumInShareText
 import com.breckneck.deptbook.domain.usecase.Settings.GetAppTheme
 import com.breckneck.deptbook.domain.usecase.Settings.GetDefaultCurrency

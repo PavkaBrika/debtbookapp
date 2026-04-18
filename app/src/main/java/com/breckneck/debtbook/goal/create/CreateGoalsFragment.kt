@@ -28,7 +28,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
-import com.breckneck.debtbook.settings.adapter.SettingsAdapter
+import com.breckneck.debtbook.core.adapter.SettingsAdapter
 import com.breckneck.deptbook.domain.model.Goal
 import com.breckneck.deptbook.domain.util.CreateFragmentState
 import com.bumptech.glide.Glide

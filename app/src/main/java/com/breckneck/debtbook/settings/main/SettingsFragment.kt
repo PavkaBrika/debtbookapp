@@ -1,4 +1,4 @@
-package com.breckneck.debtbook.settings.presentation
+package com.breckneck.debtbook.settings.main
 
 import android.content.Context
 import android.content.Intent
@@ -13,7 +13,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.CompoundButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
@@ -34,9 +33,8 @@ import com.breckneck.debtbook.BuildConfig
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.auth.presentation.AuthorizationActivity
 import com.breckneck.deptbook.domain.util.PINCodeAction
-import com.breckneck.debtbook.settings.adapter.SettingsAdapter
-import com.breckneck.debtbook.core.viewmodel.MainActivityViewModel
-import com.breckneck.debtbook.settings.viewmodel.SettingsViewModel
+import com.breckneck.debtbook.core.adapter.SettingsAdapter
+import com.breckneck.debtbook.core.MainViewModel
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.material.appbar.CollapsingToolbarLayout
@@ -61,7 +59,7 @@ class SettingsFragment : Fragment() {
     lateinit var buttonClickListener: OnButtonClickListener
 
     private val vm by viewModels<SettingsViewModel>()
-    private val mainActivityVM by activityViewModels<MainActivityViewModel>()
+    private val mainActivityVM by activityViewModels<MainViewModel>()
 
     private lateinit var startActivityForResult : ActivityResultLauncher<Intent>
 

@@ -1,6 +1,5 @@
-package com.breckneck.debtbook.core.activity
+package com.breckneck.debtbook.core
 
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.*
@@ -31,9 +30,8 @@ import com.breckneck.debtbook.finance.main.FinanceFragment
 import com.breckneck.debtbook.goal.create.CreateGoalsFragment
 import com.breckneck.debtbook.goal.details.GoalDetailsFragment
 import com.breckneck.debtbook.goal.main.GoalsFragment
-import com.breckneck.debtbook.settings.presentation.SettingsFragment
-import com.breckneck.debtbook.settings.presentation.SynchronizationFragment
-import com.breckneck.debtbook.core.viewmodel.MainActivityViewModel
+import com.breckneck.debtbook.settings.main.SettingsFragment
+import com.breckneck.debtbook.settings.synchronization.SynchronizationFragment
 import com.breckneck.deptbook.domain.model.DebtDomain
 import com.breckneck.deptbook.domain.model.Finance
 import com.breckneck.deptbook.domain.model.Goal
@@ -72,7 +70,7 @@ class MainActivity : AppCompatActivity(), DebtFragment.OnButtonClickListener,
     private val bannerTAG = "BANNER AD"
     private val interstitialTAG = "INTERSTITIAL AD"
 
-    private val vm by viewModels<MainActivityViewModel>()
+    private val vm by viewModels<MainViewModel>()
     lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -89,7 +87,7 @@ class MainActivity : AppCompatActivity(), DebtFragment.OnButtonClickListener,
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             val vibratorManager =
-                getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+                getSystemService(VIBRATOR_MANAGER_SERVICE) as VibratorManager
             vib = vibratorManager.defaultVibrator
         } else {
             vib = getSystemService(VIBRATOR_SERVICE) as Vibrator

@@ -1,4 +1,4 @@
-package com.breckneck.debtbook.settings.presentation
+package com.breckneck.debtbook.settings.synchronization
 
 import android.content.Context
 import android.content.Intent
@@ -23,8 +23,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import com.breckneck.debtbook.BuildConfig
 import com.breckneck.debtbook.R
-import com.breckneck.debtbook.settings.viewmodel.SynchronizationViewModel
-import com.breckneck.debtbook.settings.util.DriveServiceHelper
+import com.breckneck.debtbook.settings.synchronization.util.DriveServiceHelper
 import com.breckneck.deptbook.domain.model.AppDataLists
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount

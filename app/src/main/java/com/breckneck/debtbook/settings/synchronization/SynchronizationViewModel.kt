@@ -1,11 +1,11 @@
-package com.breckneck.debtbook.settings.viewmodel
+package com.breckneck.debtbook.settings.synchronization
 
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.breckneck.debtbook.settings.util.DriveServiceHelper
+import com.breckneck.debtbook.settings.synchronization.util.DriveServiceHelper
 import com.breckneck.deptbook.domain.model.AppDataLists
 import com.breckneck.deptbook.domain.usecase.Debt.GetAllDebts
 import com.breckneck.deptbook.domain.usecase.Debt.ReplaceAllDebts

@@ -23,7 +23,7 @@ import androidx.fragment.app.setFragmentResultListener
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
-import com.breckneck.debtbook.settings.adapter.SettingsAdapter
+import com.breckneck.debtbook.core.adapter.SettingsAdapter
 import com.breckneck.debtbook.finance.main.adapter.UsedFinanceCategoryAdapter
 import com.breckneck.debtbook.core.customview.CustomSwitchView
 import com.breckneck.debtbook.finance.main.customview.FinanceProgressBar

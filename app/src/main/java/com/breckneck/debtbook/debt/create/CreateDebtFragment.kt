@@ -27,7 +27,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.debt.create.adapter.ContactsAdapter
-import com.breckneck.debtbook.settings.adapter.SettingsAdapter
+import com.breckneck.debtbook.core.adapter.SettingsAdapter
 import com.breckneck.debtbook.core.customview.CustomSwitchView
 import com.breckneck.deptbook.domain.usecase.Debt.*
 import com.breckneck.deptbook.domain.usecase.Human.AddSumUseCase

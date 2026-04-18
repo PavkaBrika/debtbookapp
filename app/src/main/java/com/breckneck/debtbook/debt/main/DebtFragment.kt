@@ -18,7 +18,7 @@ import androidx.fragment.app.setFragmentResultListener
 import androidx.recyclerview.widget.RecyclerView
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.debt.main.adapter.HumanAdapter
-import com.breckneck.debtbook.core.viewmodel.MainActivityViewModel
+import com.breckneck.debtbook.core.MainViewModel
 import com.breckneck.deptbook.domain.model.HumanDomain
 import com.breckneck.deptbook.domain.util.*
 import com.breckneck.deptbook.domain.util.Filter
@@ -39,7 +39,7 @@ class DebtFragment : Fragment() {
     private val TAG = "MainFragment"
 
     private val vm by viewModels<DebtViewModel>()
-    private val mainActivityVM by activityViewModels<MainActivityViewModel>()
+    private val mainActivityVM by activityViewModels<MainViewModel>()
 
     private lateinit var filterButton: ImageView
     private lateinit var humanAdapter: HumanAdapter

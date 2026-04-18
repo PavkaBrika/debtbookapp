@@ -52,7 +52,7 @@
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.breckneck.debtbook.settings.presentation.SettingsFragment"
+        android:name="com.breckneck.debtbook.settings.main.SettingsFragment"
         android:label="SettingsFragment"
         tools:layout="@layout/fragment_settings">
         <action
@@ -139,7 +139,7 @@
     </fragment>
     <fragment
         android:id="@+id/synchronizationFragment"
-        android:name="com.breckneck.debtbook.settings.presentation.SynchronizationFragment"
+        android:name="com.breckneck.debtbook.settings.synchronization.SynchronizationFragment"
         android:label="SynchronizationFragment"
         tools:layout="@layout/fragment_synchronization" />
     <fragment
