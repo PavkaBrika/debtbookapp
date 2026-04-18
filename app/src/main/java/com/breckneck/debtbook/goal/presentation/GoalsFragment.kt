@@ -11,11 +11,11 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
+import com.breckneck.debtbook.common.repeatOnStart
 import com.breckneck.debtbook.core.ui.theme.DebtBookTheme
 import com.breckneck.debtbook.goal.presentation.screen.GoalsScreen
 import com.breckneck.debtbook.goal.viewmodel.GoalsFragmentViewModel
 import com.breckneck.deptbook.domain.model.Goal
-import com.breckneck.deptbook.domain.util.ListState
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -43,23 +43,33 @@ class GoalsFragment : Fragment() {
         requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
 
         setFragmentResultListener("goalsFragmentKey") { _, bundle ->
-            if (bundle.getBoolean("isListModified"))
-                vm.getAllGoals()
+            vm.onAction(
+                GoalsAction.RefreshAfterNavigation(
+                    wasModified = bundle.getBoolean("isListModified")
+                )
+            )
         }
-
-        vm.setListState(ListState.LOADING)
-        if (vm.goalListNeedToUpdate)
-            vm.getAllGoals()
 
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 DebtBookTheme {
-                    GoalsScreen(
-                        vm = vm,
-                        onAddGoalClick = { onButtonClickListener?.onAddGoalButtonClick() },
-                        onGoalClick = { goal -> onButtonClickListener?.onGoalClick(goal) }
-                    )
+                    GoalsScreen(vm = vm)
+                }
+            }
+        }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        repeatOnStart {
+            vm.container.sideEffectFlow.collect { effect ->
+                when (effect) {
+                    GoalsSideEffect.NavigateToAddGoal ->
+                        onButtonClickListener?.onAddGoalButtonClick()
+                    is GoalsSideEffect.NavigateToGoalDetails ->
+                        onButtonClickListener?.onGoalClick(effect.goal)
                 }
             }
         }

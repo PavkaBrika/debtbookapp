@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -14,7 +13,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.Flag
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -36,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.core.ui.theme.DebtBookTheme
+import com.breckneck.debtbook.core.ui.theme.spacing
 import com.breckneck.deptbook.domain.model.Goal
 import java.io.File
 import java.text.DecimalFormat
@@ -61,6 +60,7 @@ fun GoalItem(
         }
     }
     val sdf = remember { SimpleDateFormat("d MMM yyyy", Locale.getDefault()) }
+    val spacing = MaterialTheme.spacing
 
     val hasPhoto = remember(goal.photoPath) {
         goal.photoPath != null && File(goal.photoPath!!).exists()
@@ -71,7 +71,7 @@ fun GoalItem(
         onClick = { onGoalClick(goal) },
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 4.dp)
+            .padding(horizontal = spacing.space12, vertical = spacing.space4)
     ) {
         Column {
             if (hasPhoto) {
@@ -84,8 +84,8 @@ fun GoalItem(
             }
 
             Column(
-                modifier = Modifier.padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                modifier = Modifier.padding(spacing.space16),
+                verticalArrangement = Arrangement.spacedBy(spacing.space8)
             ) {
                 // Name + date row
                 Row(
@@ -96,7 +96,9 @@ fun GoalItem(
                         text = goal.name,
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier.weight(1f).padding(end = 8.dp)
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(end = spacing.space8)
                     )
                     if (isReached) {
                         val diffInDays = TimeUnit.DAYS.convert(
@@ -181,7 +183,7 @@ fun GoalItem(
                         onClick = { onAddClick(goal) },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 8.dp)
+                            .padding(top = spacing.space8)
                     ) {
                         Text(stringResource(R.string.add))
                     }
@@ -197,6 +199,7 @@ private fun GoalDateChip(
     iconTint: Color,
     modifier: Modifier = Modifier
 ) {
+    val spacing = MaterialTheme.spacing
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
@@ -207,7 +210,7 @@ private fun GoalDateChip(
             tint = iconTint,
             modifier = Modifier.size(18.dp)
         )
-        Spacer(Modifier.width(4.dp))
+        Spacer(Modifier.width(spacing.space4))
         Text(
             text = text,
             style = MaterialTheme.typography.bodyMedium,

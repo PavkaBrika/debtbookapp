@@ -1,10 +1,10 @@
 package com.breckneck.debtbook.goal.viewmodel
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import com.breckneck.debtbook.goal.presentation.GoalsAction
+import com.breckneck.debtbook.goal.presentation.GoalsState
+import com.breckneck.debtbook.goal.presentation.GoalsSideEffect
 import com.breckneck.deptbook.domain.model.Goal
 import com.breckneck.deptbook.domain.model.GoalDeposit
 import com.breckneck.deptbook.domain.usecase.Goal.DeleteGoal
@@ -15,8 +15,10 @@ import com.breckneck.deptbook.domain.usecase.GoalDeposit.SetGoalDeposit
 import com.breckneck.deptbook.domain.util.ListState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.orbitmvi.orbit.ContainerHost
+import org.orbitmvi.orbit.viewmodel.container
+import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
@@ -25,118 +27,96 @@ class GoalsFragmentViewModel @Inject constructor(
     private val updateGoal: UpdateGoal,
     private val deleteGoal: DeleteGoal,
     private val deleteGoalDepositsByGoalId: DeleteGoalDepositsByGoalId,
-    private val setGoalDeposit: SetGoalDeposit
-) : ViewModel() {
+    private val setGoalDeposit: SetGoalDeposit,
+) : ViewModel(), ContainerHost<GoalsState, GoalsSideEffect> {
 
     private val TAG = "GoalsFragmentVM"
 
-    private val _goalList = MutableLiveData<List<Goal>>()
-    val goalList: LiveData<List<Goal>>
-        get() = _goalList
-    private val _goalListState = MutableLiveData<ListState>(ListState.LOADING)
-    val goalListState: LiveData<ListState>
-        get() = _goalListState
-
-    private var _isAddSumDialogOpened = false
-    val isAddSumDialogOpened: Boolean
-        get() = _isAddSumDialogOpened
-    private var _changedGoal: Goal? = null
-    val changedGoal: Goal?
-        get() = _changedGoal
-    private var _changedGoalPosition: Int? = null
-    val changedGoalPosition: Int?
-        get() = _changedGoalPosition
-    private var _goalListNeedToUpdate = false
-    val goalListNeedToUpdate: Boolean
-        get() = _goalListNeedToUpdate
+    override val container = container<GoalsState, GoalsSideEffect>(
+        initialState = GoalsState.initial(),
+        onCreate = { loadGoals() },
+    )
 
     init {
-        Log.e(TAG, "initialized")
-        getAllGoals()
-    }
-
-    fun getAllGoals() {
-        _goalListState.value = ListState.LOADING
-        viewModelScope.launch {
-            try {
-                val goals = withContext(Dispatchers.IO) { getAllGoals.execute() }
-                _goalList.value = goals
-                _goalListState.value = if (goals.isEmpty()) ListState.EMPTY else ListState.RECEIVED
-                _goalListNeedToUpdate = false
-                Log.e(TAG, "Goals loaded")
-            } catch (e: Exception) {
-                Log.e(TAG, e.message.toString())
-            }
-        }
-    }
-
-    fun updateGoalInList(goal: Goal) {
-        val list = _goalList.value?.toMutableList() ?: return
-        val idx = list.indexOfFirst { it.id == goal.id }
-        if (idx != -1) {
-            list[idx] = goal
-            _goalList.value = list
-        }
-    }
-
-    fun setListState(state: ListState) {
-        _goalListState.value = state
-    }
-
-    fun onOpenAddSavedSumChangeDialog(changedGoal: Goal, changedGoalPosition: Int) {
-        _isAddSumDialogOpened = true
-        _changedGoal = changedGoal
-        _changedGoalPosition = changedGoalPosition
-    }
-
-    fun onCloseAddSumChangeDialog() {
-        _isAddSumDialogOpened = false
-        _changedGoal = null
-        _changedGoalPosition = null
-    }
-
-    fun updateGoal(goal: Goal) {
-        viewModelScope.launch {
-            try {
-                withContext(Dispatchers.IO) { updateGoal.execute(goal = goal) }
-                Log.e(TAG, "goal updated")
-            } catch (e: Exception) {
-                Log.e(TAG, e.message.toString())
-            }
-        }
-    }
-
-    fun deleteGoal(goal: Goal) {
-        viewModelScope.launch {
-            try {
-                withContext(Dispatchers.IO) {
-                    deleteGoal.execute(goal = goal)
-                    deleteGoalDepositsByGoalId.execute(goalId = goal.id)
-                }
-                val updatedList = _goalList.value?.filter { it.id != goal.id } ?: emptyList()
-                _goalList.value = updatedList
-                _goalListState.value = if (updatedList.isEmpty()) ListState.EMPTY else ListState.RECEIVED
-                _goalListNeedToUpdate = false
-                Log.e(TAG, "goal deleted")
-            } catch (e: Exception) {
-                Log.e(TAG, e.message.toString())
-            }
-        }
-    }
-
-    fun setGoalDeposit(goalDeposit: GoalDeposit) {
-        viewModelScope.launch {
-            try {
-                withContext(Dispatchers.IO) { setGoalDeposit.execute(goalDeposit = goalDeposit) }
-                Log.e(TAG, "goal deposit added")
-            } catch (e: Exception) {
-                Log.e(TAG, e.message.toString())
-            }
-        }
+        Log.e(TAG, "Created")
     }
 
     override fun onCleared() {
         super.onCleared()
-        Log.e(TAG, "cleared")
+        Log.e(TAG, "Cleared")
+    }
+
+    fun onAction(action: GoalsAction) = when (action) {
+        GoalsAction.AddGoalClick -> intent {
+            postSideEffect(GoalsSideEffect.NavigateToAddGoal)
+        }
+        is GoalsAction.GoalClick -> intent {
+            postSideEffect(GoalsSideEffect.NavigateToGoalDetails(action.goal))
+        }
+        is GoalsAction.AddGoalDeposit -> addGoalDeposit(action.goal, action.sum)
+        is GoalsAction.DeleteGoal -> deleteGoal(action.goal)
+        is GoalsAction.RefreshAfterNavigation -> refreshAfterNavigation(action.wasModified)
+    }
+
+    private fun loadGoals() = intent {
+        reduce { state.copy(listState = ListState.LOADING) }
+        try {
+            val goals = withContext(Dispatchers.IO) { getAllGoals.execute() }
+            reduce {
+                state.copy(
+                    goalList = goals,
+                    listState = if (goals.isEmpty()) ListState.EMPTY else ListState.RECEIVED,
+                )
+            }
+            Log.e(TAG, "Goals loaded")
+        } catch (e: Exception) {
+            Log.e(TAG, e.message.toString())
+        }
+    }
+
+    private fun addGoalDeposit(goal: Goal, sum: Double) = intent {
+        val updatedGoal = goal.copy(savedSum = goal.savedSum + sum)
+        try {
+            withContext(Dispatchers.IO) {
+                updateGoal.execute(goal = updatedGoal)
+                setGoalDeposit.execute(
+                    goalDeposit = GoalDeposit(sum = sum, date = Date(), goalId = goal.id)
+                )
+            }
+            val updatedList = state.goalList.toMutableList().apply {
+                val idx = indexOfFirst { it.id == goal.id }
+                if (idx != -1) this[idx] = updatedGoal
+            }
+            reduce {
+                state.copy(goalList = updatedList)
+            }
+            Log.e(TAG, "Goal deposit added")
+        } catch (e: Exception) {
+            Log.e(TAG, e.message.toString())
+        }
+    }
+
+    private fun deleteGoal(goal: Goal) = intent {
+        try {
+            withContext(Dispatchers.IO) {
+                deleteGoal.execute(goal = goal)
+                deleteGoalDepositsByGoalId.execute(goalId = goal.id)
+            }
+            val updatedList = state.goalList.filter { it.id != goal.id }
+            reduce {
+                state.copy(
+                    goalList = updatedList,
+                    listState = if (updatedList.isEmpty()) ListState.EMPTY else ListState.RECEIVED,
+                )
+            }
+            Log.e(TAG, "Goal deleted")
+        } catch (e: Exception) {
+            Log.e(TAG, e.message.toString())
+        }
+    }
+
+    private fun refreshAfterNavigation(wasModified: Boolean) = intent {
+        if (!wasModified) return@intent
+        loadGoals()
     }
 }

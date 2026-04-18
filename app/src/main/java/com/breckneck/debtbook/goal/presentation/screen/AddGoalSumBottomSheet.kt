@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -27,10 +28,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.sp
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.core.ui.theme.DebtBookTheme
+import com.breckneck.debtbook.core.ui.theme.spacing
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -44,6 +46,7 @@ fun AddGoalSumBottomSheet(
 
     val mustEnterText = stringResource(R.string.youmustentername)
     val zeroDebtText = stringResource(R.string.zerodebt)
+    val spacing = MaterialTheme.spacing
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -52,14 +55,14 @@ fun AddGoalSumBottomSheet(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 24.dp)
-                .padding(bottom = 24.dp)
+                .padding(horizontal = spacing.space24)
+                .padding(bottom = spacing.space24)
                 .imePadding()
         ) {
             Text(
                 text = stringResource(R.string.add),
                 fontSize = 24.sp,
-                modifier = Modifier.padding(bottom = 16.dp)
+                modifier = Modifier.padding(bottom = spacing.space16)
             )
             OutlinedTextField(
                 value = sumText,
@@ -87,14 +90,14 @@ fun AddGoalSumBottomSheet(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 24.dp),
+                    .padding(top = spacing.space24),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Spacer(modifier = Modifier.weight(1f))
                 OutlinedButton(onClick = onDismiss) {
                     Text(stringResource(R.string.cancel))
                 }
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(spacing.space8))
                 Button(
                     onClick = {
                         val trimmed = sumText.trim()
@@ -113,8 +116,7 @@ fun AddGoalSumBottomSheet(
     }
 }
 
-@Preview(name = "AddGoalSumSheet — light")
-@Preview(name = "AddGoalSumSheet — dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@PreviewLightDark
 @Composable
 private fun AddGoalSumBottomSheetPreview() {
     DebtBookTheme(dynamicColor = false) {

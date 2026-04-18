@@ -29,64 +29,37 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.runtime.livedata.observeAsState
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.core.ui.components.EmptyListPlaceholder
 import com.breckneck.debtbook.core.ui.components.ShimmerListPlaceholder
 import com.breckneck.debtbook.core.ui.theme.DebtBookTheme
+import com.breckneck.debtbook.goal.presentation.GoalsAction
+import com.breckneck.debtbook.goal.presentation.GoalsState
 import com.breckneck.debtbook.goal.viewmodel.GoalsFragmentViewModel
 import com.breckneck.deptbook.domain.model.Goal
-import com.breckneck.deptbook.domain.model.GoalDeposit
 import com.breckneck.deptbook.domain.util.ListState
+import org.orbitmvi.orbit.compose.collectAsState
 import java.util.Date
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
-fun GoalsScreen(
-    vm: GoalsFragmentViewModel,
-    onAddGoalClick: () -> Unit,
-    onGoalClick: (Goal) -> Unit
-) {
-    val goalList by vm.goalList.observeAsState(emptyList())
-    val goalListState by vm.goalListState.observeAsState(ListState.LOADING)
-
-    var selectedGoalForDeposit by rememberSaveable { mutableStateOf<Goal?>(null) }
-
+fun GoalsScreen(vm: GoalsFragmentViewModel) {
+    val state by vm.collectAsState()
     GoalsContent(
-        goalList = goalList,
-        goalListState = goalListState,
-        onAddGoalClick = onAddGoalClick,
-        onGoalClick = onGoalClick,
-        onAddSumClick = { goal -> selectedGoalForDeposit = goal },
-        onDeleteClick = { goal -> vm.deleteGoal(goal) }
+        state = state,
+        onAction = vm::onAction
     )
-
-    if (selectedGoalForDeposit != null) {
-        val goal = selectedGoalForDeposit!!
-        AddGoalSumBottomSheet(
-            onConfirm = { sum ->
-                val updatedGoal = goal.copy(savedSum = goal.savedSum + sum)
-                vm.updateGoal(updatedGoal)
-                vm.setGoalDeposit(GoalDeposit(sum = sum, date = Date(), goalId = goal.id))
-                vm.updateGoalInList(updatedGoal)
-                selectedGoalForDeposit = null
-            },
-            onDismiss = { selectedGoalForDeposit = null }
-        )
-    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun GoalsContent(
-    goalList: List<Goal>,
-    goalListState: ListState,
-    onAddGoalClick: () -> Unit,
-    onGoalClick: (Goal) -> Unit,
-    onAddSumClick: (Goal) -> Unit,
-    onDeleteClick: (Goal) -> Unit
+    state: GoalsState,
+    onAction: (GoalsAction) -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+
+    var selectedGoalForDeposit by rememberSaveable { mutableStateOf<Goal?>(null) }
 
     Scaffold(
         topBar = {
@@ -96,7 +69,7 @@ private fun GoalsContent(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = onAddGoalClick) {
+            FloatingActionButton(onClick = { onAction(GoalsAction.AddGoalClick) }) {
                 Icon(
                     imageVector = Icons.Default.Add,
                     contentDescription = stringResource(R.string.add_new_goal)
@@ -106,13 +79,13 @@ private fun GoalsContent(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
     ) { innerPadding ->
         Crossfade(
-            targetState = goalListState,
+            targetState = state.listState,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding),
             label = "goals_state"
-        ) { state ->
-            when (state) {
+        ) { listState ->
+            when (listState) {
                 ListState.LOADING -> {
                     ShimmerListPlaceholder(rowCount = 2, rowHeight = 240.dp)
                 }
@@ -128,20 +101,31 @@ private fun GoalsContent(
                         modifier = Modifier.fillMaxSize()
                     ) {
                         items(
-                            items = goalList,
+                            items = state.goalList,
                             key = { it.id }
                         ) { goal ->
                             GoalItem(
                                 goal = goal,
-                                onGoalClick = onGoalClick,
-                                onAddClick = onAddSumClick,
-                                onDeleteClick = onDeleteClick
+                                onGoalClick = { onAction(GoalsAction.GoalClick(it)) },
+                                onAddClick = { selectedGoalForDeposit = it },
+                                onDeleteClick = { onAction(GoalsAction.DeleteGoal(it)) }
                             )
                         }
                     }
                 }
             }
         }
+    }
+
+    if (selectedGoalForDeposit != null) {
+        val goal = selectedGoalForDeposit!!
+        AddGoalSumBottomSheet(
+            onConfirm = { sum ->
+                onAction(GoalsAction.AddGoalDeposit(goal = goal, sum = sum))
+                selectedGoalForDeposit = null
+            },
+            onDismiss = { selectedGoalForDeposit = null }
+        )
     }
 }
 
@@ -152,33 +136,32 @@ private fun GoalsScreenListPreview() {
     DebtBookTheme(dynamicColor = false) {
         Surface {
             GoalsContent(
-                goalList = listOf(
-                    Goal(
-                        id = 1,
-                        name = "New Car",
-                        sum = 5000.0,
-                        savedSum = 1200.0,
-                        currency = "USD",
-                        photoPath = null,
-                        creationDate = Date(),
-                        goalDate = Date(System.currentTimeMillis() + 30L * 24 * 3600 * 1000)
+                state = GoalsState(
+                    goalList = listOf(
+                        Goal(
+                            id = 1,
+                            name = "New Car",
+                            sum = 5000.0,
+                            savedSum = 1200.0,
+                            currency = "USD",
+                            photoPath = null,
+                            creationDate = Date(),
+                            goalDate = Date(System.currentTimeMillis() + 30L * 24 * 3600 * 1000)
+                        ),
+                        Goal(
+                            id = 2,
+                            name = "Dream Vacation",
+                            sum = 2000.0,
+                            savedSum = 2000.0,
+                            currency = "EUR",
+                            photoPath = null,
+                            creationDate = Date(System.currentTimeMillis() - 45L * 24 * 3600 * 1000),
+                            goalDate = null
+                        )
                     ),
-                    Goal(
-                        id = 2,
-                        name = "Dream Vacation",
-                        sum = 2000.0,
-                        savedSum = 2000.0,
-                        currency = "EUR",
-                        photoPath = null,
-                        creationDate = Date(System.currentTimeMillis() - 45L * 24 * 3600 * 1000),
-                        goalDate = null
-                    )
+                    listState = ListState.RECEIVED
                 ),
-                goalListState = ListState.RECEIVED,
-                onAddGoalClick = {},
-                onGoalClick = {},
-                onAddSumClick = {},
-                onDeleteClick = {}
+                onAction = {}
             )
         }
     }
@@ -190,12 +173,8 @@ private fun GoalsScreenEmptyPreview() {
     DebtBookTheme(dynamicColor = false) {
         Surface {
             GoalsContent(
-                goalList = emptyList(),
-                goalListState = ListState.EMPTY,
-                onAddGoalClick = {},
-                onGoalClick = {},
-                onAddSumClick = {},
-                onDeleteClick = {}
+                state = GoalsState(goalList = emptyList(), listState = ListState.EMPTY),
+                onAction = {}
             )
         }
     }
@@ -207,12 +186,8 @@ private fun GoalsScreenLoadingPreview() {
     DebtBookTheme(dynamicColor = false) {
         Surface {
             GoalsContent(
-                goalList = emptyList(),
-                goalListState = ListState.LOADING,
-                onAddGoalClick = {},
-                onGoalClick = {},
-                onAddSumClick = {},
-                onDeleteClick = {}
+                state = GoalsState(goalList = emptyList(), listState = ListState.LOADING),
+                onAction = {}
             )
         }
     }
