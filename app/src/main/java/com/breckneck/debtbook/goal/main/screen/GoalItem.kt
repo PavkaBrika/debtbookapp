@@ -19,7 +19,6 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,48 +33,28 @@ import coil3.compose.AsyncImage
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.core.ui.theme.DebtBookTheme
 import com.breckneck.debtbook.core.ui.theme.spacing
-import com.breckneck.deptbook.domain.model.Goal
-import java.io.File
-import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-import java.util.concurrent.TimeUnit
+import com.breckneck.debtbook.goal.main.model.GoalUi
 
 @Composable
 fun GoalItem(
-    goal: Goal,
-    onGoalClick: (Goal) -> Unit,
-    onAddClick: (Goal) -> Unit,
-    onDeleteClick: (Goal) -> Unit,
+    goalUi: GoalUi,
+    onGoalClick: (GoalUi) -> Unit,
+    onAddClick: (GoalUi) -> Unit,
+    onDeleteClick: (GoalUi) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val decimalFormat = remember {
-        DecimalFormat("###,###,###.##").apply {
-            decimalFormatSymbols = DecimalFormatSymbols().apply {
-                groupingSeparator = ' '
-            }
-        }
-    }
-    val sdf = remember { SimpleDateFormat("d MMM yyyy", Locale.getDefault()) }
     val spacing = MaterialTheme.spacing
 
-    val hasPhoto = remember(goal.photoPath) {
-        goal.photoPath != null && File(goal.photoPath!!).exists()
-    }
-    val isReached = goal.sum - goal.savedSum <= 0
-
     ElevatedCard(
-        onClick = { onGoalClick(goal) },
+        onClick = { onGoalClick(goalUi) },
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = spacing.space12, vertical = spacing.space4)
     ) {
         Column {
-            if (hasPhoto) {
+            if (goalUi.hasPhoto) {
                 AsyncImage(
-                    model = goal.photoPath,
+                    model = goalUi.photoPath,
                     contentDescription = null,
                     contentScale = ContentScale.FillWidth,
                     modifier = Modifier.fillMaxWidth()
@@ -86,49 +65,35 @@ fun GoalItem(
                 modifier = Modifier.padding(spacing.space16),
                 verticalArrangement = Arrangement.spacedBy(spacing.space8)
             ) {
-                // Name + date row
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = goal.name,
+                        text = goalUi.name,
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier
                             .weight(1f)
                             .padding(end = spacing.space8)
                     )
-                    if (isReached) {
-                        val diffInDays = TimeUnit.DAYS.convert(
-                            Date().time - goal.creationDate.time,
-                            TimeUnit.MILLISECONDS
-                        ).coerceAtLeast(1L)
-                        GoalDateChip(
-                            text = if (diffInDays == 1L)
-                                stringResource(R.string.achieved_in_day, diffInDays)
-                            else
-                                stringResource(R.string.achieved_in_days, diffInDays),
-                            iconTint = MaterialTheme.colorScheme.primary
-                        )
-                    } else if (goal.goalDate != null) {
-                        val isOverdue = goal.goalDate!!.before(Date())
-                        GoalDateChip(
-                            text = if (isOverdue) stringResource(R.string.overdue)
-                            else sdf.format(goal.goalDate!!),
-                            iconTint = if (isOverdue) Color.Red else MaterialTheme.colorScheme.onSurfaceVariant
-                        )
+                    if (goalUi.date != null) {
+                        val chipTint = when {
+                            goalUi.isReached -> MaterialTheme.colorScheme.primary
+                            goalUi.isOverdue -> Color.Red
+                            else -> MaterialTheme.colorScheme.onSurfaceVariant
+                        }
+                        GoalDateChip(text = goalUi.date, iconTint = chipTint)
                     }
                 }
 
-                // Saved / total amounts
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
-                        text = decimalFormat.format(goal.savedSum),
+                        text = goalUi.savedAmount,
                         style = MaterialTheme.typography.bodyLarge
                     )
                     Text(
-                        text = " ${goal.currency}",
+                        text = " ${goalUi.currency}",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -138,17 +103,17 @@ fun GoalItem(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Text(
-                        text = decimalFormat.format(goal.sum),
+                        text = goalUi.totalAmount,
                         style = MaterialTheme.typography.bodyLarge
                     )
                     Text(
-                        text = " ${goal.currency}",
+                        text = " ${goalUi.currency}",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
 
-                if (isReached) {
+                if (goalUi.isReached) {
                     Text(
                         text = stringResource(R.string.congratulations_you_have_reached_your_goal),
                         fontSize = 20.sp,
@@ -156,7 +121,7 @@ fun GoalItem(
                         modifier = Modifier.fillMaxWidth()
                     )
                     OutlinedButton(
-                        onClick = { onDeleteClick(goal) },
+                        onClick = { onDeleteClick(goalUi) },
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(stringResource(R.string.delete))
@@ -164,11 +129,11 @@ fun GoalItem(
                 } else {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
-                            text = decimalFormat.format(goal.sum - goal.savedSum),
+                            text = goalUi.remainingAmount.orEmpty(),
                             style = MaterialTheme.typography.bodyLarge
                         )
                         Text(
-                            text = " ${goal.currency}",
+                            text = " ${goalUi.currency}",
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -179,7 +144,7 @@ fun GoalItem(
                         )
                     }
                     Button(
-                        onClick = { onAddClick(goal) },
+                        onClick = { onAddClick(goalUi) },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = spacing.space8)
@@ -218,6 +183,30 @@ private fun GoalDateChip(
     }
 }
 
+private fun previewGoalUi(
+    id: Int = 1,
+    name: String = "New Car",
+    savedAmount: String = "1 200",
+    totalAmount: String = "5 000",
+    currency: String = "USD",
+    isReached: Boolean = false,
+    remainingAmount: String? = "3 800",
+    dateChipText: String? = "15 Jan 2026",
+    isOverdue: Boolean = false,
+) = GoalUi(
+    goalId = id,
+    name = name,
+    photoPath = null,
+    hasPhoto = false,
+    savedAmount = savedAmount,
+    totalAmount = totalAmount,
+    currency = currency,
+    isReached = isReached,
+    remainingAmount = remainingAmount,
+    date = dateChipText,
+    isOverdue = isOverdue,
+)
+
 @Preview(name = "GoalItem — active, light")
 @Preview(name = "GoalItem — active, dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
@@ -225,16 +214,7 @@ private fun GoalItemActivePreview() {
     DebtBookTheme(dynamicColor = false) {
         Surface {
             GoalItem(
-                goal = Goal(
-                    id = 1,
-                    name = "New Car",
-                    sum = 5000.0,
-                    savedSum = 1200.0,
-                    currency = "USD",
-                    photoPath = null,
-                    creationDate = Date(),
-                    goalDate = Date(System.currentTimeMillis() + 30L * 24 * 3600 * 1000)
-                ),
+                goalUi = previewGoalUi(),
                 onGoalClick = {},
                 onAddClick = {},
                 onDeleteClick = {}
@@ -249,15 +229,13 @@ private fun GoalItemReachedPreview() {
     DebtBookTheme(dynamicColor = false) {
         Surface {
             GoalItem(
-                goal = Goal(
-                    id = 2,
+                goalUi = previewGoalUi(
                     name = "Dream Vacation",
-                    sum = 2000.0,
-                    savedSum = 2000.0,
-                    currency = "EUR",
-                    photoPath = null,
-                    creationDate = Date(System.currentTimeMillis() - 60L * 24 * 3600 * 1000),
-                    goalDate = null
+                    savedAmount = "2 000",
+                    totalAmount = "2 000",
+                    isReached = true,
+                    remainingAmount = null,
+                    dateChipText = "Achieved in 45 days",
                 ),
                 onGoalClick = {},
                 onAddClick = {},
@@ -273,15 +251,13 @@ private fun GoalItemOverduePreview() {
     DebtBookTheme(dynamicColor = false) {
         Surface {
             GoalItem(
-                goal = Goal(
-                    id = 3,
+                goalUi = previewGoalUi(
                     name = "Emergency Fund",
-                    sum = 10000.0,
-                    savedSum = 3000.0,
-                    currency = "USD",
-                    photoPath = null,
-                    creationDate = Date(System.currentTimeMillis() - 120L * 24 * 3600 * 1000),
-                    goalDate = Date(System.currentTimeMillis() - 10L * 24 * 3600 * 1000)
+                    savedAmount = "3 000",
+                    totalAmount = "10 000",
+                    remainingAmount = "7 000",
+                    dateChipText = "Overdue",
+                    isOverdue = true,
                 ),
                 onGoalClick = {},
                 onAddClick = {},
@@ -297,15 +273,12 @@ private fun GoalItemNoDatePreview() {
     DebtBookTheme(dynamicColor = false) {
         Surface {
             GoalItem(
-                goal = Goal(
-                    id = 4,
+                goalUi = previewGoalUi(
                     name = "Home Renovation",
-                    sum = 15000.0,
-                    savedSum = 500.0,
-                    currency = "USD",
-                    photoPath = null,
-                    creationDate = Date(),
-                    goalDate = null
+                    savedAmount = "500",
+                    totalAmount = "15 000",
+                    remainingAmount = "14 500",
+                    dateChipText = null,
                 ),
                 onGoalClick = {},
                 onAddClick = {},

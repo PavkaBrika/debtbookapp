@@ -1,8 +1,10 @@
 package com.breckneck.debtbook.goal.main
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.breckneck.debtbook.goal.main.GoalsAction
+import com.breckneck.debtbook.goal.main.mapper.toUi
+import com.breckneck.debtbook.goal.main.model.GoalUi
 import com.breckneck.deptbook.domain.model.Goal
 import com.breckneck.deptbook.domain.model.GoalDeposit
 import com.breckneck.deptbook.domain.usecase.Goal.DeleteGoal
@@ -12,6 +14,7 @@ import com.breckneck.deptbook.domain.usecase.GoalDeposit.DeleteGoalDepositsByGoa
 import com.breckneck.deptbook.domain.usecase.GoalDeposit.SetGoalDeposit
 import com.breckneck.deptbook.domain.util.ListState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.orbitmvi.orbit.ContainerHost
@@ -21,6 +24,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class GoalsViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val getAllGoals: GetAllGoals,
     private val updateGoal: UpdateGoal,
     private val deleteGoal: DeleteGoal,
@@ -28,10 +32,12 @@ class GoalsViewModel @Inject constructor(
     private val setGoalDeposit: SetGoalDeposit,
 ) : ViewModel(), ContainerHost<GoalsState, GoalsSideEffect> {
 
-    private val TAG = "GoalsFragmentVM"
+    private val TAG = "GoalsViewModel"
+
+    private var domainGoals: List<Goal> = emptyList() // todo remove, replace with id in navigation
 
     override val container = container<GoalsState, GoalsSideEffect>(
-        initialState = GoalsState.Companion.initial(),
+        initialState = GoalsState.initial(),
         onCreate = { loadGoals() },
     )
 
@@ -45,25 +51,42 @@ class GoalsViewModel @Inject constructor(
     }
 
     fun onAction(action: GoalsAction) = when (action) {
-        GoalsAction.AddGoalClick -> intent {
-            postSideEffect(GoalsSideEffect.NavigateToAddGoal)
-        }
-        is GoalsAction.GoalClick -> intent {
-            postSideEffect(GoalsSideEffect.NavigateToGoalDetails(action.goal))
-        }
-        is GoalsAction.AddGoalDeposit -> addGoalDeposit(action.goal, action.sum)
-        is GoalsAction.DeleteGoal -> deleteGoal(action.goal)
+        GoalsAction.AddGoalClick -> navigateToAddGoal()
+        is GoalsAction.GoalClick -> navigateToGoalDetails(action.goalUi)
+        is GoalsAction.ShowAddDepositPopup -> showAddDepositPopup(action.goalUi)
+        GoalsAction.DismissAddDepositPopup -> dismissAddDepositPopup()
+        is GoalsAction.AddGoalDeposit -> addGoalDeposit(action.sum)
+        is GoalsAction.DeleteGoal -> deleteGoal(action.goalUi)
         is GoalsAction.RefreshAfterNavigation -> refreshAfterNavigation(action.wasModified)
+    }
+
+    private fun navigateToAddGoal() = intent {
+        postSideEffect(GoalsSideEffect.NavigateToAddGoal)
+    }
+
+    private fun navigateToGoalDetails(goalUi: GoalUi) = intent {
+        val goal = domainGoals.firstOrNull { it.id == goalUi.goalId } ?: return@intent
+        postSideEffect(GoalsSideEffect.NavigateToGoalDetails(goal))
+    }
+
+    private fun showAddDepositPopup(goalUi: GoalUi) = intent {
+        reduce { state.copy(addDepositPopup = AddDepositPopup(isVisible = true, selectedGoalId = goalUi.goalId)) }
+    }
+
+    private fun dismissAddDepositPopup() = intent {
+        reduce { state.copy(addDepositPopup = AddDepositPopup.initial()) }
     }
 
     private fun loadGoals() = intent {
         reduce { state.copy(listState = ListState.LOADING) }
         try {
             val goals = withContext(Dispatchers.IO) { getAllGoals.execute() }
+            domainGoals = goals
+            val goalUiList = goals.map { it.toUi(context) }
             reduce {
                 state.copy(
-                    goalList = goals,
-                    listState = if (goals.isEmpty()) ListState.EMPTY else ListState.RECEIVED,
+                    goalList = goalUiList,
+                    listState = if (goalUiList.isEmpty()) ListState.EMPTY else ListState.RECEIVED,
                 )
             }
             Log.e(TAG, "Goals loaded")
@@ -72,7 +95,9 @@ class GoalsViewModel @Inject constructor(
         }
     }
 
-    private fun addGoalDeposit(goal: Goal, sum: Double) = intent {
+    private fun addGoalDeposit(sum: Double) = intent {
+        val goalId = state.addDepositPopup.selectedGoalId ?: return@intent
+        val goal = domainGoals.firstOrNull { it.id == goalId } ?: return@intent
         val updatedGoal = goal.copy(savedSum = goal.savedSum + sum)
         try {
             withContext(Dispatchers.IO) {
@@ -81,12 +106,19 @@ class GoalsViewModel @Inject constructor(
                     goalDeposit = GoalDeposit(sum = sum, date = Date(), goalId = goal.id)
                 )
             }
-            val updatedList = state.goalList.toMutableList().apply {
+            domainGoals = domainGoals.toMutableList().apply {
                 val idx = indexOfFirst { it.id == goal.id }
                 if (idx != -1) this[idx] = updatedGoal
             }
+            val updatedList = state.goalList.toMutableList().apply {
+                val idx = indexOfFirst { it.goalId == goal.id }
+                if (idx != -1) this[idx] = updatedGoal.toUi(context)
+            }
             reduce {
-                state.copy(goalList = updatedList)
+                state.copy(
+                    goalList = updatedList,
+                    addDepositPopup = AddDepositPopup.initial(),
+                )
             }
             Log.e(TAG, "Goal deposit added")
         } catch (e: Exception) {
@@ -94,13 +126,15 @@ class GoalsViewModel @Inject constructor(
         }
     }
 
-    private fun deleteGoal(goal: Goal) = intent {
+    private fun deleteGoal(goalUi: GoalUi) = intent {
+        val goal = domainGoals.firstOrNull { it.id == goalUi.goalId } ?: return@intent
         try {
             withContext(Dispatchers.IO) {
                 deleteGoal.execute(goal = goal)
                 deleteGoalDepositsByGoalId.execute(goalId = goal.id)
             }
-            val updatedList = state.goalList.filter { it.id != goal.id }
+            domainGoals = domainGoals.filter { it.id != goal.id }
+            val updatedList = state.goalList.filter { it.goalId != goal.id }
             reduce {
                 state.copy(
                     goalList = updatedList,

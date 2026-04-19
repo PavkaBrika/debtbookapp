@@ -1,11 +1,12 @@
 package com.breckneck.debtbook.goal.main
 
-import com.breckneck.deptbook.domain.model.Goal
+import com.breckneck.debtbook.goal.main.model.GoalUi
 import com.breckneck.deptbook.domain.util.ListState
 
 data class GoalsState(
-    val goalList: List<Goal>,
+    val goalList: List<GoalUi>,
     val listState: ListState,
+    val addDepositPopup: AddDepositPopup = AddDepositPopup.initial(),
 ) {
     companion object {
         fun initial() = GoalsState(
@@ -15,7 +16,14 @@ data class GoalsState(
     }
 }
 
-sealed interface GoalsSideEffect {
-    data object NavigateToAddGoal : GoalsSideEffect
-    data class NavigateToGoalDetails(val goal: Goal) : GoalsSideEffect
+data class AddDepositPopup(
+    val isVisible: Boolean,
+    val selectedGoalId: Int?
+) {
+    companion object {
+        fun initial() = AddDepositPopup(
+            isVisible = false,
+            selectedGoalId = null
+        )
+    }
 }
