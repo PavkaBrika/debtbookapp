@@ -10,17 +10,17 @@
 
 ```
 app/src/main/java/com/breckneck/debtbook/settings/
-├── adapter/
-│   └── SettingsAdapter.kt             # Адаптер для списка настроек (radio-style)
-├── presentation/
+├── main/
 │   ├── SettingsFragment.kt            # Экран настроек
-│   └── SynchronizationFragment.kt     # Экран синхронизации
-├── util/
-│   └── DriveServiceHelper.kt          # Хелпер Google Drive API
-└── viewmodel/
-    ├── SettingsViewModel.kt           # VM настроек
+│   └── SettingsViewModel.kt           # VM настроек
+└── synchronization/
+    ├── util/
+    │   └── DriveServiceHelper.kt      # Хелпер Google Drive API
+    ├── SynchronizationFragment.kt     # Экран синхронизации
     └── SynchronizationViewModel.kt    # VM синхронизации
 ```
+
+> `SettingsAdapter` (radio-style пикер) перемещён в `core/adapter/SettingsAdapter.kt` — переиспользуется несколькими фичами.
 
 ### Layouts
 - `fragment_settings.xml` — экран настроек
@@ -98,14 +98,6 @@ VM экрана синхронизации с Google Drive.
 - Upload содержимого (JSON backup)
 - Download содержимого (JSON restore)
 - Использует legacy Google HTTP Client + Gson
-
----
-
-## SettingsAdapter
-
-RecyclerView адаптер для отображения вариантов настроек в диалоге:
-- Radio-style выбор (одно значение из списка)
-- Используется для: выбора валют, темы, интервала
 
 ---
 

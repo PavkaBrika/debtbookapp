@@ -10,18 +10,21 @@
 
 ```
 app/src/main/java/com/breckneck/debtbook/debt/
-├── adapter/
-│   ├── HumanAdapter.kt       # Адаптер списка людей (главный экран)
-│   ├── DebtAdapter.kt        # Адаптер списка долгов (детали человека)
-│   └── ContactsAdapter.kt    # Адаптер выбора контакта из телефонной книги
-├── presentation/
-│   ├── MainFragment.kt       # Главный экран — список людей с долгами
-│   ├── DebtDetailsFragment.kt # Детали долгов конкретного человека
-│   └── NewDebtFragment.kt    # Создание/редактирование долга
-└── viewmodel/
-    ├── MainFragmentViewModel.kt    # VM главного экрана
-    ├── DebtDetailsViewModel.kt     # VM деталей
-    └── NewDebtViewModel.kt         # VM создания долга
+├── main/
+│   ├── adapter/
+│   │   └── HumanAdapter.kt        # Адаптер списка людей (главный экран)
+│   ├── DebtFragment.kt            # Главный экран — список людей с долгами
+│   └── DebtViewModel.kt           # VM главного экрана
+├── create/
+│   ├── adapter/
+│   │   └── ContactsAdapter.kt     # Адаптер выбора контакта из телефонной книги
+│   ├── CreateDebtFragment.kt      # Создание/редактирование долга
+│   └── CreateDebtViewModel.kt     # VM создания долга
+└── details/
+    ├── adapter/
+    │   └── DebtDetailsAdapter.kt  # Адаптер списка долгов (детали человека)
+    ├── DebtDetailsFragment.kt     # Детали долгов конкретного человека
+    └── DebtDetailsViewModel.kt    # VM деталей
 ```
 
 ### Layouts
@@ -42,7 +45,7 @@ app/src/main/java/com/breckneck/debtbook/debt/
 
 ---
 
-## MainFragmentViewModel
+## DebtViewModel
 
 Главный ViewModel экрана долгов.
 
@@ -112,7 +115,7 @@ ViewModel деталей долгов одного человека.
 
 ---
 
-## NewDebtViewModel
+## CreateDebtViewModel
 
 ViewModel создания/редактирования долга.
 
@@ -129,7 +132,7 @@ ViewModel создания/редактирования долга.
 | `isCurrencyDialogOpened` | `LiveData<Boolean>` | Состояние диалога валют |
 
 ### Примечание
-Сохранение долга происходит в `NewDebtFragment` / `DebtDetailsFragment` напрямую через use cases, полученные из Koin.
+Сохранение долга происходит в `CreateDebtFragment` / `DebtDetailsFragment` напрямую через use cases.
 
 ---
 
@@ -142,7 +145,7 @@ ViewModel создания/редактирования долга.
 - Callbacks: клик (переход в детали), long press (доп. функции)
 - Shimmer layout для загрузки
 
-### DebtAdapter
+### DebtDetailsAdapter
 - RecyclerView adapter для записей долгов
 - Отображает: сумму, дату, описание
 - Callbacks: клик (настройки долга — edit / delete)
@@ -158,6 +161,6 @@ ViewModel создания/редактирования долга.
 ## Навигация
 
 См. полную карту в `PROJECT_OVERVIEW.md` → «Экраны и переходы». Навигационные аргументы:
-- `MainFragment → NewDebtFragment`: idHuman, idDebt, currency, sum, date, info, name
-- `MainFragment → DebtDetailsFragment`: humanId, newHuman
-- `DebtDetailsFragment → NewDebtFragment`: добавление нового долга к человеку
+- `DebtFragment → CreateDebtFragment`: idHuman, idDebt, currency, sum, date, info, name
+- `DebtFragment → DebtDetailsFragment`: humanId, newHuman
+- `DebtDetailsFragment → CreateDebtFragment`: добавление нового долга к человеку
