@@ -113,7 +113,10 @@ private fun GoalsContent(
 
     if (state.addDepositPopup.isVisible) {
         AddGoalSumBottomSheet(
-            onConfirm = { sum -> onAction(GoalsAction.AddGoalDeposit(sum)) },
+            sumText = state.addDepositPopup.sumText,
+            inputError = state.addDepositPopup.inputError,
+            onSumChange = { onAction(GoalsAction.UpdateDepositSum(it)) },
+            onConfirm = { onAction(GoalsAction.AddGoalDeposit) },
             onDismiss = { onAction(GoalsAction.DismissAddDepositPopup) }
         )
     }

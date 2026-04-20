@@ -18,10 +18,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -31,20 +27,24 @@ import androidx.compose.ui.unit.sp
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.core.ui.theme.DebtBookTheme
 import com.breckneck.debtbook.core.ui.theme.spacing
+import com.breckneck.debtbook.goal.main.AddDepositPopup
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddGoalSumBottomSheet(
-    onConfirm: (Double) -> Unit,
-    onDismiss: () -> Unit
+    sumText: String,
+    inputError: AddDepositPopup.DepositInputError?,
+    onSumChange: (String) -> Unit,
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit,
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    var sumText by rememberSaveable { mutableStateOf("") }
-    var errorMessage by rememberSaveable { mutableStateOf<String?>(null) }
-
-    val mustEnterText = stringResource(R.string.youmustentername)
-    val zeroDebtText = stringResource(R.string.zerodebt)
     val spacing = MaterialTheme.spacing
+    val errorMessage = when (inputError) {
+        AddDepositPopup.DepositInputError.EMPTY -> stringResource(R.string.youmustentername)
+        AddDepositPopup.DepositInputError.ZERO_OR_INVALID -> stringResource(R.string.zerodebt)
+        null -> null
+    }
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -64,20 +64,7 @@ fun AddGoalSumBottomSheet(
             )
             OutlinedTextField(
                 value = sumText,
-                onValueChange = { newValue ->
-                    val dotIndex = newValue.indexOf('.')
-                    val isValid = if (dotIndex != -1) {
-                        val afterDot = newValue.substring(dotIndex + 1)
-                        val beforeDot = newValue.substring(0, dotIndex)
-                        afterDot.length <= 2 && beforeDot.isNotEmpty()
-                    } else {
-                        true
-                    }
-                    if (isValid) {
-                        sumText = newValue
-                        errorMessage = null
-                    }
-                },
+                onValueChange = onSumChange,
                 label = { Text(stringResource(R.string.sum)) },
                 isError = errorMessage != null,
                 supportingText = errorMessage?.let { msg -> { Text(msg) } },
@@ -96,17 +83,7 @@ fun AddGoalSumBottomSheet(
                     Text(stringResource(R.string.cancel))
                 }
                 Spacer(modifier = Modifier.width(spacing.space8))
-                Button(
-                    onClick = {
-                        val trimmed = sumText.trim()
-                        val parsed = trimmed.toDoubleOrNull()
-                        when {
-                            trimmed.isEmpty() -> errorMessage = mustEnterText
-                            parsed == null || parsed == 0.0 -> errorMessage = zeroDebtText
-                            else -> onConfirm(parsed)
-                        }
-                    }
-                ) {
+                Button(onClick = onConfirm) {
                     Text(stringResource(R.string.confirm))
                 }
             }
@@ -120,6 +97,25 @@ private fun AddGoalSumBottomSheetPreview() {
     DebtBookTheme(dynamicColor = false) {
         Surface {
             AddGoalSumBottomSheet(
+                sumText = "1500",
+                inputError = null,
+                onSumChange = {},
+                onConfirm = {},
+                onDismiss = {}
+            )
+        }
+    }
+}
+
+@PreviewLightDark
+@Composable
+private fun AddGoalSumBottomSheetErrorPreview() {
+    DebtBookTheme(dynamicColor = false) {
+        Surface {
+            AddGoalSumBottomSheet(
+                sumText = "",
+                inputError = AddDepositPopup.DepositInputError.EMPTY,
+                onSumChange = {},
                 onConfirm = {},
                 onDismiss = {}
             )

@@ -3,6 +3,7 @@ package com.breckneck.debtbook.goal.main
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import com.breckneck.debtbook.common.empty
 import com.breckneck.debtbook.goal.main.mapper.toUi
 import com.breckneck.debtbook.goal.main.model.GoalUi
 import com.breckneck.deptbook.domain.model.Goal
@@ -34,7 +35,7 @@ class GoalsViewModel @Inject constructor(
 
     private val TAG = "GoalsViewModel"
 
-    private var domainGoals: List<Goal> = emptyList() // todo remove, replace with id in navigation
+    private var domainGoals: List<Goal> = emptyList()
 
     override val container = container<GoalsState, GoalsSideEffect>(
         initialState = GoalsState.initial(),
@@ -55,7 +56,8 @@ class GoalsViewModel @Inject constructor(
         is GoalsAction.GoalClick -> navigateToGoalDetails(action.goalUi)
         is GoalsAction.ShowAddDepositPopup -> showAddDepositPopup(action.goalUi)
         GoalsAction.DismissAddDepositPopup -> dismissAddDepositPopup()
-        is GoalsAction.AddGoalDeposit -> addGoalDeposit(action.sum)
+        is GoalsAction.UpdateDepositSum -> updateDepositSum(action.text)
+        GoalsAction.AddGoalDeposit -> addGoalDeposit()
         is GoalsAction.DeleteGoal -> deleteGoal(action.goalUi)
         is GoalsAction.RefreshAfterNavigation -> refreshAfterNavigation(action.wasModified)
     }
@@ -70,11 +72,39 @@ class GoalsViewModel @Inject constructor(
     }
 
     private fun showAddDepositPopup(goalUi: GoalUi) = intent {
-        reduce { state.copy(addDepositPopup = AddDepositPopup(isVisible = true, selectedGoalId = goalUi.goalId)) }
+        reduce {
+            state.copy(
+                addDepositPopup = state.addDepositPopup.copy(
+                    isVisible = true,
+                    selectedGoalId = goalUi.goalId
+                )
+            )
+        }
     }
 
     private fun dismissAddDepositPopup() = intent {
         reduce { state.copy(addDepositPopup = AddDepositPopup.initial()) }
+    }
+
+    private fun updateDepositSum(text: String) = intent {
+        val dotIndex = text.indexOf('.')
+        val isValid = if (dotIndex != -1) {
+            val beforeDot = text.substring(0, dotIndex)
+            val afterDot = text.substring(dotIndex + 1)
+            beforeDot.isNotEmpty() && afterDot.length <= 2
+        } else {
+            true
+        }
+        if (isValid) {
+            reduce {
+                state.copy(
+                    addDepositPopup = state.addDepositPopup.copy(
+                        sumText = text,
+                        inputError = null,
+                    )
+                )
+            }
+        }
     }
 
     private fun loadGoals() = intent {
@@ -95,15 +125,40 @@ class GoalsViewModel @Inject constructor(
         }
     }
 
-    private fun addGoalDeposit(sum: Double) = intent {
+    private fun addGoalDeposit() = intent {
         val goalId = state.addDepositPopup.selectedGoalId ?: return@intent
         val goal = domainGoals.firstOrNull { it.id == goalId } ?: return@intent
-        val updatedGoal = goal.copy(savedSum = goal.savedSum + sum)
+        val sumText = state.addDepositPopup.sumText.trim()
+        val parsed = sumText.toDoubleOrNull()
+        when {
+            sumText.isEmpty() -> {
+                reduce {
+                    state.copy(
+                        addDepositPopup = state.addDepositPopup.copy(
+                            inputError = AddDepositPopup.DepositInputError.EMPTY
+                        )
+                    )
+                }
+                return@intent
+            }
+
+            parsed == null || parsed == 0.0 -> {
+                reduce {
+                    state.copy(
+                        addDepositPopup = state.addDepositPopup.copy(
+                            inputError = AddDepositPopup.DepositInputError.ZERO_OR_INVALID
+                        )
+                    )
+                }
+                return@intent
+            }
+        }
+        val updatedGoal = goal.copy(savedSum = goal.savedSum + parsed)
         try {
             withContext(Dispatchers.IO) {
                 updateGoal.execute(goal = updatedGoal)
                 setGoalDeposit.execute(
-                    goalDeposit = GoalDeposit(sum = sum, date = Date(), goalId = goal.id)
+                    goalDeposit = GoalDeposit(sum = parsed, date = Date(), goalId = goal.id)
                 )
             }
             domainGoals = domainGoals.toMutableList().apply {

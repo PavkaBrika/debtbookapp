@@ -18,12 +18,21 @@ data class GoalsState(
 
 data class AddDepositPopup(
     val isVisible: Boolean,
-    val selectedGoalId: Int?
+    val selectedGoalId: Int?,
+    val sumText: String,
+    val inputError: DepositInputError?,
 ) {
     companion object {
         fun initial() = AddDepositPopup(
             isVisible = false,
-            selectedGoalId = null
+            selectedGoalId = null,
+            sumText = "",
+            inputError = null,
         )
+    }
+
+    enum class DepositInputError {
+        EMPTY,
+        ZERO_OR_INVALID,
     }
 }

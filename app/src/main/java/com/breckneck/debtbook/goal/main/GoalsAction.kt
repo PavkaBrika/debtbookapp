@@ -7,7 +7,8 @@ sealed interface GoalsAction {
     data class GoalClick(val goalUi: GoalUi) : GoalsAction
     data class ShowAddDepositPopup(val goalUi: GoalUi) : GoalsAction
     data object DismissAddDepositPopup : GoalsAction
-    data class AddGoalDeposit(val sum: Double) : GoalsAction
+    data class UpdateDepositSum(val text: String) : GoalsAction
+    data object AddGoalDeposit : GoalsAction
     data class DeleteGoal(val goalUi: GoalUi) : GoalsAction
     data class RefreshAfterNavigation(val wasModified: Boolean) : GoalsAction
 }
