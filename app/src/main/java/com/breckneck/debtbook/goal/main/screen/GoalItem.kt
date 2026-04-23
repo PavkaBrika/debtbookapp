@@ -1,6 +1,8 @@
 package com.breckneck.debtbook.goal.main.screen
 
 import android.content.res.Configuration
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -46,12 +48,16 @@ fun GoalItem(
 ) {
     val spacing = MaterialTheme.spacing
 
+    val isDark = isSystemInDarkTheme()
     Card(
         onClick = { onGoalClick(goalUi) },
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+            containerColor = if (isDark) MaterialTheme.colorScheme.surfaceContainerHigh
+                             else MaterialTheme.colorScheme.surface,
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        border = if (isDark) null
+                 else BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = spacing.space12, vertical = spacing.space4)
