@@ -1,0 +1,4 @@
+• Google Drive-Synchronisation repariert — Abstürze und Anzeigeprobleme behoben
+• Erscheinungsbild des Ziele-Bildschirms verbessert
+• Darstellungsfehler im dunklen Design behoben
+• Allgemeine Verbesserungen der Stabilität und Leistung

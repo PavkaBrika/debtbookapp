@@ -1,0 +1,4 @@
+• Synchronisation Google Drive corrigée — crashs et problèmes d'affichage résolus
+• Amélioration de l'apparence de l'écran Objectifs
+• Correction de l'affichage en thème sombre
+• Améliorations générales de la stabilité et des performances
