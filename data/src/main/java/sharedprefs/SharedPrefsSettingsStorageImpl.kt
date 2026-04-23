@@ -27,6 +27,7 @@ private const val FINANCE_CURRENCY = "finance_currency"
 private const val PIN_CODE_IS_ENABLED = "pin_code_is_enabled"
 private const val PIN_CODE = "pin_code"
 private const val FINGERPRINT_AUTH_IS_ENABLED = "fingerprint_auth_is_enabled"
+private const val ADS_DISABLED = "ads_disabled"
 
 
 class SharedPrefsSettingsStorageImpl(val context: Context): SettingsStorage {
@@ -173,5 +174,13 @@ class SharedPrefsSettingsStorageImpl(val context: Context): SettingsStorage {
 
     override fun getIsFingerprintAuthEnabled(): Boolean {
         return sharedPreferences.getBoolean(FINGERPRINT_AUTH_IS_ENABLED, false)
+    }
+
+    override fun setAdsDisabled(isDisabled: Boolean) {
+        sharedPreferences.edit().putBoolean(ADS_DISABLED, isDisabled).apply()
+    }
+
+    override fun getAdsDisabled(): Boolean {
+        return sharedPreferences.getBoolean(ADS_DISABLED, false)
     }
 }

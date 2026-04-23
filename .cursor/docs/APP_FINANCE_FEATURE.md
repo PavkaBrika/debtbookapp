@@ -10,31 +10,35 @@
 
 ```
 app/src/main/java/com/breckneck/debtbook/finance/
-├── adapter/
-│   ├── FinanceAdapter.kt                # Список финансовых записей
-│   ├── FinanceCategoryAdapter.kt        # Категории с прогресс-барами
-│   ├── FinanceCategoryColorAdapter.kt   # Сетка цветов при создании категории
-│   ├── FinanceCategoryImageAdapter.kt   # Сетка emoji-иконок при создании категории
-│   └── UsedFinanceCategoryAdapter.kt    # Выбор категории при создании записи
-├── customview/
-│   └── FinanceProgressBar.kt            # Кастомный прогресс-бар (% от общей суммы)
-├── presentation/
-│   ├── FinanceFragment.kt               # Основной экран финансов
-│   ├── CreateFinanceFragment.kt         # Создание/редактирование записи
-│   ├── CreateFinanceCategoryFragment.kt # Фрагмент-хост для Compose экрана категории
-│   ├── CreateFinanceCategoryScreen.kt   # Compose UI создания категории
-│   ├── FinanceDetailsFragment.kt        # Фрагмент-хост для Compose экрана деталей
-│   ├── FinanceDetailsScreen.kt          # Compose entrypoint: VM binding + sheet orchestration
-│   ├── FinanceDetailsContent.kt         # Compose scaffold/top bar + state switching
-│   └── FinanceDetailsList.kt            # Compose список: badge, month headers, ledger rows + previews
-├── util/
-│   └── GetFinanceCategoryNameInLocalLanguage.kt  # Локализация имён категорий
-└── viewmodel/
-    ├── FinanceViewModel.kt              # VM основного экрана
-    ├── CreateFinanceViewModel.kt        # VM создания записи
-    ├── CreateFinanceCategoryViewModel.kt # VM создания категории
-    ├── FinanceDetailsActions.kt         # sealed interface интентов экрана деталей
-    └── FinanceDetailsViewModel.kt       # VM деталей (Orbit + FinanceDetailsState)
+├── main/
+│   ├── adapter/
+│   │   └── UsedFinanceCategoryAdapter.kt    # Выбор категории при создании записи
+│   ├── customview/
+│   │   └── FinanceProgressBar.kt            # Кастомный прогресс-бар (% от общей суммы)
+│   ├── FinanceFragment.kt                   # Основной экран финансов
+│   └── FinanceViewModel.kt                  # VM основного экрана
+├── create/
+│   ├── adapter/
+│   │   └── FinanceCategoryAdapter.kt        # Категории в пикере при создании записи
+│   ├── CreateFinanceFragment.kt             # Создание/редактирование записи
+│   └── CreateFinanceViewModel.kt            # VM создания записи
+├── create_category/
+│   ├── model/
+│   │   └── EmojiGroups.kt                   # Группы emoji для пикера (8 категорий × 10)
+│   ├── CreateFinanceCategoryFragment.kt     # Фрагмент-хост для Compose экрана категории
+│   ├── CreateFinanceCategoryScreen.kt       # Compose UI создания категории
+│   └── CreateFinanceCategoryViewModel.kt    # VM создания категории (Orbit MVI)
+├── details/
+│   ├── screen/
+│   │   ├── FinanceDetailsScreen.kt          # Compose entrypoint: VM binding + sheet orchestration
+│   │   ├── FinanceDetailsContent.kt         # Compose scaffold/top bar + state switching
+│   │   └── FinanceDetailsList.kt            # Compose список: badge, month headers, ledger rows
+│   ├── FinanceDetailsActions.kt             # sealed interface интентов экрана деталей
+│   ├── FinanceDetailsFragment.kt            # Фрагмент-хост для Compose экрана деталей
+│   ├── FinanceDetailsState.kt               # State + BottomSheetState для Orbit контейнера
+│   └── FinanceDetailsViewModel.kt           # VM деталей (Orbit MVI)
+└── util/
+    └── GetFinanceCategoryNameInLocalLanguage.kt  # Локализация имён категорий
 ```
 
 ### Layouts

@@ -20,6 +20,7 @@ domain/src/main/java/com/breckneck/deptbook/domain/
 ├── repository/     # Интерфейсы репозиториев (порты)
 ├── usecase/        # Use Cases по фичам
 │   ├── Ad/
+│   ├── AppData/
 │   ├── Debt/
 │   ├── Finance/
 │   ├── FinanceCategory/
@@ -134,6 +135,11 @@ data class AppDataLists(
 
 ## Интерфейсы репозиториев (`repository/`)
 
+### `AppDataRepository`
+| Метод | Описание |
+|-------|---------|
+| `replaceAllAppData(AppDataLists)` | Атомарная замена всех таблиц в одной транзакции (sync restore) |
+
 ### `HumanRepository`
 | Метод | Описание |
 |-------|---------|
@@ -202,7 +208,7 @@ Key-value хранилище настроек:
 | `AddSumUseCase` | Изменить сумму долга |
 | `GetAllDebtsSumUseCase` | Агрегация сумм долгов по валюте |
 | `GetHumanSumDebtUseCase` | Сумма долга одного человека |
-| `ReplaceAllHumans` | Полная замена (sync) |
+| `ReplaceAllHumans` | Полная замена (sync, устаревший — используй `ReplaceAllAppData`) |
 
 ### `usecase/Debt/` (15 use cases)
 | Класс | Действие |
@@ -241,6 +247,11 @@ Getter/Setter пары для каждой настройки. Примеры:
 
 ### `usecase/Ad/` (2 use cases)
 `GetClicksUseCase`, `SaveClicksUseCase`.
+
+### `usecase/AppData/` (1 use case)
+| Класс | Действие |
+|-------|---------|
+| `ReplaceAllAppData` | Атомарное восстановление всех таблиц из `AppDataLists` (используется sync restore) |
 
 ---
 

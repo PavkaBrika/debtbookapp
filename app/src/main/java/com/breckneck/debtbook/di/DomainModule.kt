@@ -1,6 +1,7 @@
 package com.breckneck.debtbook.di
 
 import com.breckneck.deptbook.domain.repository.AdRepository
+import com.breckneck.deptbook.domain.repository.AppDataRepository
 import com.breckneck.deptbook.domain.repository.DebtRepository
 import com.breckneck.deptbook.domain.repository.FinanceCategoryRepository
 import com.breckneck.deptbook.domain.repository.FinanceRepository
@@ -8,6 +9,8 @@ import com.breckneck.deptbook.domain.repository.GoalDepositRepository
 import com.breckneck.deptbook.domain.repository.GoalRepository
 import com.breckneck.deptbook.domain.repository.HumanRepository
 import com.breckneck.deptbook.domain.repository.SettingsRepository
+import com.breckneck.deptbook.domain.usecase.AppData.GetAllAppData
+import com.breckneck.deptbook.domain.usecase.AppData.ReplaceAllAppData
 import com.breckneck.deptbook.domain.usecase.Ad.GetClicksUseCase
 import com.breckneck.deptbook.domain.usecase.Ad.SaveClicksUseCase
 import com.breckneck.deptbook.domain.usecase.Debt.DeleteDebtUseCase
@@ -79,6 +82,8 @@ import com.breckneck.deptbook.domain.usecase.Settings.SetFirstMainCurrency
 import com.breckneck.deptbook.domain.usecase.Settings.SetHumanOrder
 import com.breckneck.deptbook.domain.usecase.Settings.SetIsFingerprintAuthEnabled
 import com.breckneck.deptbook.domain.usecase.Settings.SetIsAuthorized
+import com.breckneck.deptbook.domain.usecase.Settings.GetAdsDisabled
+import com.breckneck.deptbook.domain.usecase.Settings.SetAdsDisabled
 import com.breckneck.deptbook.domain.usecase.Settings.SetLastSyncDate
 import com.breckneck.deptbook.domain.usecase.Settings.SetPINCode
 import com.breckneck.deptbook.domain.usecase.Settings.SetPINCodeEnabled
@@ -330,6 +335,16 @@ object DomainModule {
     fun provideSetIsFingerprintAuthEnabled(settingsRepository: SettingsRepository) =
         SetIsFingerprintAuthEnabled(settingsRepository = settingsRepository)
 
+    @Provides
+    @Singleton
+    fun provideGetAdsDisabled(settingsRepository: SettingsRepository) =
+        GetAdsDisabled(settingsRepository = settingsRepository)
+
+    @Provides
+    @Singleton
+    fun provideSetAdsDisabled(settingsRepository: SettingsRepository) =
+        SetAdsDisabled(settingsRepository = settingsRepository)
+
     // ── FINANCE (singleton — shared across ViewModels that read finance data) ─
 
     @Provides
@@ -452,4 +467,14 @@ object DomainModule {
     @Provides
     fun provideReplaceAllGoalsDeposits(goalDepositRepository: GoalDepositRepository) =
         ReplaceAllGoalsDeposits(goalDepositRepository = goalDepositRepository)
+
+    // ── APP DATA ──────────────────────────────────────────────────────────────
+
+    @Provides
+    fun provideGetAllAppData(appDataRepository: AppDataRepository) =
+        GetAllAppData(appDataRepository = appDataRepository)
+
+    @Provides
+    fun provideReplaceAllAppData(appDataRepository: AppDataRepository) =
+        ReplaceAllAppData(appDataRepository = appDataRepository)
 }

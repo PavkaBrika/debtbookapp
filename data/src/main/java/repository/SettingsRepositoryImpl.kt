@@ -161,4 +161,12 @@ class SettingsRepositoryImpl(private val settingsStorage: SettingsStorage): Sett
     override fun getIsFingerprintAuthEnabled(): Boolean {
         return settingsStorage.getIsFingerprintAuthEnabled()
     }
+
+    override fun setAdsDisabled(isDisabled: Boolean) {
+        settingsStorage.setAdsDisabled(isDisabled = isDisabled)
+    }
+
+    override fun getAdsDisabled(): Boolean {
+        return settingsStorage.getAdsDisabled()
+    }
 }

@@ -1,0 +1,183 @@
+package com.breckneck.debtbook.settings.synchronization
+
+import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.breckneck.debtbook.settings.synchronization.util.DriveServiceHelper
+import com.breckneck.deptbook.domain.model.AppDataLists
+import com.breckneck.deptbook.domain.usecase.AppData.GetAllAppData
+import com.breckneck.deptbook.domain.usecase.AppData.ReplaceAllAppData
+import com.breckneck.deptbook.domain.usecase.Debt.SetDateUseCase
+import com.breckneck.deptbook.domain.usecase.Settings.GetIsAuthorized
+import com.breckneck.deptbook.domain.usecase.Settings.GetLastSyncDate
+import com.breckneck.deptbook.domain.usecase.Settings.SetIsAuthorized
+import com.breckneck.deptbook.domain.usecase.Settings.SetLastSyncDate
+import com.breckneck.deptbook.domain.usecase.Settings.SetUserData
+import kotlinx.coroutines.Dispatchers
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.util.Calendar
+import javax.inject.Inject
+
+@HiltViewModel
+class SynchronizationViewModel @Inject constructor(
+    private val getIsAuthorized: GetIsAuthorized,
+    private val setIsAuthorized: SetIsAuthorized,
+    private val getAllAppData: GetAllAppData,
+    private val replaceAllAppData: ReplaceAllAppData,
+    private val setUserData: SetUserData,
+    private val setDateUseCase: SetDateUseCase,
+    private val setLastSyncDate: SetLastSyncDate,
+    private val getLastSyncDate: GetLastSyncDate
+) : ViewModel() {
+
+    private val TAG = "SyncFragmentVM"
+
+    private val _isAuthorized = MutableLiveData<Boolean>()
+    val isAuthorized: LiveData<Boolean>
+        get() = _isAuthorized
+    private val _userName = MutableLiveData<String>()
+    val userName: LiveData<String>
+        get() = _userName
+    private val _emailAddress = MutableLiveData<String>()
+    val emailAddress: LiveData<String>
+        get() = _emailAddress
+    private val _appDataInfoForSync = MutableLiveData<AppDataLists>()
+    val appDataInfoForSync: LiveData<AppDataLists>
+        get() = _appDataInfoForSync
+    private val _fileId = MutableLiveData<String>(null)
+    val fileId: LiveData<String>
+        get() = _fileId
+    private var _driveServiceHelper = MutableLiveData<DriveServiceHelper>()
+    val driveServiceHelper: LiveData<DriveServiceHelper>
+        get() = _driveServiceHelper
+    private val _isSynchronizing = MutableLiveData<Boolean>(false)
+    val isSynchronizing: LiveData<Boolean>
+        get() = _isSynchronizing
+    private val _isRestoring = MutableLiveData<Boolean>(false)
+    val isRestoring: LiveData<Boolean>
+        get() = _isRestoring
+    private val _isRestoreDialogOpened = MutableLiveData<Boolean>(false)
+    val isRestoreDialogOpened: LiveData<Boolean>
+        get() = _isRestoreDialogOpened
+    private val _isLogOutDialogOpened = MutableLiveData<Boolean>(false)
+    val isLogOutDialogOpened: LiveData<Boolean>
+        get() = _isLogOutDialogOpened
+    private val _isListModified = MutableLiveData<Boolean>(false)
+    val isListModified: LiveData<Boolean>
+        get() = _isListModified
+    private val _lastSyncDate = MutableLiveData<String>()
+    val lastSyncDate: LiveData<String>
+        get() = _lastSyncDate
+
+    init {
+        getIsAuthorized()
+        getAppDataForSync()
+        getLastSyncDate()
+    }
+
+    fun setLastSyncDate() {
+        val calendar = Calendar.getInstance()
+        setLastSyncDate.execute(calendar.timeInMillis)
+        val date = setDateUseCase.execute(
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        )
+        _lastSyncDate.value = date
+    }
+
+    private fun getLastSyncDate() {
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = getLastSyncDate.execute()
+        if (calendar.timeInMillis == 0L) {
+            _lastSyncDate.value = ""
+        } else {
+            val date = setDateUseCase.execute(
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+            )
+            _lastSyncDate.value = date
+        }
+    }
+
+    private fun getIsAuthorized() {
+        _isAuthorized.value = getIsAuthorized.execute()
+    }
+
+    fun setIsAuthorized(isAuthorized: Boolean) {
+        _isAuthorized.value = isAuthorized
+        setIsAuthorized.execute(isAuthorized)
+    }
+
+    fun setUser(name: String?, email: String?) {
+        if (name == null) {
+            _userName.value = ""
+        } else {
+            _userName.value = name!!
+        }
+
+        if (email == null) {
+            _emailAddress.value = ""
+        } else {
+            _emailAddress.value = email!!
+        }
+        setUserData.execute(userName.value!!, emailAddress.value!!)
+    }
+
+    fun getAppDataForSync() {
+        viewModelScope.launch {
+            try {
+                val appData = withContext(Dispatchers.IO) {
+                    getAllAppData.execute()
+                }
+                _appDataInfoForSync.value = appData
+            } catch (e: Exception) {
+                Log.e(TAG, e.stackTrace.toString())
+            }
+        }
+    }
+
+    fun replaceAllData(appDataLists: AppDataLists) {
+        viewModelScope.launch {
+            try {
+                withContext(Dispatchers.IO) {
+                    replaceAllAppData.execute(appDataLists)
+                }
+                _isRestoring.value = false
+                _isListModified.value = true
+            } catch (e: Exception) {
+                Log.e(TAG, e.stackTrace.toString())
+                _isRestoring.value = false
+            }
+        }
+    }
+
+    fun setFileId(fileId: String) {
+        _fileId.value = fileId
+    }
+
+    fun setDriveServiceHelper(helper: DriveServiceHelper) {
+        _driveServiceHelper.value = helper
+    }
+
+    fun setIsSynchronizing(isSynchronizing: Boolean) {
+        _isSynchronizing.value = isSynchronizing
+    }
+
+    fun setIsRestoring(isRestoring: Boolean) {
+        _isRestoring.value = isRestoring
+    }
+
+    fun setIsRestoreDialogOpened(opened: Boolean) {
+        _isRestoreDialogOpened.value = opened
+    }
+
+    fun setIsLogOutDialogOpened(opened: Boolean) {
+        _isLogOutDialogOpened.value = opened
+    }
+}

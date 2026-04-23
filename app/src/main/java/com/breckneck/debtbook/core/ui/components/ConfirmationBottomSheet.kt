@@ -13,18 +13,16 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.core.ui.theme.DebtBookTheme
+import com.breckneck.debtbook.core.ui.theme.spacing
 
 /**
  * Confirmation bottom sheet with title, message and action buttons (replaces dialog_are_you_sure.xml).
@@ -41,12 +39,7 @@ fun ConfirmationBottomSheet(
     onConfirm: () -> Unit,
     onDismiss: () -> Unit
 ) {
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-
-    ModalBottomSheet(
-        onDismissRequest = onDismiss,
-        sheetState = sheetState
-    ) {
+    DebtBookBottomSheet(onDismiss = onDismiss) {
         ConfirmationContent(
             title = title,
             message = message,
@@ -67,25 +60,26 @@ internal fun ConfirmationContent(
     onConfirm: () -> Unit,
     onDismiss: () -> Unit
 ) {
+    val spacing = MaterialTheme.spacing
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .navigationBarsPadding()
-            .padding(horizontal = 24.dp)
-            .padding(top = 8.dp, bottom = 24.dp)
+            .padding(horizontal = spacing.space24)
+            .padding(top = spacing.space24, bottom = spacing.space24)
     ) {
         Text(
             text = title,
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onSurface
         )
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(spacing.space16))
         Text(
             text = message,
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(spacing.space24))
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.End
@@ -95,7 +89,7 @@ internal fun ConfirmationContent(
             }
             FilledTonalButton(
                 onClick = onConfirm,
-                modifier = Modifier.padding(start = 8.dp),
+                modifier = Modifier.padding(start = spacing.space8),
                 colors = ButtonDefaults.filledTonalButtonColors(
                     containerColor = MaterialTheme.colorScheme.errorContainer,
                     contentColor = MaterialTheme.colorScheme.onErrorContainer

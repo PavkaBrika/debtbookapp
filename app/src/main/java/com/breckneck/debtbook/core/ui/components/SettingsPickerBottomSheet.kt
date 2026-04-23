@@ -14,17 +14,16 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.breckneck.debtbook.core.ui.theme.DebtBookTheme
+import com.breckneck.debtbook.core.ui.theme.spacing
 
 /**
  * Generic bottom sheet for picking one option from a list (replaces dialog_setting.xml + SettingsAdapter).
@@ -39,12 +38,7 @@ fun SettingsPickerBottomSheet(
     onItemSelected: (Int) -> Unit,
     onDismiss: () -> Unit
 ) {
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-
-    ModalBottomSheet(
-        onDismissRequest = onDismiss,
-        sheetState = sheetState
-    ) {
+    DebtBookBottomSheet(onDismiss = onDismiss) {
         SettingsPickerContent(
             title = title,
             options = options,
@@ -61,17 +55,18 @@ internal fun SettingsPickerContent(
     selectedIndex: Int,
     onItemSelected: (Int) -> Unit
 ) {
+    val spacing = MaterialTheme.spacing
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .navigationBarsPadding()
-            .padding(bottom = 24.dp)
+            .padding(bottom = spacing.space24)
     ) {
         Text(
             text = title,
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp)
+            modifier = Modifier.padding(start = spacing.space24, end = spacing.space24, top = spacing.space24, bottom = spacing.space16)
         )
         Column(
             modifier = Modifier
@@ -85,7 +80,7 @@ internal fun SettingsPickerContent(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable { onItemSelected(index) }
-                        .padding(horizontal = 16.dp)
+                        .padding(horizontal = spacing.space16)
                         .heightIn(min = 48.dp)
                 ) {
                     RadioButton(
@@ -96,7 +91,7 @@ internal fun SettingsPickerContent(
                         text = option,
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.padding(start = 12.dp)
+                        modifier = Modifier.padding(start = spacing.space12)
                     )
                 }
             }

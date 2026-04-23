@@ -63,6 +63,42 @@ Use `MaterialTheme.shapes.*` instead of ad-hoc `RoundedCornerShape(...)` unless 
 - XML:
   - Use app bar patterns/styles in `themes.xml` (e.g., `appBarLayoutStyle`) and keep title/back behavior consistent with Compose screens.
 
+**`LargeTopAppBar` scroll pattern** (mandatory):
+- Always override `scrolledContainerColor` to `MaterialTheme.colorScheme.surface` — the default Material3 tonal shift to `surfaceContainerHigh` looks dirty and conflicts with the calm tone.
+- Add a `HorizontalDivider` with `alpha = collapsedFraction` directly below the bar (inside a `Column` in the `topBar` slot) — this provides a clean separator that fades in as the bar collapses instead of a sudden color change.
+
+```kotlin
+Column {
+    LargeTopAppBar(
+        colors = TopAppBarDefaults.largeTopAppBarColors(
+            scrolledContainerColor = MaterialTheme.colorScheme.surface,
+        ),
+        ...
+    )
+    HorizontalDivider(
+        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = collapsedFraction)
+    )
+}
+```
+
+### Bottom sheets
+- Always use `dragHandle = null` on every `ModalBottomSheet`. The default drag pill is visually noisy and inconsistent with the calm design language.
+- Swipe-to-dismiss still works without the handle — users can dismiss via back gesture or tapping the scrim.
+- **Compensate for removed handle with `padding(top = 24.dp)` on the sheet content.** The M3 drag handle occupies ~24dp (4dp pill + 10dp top + 10dp bottom); without it the content sits flush against the sheet edge.
+
+```kotlin
+ModalBottomSheet(
+    dragHandle = null,
+    ...
+) {
+    Column(
+        modifier = Modifier
+            .padding(top = 24.dp)  // compensates for removed drag handle
+            ...
+    ) { ... }
+}
+```
+
 ### Lists & data scan
 - Use `LazyColumn` with clear scanable rows.
 - Provide:

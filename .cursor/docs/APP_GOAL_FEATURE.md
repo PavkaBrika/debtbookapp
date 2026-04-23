@@ -10,17 +10,22 @@
 
 ```
 app/src/main/java/com/breckneck/debtbook/goal/
-├── adapter/
-│   ├── GoalAdapter.kt          # Адаптер списка целей
-│   └── GoalDepositAdapter.kt   # Адаптер списка транзакций/депозитов
-├── presentation/
-│   ├── GoalsFragment.kt        # Список целей
-│   ├── CreateGoalsFragment.kt  # Создание/редактирование цели
-│   └── GoalDetailsFragment.kt  # Детали цели + депозиты
-└── viewmodel/
-    ├── GoalsFragmentViewModel.kt        # VM списка
-    ├── CreateGoalsFragmentViewModel.kt  # VM создания
-    └── GoalDetailsFragmentViewModel.kt  # VM деталей
+├── main/
+│   ├── screen/
+│   │   ├── GoalsScreen.kt             # Compose корневой экран списка целей
+│   │   ├── GoalItem.kt                # Compose элемент цели
+│   │   └── AddGoalSumBottomSheet.kt   # Compose bottom sheet быстрого добавления суммы
+│   ├── GoalsAction.kt                 # sealed interface Orbit-интентов
+│   ├── GoalsState.kt                  # State + GoalsSideEffect (Orbit MVI)
+│   ├── GoalsFragment.kt               # Фрагмент-хост списка целей
+│   └── GoalsViewModel.kt              # VM списка (Orbit MVI)
+├── create/
+│   ├── CreateGoalsFragment.kt         # Создание/редактирование цели
+│   └── CreateGoalsViewModel.kt        # VM создания
+└── details/
+    ├── GoalDepositAdapter.kt          # Адаптер списка транзакций/депозитов
+    ├── GoalDetailsFragment.kt         # Детали цели + депозиты
+    └── GoalDetailsViewModel.kt        # VM деталей
 ```
 
 ### Layouts
@@ -33,9 +38,9 @@ app/src/main/java/com/breckneck/debtbook/goal/
 
 ---
 
-## GoalsFragmentViewModel
+## GoalsViewModel
 
-VM списка целей.
+VM списка целей. Реализует `ContainerHost<GoalsState, GoalsSideEffect>` (Orbit MVI).
 
 ### Зависимости
 - `GetAllGoals` — загрузка целей
@@ -44,32 +49,34 @@ VM списка целей.
 - `SetGoalDeposit` — создание депозита
 - `DeleteGoalDepositsByGoalId` — удаление депозитов при удалении цели
 
-### State
+### State (`GoalsState`)
 | Поле | Тип | Описание |
 |------|-----|---------|
-| `goalList` | `LiveData<List<Goal>>` | Список целей |
-| `goalListState` | `LiveData<ListState>` | LOADING / EMPTY / SUCCESS |
-| `isAddSumDialogOpened` | `Boolean` | Состояние диалога добавления суммы |
-| `changedGoal` | `Goal?` | Цель, к которой добавляют сумму |
-| `changedGoalPosition` | `Int?` | Позиция в списке |
+| `goalList` | `List<Goal>` | Список целей |
+| `listState` | `ListState` | LOADING / EMPTY / SUCCESS |
+
+### Side effects (`GoalsSideEffect`)
+| Эффект | Когда |
+|--------|-------|
+| `NavigateToAddGoal` | Навигация на создание новой цели |
+| `NavigateToGoalDetails(goal)` | Навигация на детали цели |
+
+### `GoalsAction` (sealed interface)
+| Действие | Что делает |
+|----------|-----------|
+| `AddGoalClick` | Post side effect навигации на создание цели |
+| `GoalClick(goal)` | Post side effect навигации на детали |
+| `AddGoalDeposit(goal, sum)` | Создать депозит и обновить savedSum цели |
+| `DeleteGoal(goal)` | Удалить цель + депозиты, перезагрузить список |
+| `RefreshAfterNavigation(wasModified)` | Перезагрузить список если данные изменились |
 
 ### Ключевая логика
-- Загрузка целей через `viewModelScope.launch` + `withContext(Dispatchers.IO)`
 - При удалении цели — каскадное удаление депозитов
-- Диалог быстрого добавления суммы к цели прямо из списка
-- Обновление `savedSum` цели при добавлении депозита
-
-### Действия
-| Метод | Что делает |
-|-------|-----------|
-| `getAllGoals()` | Загрузить/обновить список |
-| `updateGoal(goal)` | Обновить цель (savedSum) |
-| `deleteGoal(goal)` | Удалить цель + депозиты |
-| `setGoalDeposit(goalDeposit)` | Создать депозит |
+- Compose bottom sheet быстрого добавления суммы прямо из списка
 
 ---
 
-## CreateGoalsFragmentViewModel
+## CreateGoalsViewModel
 
 ### Зависимости
 - `SetGoal` — создание цели
@@ -82,7 +89,7 @@ VM списка целей.
 
 ---
 
-## GoalDetailsFragmentViewModel
+## GoalDetailsViewModel
 
 ### Зависимости
 - `UpdateGoal` — обновление savedSum
@@ -100,12 +107,6 @@ VM списка целей.
 ---
 
 ## Adapters
-
-### GoalAdapter
-- RecyclerView для списка целей
-- Отображает: название, прогресс (savedSum/sum), валюту, фото
-- Callbacks: клик (детали), long press (быстрое добавление суммы)
-- Shimmer layout
 
 ### GoalDepositAdapter
 - RecyclerView для транзакций цели
