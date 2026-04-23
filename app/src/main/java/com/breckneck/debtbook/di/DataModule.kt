@@ -10,6 +10,7 @@ import com.breckneck.deptbook.data.storage.GoalStorage
 import com.breckneck.deptbook.data.storage.HumanStorage
 import com.breckneck.deptbook.data.storage.SettingsStorage
 import com.breckneck.deptbook.domain.repository.AdRepository
+import com.breckneck.deptbook.domain.repository.AppDataRepository
 import com.breckneck.deptbook.domain.repository.DebtRepository
 import com.breckneck.deptbook.domain.repository.FinanceCategoryRepository
 import com.breckneck.deptbook.domain.repository.FinanceRepository
@@ -29,6 +30,7 @@ import database.DataBaseGoalDepositStorageImpl
 import database.DataBaseGoalStorageImpl
 import database.DataBaseHumanStorageImpl
 import repository.AdRepositoryImpl
+import repository.AppDataRepositoryImpl
 import repository.DebtRepositoryImpl
 import repository.FinanceCategoryRepositoryImpl
 import repository.FinanceRepositoryImpl
@@ -139,4 +141,11 @@ object DataModule {
     @Singleton
     fun provideGoalDepositRepository(goalDepositStorage: GoalDepositStorage): GoalDepositRepository =
         GoalDepositRepositoryImpl(goalDepositStorage = goalDepositStorage)
+
+    // APP DATA (atomic cross-table restore)
+
+    @Provides
+    @Singleton
+    fun provideAppDataRepository(@ApplicationContext context: Context): AppDataRepository =
+        AppDataRepositoryImpl(context = context)
 }

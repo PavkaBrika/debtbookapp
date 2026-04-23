@@ -7,19 +7,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.breckneck.debtbook.settings.synchronization.util.DriveServiceHelper
 import com.breckneck.deptbook.domain.model.AppDataLists
+import com.breckneck.deptbook.domain.usecase.AppData.ReplaceAllAppData
 import com.breckneck.deptbook.domain.usecase.Debt.GetAllDebts
-import com.breckneck.deptbook.domain.usecase.Debt.ReplaceAllDebts
 import com.breckneck.deptbook.domain.usecase.Debt.SetDateUseCase
 import com.breckneck.deptbook.domain.usecase.Finance.GetAllFinances
-import com.breckneck.deptbook.domain.usecase.Finance.ReplaceAllFinances
 import com.breckneck.deptbook.domain.usecase.FinanceCategory.GetAllFinanceCategories
-import com.breckneck.deptbook.domain.usecase.FinanceCategory.ReplaceAllFinanceCategories
 import com.breckneck.deptbook.domain.usecase.Goal.GetAllGoals
-import com.breckneck.deptbook.domain.usecase.Goal.ReplaceAllGoals
 import com.breckneck.deptbook.domain.usecase.GoalDeposit.GetAllGoalDeposits
-import com.breckneck.deptbook.domain.usecase.GoalDeposit.ReplaceAllGoalsDeposits
 import com.breckneck.deptbook.domain.usecase.Human.GetAllHumansUseCase
-import com.breckneck.deptbook.domain.usecase.Human.ReplaceAllHumans
 import com.breckneck.deptbook.domain.usecase.Settings.GetIsAuthorized
 import com.breckneck.deptbook.domain.usecase.Settings.GetLastSyncDate
 import com.breckneck.deptbook.domain.usecase.Settings.SetIsAuthorized
@@ -38,20 +33,15 @@ class SynchronizationViewModel @Inject constructor(
     private val setIsAuthorized: SetIsAuthorized,
     private val getAllDebts: GetAllDebts,
     private val getAllHumansUseCase: GetAllHumansUseCase,
-    private val replaceAllDebts: ReplaceAllDebts,
-    private val replaceAllHumans: ReplaceAllHumans,
+    private val replaceAllAppData: ReplaceAllAppData,
     private val setUserData: SetUserData,
     private val setDateUseCase: SetDateUseCase,
     private val setLastSyncDate: SetLastSyncDate,
     private val getLastSyncDate: GetLastSyncDate,
     private val getAllFinances: GetAllFinances,
     private val getAllFinanceCategories: GetAllFinanceCategories,
-    private val replaceAllFinances: ReplaceAllFinances,
-    private val replaceAllFinanceCategories: ReplaceAllFinanceCategories,
     private val getAllGoals: GetAllGoals,
-    private val getAllGoalDeposits: GetAllGoalDeposits,
-    private val replaceAllGoals: ReplaceAllGoals,
-    private val replaceAllGoalDeposits: ReplaceAllGoalsDeposits
+    private val getAllGoalDeposits: GetAllGoalDeposits
 ) : ViewModel() {
 
     private val TAG = "SyncFragmentVM"
@@ -173,17 +163,13 @@ class SynchronizationViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 withContext(Dispatchers.IO) {
-                    replaceAllHumans.execute(appDataLists.humanList)
-                    replaceAllDebts.execute(appDataLists.debtList)
-                    replaceAllFinanceCategories.execute(appDataLists.financeCategoryList)
-                    replaceAllFinances.execute(appDataLists.financeList)
-                    replaceAllGoals.execute(appDataLists.goalList)
-                    replaceAllGoalDeposits.execute(appDataLists.goalDepositList)
+                    replaceAllAppData.execute(appDataLists)
                 }
                 _isRestoring.value = false
                 _isListModified.value = true
             } catch (e: Exception) {
                 Log.e(TAG, e.stackTrace.toString())
+                _isRestoring.value = false
             }
         }
     }

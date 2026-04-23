@@ -99,23 +99,21 @@ class SettingsFragment : Fragment() {
         }
 
         val synchronizationCardView: CardView = view.findViewById(R.id.synchronizationCardView)
-//        vm.isSynchronizationAvailable.observe(viewLifecycleOwner) { isAvailable ->
-//            if (isAvailable)
-//                synchronizationCardView.visibility = View.VISIBLE
-//            else
-//                synchronizationCardView.visibility = View.GONE
-//        }
+        vm.isSynchronizationAvailable.observe(viewLifecycleOwner) { isAvailable ->
+            if (isAvailable)
+                synchronizationCardView.visibility = View.VISIBLE
+            else
+                synchronizationCardView.visibility = View.GONE
+        }
 
         val authorizationLayout: LinearLayout = view.findViewById(R.id.authorizationLayout)
         val accountInfoLayout: ConstraintLayout = view.findViewById(R.id.accountInfoLayout)
         vm.isAuthorized.observe(viewLifecycleOwner) { isAuthorized ->
             if (isAuthorized) {
-                synchronizationCardView.visibility = View.VISIBLE
                 authorizationLayout.visibility = View.GONE
                 accountInfoLayout.visibility = View.VISIBLE
                 vm.getUserData()
             } else {
-                synchronizationCardView.visibility = View.GONE
                 authorizationLayout.visibility = View.VISIBLE
                 accountInfoLayout.visibility = View.GONE
             }

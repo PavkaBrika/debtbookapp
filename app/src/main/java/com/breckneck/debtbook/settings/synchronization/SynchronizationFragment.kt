@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,11 +17,14 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
+import androidx.fragment.app.viewModels
 import com.breckneck.debtbook.BuildConfig
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.settings.synchronization.util.DriveServiceHelper
@@ -38,7 +42,6 @@ import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveScopes
 import com.google.api.services.drive.model.FileList
 import com.google.gson.Gson
-import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Collections
 
@@ -50,18 +53,26 @@ class SynchronizationFragment : Fragment() {
     }
 
     private val TAG = "Sync fragment"
-    private val REQUEST_CODE_SIGN_IN = 1
 
     private val vm by viewModels<SynchronizationViewModel>()
     private val fileName = "DebtBookSync.json"
     private var synchronizationInterface: SynchronizationInterface? = null
     private val gson = Gson()
     private lateinit var synchronizationProgressBar: ProgressBar
+    private lateinit var signInLauncher: ActivityResultLauncher<Intent>
 
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         synchronizationInterface = context as SynchronizationInterface
+        signInLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            val data = result.data
+            if (data == null) {
+                synchronizationProgressBar.visibility = View.GONE
+                return@registerForActivityResult
+            }
+            handleSignInResult(data)
+        }
     }
 
     override fun onCreateView(
@@ -236,7 +247,7 @@ class SynchronizationFragment : Fragment() {
             .requestScopes(Scope(DriveScopes.DRIVE_APPDATA))
             .build()
         val client = GoogleSignIn.getClient(requireActivity(), signInOptions)
-        startActivityForResult(client.signInIntent, REQUEST_CODE_SIGN_IN)
+        signInLauncher.launch(client.signInIntent)
     }
 
     private fun handleSignInResult(result: Intent) {
@@ -247,9 +258,9 @@ class SynchronizationFragment : Fragment() {
                 setFragmentResult("settingsFragmentKey", bundleOf("isAuthorized" to true))
             }
             .addOnFailureListener {
+                Log.e(TAG, "Sign-in failed", it)
                 Toast.makeText(requireActivity(), getString(R.string.something_went_wrong), Toast.LENGTH_SHORT)
                     .show()
-                throw it
             }
             .addOnCompleteListener {
                 synchronizationProgressBar.visibility = View.GONE
@@ -271,9 +282,9 @@ class SynchronizationFragment : Fragment() {
         vm.driveServiceHelper.value!!.queryFiles()
             .addOnSuccessListener { findOrCreateFile(it) }
             .addOnFailureListener {
+                Log.e(TAG, "Failed to query Drive files", it)
                 Toast.makeText(requireActivity(), getString(R.string.something_went_wrong), Toast.LENGTH_SHORT)
                     .show()
-                throw it
             }
     }
 
@@ -299,13 +310,13 @@ class SynchronizationFragment : Fragment() {
                 vm.setLastSyncDate()
             }
             .addOnFailureListener {
+                Log.e(TAG, "Failed to save file to Drive", it)
                 vm.setIsSynchronizing(false)
                 Toast.makeText(
                     requireActivity(),
                     getString(R.string.something_went_wrong),
                     Toast.LENGTH_SHORT
                 ).show()
-                throw it
             }
     }
 
@@ -315,14 +326,13 @@ class SynchronizationFragment : Fragment() {
                 vm.replaceAllData(gson.fromJson(it.second, AppDataLists::class.java))
             }
             .addOnFailureListener {
+                Log.e(TAG, "Failed to read file from Drive", it)
                 vm.setIsRestoring(false)
                 Toast.makeText(
                     requireActivity(),
                     getString(R.string.something_went_wrong),
                     Toast.LENGTH_SHORT
-                )
-                    .show()
-                throw it
+                ).show()
             }
     }
 
@@ -351,20 +361,14 @@ class SynchronizationFragment : Fragment() {
         vm.driveServiceHelper.value!!.createFile(fileName)
             .addOnSuccessListener {
                 vm.setFileId(it)
-                Toast.makeText(
-                    requireActivity(),
-                    "Created file for chat",
-                    Toast.LENGTH_SHORT
-                ).show()
             }
             .addOnFailureListener {
+                Log.e(TAG, "Failed to create file on Drive", it)
                 Toast.makeText(
                     requireActivity(),
                     getString(R.string.something_went_wrong),
                     Toast.LENGTH_SHORT
-                )
-                    .show()
-                throw it
+                ).show()
             }
     }
 
@@ -422,15 +426,6 @@ class SynchronizationFragment : Fragment() {
 
         vm.setIsLogOutDialogOpened(true)
         bottomSheetDialog.show()
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        when (requestCode) {
-            REQUEST_CODE_SIGN_IN -> {
-                handleSignInResult(data!!)
-            }
-        }
     }
 
     override fun onPause() {

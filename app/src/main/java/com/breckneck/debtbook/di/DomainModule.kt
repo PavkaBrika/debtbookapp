@@ -1,6 +1,7 @@
 package com.breckneck.debtbook.di
 
 import com.breckneck.deptbook.domain.repository.AdRepository
+import com.breckneck.deptbook.domain.repository.AppDataRepository
 import com.breckneck.deptbook.domain.repository.DebtRepository
 import com.breckneck.deptbook.domain.repository.FinanceCategoryRepository
 import com.breckneck.deptbook.domain.repository.FinanceRepository
@@ -8,6 +9,7 @@ import com.breckneck.deptbook.domain.repository.GoalDepositRepository
 import com.breckneck.deptbook.domain.repository.GoalRepository
 import com.breckneck.deptbook.domain.repository.HumanRepository
 import com.breckneck.deptbook.domain.repository.SettingsRepository
+import com.breckneck.deptbook.domain.usecase.AppData.ReplaceAllAppData
 import com.breckneck.deptbook.domain.usecase.Ad.GetClicksUseCase
 import com.breckneck.deptbook.domain.usecase.Ad.SaveClicksUseCase
 import com.breckneck.deptbook.domain.usecase.Debt.DeleteDebtUseCase
@@ -452,4 +454,10 @@ object DomainModule {
     @Provides
     fun provideReplaceAllGoalsDeposits(goalDepositRepository: GoalDepositRepository) =
         ReplaceAllGoalsDeposits(goalDepositRepository = goalDepositRepository)
+
+    // ── APP DATA ──────────────────────────────────────────────────────────────
+
+    @Provides
+    fun provideReplaceAllAppData(appDataRepository: AppDataRepository) =
+        ReplaceAllAppData(appDataRepository = appDataRepository)
 }

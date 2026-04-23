@@ -182,4 +182,30 @@ interface AppDao {
 
     @Update
     fun updateGoalDeposit(goalDepositData: GoalDepositData)
+
+    // Atomic full-DB restore used by synchronization
+    @Transaction
+    fun replaceAllAppData(
+        humans: List<Human>,
+        debts: List<Debt>,
+        financeCategories: List<FinanceCategoryData>,
+        finances: List<FinanceData>,
+        goals: List<GoalData>,
+        goalDeposits: List<GoalDepositData>
+    ) {
+        // Delete children before parents to respect FK constraints
+        deleteAllFinances()
+        deleteAllGoalDeposits()
+        deleteAllDebts()
+        deleteAllHumans()
+        deleteAllFinanceCategories()
+        deleteAllGoals()
+        // Insert parents before children
+        insertAllHumans(humans)
+        insertAllFinanceCategories(financeCategories)
+        insertAllGoals(goals)
+        insertAllDebts(debts)
+        insertAllFinances(finances)
+        insertAllGoalDeposits(goalDeposits)
+    }
 }
