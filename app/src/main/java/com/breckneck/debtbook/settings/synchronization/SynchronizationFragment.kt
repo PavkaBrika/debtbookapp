@@ -147,8 +147,8 @@ class SynchronizationFragment : Fragment() {
 
         val synchronizeButtonLayout: ConstraintLayout = view.findViewById(R.id.synchronizeButtonLayout)
         synchronizeButtonLayout.setOnClickListener {
-            saveFileChanges()
             vm.setIsSynchronizing(true)
+            saveFileChanges()
         }
 
         val restoreButtonLayout: ConstraintLayout = view.findViewById(R.id.restoreButtonLayout)
@@ -279,7 +279,7 @@ class SynchronizationFragment : Fragment() {
                 .build()
 
         vm.setDriveServiceHelper(DriveServiceHelper(driveService))
-        vm.driveServiceHelper.value!!.queryFiles()
+        vm.driveServiceHelper.value!!.queryFiles(fileName)
             .addOnSuccessListener { findOrCreateFile(it) }
             .addOnFailureListener {
                 Log.e(TAG, "Failed to query Drive files", it)

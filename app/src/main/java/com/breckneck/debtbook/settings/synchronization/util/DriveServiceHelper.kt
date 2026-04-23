@@ -68,11 +68,13 @@ class DriveServiceHelper(driveService: Drive) {
         )
     }
 
-    fun queryFiles(): Task<FileList> {
+    fun queryFiles(fileName: String): Task<FileList> {
         return Tasks.call(mExecutor, Callable {
-            mDriveService.files().list().setSpaces("appDataFolder").execute()
-        }
-        )
+            mDriveService.files().list()
+                .setSpaces("appDataFolder")
+                .setQ("name = '$fileName'")
+                .execute()
+        })
     }
 
     fun createFilePickerIntent(): Intent {
