@@ -1,4 +1,0 @@
-• Fixed Google Drive sync — resolved crashes and UI visibility issues
-• Improved Goals screen appearance
-• Fixed dark theme display issues
-• General stability and performance improvements
