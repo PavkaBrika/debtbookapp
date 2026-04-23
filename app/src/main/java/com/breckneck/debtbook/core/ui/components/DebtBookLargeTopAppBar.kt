@@ -47,7 +47,6 @@ fun DebtBookLargeTopAppBar(
     onBackClick: (() -> Unit)? = null,
     actions: @Composable RowScope.() -> Unit = {},
 ) {
-    val collapsedFraction = scrollBehavior.state.collapsedFraction
     Column {
         LargeTopAppBar(
             title = {
@@ -73,9 +72,7 @@ fun DebtBookLargeTopAppBar(
                 scrolledContainerColor = MaterialTheme.colorScheme.surface,
             ),
         )
-        HorizontalDivider(
-            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = collapsedFraction)
-        )
+        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
     }
 }
 
