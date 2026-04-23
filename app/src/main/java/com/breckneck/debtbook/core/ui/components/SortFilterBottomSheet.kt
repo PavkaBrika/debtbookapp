@@ -23,12 +23,10 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -42,6 +40,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.core.ui.theme.DebtBookTheme
+import com.breckneck.debtbook.core.ui.theme.spacing
 
 /**
  * Sort + Filter bottom sheet (replaces dialog_sort.xml).
@@ -64,12 +63,7 @@ fun SortFilterBottomSheet(
     onConfirm: (sortIndex: Int, filterIndex: Int, rememberChoice: Boolean) -> Unit,
     onDismiss: () -> Unit
 ) {
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-
-    ModalBottomSheet(
-        onDismissRequest = onDismiss,
-        sheetState = sheetState
-    ) {
+    DebtBookBottomSheet(onDismiss = onDismiss) {
         SortFilterContent(
             sortOptions = sortOptions,
             initialSortIndex = initialSortIndex,
@@ -97,14 +91,15 @@ internal fun SortFilterContent(
     var selectedSort by remember { mutableIntStateOf(initialSortIndex) }
     var selectedFilter by remember { mutableIntStateOf(initialFilterIndex) }
     var rememberChoice by remember { mutableStateOf(initialRememberChoice) }
+    val spacing = MaterialTheme.spacing
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .navigationBarsPadding()
             .verticalScroll(rememberScrollState())
-            .padding(horizontal = 16.dp)
-            .padding(top = 8.dp, bottom = 24.dp)
+            .padding(horizontal = spacing.space16)
+            .padding(top = spacing.space24, bottom = spacing.space24)
     ) {
         // Sort section
         Card(
@@ -113,10 +108,10 @@ internal fun SortFilterContent(
                 containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
             )
         ) {
-            Column(modifier = Modifier.padding(16.dp)) {
+            Column(modifier = Modifier.padding(spacing.space16)) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(bottom = 12.dp)
+                    modifier = Modifier.padding(bottom = spacing.space12)
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.SwapVert,
@@ -127,7 +122,7 @@ internal fun SortFilterContent(
                         text = stringResource(R.string.order_by),
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.padding(start = 12.dp)
+                        modifier = Modifier.padding(start = spacing.space12)
                     )
                 }
                 sortOptions.forEachIndexed { index, option ->
@@ -137,7 +132,7 @@ internal fun SortFilterContent(
                             .fillMaxWidth()
                             .clickable { selectedSort = index }
                             .heightIn(min = 44.dp)
-                            .padding(horizontal = 4.dp)
+                            .padding(horizontal = spacing.space4)
                     ) {
                         RadioButton(
                             selected = index == selectedSort,
@@ -147,13 +142,13 @@ internal fun SortFilterContent(
                             text = option,
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier.padding(start = 8.dp)
+                            modifier = Modifier.padding(start = spacing.space8)
                         )
                     }
                 }
                 if (showRememberChoice) {
                     HorizontalDivider(
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                        modifier = Modifier.padding(horizontal = spacing.space8, vertical = spacing.space4),
                         color = MaterialTheme.colorScheme.outlineVariant
                     )
                     Row(
@@ -162,7 +157,7 @@ internal fun SortFilterContent(
                             .fillMaxWidth()
                             .clickable { rememberChoice = !rememberChoice }
                             .heightIn(min = 44.dp)
-                            .padding(horizontal = 4.dp)
+                            .padding(horizontal = spacing.space4)
                     ) {
                         Checkbox(
                             checked = rememberChoice,
@@ -172,14 +167,14 @@ internal fun SortFilterContent(
                             text = stringResource(R.string.remember_choice),
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier.padding(start = 8.dp)
+                            modifier = Modifier.padding(start = spacing.space8)
                         )
                     }
                 }
             }
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(spacing.space12))
 
         // Filter section
         Card(
@@ -188,10 +183,10 @@ internal fun SortFilterContent(
                 containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
             )
         ) {
-            Column(modifier = Modifier.padding(16.dp)) {
+            Column(modifier = Modifier.padding(spacing.space16)) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(bottom = 12.dp)
+                    modifier = Modifier.padding(bottom = spacing.space12)
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.FilterList,
@@ -202,7 +197,7 @@ internal fun SortFilterContent(
                         text = stringResource(R.string.filter),
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.padding(start = 12.dp)
+                        modifier = Modifier.padding(start = spacing.space12)
                     )
                 }
                 filterOptions.forEachIndexed { index, option ->
@@ -212,7 +207,7 @@ internal fun SortFilterContent(
                             .fillMaxWidth()
                             .clickable { selectedFilter = index }
                             .heightIn(min = 44.dp)
-                            .padding(horizontal = 4.dp)
+                            .padding(horizontal = spacing.space4)
                     ) {
                         RadioButton(
                             selected = index == selectedFilter,
@@ -222,14 +217,14 @@ internal fun SortFilterContent(
                             text = option,
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier.padding(start = 8.dp)
+                            modifier = Modifier.padding(start = spacing.space8)
                         )
                     }
                 }
             }
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(spacing.space24))
 
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -238,7 +233,7 @@ internal fun SortFilterContent(
             Spacer(modifier = Modifier.weight(1f))
             TextButton(
                 onClick = onDismiss,
-                modifier = Modifier.padding(end = 8.dp)
+                modifier = Modifier.padding(end = spacing.space8)
             ) {
                 Text(text = stringResource(R.string.cancel))
             }

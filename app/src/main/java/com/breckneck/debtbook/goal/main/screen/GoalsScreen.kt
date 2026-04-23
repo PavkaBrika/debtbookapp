@@ -9,11 +9,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Flag
+import androidx.compose.material.icons.outlined.Savings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -27,6 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.breckneck.debtbook.R
+import com.breckneck.debtbook.core.ui.components.DebtBookLargeTopAppBar
 import com.breckneck.debtbook.core.ui.components.EmptyListPlaceholder
 import com.breckneck.debtbook.core.ui.components.ShimmerListPlaceholder
 import com.breckneck.debtbook.core.ui.theme.DebtBookTheme
@@ -57,9 +57,9 @@ private fun GoalsContent(
 
     Scaffold(
         topBar = {
-            LargeTopAppBar(
-                title = { Text(stringResource(R.string.goals)) },
-                scrollBehavior = scrollBehavior
+            DebtBookLargeTopAppBar(
+                title = stringResource(R.string.goals),
+                scrollBehavior = scrollBehavior,
             )
         },
         floatingActionButton = {
@@ -86,7 +86,7 @@ private fun GoalsContent(
                 ListState.EMPTY -> {
                     EmptyListPlaceholder(
                         emptyText = stringResource(R.string.there_are_no_goals_yet_click_the_button_below_to_add),
-                        emptyIcon = Icons.Default.Flag
+                        emptyIcon = Icons.Outlined.Savings
                     )
                 }
                 ListState.RECEIVED -> {
@@ -180,6 +180,7 @@ private fun GoalsScreenListPreview() {
 }
 
 @Preview(name = "GoalsScreen — empty, light")
+@Preview(name = "GoalsScreen — empty, dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun GoalsScreenEmptyPreview() {
     DebtBookTheme(dynamicColor = false) {

@@ -11,12 +11,10 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,6 +23,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.sp
 import com.breckneck.debtbook.R
+import com.breckneck.debtbook.core.ui.components.DebtBookBottomSheet
 import com.breckneck.debtbook.core.ui.theme.DebtBookTheme
 import com.breckneck.debtbook.core.ui.theme.spacing
 import com.breckneck.debtbook.goal.main.AddDepositPopup
@@ -38,7 +37,6 @@ fun AddGoalSumBottomSheet(
     onConfirm: () -> Unit,
     onDismiss: () -> Unit,
 ) {
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val spacing = MaterialTheme.spacing
     val errorMessage = when (inputError) {
         AddDepositPopup.DepositInputError.EMPTY -> stringResource(R.string.youmustentername)
@@ -46,15 +44,12 @@ fun AddGoalSumBottomSheet(
         null -> null
     }
 
-    ModalBottomSheet(
-        onDismissRequest = onDismiss,
-        sheetState = sheetState
-    ) {
+    DebtBookBottomSheet(onDismiss = onDismiss) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = spacing.space24)
-                .padding(bottom = spacing.space24)
+                .padding(top = spacing.space24, bottom = spacing.space24)
                 .imePadding()
         ) {
             Text(
