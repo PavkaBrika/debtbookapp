@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.app.Activity
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -37,6 +38,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.api.client.extensions.android.http.AndroidHttp
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
+import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
 import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveScopes
@@ -60,6 +62,7 @@ class SynchronizationFragment : Fragment() {
     private val gson = Gson()
     private lateinit var synchronizationProgressBar: ProgressBar
     private lateinit var signInLauncher: ActivityResultLauncher<Intent>
+    private lateinit var driveAuthLauncher: ActivityResultLauncher<Intent>
 
 
     override fun onAttach(context: Context) {
@@ -72,6 +75,12 @@ class SynchronizationFragment : Fragment() {
                 return@registerForActivityResult
             }
             handleSignInResult(data)
+        }
+        driveAuthLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val googleAccount = GoogleSignIn.getLastSignedInAccount(requireContext())
+                if (googleAccount != null) onSuccessSignIn(googleAccount)
+            }
         }
     }
 
@@ -281,9 +290,12 @@ class SynchronizationFragment : Fragment() {
         vm.driveServiceHelper.value!!.queryFiles(fileName)
             .addOnSuccessListener { findOrCreateFile(it) }
             .addOnFailureListener {
-                Log.e(TAG, "Failed to query Drive files", it)
-                Toast.makeText(requireActivity(), getString(R.string.something_went_wrong), Toast.LENGTH_SHORT)
-                    .show()
+                if (it is UserRecoverableAuthIOException) {
+                    driveAuthLauncher.launch(it.intent)
+                } else {
+                    Log.e(TAG, "Failed to query Drive files", it)
+                    Toast.makeText(requireActivity(), getString(R.string.something_went_wrong), Toast.LENGTH_SHORT).show()
+                }
             }
     }
 
@@ -309,13 +321,13 @@ class SynchronizationFragment : Fragment() {
                 vm.setLastSyncDate()
             }
             .addOnFailureListener {
-                Log.e(TAG, "Failed to save file to Drive", it)
                 vm.setIsSynchronizing(false)
-                Toast.makeText(
-                    requireActivity(),
-                    getString(R.string.something_went_wrong),
-                    Toast.LENGTH_SHORT
-                ).show()
+                if (it is UserRecoverableAuthIOException) {
+                    driveAuthLauncher.launch(it.intent)
+                } else {
+                    Log.e(TAG, "Failed to save file to Drive", it)
+                    Toast.makeText(requireActivity(), getString(R.string.something_went_wrong), Toast.LENGTH_SHORT).show()
+                }
             }
     }
 
@@ -325,13 +337,13 @@ class SynchronizationFragment : Fragment() {
                 vm.replaceAllData(gson.fromJson(it.second, AppDataLists::class.java))
             }
             .addOnFailureListener {
-                Log.e(TAG, "Failed to read file from Drive", it)
                 vm.setIsRestoring(false)
-                Toast.makeText(
-                    requireActivity(),
-                    getString(R.string.something_went_wrong),
-                    Toast.LENGTH_SHORT
-                ).show()
+                if (it is UserRecoverableAuthIOException) {
+                    driveAuthLauncher.launch(it.intent)
+                } else {
+                    Log.e(TAG, "Failed to read file from Drive", it)
+                    Toast.makeText(requireActivity(), getString(R.string.something_went_wrong), Toast.LENGTH_SHORT).show()
+                }
             }
     }
 
