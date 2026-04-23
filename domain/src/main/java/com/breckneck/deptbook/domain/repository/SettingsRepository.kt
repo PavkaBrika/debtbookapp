@@ -69,4 +69,8 @@ interface SettingsRepository {
     fun setIsFingerprintAuthEnabled(isEnabled: Boolean)
 
     fun getIsFingerprintAuthEnabled(): Boolean
+
+    fun setAdsDisabled(isDisabled: Boolean)
+
+    fun getAdsDisabled(): Boolean
 }

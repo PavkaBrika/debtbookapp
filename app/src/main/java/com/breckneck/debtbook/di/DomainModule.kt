@@ -82,6 +82,8 @@ import com.breckneck.deptbook.domain.usecase.Settings.SetFirstMainCurrency
 import com.breckneck.deptbook.domain.usecase.Settings.SetHumanOrder
 import com.breckneck.deptbook.domain.usecase.Settings.SetIsFingerprintAuthEnabled
 import com.breckneck.deptbook.domain.usecase.Settings.SetIsAuthorized
+import com.breckneck.deptbook.domain.usecase.Settings.GetAdsDisabled
+import com.breckneck.deptbook.domain.usecase.Settings.SetAdsDisabled
 import com.breckneck.deptbook.domain.usecase.Settings.SetLastSyncDate
 import com.breckneck.deptbook.domain.usecase.Settings.SetPINCode
 import com.breckneck.deptbook.domain.usecase.Settings.SetPINCodeEnabled
@@ -332,6 +334,16 @@ object DomainModule {
     @Singleton
     fun provideSetIsFingerprintAuthEnabled(settingsRepository: SettingsRepository) =
         SetIsFingerprintAuthEnabled(settingsRepository = settingsRepository)
+
+    @Provides
+    @Singleton
+    fun provideGetAdsDisabled(settingsRepository: SettingsRepository) =
+        GetAdsDisabled(settingsRepository = settingsRepository)
+
+    @Provides
+    @Singleton
+    fun provideSetAdsDisabled(settingsRepository: SettingsRepository) =
+        SetAdsDisabled(settingsRepository = settingsRepository)
 
     // ── FINANCE (singleton — shared across ViewModels that read finance data) ─
 

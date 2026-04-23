@@ -14,6 +14,8 @@ import com.breckneck.deptbook.domain.usecase.Settings.GetPINCodeEnabled
 import com.breckneck.deptbook.domain.usecase.Settings.SetDebtQuantityForAppRateDialogShow
 import com.breckneck.deptbook.domain.usecase.Settings.SetIsFingerprintAuthEnabled
 import com.breckneck.deptbook.domain.usecase.Settings.SetPINCodeEnabled
+import com.breckneck.deptbook.domain.usecase.Settings.GetAdsDisabled
+import com.breckneck.deptbook.domain.usecase.Settings.SetAdsDisabled
 import com.breckneck.deptbook.domain.util.DEBT_QUANTITY_FOR_NEXT_SHOW_APP_RATE_DIALOG
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -31,7 +33,9 @@ class MainViewModel @Inject constructor(
     private val getAppTheme: GetAppTheme,
     private val setPINCodeEnabled: SetPINCodeEnabled,
     private val getPINCodeEnabled: GetPINCodeEnabled,
-    private val setIsFingerprintAuthEnabled: SetIsFingerprintAuthEnabled
+    private val setIsFingerprintAuthEnabled: SetIsFingerprintAuthEnabled,
+    private val getAdsDisabled: GetAdsDisabled,
+    private val setAdsDisabled: SetAdsDisabled
     ) : ViewModel() {
 
     private val TAG = "MainActivityViewModel"
@@ -75,6 +79,9 @@ class MainViewModel @Inject constructor(
     private val _isPINCodeEnabled = MutableLiveData<Boolean>(false)
     val isPINCodeEnabled: LiveData<Boolean>
         get() = _isPINCodeEnabled
+    private val _adsDisabled = MutableLiveData<Boolean>(false)
+    val adsDisabled: LiveData<Boolean>
+        get() = _adsDisabled
 
     init {
         Log.e(TAG, "Main Activity View Model Started")
@@ -82,6 +89,7 @@ class MainViewModel @Inject constructor(
         getDebtQuantity()
         getAdClicksCounter()
         getAppTheme()
+        loadAdsDisabled()
     }
 
     override fun onCleared() {
@@ -173,5 +181,15 @@ class MainViewModel @Inject constructor(
 
     fun setIsFingerprintEnabled(isEnabled: Boolean) {
         setIsFingerprintAuthEnabled.execute(isEnabled = isEnabled)
+    }
+
+    private fun loadAdsDisabled() {
+        _adsDisabled.value = getAdsDisabled.execute()
+    }
+
+    fun toggleAdsDisabled() {
+        val newValue = !(_adsDisabled.value ?: false)
+        _adsDisabled.value = newValue
+        setAdsDisabled.execute(isDisabled = newValue)
     }
 }

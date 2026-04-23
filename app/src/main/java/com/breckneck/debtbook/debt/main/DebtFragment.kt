@@ -50,6 +50,8 @@ class DebtFragment : Fragment() {
 
         fun onAddButtonClick()
 
+        fun onFilterButtonLongClick()
+
         fun onTickVibration()
     }
 
@@ -159,6 +161,10 @@ class DebtFragment : Fragment() {
         }
 
         filterButton = view.findViewById(R.id.filterHumanButton)
+        filterButton.setOnLongClickListener {
+            buttonClickListener?.onFilterButtonLongClick()
+            true
+        }
         vm.isSearching.observe(viewLifecycleOwner) { isSearching ->
             if (isSearching)
                 filterButton.visibility = View.GONE
