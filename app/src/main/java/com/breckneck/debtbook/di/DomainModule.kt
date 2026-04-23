@@ -9,6 +9,7 @@ import com.breckneck.deptbook.domain.repository.GoalDepositRepository
 import com.breckneck.deptbook.domain.repository.GoalRepository
 import com.breckneck.deptbook.domain.repository.HumanRepository
 import com.breckneck.deptbook.domain.repository.SettingsRepository
+import com.breckneck.deptbook.domain.usecase.AppData.GetAllAppData
 import com.breckneck.deptbook.domain.usecase.AppData.ReplaceAllAppData
 import com.breckneck.deptbook.domain.usecase.Ad.GetClicksUseCase
 import com.breckneck.deptbook.domain.usecase.Ad.SaveClicksUseCase
@@ -456,6 +457,10 @@ object DomainModule {
         ReplaceAllGoalsDeposits(goalDepositRepository = goalDepositRepository)
 
     // ── APP DATA ──────────────────────────────────────────────────────────────
+
+    @Provides
+    fun provideGetAllAppData(appDataRepository: AppDataRepository) =
+        GetAllAppData(appDataRepository = appDataRepository)
 
     @Provides
     fun provideReplaceAllAppData(appDataRepository: AppDataRepository) =

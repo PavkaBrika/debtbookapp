@@ -7,14 +7,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.breckneck.debtbook.settings.synchronization.util.DriveServiceHelper
 import com.breckneck.deptbook.domain.model.AppDataLists
+import com.breckneck.deptbook.domain.usecase.AppData.GetAllAppData
 import com.breckneck.deptbook.domain.usecase.AppData.ReplaceAllAppData
-import com.breckneck.deptbook.domain.usecase.Debt.GetAllDebts
 import com.breckneck.deptbook.domain.usecase.Debt.SetDateUseCase
-import com.breckneck.deptbook.domain.usecase.Finance.GetAllFinances
-import com.breckneck.deptbook.domain.usecase.FinanceCategory.GetAllFinanceCategories
-import com.breckneck.deptbook.domain.usecase.Goal.GetAllGoals
-import com.breckneck.deptbook.domain.usecase.GoalDeposit.GetAllGoalDeposits
-import com.breckneck.deptbook.domain.usecase.Human.GetAllHumansUseCase
 import com.breckneck.deptbook.domain.usecase.Settings.GetIsAuthorized
 import com.breckneck.deptbook.domain.usecase.Settings.GetLastSyncDate
 import com.breckneck.deptbook.domain.usecase.Settings.SetIsAuthorized
@@ -31,17 +26,12 @@ import javax.inject.Inject
 class SynchronizationViewModel @Inject constructor(
     private val getIsAuthorized: GetIsAuthorized,
     private val setIsAuthorized: SetIsAuthorized,
-    private val getAllDebts: GetAllDebts,
-    private val getAllHumansUseCase: GetAllHumansUseCase,
+    private val getAllAppData: GetAllAppData,
     private val replaceAllAppData: ReplaceAllAppData,
     private val setUserData: SetUserData,
     private val setDateUseCase: SetDateUseCase,
     private val setLastSyncDate: SetLastSyncDate,
-    private val getLastSyncDate: GetLastSyncDate,
-    private val getAllFinances: GetAllFinances,
-    private val getAllFinanceCategories: GetAllFinanceCategories,
-    private val getAllGoals: GetAllGoals,
-    private val getAllGoalDeposits: GetAllGoalDeposits
+    private val getLastSyncDate: GetLastSyncDate
 ) : ViewModel() {
 
     private val TAG = "SyncFragmentVM"
@@ -143,14 +133,7 @@ class SynchronizationViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val appData = withContext(Dispatchers.IO) {
-                    AppDataLists(
-                        humanList = getAllHumansUseCase.execute(),
-                        debtList = getAllDebts.execute(),
-                        financeList = getAllFinances.execute(),
-                        financeCategoryList = getAllFinanceCategories.execute(),
-                        goalList = getAllGoals.execute(),
-                        goalDepositList = getAllGoalDeposits.execute()
-                    )
+                    getAllAppData.execute()
                 }
                 _appDataInfoForSync.value = appData
             } catch (e: Exception) {
