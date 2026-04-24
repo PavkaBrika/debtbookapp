@@ -21,7 +21,10 @@ app/src/main/java/com/breckneck/debtbook/goal/
 │   └── GoalsViewModel.kt              # VM списка (Orbit MVI)
 ├── create/
 │   ├── CreateGoalsFragment.kt         # Создание/редактирование цели
-│   └── CreateGoalsViewModel.kt        # VM создания
+│   ├── CreateGoalsViewModel.kt        # VM создания
+│   ├── CreateGoalsState.kt            # State (Orbit MVI)
+│   ├── CreateGoalsAction.kt           # sealed interface действий
+│   └── CreateGoalsSideEffect.kt       # sealed interface side-эффектов
 └── details/
     ├── GoalDepositAdapter.kt          # Адаптер списка транзакций/депозитов
     ├── GoalDetailsFragment.kt         # Детали цели + депозиты
@@ -82,6 +85,51 @@ VM списка целей. Реализует `ContainerHost<GoalsState, GoalsS
 - `SetGoal` — создание цели
 - `UpdateGoal` — обновление при редактировании
 - `GetDefaultCurrency` — валюта по умолчанию
+
+### State (`CreateGoalsState`)
+| Поле | Тип | Описание |
+|------|-----|---------|
+| `name` | `String` | Название цели |
+| `nameError` | `String?` | Ошибка валидации имени |
+| `sum` | `String` | Целевая сумма (текст) |
+| `sumError` | `String?` | Ошибка валидации суммы |
+| `savedSum` | `String` | Уже накопленная сумма (текст) |
+| `savedSumError` | `String?` | Ошибка валидации savedSum |
+| `currency` | `String` | Символ валюты |
+| `currencyDisplayName` | `String` | Отображаемое название валюты |
+| `selectedCurrencyIndex` | `Int` | Индекс в списке валют |
+| `isCurrencySheetVisible` | `Boolean` | Открыт ли bottom sheet выбора валюты |
+| `goalDate` | `Date?` | Дата дедлайна |
+| `goalDateFormatted` | `String?` | Отформатированная дата |
+| `imageUri` | `Uri?` | URI выбранного из галереи фото |
+| `imagePath` | `String?` | Путь сохранённого фото (режим редактирования) |
+| `hasImage` | `Boolean` | Есть ли изображение |
+| `isEditMode` | `Boolean` | Режим редактирования |
+| `title` | `String` | Заголовок экрана |
+
+### Side effects (`CreateGoalsSideEffect`)
+| Эффект | Когда |
+|--------|-------|
+| `NavigateBack` | После сохранения или нажатия «Назад» |
+| `LaunchImagePicker` | Открыть галерею для выбора фото |
+| `ShowDatePicker` | Открыть диалог выбора даты |
+
+### `CreateGoalsAction` (sealed interface)
+| Действие | Что делает |
+|----------|-----------|
+| `NameChanged(value)` | Обновить название |
+| `SumChanged(value)` | Обновить целевую сумму |
+| `SavedSumChanged(value)` | Обновить накопленную сумму |
+| `CurrencyClick` | Показать bottom sheet валют |
+| `CurrencySelected(index)` | Выбрать валюту по индексу |
+| `DismissCurrencySheet` | Закрыть bottom sheet валют |
+| `DateClick` | Показать выбор даты |
+| `DateSelected(date)` | Установить дату дедлайна |
+| `ImagePicked(uri)` | Установить URI выбранного фото |
+| `DeleteImage` | Удалить фото |
+| `PhotoCardClick` | Запустить выбор фото из галереи |
+| `SaveClick` | Валидировать и сохранить цель |
+| `BackClick` | Навигация назад |
 
 ### Ключевая логика
 - Создание новой цели: название, целевая сумма, валюта, дедлайн (опционально), фото (опционально)
