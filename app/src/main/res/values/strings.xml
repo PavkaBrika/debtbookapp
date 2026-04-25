@@ -91,6 +91,8 @@
     <string name="order_by">Order by</string>
     <string name="remember_choice">Remember choice</string>
     <string name="confirm">Confirm</string>
+    <string name="save">Save</string>
+    <string name="not_selected">Not selected</string>
     <string name="cancel">Cancel</string>
     <string name="application">Application</string>
     <string name="info">Info</string>

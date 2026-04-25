@@ -63,6 +63,8 @@
     <string name="order_by">Bestellen nach</string>
     <string name="remember_choice">Auswahl merken</string>
     <string name="confirm">Bestätigen Sie</string>
+    <string name="save">Speichern</string>
+    <string name="not_selected">Nicht ausgewählt</string>
     <string name="cancel">Abbrechen</string>
     <string name="application">Anmeldung</string>
     <string name="info">Infos</string>

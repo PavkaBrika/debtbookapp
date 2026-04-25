@@ -63,6 +63,8 @@
     <string name="order_by">Commander par</string>
     <string name="remember_choice">Se souvenir du choix</string>
     <string name="confirm">Confirmer</string>
+    <string name="save">Enregistrer</string>
+    <string name="not_selected">Non sélectionné</string>
     <string name="cancel">Annuler</string>
     <string name="application">Application</string>
     <string name="info">Info</string>

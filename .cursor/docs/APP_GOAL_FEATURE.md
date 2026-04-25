@@ -20,8 +20,10 @@ app/src/main/java/com/breckneck/debtbook/goal/
 │   ├── GoalsFragment.kt               # Фрагмент-хост списка целей
 │   └── GoalsViewModel.kt              # VM списка (Orbit MVI)
 ├── create/
-│   ├── CreateGoalsFragment.kt         # Создание/редактирование цели
-│   ├── CreateGoalsViewModel.kt        # VM создания
+│   ├── screen/
+│   │   └── CreateGoalsScreen.kt       # Compose экран создания/редактирования
+│   ├── CreateGoalsFragment.kt         # Fragment-хост (ComposeView + sideEffectFlow)
+│   ├── CreateGoalsViewModel.kt        # VM создания (Orbit MVI)
 │   ├── CreateGoalsState.kt            # State (Orbit MVI)
 │   ├── CreateGoalsAction.kt           # sealed interface действий
 │   └── CreateGoalsSideEffect.kt       # sealed interface side-эффектов
@@ -32,9 +34,8 @@ app/src/main/java/com/breckneck/debtbook/goal/
 ```
 
 ### Layouts
-- `fragment_goal.xml` — список целей
-- `fragment_create_goal.xml` — форма создания/редактирования
-- `fragment_goal_details.xml` — детали цели с историей
+- `fragment_goal.xml` — список целей (XML, не мигрирован)
+- `fragment_goal_details.xml` — детали цели с историей (XML, не мигрирован)
 - `item_goal.xml` / `item_goal_shimmer.xml` — элемент цели
 - `item_goal_transaction.xml` / `item_goal_transaction_shimmer.xml` — элемент депозита
 - `dialog_add_goal_sum.xml` — диалог добавления суммы
@@ -134,6 +135,9 @@ VM списка целей. Реализует `ContainerHost<GoalsState, GoalsS
 ### Ключевая логика
 - Создание новой цели: название, целевая сумма, валюта, дедлайн (опционально), фото (опционально)
 - Редактирование существующей цели
+- Аргументы (`isEditGoal`, `goal`) читаются через `SavedStateHandle`
+- Фото сохраняется во внутреннее хранилище через `@ApplicationContext` (не Glide — Coil)
+- `isDatePickerVisible` управляется через State (state-driven, не side-effect)
 
 ---
 

@@ -7,19 +7,19 @@ todos:
     status: completed
   - id: rewrite-vm
     content: Rewrite CreateGoalsViewModel to Orbit MVI ContainerHost with State/Action/SideEffect, move validation + save logic inside intents
-    status: pending
+    status: completed
   - id: create-screen
     content: Create goal/create/screen/CreateGoalsScreen.kt -- Compose UI with DebtBookLargeTopAppBar, form fields, photo (Coil), currency sheet, date picker, FAB, previews
-    status: pending
+    status: completed
   - id: rewrite-fragment
     content: Rewrite CreateGoalsFragment as thin ComposeView host -- collect sideEffectFlow for navigation, keep registerForActivityResult for image picker
-    status: pending
+    status: completed
   - id: delete-xml
     content: Delete fragment_create_goal.xml, verify no other references
-    status: pending
+    status: completed
   - id: update-docs
     content: Update APP_GOAL_FEATURE.md with new file structure and ViewModel changes
-    status: pending
+    status: completed
 isProject: false
 ---
 

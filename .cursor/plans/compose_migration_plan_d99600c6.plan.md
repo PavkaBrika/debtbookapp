@@ -13,7 +13,7 @@ todos:
     status: completed
   - id: screen-03-goals
     content: "Мигрировать GoalsFragment -> GoalsScreen (Medium: список целей + add sum sheet + GoalAdapter -> LazyColumn)"
-    status: pending
+    status: completed
   - id: screen-04-create-goals
     content: "Мигрировать CreateGoalsFragment -> CreateGoalsScreen (Medium: форма + валюта picker + DatePicker + photo)"
     status: pending

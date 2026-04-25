@@ -224,8 +224,7 @@
     <fragment
         android:id="@+id/createGoalsFragment"
         android:name="com.breckneck.debtbook.goal.create.CreateGoalsFragment"
-        android:label="CreateGoalsFragment"
-        tools:layout="@layout/fragment_create_goal"/>
+        android:label="CreateGoalsFragment"/>
     <fragment
         android:id="@+id/goalDetailsFragment"
         android:name="com.breckneck.debtbook.goal.details.GoalDetailsFragment"
