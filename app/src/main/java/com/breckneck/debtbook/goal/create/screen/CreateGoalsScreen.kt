@@ -54,6 +54,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.common.PreviewDark
+import com.breckneck.debtbook.common.toDMYFormat
 import com.breckneck.debtbook.core.ui.components.DebtBookLargeTopAppBar
 import com.breckneck.debtbook.core.ui.components.SettingsPickerBottomSheet
 import com.breckneck.debtbook.core.ui.theme.DebtBookTheme
@@ -64,6 +65,7 @@ import com.breckneck.debtbook.goal.create.CreateGoalsViewModel
 import com.breckneck.debtbook.goal.create.NameError
 import com.breckneck.debtbook.goal.create.SavedSumError
 import com.breckneck.debtbook.goal.create.SumError
+import com.breckneck.debtbook.goal.create.model.CreateGoalUi
 import org.orbitmvi.orbit.compose.collectAsState
 import java.util.Date
 
@@ -127,32 +129,32 @@ internal fun CreateGoalsContent(
             verticalArrangement = Arrangement.spacedBy(spacing.space8),
         ) {
             NameCard(
-                name = state.name,
+                name = state.goal.name,
                 nameError = state.nameError,
                 onNameChanged = { onAction(CreateGoalsAction.NameChanged(it)) },
             )
 
             PhotoCard(
-                imageUri = state.imageUri,
-                imagePath = state.imagePath,
-                hasImage = state.hasImage,
+                imageUri = state.goal.imageUri,
+                imagePath = state.goal.imagePath,
+                hasImage = state.goal.hasImage,
                 onPhotoCardClick = { onAction(CreateGoalsAction.PhotoCardClick) },
                 onDeleteImage = { onAction(CreateGoalsAction.DeleteImage) },
             )
 
             SumCard(
-                sum = state.sum,
+                sum = state.goal.sum,
                 sumError = state.sumError,
-                savedSum = state.savedSum,
+                savedSum = state.goal.savedSum,
                 savedSumError = state.savedSumError,
-                currencyDisplayName = state.currencyDisplayName,
+                currencyDisplayName = state.goal.currencyDisplayName,
                 onSumChanged = { onAction(CreateGoalsAction.SumChanged(it)) },
                 onSavedSumChanged = { onAction(CreateGoalsAction.SavedSumChanged(it)) },
                 onCurrencyClick = { onAction(CreateGoalsAction.CurrencyClick) },
             )
 
             DateCard(
-                dateFormatted = state.goalDateFormatted,
+                dateFormatted = state.goal.goalDate?.toDMYFormat(),
                 onClick = { onAction(CreateGoalsAction.DateClick) },
             )
 
@@ -172,7 +174,7 @@ internal fun CreateGoalsContent(
 
     if (state.isDatePickerVisible) {
         GoalDatePickerDialog(
-            currentDateMs = state.goalDate?.time,
+            currentDateMs = state.goal.goalDate?.time,
             onDateSelected = { ms ->
                 if (ms != null) onAction(CreateGoalsAction.DateSelected(Date(ms)))
                 else onAction(CreateGoalsAction.DismissDatePicker)
@@ -430,8 +432,10 @@ private fun CreateGoalsCreatePreview() {
         Surface {
             CreateGoalsContent(
                 state = CreateGoalsState.initial().copy(
-                    currency = "$",
-                    currencyDisplayName = "USD $",
+                    goal = CreateGoalUi(
+                        currency = "$",
+                        currencyDisplayName = "USD $",
+                    ),
                     selectedCurrencyIndex = 0,
                 ),
                 onAction = {},
@@ -449,13 +453,14 @@ private fun CreateGoalsEditPreview() {
             CreateGoalsContent(
                 state = CreateGoalsState.initial().copy(
                     isEditMode = true,
-                    name = "New laptop",
-                    sum = "1500",
-                    savedSum = "300",
-                    currency = "$",
-                    currencyDisplayName = "USD $",
+                    goal = CreateGoalUi(
+                        name = "New laptop",
+                        sum = "1500",
+                        savedSum = "300",
+                        currency = "$",
+                        currencyDisplayName = "USD $",
+                    ),
                     selectedCurrencyIndex = 0,
-                    goalDateFormatted = "1 Jan 2026",
                 ),
                 onAction = {},
             )
@@ -470,10 +475,12 @@ private fun CreateGoalsErrorsPreview() {
         Surface {
             CreateGoalsContent(
                 state = CreateGoalsState.initial().copy(
+                    goal = CreateGoalUi(
+                        currency = "$",
+                        currencyDisplayName = "USD $",
+                    ),
                     nameError = NameError.EMPTY,
                     sumError = SumError.ZERO,
-                    currency = "$",
-                    currencyDisplayName = "USD $",
                 ),
                 onAction = {},
             )

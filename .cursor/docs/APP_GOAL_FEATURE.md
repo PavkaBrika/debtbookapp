@@ -20,6 +20,10 @@ app/src/main/java/com/breckneck/debtbook/goal/
 │   ├── GoalsFragment.kt               # Фрагмент-хост списка целей
 │   └── GoalsViewModel.kt              # VM списка (Orbit MVI)
 ├── create/
+│   ├── mapper/
+│   │   └── CreateGoalMapper.kt        # Маппинг Goal <-> CreateGoalUi
+│   ├── model/
+│   │   └── CreateGoalUi.kt            # UI/form-модель создания и редактирования
 │   ├── screen/
 │   │   └── CreateGoalsScreen.kt       # Compose экран создания/редактирования
 │   ├── CreateGoalsFragment.kt         # Fragment-хост (ComposeView + sideEffectFlow)
@@ -90,23 +94,28 @@ VM списка целей. Реализует `ContainerHost<GoalsState, GoalsS
 ### State (`CreateGoalsState`)
 | Поле | Тип | Описание |
 |------|-----|---------|
-| `name` | `String` | Название цели |
-| `nameError` | `String?` | Ошибка валидации имени |
-| `sum` | `String` | Целевая сумма (текст) |
-| `sumError` | `String?` | Ошибка валидации суммы |
-| `savedSum` | `String` | Уже накопленная сумма (текст) |
-| `savedSumError` | `String?` | Ошибка валидации savedSum |
-| `currency` | `String` | Символ валюты |
-| `currencyDisplayName` | `String` | Отображаемое название валюты |
+| `goal` | `CreateGoalUi` | UI/form-данные цели: name, sum/savedSum как текст, currency, date, image |
+| `nameError` | `NameError?` | Ошибка валидации имени |
+| `sumError` | `SumError?` | Ошибка валидации суммы |
+| `savedSumError` | `SavedSumError?` | Ошибка валидации savedSum |
+| `currencyNames` | `List<String>` | Список валют для bottom sheet |
 | `selectedCurrencyIndex` | `Int` | Индекс в списке валют |
 | `isCurrencySheetVisible` | `Boolean` | Открыт ли bottom sheet выбора валюты |
-| `goalDate` | `Date?` | Дата дедлайна |
-| `goalDateFormatted` | `String?` | Отформатированная дата |
-| `imageUri` | `Uri?` | URI выбранного из галереи фото |
-| `imagePath` | `String?` | Путь сохранённого фото (режим редактирования) |
-| `hasImage` | `Boolean` | Есть ли изображение |
+| `isDatePickerVisible` | `Boolean` | Открыт ли date picker |
 | `isEditMode` | `Boolean` | Режим редактирования |
-| `title` | `String` | Заголовок экрана |
+
+### UI/form model (`CreateGoalUi`)
+| Поле | Тип | Описание |
+|------|-----|---------|
+| `name` | `String` | Название цели в форме |
+| `sum` | `String` | Целевая сумма как текст поля ввода |
+| `savedSum` | `String` | Накопленная сумма как текст поля ввода |
+| `currency` | `String` | Символ валюты для domain-модели |
+| `currencyDisplayName` | `String` | Отображаемое название валюты |
+| `goalDate` | `Date?` | Дата дедлайна |
+| `imageUri` | `Uri?` | URI выбранного из галереи фото |
+| `imagePath` | `String?` | Путь сохранённого фото |
+| `hasImage` | `Boolean` | Derived property: есть ли `imageUri` или `imagePath` |
 
 ### Side effects (`CreateGoalsSideEffect`)
 | Эффект | Когда |
@@ -136,6 +145,7 @@ VM списка целей. Реализует `ContainerHost<GoalsState, GoalsS
 - Создание новой цели: название, целевая сумма, валюта, дедлайн (опционально), фото (опционально)
 - Редактирование существующей цели
 - Аргументы (`isEditGoal`, `goal`) читаются через `SavedStateHandle`
+- `Goal` маппится в `CreateGoalUi` при открытии edit mode, а `CreateGoalUi` маппится обратно в `Goal` после валидации на Save
 - Фото сохраняется во внутреннее хранилище через `@ApplicationContext` (не Glide — Coil)
 - `isDatePickerVisible` управляется через State (state-driven, не side-effect)
 

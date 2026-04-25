@@ -6,8 +6,8 @@ import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.breckneck.debtbook.R
-import com.breckneck.debtbook.common.format
-import com.breckneck.debtbook.common.toDMYFormat
+import com.breckneck.debtbook.goal.create.mapper.toCreateGoalUi
+import com.breckneck.debtbook.goal.create.mapper.toDomain
 import com.breckneck.deptbook.domain.model.Goal
 import com.breckneck.deptbook.domain.usecase.Goal.SetGoal
 import com.breckneck.deptbook.domain.usecase.Goal.UpdateGoal
@@ -18,7 +18,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.viewmodel.container
-import java.util.Calendar
 import java.util.Date
 import javax.inject.Inject
 
@@ -33,8 +32,6 @@ class CreateGoalsViewModel @Inject constructor(
 
     private val TAG = "CreateGoalsViewModel"
 
-    private val isEditMode: Boolean = savedStateHandle.get<Boolean>("isEditGoal") ?: false
-
     private val currencyNames: List<String> by lazy {
         context.resources.getStringArray(R.array.currencies).toList()
     }
@@ -43,7 +40,38 @@ class CreateGoalsViewModel @Inject constructor(
 
     override val container = container<CreateGoalsState, CreateGoalsSideEffect>(
         initialState = CreateGoalsState.initial(),
-        onCreate = { init() },
+        onCreate = {
+            val names = currencyNames
+            val isEditMode: Boolean = savedStateHandle.get<Boolean>("isEditGoal") ?: false
+
+            if (isEditMode) {
+                val goal = savedStateHandle.get<Goal>("goal") ?: run {
+                    postSideEffect(CreateGoalsSideEffect.NavigateBack())
+                    return@container
+                }
+                originalGoal = goal
+                reduce {
+                    state.copy(
+                        isEditMode = true,
+                        goal = goal.toCreateGoalUi(currencyDisplayNameFor(goal.currency)),
+                        currencyNames = names,
+                        selectedCurrencyIndex = currencyIndexOf(goal.currency),
+                    )
+                }
+            } else {
+                val defaultCurrency = getDefaultCurrency.execute()
+                reduce {
+                    state.copy(
+                        goal = state.goal.copy(
+                            currency = defaultCurrency,
+                            currencyDisplayName = currencyDisplayNameFor(defaultCurrency),
+                        ),
+                        currencyNames = names,
+                        selectedCurrencyIndex = currencyIndexOf(defaultCurrency),
+                    )
+                }
+            }
+        },
     )
 
     init {
@@ -72,57 +100,19 @@ class CreateGoalsViewModel @Inject constructor(
         CreateGoalsAction.BackClick -> onBackClick()
     }
 
-    private fun init() = intent {
-        val names = currencyNames
-
-        if (isEditMode) {
-            val goal = savedStateHandle.get<Goal>("goal") ?: run {
-                postSideEffect(CreateGoalsSideEffect.NavigateBack())
-                return@intent
-            }
-            originalGoal = goal
-            reduce {
-                state.copy(
-                    isEditMode = true,
-                    name = goal.name,
-                    sum = goal.sum.format("#.##"),
-                    savedSum = if (goal.savedSum != 0.0) goal.savedSum.format("#.##") else "",
-                    currency = goal.currency,
-                    currencyDisplayName = currencyDisplayNameFor(goal.currency),
-                    currencyNames = names,
-                    selectedCurrencyIndex = currencyIndexOf(goal.currency),
-                    imagePath = goal.photoPath,
-                    hasImage = goal.photoPath != null,
-                    goalDate = goal.goalDate,
-                    goalDateFormatted = goal.goalDate?.toDMYFormat(),
-                )
-            }
-        } else {
-            val defaultCurrency = getDefaultCurrency.execute()
-            reduce {
-                state.copy(
-                    currency = defaultCurrency,
-                    currencyDisplayName = currencyDisplayNameFor(defaultCurrency),
-                    currencyNames = names,
-                    selectedCurrencyIndex = currencyIndexOf(defaultCurrency),
-                )
-            }
-        }
-    }
-
     private fun onNameChanged(value: String) = intent {
-        reduce { state.copy(name = value, nameError = null) }
+        reduce { state.copy(goal = state.goal.copy(name = value), nameError = null) }
     }
 
     private fun onSumChanged(value: String) = intent {
         if (isValidDecimalInput(value)) {
-            reduce { state.copy(sum = value, sumError = null) }
+            reduce { state.copy(goal = state.goal.copy(sum = value), sumError = null) }
         }
     }
 
     private fun onSavedSumChanged(value: String) = intent {
         if (isValidDecimalInput(value)) {
-            reduce { state.copy(savedSum = value, savedSumError = null) }
+            reduce { state.copy(goal = state.goal.copy(savedSum = value), savedSumError = null) }
         }
     }
 
@@ -135,8 +125,10 @@ class CreateGoalsViewModel @Inject constructor(
         val symbol = displayName.substringAfterLast(" ")
         reduce {
             state.copy(
-                currency = symbol,
-                currencyDisplayName = displayName,
+                goal = state.goal.copy(
+                    currency = symbol,
+                    currencyDisplayName = displayName,
+                ),
                 selectedCurrencyIndex = index,
                 isCurrencySheetVisible = false,
             )
@@ -158,8 +150,7 @@ class CreateGoalsViewModel @Inject constructor(
     private fun onDateSelected(date: Date) = intent {
         reduce {
             state.copy(
-                goalDate = date,
-                goalDateFormatted = date.toDMYFormat(),
+                goal = state.goal.copy(goalDate = date),
                 isDatePickerVisible = false,
             )
         }
@@ -168,9 +159,10 @@ class CreateGoalsViewModel @Inject constructor(
     private fun onImagePicked(uri: Uri) = intent {
         reduce {
             state.copy(
-                imageUri = uri,
-                imagePath = null,
-                hasImage = true,
+                goal = state.goal.copy(
+                    imageUri = uri,
+                    imagePath = null,
+                ),
             )
         }
     }
@@ -178,9 +170,10 @@ class CreateGoalsViewModel @Inject constructor(
     private fun onDeleteImage() = intent {
         reduce {
             state.copy(
-                imageUri = null,
-                imagePath = null,
-                hasImage = false,
+                goal = state.goal.copy(
+                    imageUri = null,
+                    imagePath = null,
+                ),
             )
         }
     }
@@ -190,9 +183,10 @@ class CreateGoalsViewModel @Inject constructor(
     }
 
     private fun onSaveClick() = intent {
-        val name = state.name.trim()
-        val sumText = state.sum.trim().replace(" ", "")
-        val savedSumText = state.savedSum.trim().replace(" ", "")
+        val goal = state.goal
+        val name = goal.name.trim()
+        val sumText = goal.sum.trim().replace(" ", "")
+        val savedSumText = goal.savedSum.trim().replace(" ", "")
 
         var nameError: NameError? = null
         var sumError: SumError? = null
@@ -249,22 +243,18 @@ class CreateGoalsViewModel @Inject constructor(
         val finalSavedSum = savedSumDouble ?: 0.0
         val finalSum = sumDouble!!
 
-        if (isEditMode) {
+        if (state.isEditMode) {
             val original = originalGoal ?: return@intent
-            val photoPath = if (state.imagePath != null) {
+            val photoPath = if (goal.imagePath != null) {
                 original.photoPath
             } else {
-                savePhotoToInternalStorage(state.imageUri)
+                savePhotoToInternalStorage(goal.imageUri)
             }
-            val editedGoal = Goal(
-                id = original.id,
-                name = name,
+            val editedGoal = goal.toDomain(
                 sum = finalSum,
                 savedSum = finalSavedSum,
                 photoPath = photoPath,
-                currency = state.currency,
-                creationDate = original.creationDate,
-                goalDate = state.goalDate,
+                originalGoal = original,
             )
             try {
                 withContext(Dispatchers.IO) { updateGoal.execute(goal = editedGoal) }
@@ -274,15 +264,11 @@ class CreateGoalsViewModel @Inject constructor(
             }
             postSideEffect(CreateGoalsSideEffect.NavigateBack(editedGoal = editedGoal, saved = true))
         } else {
-            val photoPath = savePhotoToInternalStorage(state.imageUri)
-            val newGoal = Goal(
-                name = name,
+            val photoPath = savePhotoToInternalStorage(goal.imageUri)
+            val newGoal = goal.toDomain(
                 sum = finalSum,
                 savedSum = finalSavedSum,
                 photoPath = photoPath,
-                currency = state.currency,
-                creationDate = Calendar.getInstance().time,
-                goalDate = state.goalDate,
             )
             try {
                 withContext(Dispatchers.IO) { setGoal.execute(goal = newGoal) }
