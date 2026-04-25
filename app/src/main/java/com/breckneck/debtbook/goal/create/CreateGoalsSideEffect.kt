@@ -8,5 +8,4 @@ sealed interface CreateGoalsSideEffect {
         val saved: Boolean = false,
     ) : CreateGoalsSideEffect
     data object LaunchImagePicker : CreateGoalsSideEffect
-    data object ShowDatePicker : CreateGoalsSideEffect
 }

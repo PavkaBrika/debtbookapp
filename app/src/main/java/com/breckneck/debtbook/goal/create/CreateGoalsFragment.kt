@@ -14,7 +14,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
-import com.breckneck.debtbook.common.repeatOnStart
+import com.breckneck.debtbook.common.launchOnLifecycleStarted
 import com.breckneck.debtbook.core.ui.theme.DebtBookTheme
 import com.breckneck.debtbook.goal.create.screen.CreateGoalsScreen
 import dagger.hilt.android.AndroidEntryPoint
@@ -59,7 +59,8 @@ class CreateGoalsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        repeatOnStart {
+
+        launchOnLifecycleStarted {
             vm.container.sideEffectFlow.collect { effect ->
                 when (effect) {
                     is CreateGoalsSideEffect.NavigateBack -> {
@@ -79,7 +80,6 @@ class CreateGoalsFragment : Fragment() {
                     }
                     CreateGoalsSideEffect.LaunchImagePicker ->
                         getImageUriActivityResult.launch("image/*")
-                    CreateGoalsSideEffect.ShowDatePicker -> Unit
                 }
             }
         }

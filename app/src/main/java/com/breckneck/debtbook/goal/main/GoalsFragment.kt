@@ -11,10 +11,9 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
-import com.breckneck.debtbook.common.repeatOnStart
+import com.breckneck.debtbook.common.launchOnLifecycleStarted
 import com.breckneck.debtbook.core.ui.theme.DebtBookTheme
 import com.breckneck.debtbook.goal.main.screen.GoalsScreen
-import com.breckneck.debtbook.goal.main.GoalsAction
 import com.breckneck.deptbook.domain.model.Goal
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -63,7 +62,7 @@ class GoalsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        repeatOnStart {
+        launchOnLifecycleStarted {
             vm.container.sideEffectFlow.collect { effect ->
                 when (effect) {
                     GoalsSideEffect.NavigateToAddGoal ->

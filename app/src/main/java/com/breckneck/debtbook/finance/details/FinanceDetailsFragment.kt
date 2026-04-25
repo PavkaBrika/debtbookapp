@@ -10,7 +10,7 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
-import com.breckneck.debtbook.common.repeatOnStart
+import com.breckneck.debtbook.common.launchOnLifecycleStarted
 import com.breckneck.debtbook.core.ui.theme.DebtBookTheme
 import com.breckneck.debtbook.finance.details.screen.FinanceDetailsScreen
 import com.breckneck.deptbook.domain.model.Finance
@@ -62,7 +62,7 @@ class FinanceDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        repeatOnStart {
+        launchOnLifecycleStarted {
             vm.container.sideEffectFlow.collect { effect ->
                 when (effect) {
                     is FinanceDetailsSideEffect.NavigateToEditFinance ->
