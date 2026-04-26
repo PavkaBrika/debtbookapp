@@ -8,9 +8,6 @@ import androidx.lifecycle.ViewModel
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.goal.create.mapper.toCreateGoalUi
 import com.breckneck.debtbook.goal.create.mapper.toDomain
-import com.breckneck.debtbook.goal.create.model.NameError
-import com.breckneck.debtbook.goal.create.model.SavedSumError
-import com.breckneck.debtbook.goal.create.model.SumError
 import com.breckneck.deptbook.domain.model.Goal
 import com.breckneck.deptbook.domain.usecase.Goal.SetGoal
 import com.breckneck.deptbook.domain.usecase.Goal.UpdateGoal
@@ -191,9 +188,10 @@ class CreateGoalsViewModel @Inject constructor(
         val sumText = goal.sum.trim().replace(" ", "")
         val savedSumText = goal.savedSum.trim().replace(" ", "")
 
-        val nameError = validateName(name)
-        val (sumDouble, sumError) = validateSum(sumText)
-        val (savedSumDouble, savedSumError) = validateSavedSum(savedSumText, sumDouble)
+        val nameError = CreateGoalsFormValidation.validateName(name)
+        val (sumDouble, sumError) = CreateGoalsFormValidation.validateSum(sumText)
+        val (savedSumDouble, savedSumError) =
+            CreateGoalsFormValidation.validateSavedSum(savedSumText, sumDouble)
 
         if (nameError != null || sumError != null || savedSumError != null) {
             reduce {
@@ -221,10 +219,10 @@ class CreateGoalsViewModel @Inject constructor(
         try {
             withContext(Dispatchers.IO) { setGoal.execute(goal = newGoal) }
             Log.d(TAG, "Goal added")
+            postSideEffect(CreateGoalsSideEffect.NavigateBack(saved = true))
         } catch (e: Exception) {
             Log.e(TAG, e.message.toString())
         }
-        postSideEffect(CreateGoalsSideEffect.NavigateBack(saved = true))
     }
 
     private fun saveEdit(sum: Double, savedSum: Double) = intent {
@@ -241,37 +239,10 @@ class CreateGoalsViewModel @Inject constructor(
         try {
             withContext(Dispatchers.IO) { updateGoal.execute(goal = editedGoal) }
             Log.d(TAG, "Goal updated")
+            postSideEffect(CreateGoalsSideEffect.NavigateBack(editedGoal = editedGoal, saved = true))
         } catch (e: Exception) {
             Log.e(TAG, e.message.toString())
         }
-        postSideEffect(CreateGoalsSideEffect.NavigateBack(editedGoal = editedGoal, saved = true))
-    }
-
-    private fun validateName(name: String): NameError? =
-        if (name.isEmpty()) NameError.EMPTY else null
-
-    private fun validateSum(sumText: String): Pair<Double?, SumError?> {
-        val sumDouble = sumText.toDoubleOrNull()
-        val error = when {
-            sumText.isEmpty() || sumDouble == null -> SumError.INVALID
-            sumDouble < 0 -> SumError.NEGATIVE
-            sumDouble == 0.0 -> SumError.ZERO
-            else -> null
-        }
-        return Pair(sumDouble, error)
-    }
-
-    private fun validateSavedSum(
-        savedSumText: String,
-        sumDouble: Double?
-    ): Pair<Double?, SavedSumError?> {
-        if (savedSumText.isEmpty()) return Pair(0.0, null)
-        val parsed = savedSumText.toDoubleOrNull() ?: return Pair(0.0, SavedSumError.INVALID)
-        if (sumDouble != null && parsed >= sumDouble) return Pair(
-            0.0,
-            SavedSumError.GREATER_THAN_SUM
-        )
-        return Pair(parsed, null)
     }
 
     private fun onBackClick() = intent {

@@ -27,6 +27,7 @@ app/src/main/java/com/breckneck/debtbook/goal/
 │   │   └── CreateGoalsError.kt        # enum ошибок валидации (Name/Sum/SavedSum)
 │   ├── screen/
 │   │   └── CreateGoalsScreen.kt       # Compose экран создания/редактирования
+│   ├── CreateGoalsFormValidation.kt   # Чистая валидация полей формы (name / sum / savedSum)
 │   ├── CreateGoalsFragment.kt         # Fragment-хост (ComposeView + sideEffectFlow)
 │   ├── CreateGoalsViewModel.kt        # VM создания (Orbit MVI)
 │   ├── CreateGoalsState.kt            # State (Orbit MVI)
@@ -91,6 +92,7 @@ VM списка целей. Реализует `ContainerHost<GoalsState, GoalsS
 - `SetGoal` — создание цели
 - `UpdateGoal` — обновление при редактировании
 - `GetDefaultCurrency` — валюта по умолчанию
+- `CreateGoalsFormValidation` — правила валидации имени и сумм (unit-тестируемый object)
 
 ### State (`CreateGoalsState`)
 | Поле | Тип | Описание |

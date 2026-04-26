@@ -287,12 +287,14 @@ PIN управляется из `SettingsFragment` → `MainActivityViewModel.se
 ## Unit-тесты ViewModel
 
 **Инструменты**: JUnit 4, Mockito 5, `core-testing:2.2.0` (InstantTaskExecutorRule), `kotlinx-coroutines-test:1.9.0`  
-**Итог**: 23 теста, 0 failures
+**Итог**: прогон — `:app:testDebugUnitTest` (JUnit 4, Mockito, `orbit-test`, `kotlinx-coroutines-test`)
 
-| Файл | ViewModel | Покрытие |
+| Файл | ViewModel / модуль | Покрытие |
 |------|-----------|---------|
 | `DebtViewModelTest.kt` | `DebtViewModel` | getHumanOrder, saveHumanOrder, setIsSearching, sort dialog open/close |
 | `SettingsViewModelTest.kt` | `SettingsViewModel` | init загрузка данных, set/get валют, тема, share text, fingerprint, getUserData, диалог настроек |
+| `CreateGoalsFormValidationTest.kt` | `CreateGoalsFormValidation` | validateName / validateSum / validateSavedSum, граничные случаи |
+| `CreateGoalsViewModelTest.kt` | `CreateGoalsViewModel` | SaveClick: ошибки формы, успешное сохранение → NavigateBack, ошибка SetGoal без навигации |
 
 ---
 

@@ -20,7 +20,9 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito
+import org.mockito.kotlin.whenever
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class DebtViewModelTest {
@@ -41,6 +43,11 @@ class DebtViewModelTest {
     @Before
     fun setUp() {
         Dispatchers.setMain(UnconfinedTestDispatcher())
+        whenever(getHumanOrder.execute()).thenReturn(Pair(HumanOrderAttribute.Sum, true))
+        whenever(getFirstMainCurrency.execute()).thenReturn("$")
+        whenever(getSecondMainCurrency.execute()).thenReturn("$")
+        whenever(getAllDebtsSumUseCase.execute(anyString(), anyString())).thenReturn(Pair("0", "0"))
+        whenever(getAllHumansUseCase.execute()).thenReturn(emptyList())
         viewModel = DebtViewModel(
             getAllHumansUseCase = getAllHumansUseCase,
             getAllDebtsSumUseCase = getAllDebtsSumUseCase,
@@ -54,7 +61,15 @@ class DebtViewModelTest {
 
     @After
     fun tearDown() {
-        Mockito.reset(setHumanOrder, getHumanOrder)
+        Mockito.reset(
+            getAllHumansUseCase,
+            getAllDebtsSumUseCase,
+            getFirstMainCurrency,
+            getSecondMainCurrency,
+            updateHuman,
+            setHumanOrder,
+            getHumanOrder,
+        )
         Dispatchers.resetMain()
     }
 
