@@ -291,7 +291,7 @@ PIN управляется из `SettingsFragment` → `MainActivityViewModel.se
 
 | Файл | ViewModel | Покрытие |
 |------|-----------|---------|
-| `MainFragmentViewModelTest.kt` | `DebtViewModel` | getHumanOrder, saveHumanOrder, setIsSearching, sort dialog open/close |
+| `DebtViewModelTest.kt` | `DebtViewModel` | getHumanOrder, saveHumanOrder, setIsSearching, sort dialog open/close |
 | `SettingsViewModelTest.kt` | `SettingsViewModel` | init загрузка данных, set/get валют, тема, share text, fingerprint, getUserData, диалог настроек |
 
 ---

@@ -1,6 +1,8 @@
 package com.breckneck.debtbook.settings.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.breckneck.debtbook.core.adapter.SettingsAdapter
+import com.breckneck.debtbook.settings.main.SettingsViewModel
 import com.breckneck.deptbook.domain.model.User
 import com.breckneck.deptbook.domain.usecase.Settings.GetAddSumInShareText
 import com.breckneck.deptbook.domain.usecase.Settings.GetAppTheme
@@ -160,7 +162,7 @@ class SettingsViewModelTest {
             settingsTitle = "Currency",
             settingsList = listOf("USD", "EUR"),
             selectedSetting = 0,
-            onSettingsClickListener = Mockito.mock()
+            onSettingsClickListener = Mockito.mock(SettingsAdapter.OnClickListener::class.java),
         )
         assertEquals(true, viewModel.isSettingsDialogOpened.value)
     }
@@ -171,7 +173,7 @@ class SettingsViewModelTest {
             settingsTitle = "Theme",
             settingsList = listOf("light", "dark"),
             selectedSetting = 1,
-            onSettingsClickListener = Mockito.mock()
+            onSettingsClickListener = Mockito.mock(SettingsAdapter.OnClickListener::class.java),
         )
         viewModel.onDialogClose()
         assertEquals(false, viewModel.isSettingsDialogOpened.value)

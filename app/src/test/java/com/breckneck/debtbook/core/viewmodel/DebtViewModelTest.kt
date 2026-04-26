@@ -1,7 +1,7 @@
 package com.breckneck.debtbook.core.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.breckneck.debtbook.debt.viewmodel.MainFragmentViewModel
+import com.breckneck.debtbook.debt.main.DebtViewModel
 import com.breckneck.deptbook.domain.usecase.Human.GetAllDebtsSumUseCase
 import com.breckneck.deptbook.domain.usecase.Human.GetAllHumansUseCase
 import com.breckneck.deptbook.domain.usecase.Human.UpdateHuman
@@ -23,7 +23,7 @@ import org.junit.Test
 import org.mockito.Mockito
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class MainFragmentViewModelTest {
+class DebtViewModelTest {
 
     @get:Rule
     val instantTaskRule = InstantTaskExecutorRule()
@@ -36,12 +36,12 @@ class MainFragmentViewModelTest {
     private val setHumanOrder = Mockito.mock(SetHumanOrder::class.java)
     private val getHumanOrder = Mockito.mock(GetHumanOrder::class.java)
 
-    private lateinit var viewModel: MainFragmentViewModel
+    private lateinit var viewModel: DebtViewModel
 
     @Before
     fun setUp() {
         Dispatchers.setMain(UnconfinedTestDispatcher())
-        viewModel = MainFragmentViewModel(
+        viewModel = DebtViewModel(
             getAllHumansUseCase = getAllHumansUseCase,
             getAllDebtsSumUseCase = getAllDebtsSumUseCase,
             getFirstMainCurrency = getFirstMainCurrency,
