@@ -9,7 +9,15 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.platform.LocalContext
+
+/**
+ * Mirrors the [darkTheme] argument passed to [DebtBookTheme]. Use instead of
+ * [androidx.compose.foundation.isSystemInDarkTheme] so cards and surfaces stay in sync
+ * when the app later forces light/dark independently of the system.
+ */
+val LocalDebtBookDarkTheme = staticCompositionLocalOf { false }
 
 private val LightColorScheme = lightColorScheme(
     primary = md_theme_light_primary,
@@ -96,7 +104,11 @@ fun DebtBookTheme(
         else -> LightColorScheme
     }
 
-    CompositionLocalProvider(LocalSpacing provides Spacing()) {
+    CompositionLocalProvider(
+        LocalSpacing provides Spacing(),
+        LocalElevation provides Elevation(),
+        LocalDebtBookDarkTheme provides darkTheme,
+    ) {
         MaterialTheme(
             colorScheme = colorScheme,
             typography = Typography,

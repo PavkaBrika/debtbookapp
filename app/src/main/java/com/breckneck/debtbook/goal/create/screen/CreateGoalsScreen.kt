@@ -3,13 +3,13 @@ package com.breckneck.debtbook.goal.create.screen
 import android.content.res.Configuration
 import android.net.Uri
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -47,19 +47,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.breckneck.debtbook.R
-import com.breckneck.debtbook.common.PreviewDark
 import com.breckneck.debtbook.common.toDMYFormat
 import com.breckneck.debtbook.core.ui.components.DebtBookLargeTopAppBar
 import com.breckneck.debtbook.core.ui.components.SettingsPickerBottomSheet
 import com.breckneck.debtbook.core.ui.theme.DebtBookTheme
+import com.breckneck.debtbook.core.ui.theme.LocalDebtBookDarkTheme
+import com.breckneck.debtbook.core.ui.theme.elevation
 import com.breckneck.debtbook.core.ui.theme.spacing
 import com.breckneck.debtbook.goal.create.CreateGoalsAction
 import com.breckneck.debtbook.goal.create.CreateGoalsState
@@ -162,7 +164,7 @@ internal fun CreateGoalsContent(
                 onClick = { onAction(CreateGoalsAction.DateClick) },
             )
 
-            Spacer(modifier = Modifier.height(72.dp))
+            Spacer(modifier = Modifier.height(spacing.space48 + spacing.space24))
         }
     }
 
@@ -265,7 +267,7 @@ private fun NameCard(
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = spacing.space8, vertical = spacing.space16),
+                .padding(horizontal = spacing.space16, vertical = spacing.space16),
         )
     }
 }
@@ -285,7 +287,7 @@ private fun PhotoCard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(spacing.space12),
+                .padding(horizontal = spacing.space16, vertical = spacing.space12),
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -325,7 +327,7 @@ private fun PhotoCard(
                     Icon(
                         imageVector = Icons.Outlined.CameraAlt,
                         contentDescription = stringResource(R.string.goal_s_photo),
-                        modifier = Modifier.size(48.dp),
+                        modifier = Modifier.size(spacing.space48),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
@@ -351,7 +353,7 @@ private fun SumCard(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = spacing.space8, vertical = spacing.space16),
+                .padding(horizontal = spacing.space16, vertical = spacing.space16),
             verticalAlignment = Alignment.Top,
         ) {
             Column(
@@ -386,10 +388,21 @@ private fun SumCard(
                 )
             }
             Column(
-                modifier = Modifier.padding(start = spacing.space8, top = spacing.space4),
+                modifier = Modifier.padding(start = spacing.space8),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                TextButton(onClick = onCurrencyClick) {
+                val currencyPickerA11y = stringResource(
+                    R.string.a11y_currency_picker,
+                    currencyDisplayName,
+                )
+                TextButton(
+                    onClick = onCurrencyClick,
+                    modifier = Modifier
+                        .defaultMinSize(minWidth = spacing.space48, minHeight = spacing.space48)
+                        .semantics(mergeDescendants = true) {
+                            contentDescription = currencyPickerA11y
+                        },
+                ) {
                     Text(
                         text = currencyDisplayName,
                         style = MaterialTheme.typography.bodyMedium,
@@ -442,14 +455,14 @@ private fun FormCard(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
 ) {
-    val isDark = isSystemInDarkTheme()
+    val isDark = LocalDebtBookDarkTheme.current
     Card(
         modifier = modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
             containerColor = if (isDark) MaterialTheme.colorScheme.surfaceContainerHigh
                              else MaterialTheme.colorScheme.surface,
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = MaterialTheme.elevation.card),
     ) {
         content()
     }
@@ -457,12 +470,22 @@ private fun FormCard(
 
 // region Previews
 
-@Preview(name = "CreateGoals — create, light")
-@PreviewDark
+@Preview(
+    name = "Create — light",
+    group = "CreateGoals",
+)
+@Preview(
+    name = "Create — dark",
+    group = "CreateGoals",
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+)
 @Composable
 private fun CreateGoalsCreatePreview() {
     DebtBookTheme(dynamicColor = false) {
-        Surface {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background,
+        ) {
             CreateGoalsContent(
                 state = CreateGoalsState.initial().copy(
                     goal = CreateGoalUi(
@@ -477,12 +500,22 @@ private fun CreateGoalsCreatePreview() {
     }
 }
 
-@Preview(name = "CreateGoals — edit, light")
-@Preview(name = "CreateGoals — edit, dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(
+    name = "Edit — light",
+    group = "CreateGoals",
+)
+@Preview(
+    name = "Edit — dark",
+    group = "CreateGoals",
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+)
 @Composable
 private fun CreateGoalsEditPreview() {
     DebtBookTheme(dynamicColor = false) {
-        Surface {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background,
+        ) {
             CreateGoalsContent(
                 state = CreateGoalsState.initial().copy(
                     isEditMode = true,
@@ -501,11 +534,22 @@ private fun CreateGoalsEditPreview() {
     }
 }
 
-@Preview(name = "CreateGoals — with errors, light")
+@Preview(
+    name = "Errors — light",
+    group = "CreateGoals",
+)
+@Preview(
+    name = "Errors — dark",
+    group = "CreateGoals",
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+)
 @Composable
 private fun CreateGoalsErrorsPreview() {
     DebtBookTheme(dynamicColor = false) {
-        Surface {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background,
+        ) {
             CreateGoalsContent(
                 state = CreateGoalsState.initial().copy(
                     goal = CreateGoalUi(

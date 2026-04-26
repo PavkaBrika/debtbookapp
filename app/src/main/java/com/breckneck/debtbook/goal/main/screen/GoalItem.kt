@@ -2,7 +2,6 @@ package com.breckneck.debtbook.goal.main.screen
 
 import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -35,6 +34,8 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.core.ui.theme.DebtBookTheme
+import com.breckneck.debtbook.core.ui.theme.LocalDebtBookDarkTheme
+import com.breckneck.debtbook.core.ui.theme.elevation
 import com.breckneck.debtbook.core.ui.theme.spacing
 import com.breckneck.debtbook.goal.main.model.GoalUi
 
@@ -48,16 +49,16 @@ fun GoalItem(
 ) {
     val spacing = MaterialTheme.spacing
 
-    val isDark = isSystemInDarkTheme()
+    val isDark = LocalDebtBookDarkTheme.current
     Card(
         onClick = { onGoalClick(goalUi) },
         colors = CardDefaults.cardColors(
             containerColor = if (isDark) MaterialTheme.colorScheme.surfaceContainerHigh
                              else MaterialTheme.colorScheme.surface,
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = MaterialTheme.elevation.card),
         border = if (isDark) null
-                 else BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                 else BorderStroke(MaterialTheme.elevation.borderHairline, MaterialTheme.colorScheme.outlineVariant),
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = spacing.space12, vertical = spacing.space4)
