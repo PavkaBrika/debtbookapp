@@ -1,4 +1,4 @@
-package com.breckneck.debtbook.goal.create
+package com.breckneck.debtbook.goal.create.model
 
 enum class NameError { EMPTY }
 

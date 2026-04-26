@@ -62,9 +62,9 @@ import com.breckneck.debtbook.core.ui.theme.spacing
 import com.breckneck.debtbook.goal.create.CreateGoalsAction
 import com.breckneck.debtbook.goal.create.CreateGoalsState
 import com.breckneck.debtbook.goal.create.CreateGoalsViewModel
-import com.breckneck.debtbook.goal.create.NameError
-import com.breckneck.debtbook.goal.create.SavedSumError
-import com.breckneck.debtbook.goal.create.SumError
+import com.breckneck.debtbook.goal.create.model.NameError
+import com.breckneck.debtbook.goal.create.model.SavedSumError
+import com.breckneck.debtbook.goal.create.model.SumError
 import com.breckneck.debtbook.goal.create.model.CreateGoalUi
 import org.orbitmvi.orbit.compose.collectAsState
 import java.util.Date

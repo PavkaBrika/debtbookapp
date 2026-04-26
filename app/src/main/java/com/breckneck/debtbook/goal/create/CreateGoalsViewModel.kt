@@ -8,6 +8,9 @@ import androidx.lifecycle.ViewModel
 import com.breckneck.debtbook.R
 import com.breckneck.debtbook.goal.create.mapper.toCreateGoalUi
 import com.breckneck.debtbook.goal.create.mapper.toDomain
+import com.breckneck.debtbook.goal.create.model.NameError
+import com.breckneck.debtbook.goal.create.model.SavedSumError
+import com.breckneck.debtbook.goal.create.model.SumError
 import com.breckneck.deptbook.domain.model.Goal
 import com.breckneck.deptbook.domain.usecase.Goal.SetGoal
 import com.breckneck.deptbook.domain.usecase.Goal.UpdateGoal
@@ -32,46 +35,18 @@ class CreateGoalsViewModel @Inject constructor(
 
     private val TAG = "CreateGoalsViewModel"
 
-    private val currencyNames: List<String> by lazy {
-        context.resources.getStringArray(R.array.currencies).toList()
-    }
-
     private var originalGoal: Goal? = null
 
     override val container = container<CreateGoalsState, CreateGoalsSideEffect>(
         initialState = CreateGoalsState.initial(),
         onCreate = {
-            val names = currencyNames
+            val names = context.resources.getStringArray(R.array.currencies).toList()
             val isEditMode: Boolean = savedStateHandle.get<Boolean>("isEditGoal") ?: false
 
-            if (isEditMode) {
-                val goal = savedStateHandle.get<Goal>("goal") ?: run {
-                    postSideEffect(CreateGoalsSideEffect.NavigateBack())
-                    return@container
-                }
-                originalGoal = goal
-                reduce {
-                    state.copy(
-                        isEditMode = true,
-                        goal = goal.toCreateGoalUi(currencyDisplayNameFor(goal.currency)),
-                        currencyNames = names,
-                        selectedCurrencyIndex = currencyIndexOf(goal.currency),
-                    )
-                }
-            } else {
-                val defaultCurrency = getDefaultCurrency.execute()
-                reduce {
-                    state.copy(
-                        goal = state.goal.copy(
-                            currency = defaultCurrency,
-                            currencyDisplayName = currencyDisplayNameFor(defaultCurrency),
-                        ),
-                        currencyNames = names,
-                        selectedCurrencyIndex = currencyIndexOf(defaultCurrency),
-                    )
-                }
-            }
-        },
+            reduce { state.copy(currencyNames = names, isEditMode = isEditMode) }
+
+            if (isEditMode) initEditMode() else initCreateMode()
+        }
     )
 
     init {
@@ -100,6 +75,34 @@ class CreateGoalsViewModel @Inject constructor(
         CreateGoalsAction.BackClick -> onBackClick()
     }
 
+    private fun initEditMode() = intent {
+        val goal = savedStateHandle.get<Goal>("goal") ?: run {
+            postSideEffect(CreateGoalsSideEffect.NavigateBack())
+            return@intent
+        }
+
+        originalGoal = goal
+        reduce {
+            state.copy(
+                goal = goal.toCreateGoalUi(currencyDisplayNameFor(goal.currency)),
+                selectedCurrencyIndex = currencyIndexOf(goal.currency),
+            )
+        }
+    }
+
+    private fun initCreateMode() = intent {
+        val defaultCurrency = getDefaultCurrency.execute()
+        reduce {
+            state.copy(
+                goal = state.goal.copy(
+                    currency = defaultCurrency,
+                    currencyDisplayName = currencyDisplayNameFor(defaultCurrency),
+                ),
+                selectedCurrencyIndex = currencyIndexOf(defaultCurrency),
+            )
+        }
+    }
+
     private fun onNameChanged(value: String) = intent {
         reduce { state.copy(goal = state.goal.copy(name = value), nameError = null) }
     }
@@ -121,7 +124,7 @@ class CreateGoalsViewModel @Inject constructor(
     }
 
     private fun onCurrencySelected(index: Int) = intent {
-        val displayName = currencyNames.getOrNull(index) ?: return@intent
+        val displayName = state.currencyNames.getOrNull(index) ?: return@intent
         val symbol = displayName.substringAfterLast(" ")
         reduce {
             state.copy(
@@ -188,51 +191,16 @@ class CreateGoalsViewModel @Inject constructor(
         val sumText = goal.sum.trim().replace(" ", "")
         val savedSumText = goal.savedSum.trim().replace(" ", "")
 
-        var nameError: NameError? = null
-        var sumError: SumError? = null
-        var savedSumError: SavedSumError? = null
-        var isValid = true
+        val nameError = validateName(name)
+        val (sumDouble, sumError) = validateSum(sumText)
+        val (savedSumDouble, savedSumError) = validateSavedSum(savedSumText, sumDouble)
 
-        if (name.isEmpty()) {
-            nameError = NameError.EMPTY
-            isValid = false
-        }
-
-        val sumDouble = sumText.toDoubleOrNull()
-        when {
-            sumText.isEmpty() || sumDouble == null -> {
-                sumError = SumError.INVALID
-                isValid = false
-            }
-            sumDouble == 0.0 -> {
-                sumError = SumError.ZERO
-                isValid = false
-            }
-        }
-
-        val savedSumDouble: Double? = if (savedSumText.isNotEmpty()) {
-            val parsed = savedSumText.toDoubleOrNull()
-            if (parsed == null) {
-                savedSumError = SavedSumError.INVALID
-                isValid = false
-                null
-            } else if (sumDouble != null && parsed >= sumDouble) {
-                savedSumError = SavedSumError.GREATER_THAN_SUM
-                isValid = false
-                null
-            } else {
-                parsed
-            }
-        } else {
-            0.0
-        }
-
-        if (!isValid) {
+        if (nameError != null || sumError != null || savedSumError != null) {
             reduce {
                 state.copy(
                     nameError = nameError,
                     sumError = sumError,
-                    savedSumError = savedSumError,
+                    savedSumError = savedSumError
                 )
             }
             return@intent
@@ -240,44 +208,69 @@ class CreateGoalsViewModel @Inject constructor(
 
         reduce { state.copy(nameError = null, sumError = null, savedSumError = null) }
 
-        val finalSavedSum = savedSumDouble ?: 0.0
-        val finalSum = sumDouble!!
-
         if (state.isEditMode) {
-            val original = originalGoal ?: return@intent
-            val photoPath = if (goal.imagePath != null) {
-                original.photoPath
-            } else {
-                savePhotoToInternalStorage(goal.imageUri)
-            }
-            val editedGoal = goal.toDomain(
-                sum = finalSum,
-                savedSum = finalSavedSum,
-                photoPath = photoPath,
-                originalGoal = original,
-            )
-            try {
-                withContext(Dispatchers.IO) { updateGoal.execute(goal = editedGoal) }
-                Log.e(TAG, "Goal updated")
-            } catch (e: Exception) {
-                Log.e(TAG, e.message.toString())
-            }
-            postSideEffect(CreateGoalsSideEffect.NavigateBack(editedGoal = editedGoal, saved = true))
+            saveEdit(sumDouble!!, savedSumDouble ?: 0.0)
         } else {
-            val photoPath = savePhotoToInternalStorage(goal.imageUri)
-            val newGoal = goal.toDomain(
-                sum = finalSum,
-                savedSum = finalSavedSum,
-                photoPath = photoPath,
-            )
-            try {
-                withContext(Dispatchers.IO) { setGoal.execute(goal = newGoal) }
-                Log.e(TAG, "Goal added")
-            } catch (e: Exception) {
-                Log.e(TAG, e.message.toString())
-            }
-            postSideEffect(CreateGoalsSideEffect.NavigateBack(saved = true))
+            saveCreate(sumDouble!!, savedSumDouble ?: 0.0)
         }
+    }
+
+    private fun saveCreate(sum: Double, savedSum: Double) = intent {
+        val photoPath = savePhotoToInternalStorage(state.goal.imageUri)
+        val newGoal = state.goal.toDomain(sum = sum, savedSum = savedSum, photoPath = photoPath)
+        try {
+            withContext(Dispatchers.IO) { setGoal.execute(goal = newGoal) }
+            Log.e(TAG, "Goal added")
+        } catch (e: Exception) {
+            Log.e(TAG, e.message.toString())
+        }
+        postSideEffect(CreateGoalsSideEffect.NavigateBack(saved = true))
+    }
+
+    private fun saveEdit(sum: Double, savedSum: Double) = intent {
+        val goal = state.goal
+        val original = originalGoal ?: return@intent
+        val photoPath = if (goal.imagePath != null) original.photoPath
+        else savePhotoToInternalStorage(goal.imageUri)
+        val editedGoal = goal.toDomain(
+            sum = sum,
+            savedSum = savedSum,
+            photoPath = photoPath,
+            originalGoal = original,
+        )
+        try {
+            withContext(Dispatchers.IO) { updateGoal.execute(goal = editedGoal) }
+            Log.e(TAG, "Goal updated")
+        } catch (e: Exception) {
+            Log.e(TAG, e.message.toString())
+        }
+        postSideEffect(CreateGoalsSideEffect.NavigateBack(editedGoal = editedGoal, saved = true))
+    }
+
+    private fun validateName(name: String): NameError? =
+        if (name.isEmpty()) NameError.EMPTY else null
+
+    private fun validateSum(sumText: String): Pair<Double?, SumError?> {
+        val sumDouble = sumText.toDoubleOrNull()
+        val error = when {
+            sumText.isEmpty() || sumDouble == null -> SumError.INVALID
+            sumDouble == 0.0 -> SumError.ZERO
+            else -> null
+        }
+        return Pair(sumDouble, error)
+    }
+
+    private fun validateSavedSum(
+        savedSumText: String,
+        sumDouble: Double?
+    ): Pair<Double?, SavedSumError?> {
+        if (savedSumText.isEmpty()) return Pair(0.0, null)
+        val parsed = savedSumText.toDoubleOrNull() ?: return Pair(0.0, SavedSumError.INVALID)
+        if (sumDouble != null && parsed >= sumDouble) return Pair(
+            0.0,
+            SavedSumError.GREATER_THAN_SUM
+        )
+        return Pair(parsed, null)
     }
 
     private fun onBackClick() = intent {
@@ -303,10 +296,13 @@ class CreateGoalsViewModel @Inject constructor(
     }
 
     private fun currencyDisplayNameFor(currency: String): String =
-        currencyNames.firstOrNull { it.contains(currency) } ?: currency
+        //todo fix this - remove currencyNames. Store currency in ENUM.
+        container.stateFlow.value.currencyNames.firstOrNull { it.contains(currency) } ?: currency
 
     private fun currencyIndexOf(currency: String): Int =
-        currencyNames.indexOfFirst { it.contains(currency) }.coerceAtLeast(0)
+        //todo fix this - remove currencyNames. Store currency in ENUM.
+        container.stateFlow.value.currencyNames.indexOfFirst { it.contains(currency) }
+            .coerceAtLeast(0)
 
     private fun isValidDecimalInput(value: String): Boolean {
         if (value.isEmpty()) return true
