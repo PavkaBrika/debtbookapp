@@ -254,6 +254,7 @@ class CreateGoalsViewModel @Inject constructor(
         val sumDouble = sumText.toDoubleOrNull()
         val error = when {
             sumText.isEmpty() || sumDouble == null -> SumError.INVALID
+            sumDouble < 0 -> SumError.NEGATIVE
             sumDouble == 0.0 -> SumError.ZERO
             else -> null
         }

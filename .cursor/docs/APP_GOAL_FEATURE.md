@@ -23,7 +23,8 @@ app/src/main/java/com/breckneck/debtbook/goal/
 │   ├── mapper/
 │   │   └── CreateGoalMapper.kt        # Маппинг Goal <-> CreateGoalUi
 │   ├── model/
-│   │   └── CreateGoalUi.kt            # UI/form-модель создания и редактирования
+│   │   ├── CreateGoalUi.kt            # UI/form-модель создания и редактирования
+│   │   └── CreateGoalsError.kt        # enum ошибок валидации (Name/Sum/SavedSum)
 │   ├── screen/
 │   │   └── CreateGoalsScreen.kt       # Compose экран создания/редактирования
 │   ├── CreateGoalsFragment.kt         # Fragment-хост (ComposeView + sideEffectFlow)
@@ -116,6 +117,13 @@ VM списка целей. Реализует `ContainerHost<GoalsState, GoalsS
 | `imageUri` | `Uri?` | URI выбранного из галереи фото |
 | `imagePath` | `String?` | Путь сохранённого фото |
 | `hasImage` | `Boolean` | Derived property: есть ли `imageUri` или `imagePath` |
+
+### Ошибки валидации (`model/CreateGoalsError.kt`)
+| Тип | Значения |
+|-----|----------|
+| `NameError` | `EMPTY` |
+| `SumError` | `INVALID`, `ZERO`, `NEGATIVE` |
+| `SavedSumError` | `INVALID`, `GREATER_THAN_SUM` |
 
 ### Side effects (`CreateGoalsSideEffect`)
 | Эффект | Когда |

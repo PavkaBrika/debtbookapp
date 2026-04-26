@@ -38,10 +38,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -67,6 +69,7 @@ import com.breckneck.debtbook.goal.create.model.SavedSumError
 import com.breckneck.debtbook.goal.create.model.SumError
 import com.breckneck.debtbook.goal.create.model.CreateGoalUi
 import org.orbitmvi.orbit.compose.collectAsState
+import java.util.Calendar
 import java.util.Date
 
 @Composable
@@ -76,8 +79,9 @@ private fun NameError.message(): String = when (this) {
 
 @Composable
 private fun SumError.message(): String = when (this) {
-    SumError.ZERO    -> stringResource(R.string.zerodebt)
-    SumError.INVALID -> stringResource(R.string.something_went_wrong)
+    SumError.ZERO     -> stringResource(R.string.zerodebt)
+    SumError.INVALID  -> stringResource(R.string.something_went_wrong)
+    SumError.NEGATIVE -> stringResource(R.string.goal_sum_must_be_positive)
 }
 
 @Composable
@@ -191,9 +195,40 @@ private fun GoalDatePickerDialog(
     onDateSelected: (Long?) -> Unit,
     onDismiss: () -> Unit,
 ) {
-    val minDateMs = System.currentTimeMillis() + 24 * 60 * 60 * 1000L
-    val initialMs = if (currentDateMs != null && currentDateMs > minDateMs) currentDateMs else minDateMs
-    val datePickerState = rememberDatePickerState(initialSelectedDateMillis = initialMs)
+    val minSelectableMillis = remember {
+        Calendar.getInstance().apply {
+            add(Calendar.DAY_OF_YEAR, 1)
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }.timeInMillis
+    }
+
+    val selectableDates = remember(minSelectableMillis) {
+        object : SelectableDates {
+            override fun isSelectableDate(utcTimeMillis: Long): Boolean =
+                utcTimeMillis >= minSelectableMillis
+
+            override fun isSelectableYear(year: Int): Boolean {
+                val minYear = Calendar.getInstance().apply {
+                    timeInMillis = minSelectableMillis
+                }.get(Calendar.YEAR)
+                return year >= minYear
+            }
+        }
+    }
+
+    val initialMs = if (currentDateMs != null && currentDateMs >= minSelectableMillis) {
+        currentDateMs
+    } else {
+        minSelectableMillis
+    }
+
+    val datePickerState = rememberDatePickerState(
+        initialSelectedDateMillis = initialMs,
+        selectableDates = selectableDates,
+    )
 
     DatePickerDialog(
         onDismissRequest = onDismiss,
