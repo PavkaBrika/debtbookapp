@@ -50,12 +50,12 @@ class CreateGoalsViewModel @Inject constructor(
     )
 
     init {
-        Log.e(TAG, "Created")
+        Log.d(TAG, "Created")
     }
 
     override fun onCleared() {
         super.onCleared()
-        Log.e(TAG, "Cleared")
+        Log.d(TAG, "Cleared")
     }
 
     fun onAction(action: CreateGoalsAction) = when (action) {
@@ -220,7 +220,7 @@ class CreateGoalsViewModel @Inject constructor(
         val newGoal = state.goal.toDomain(sum = sum, savedSum = savedSum, photoPath = photoPath)
         try {
             withContext(Dispatchers.IO) { setGoal.execute(goal = newGoal) }
-            Log.e(TAG, "Goal added")
+            Log.d(TAG, "Goal added")
         } catch (e: Exception) {
             Log.e(TAG, e.message.toString())
         }
@@ -240,7 +240,7 @@ class CreateGoalsViewModel @Inject constructor(
         )
         try {
             withContext(Dispatchers.IO) { updateGoal.execute(goal = editedGoal) }
-            Log.e(TAG, "Goal updated")
+            Log.d(TAG, "Goal updated")
         } catch (e: Exception) {
             Log.e(TAG, e.message.toString())
         }

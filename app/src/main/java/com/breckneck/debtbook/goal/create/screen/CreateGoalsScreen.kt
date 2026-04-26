@@ -280,7 +280,7 @@ private fun PhotoCard(
 ) {
     val spacing = MaterialTheme.spacing
     FormCard(
-        modifier = Modifier.clickable(enabled = !hasImage, onClick = onPhotoCardClick),
+        modifier = Modifier.clickable(onClick = onPhotoCardClick),
     ) {
         Column(
             modifier = Modifier
@@ -346,7 +346,6 @@ private fun SumCard(
     onCurrencyClick: () -> Unit,
 ) {
     val spacing = MaterialTheme.spacing
-    val isDark = isSystemInDarkTheme()
 
     FormCard {
         Row(
@@ -394,8 +393,7 @@ private fun SumCard(
                     Text(
                         text = currencyDisplayName,
                         style = MaterialTheme.typography.bodyMedium,
-                        color = if (isDark) MaterialTheme.colorScheme.primary
-                                else MaterialTheme.colorScheme.primary,
+                        color = MaterialTheme.colorScheme.primary,
                     )
                 }
             }
