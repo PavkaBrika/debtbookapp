@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -25,6 +26,8 @@ import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material.icons.outlined.DeleteOutline
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -197,8 +200,9 @@ private fun GoalDatePickerDialog(
     onDateSelected: (Long?) -> Unit,
     onDismiss: () -> Unit,
 ) {
+    // DatePicker передаёт utcTimeMillis → граница тоже должна быть в UTC
     val minSelectableMillis = remember {
-        Calendar.getInstance().apply {
+        Calendar.getInstance(java.util.TimeZone.getTimeZone("UTC")).apply {
             add(Calendar.DAY_OF_YEAR, 1)
             set(Calendar.HOUR_OF_DAY, 0)
             set(Calendar.MINUTE, 0)
@@ -213,7 +217,7 @@ private fun GoalDatePickerDialog(
                 utcTimeMillis >= minSelectableMillis
 
             override fun isSelectableYear(year: Int): Boolean {
-                val minYear = Calendar.getInstance().apply {
+                val minYear = Calendar.getInstance(java.util.TimeZone.getTimeZone("UTC")).apply {
                     timeInMillis = minSelectableMillis
                 }.get(Calendar.YEAR)
                 return year >= minYear
@@ -221,11 +225,8 @@ private fun GoalDatePickerDialog(
         }
     }
 
-    val initialMs = if (currentDateMs != null && currentDateMs >= minSelectableMillis) {
-        currentDateMs
-    } else {
-        minSelectableMillis
-    }
+    // null = нет пре-выбора; не фоллбэчим на minSelectableMillis чтобы не подсвечивать дату которую нельзя выбрать
+    val initialMs = currentDateMs?.takeIf { it >= minSelectableMillis }
 
     val datePickerState = rememberDatePickerState(
         initialSelectedDateMillis = initialMs,
@@ -353,11 +354,13 @@ private fun SumCard(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = spacing.space16, vertical = spacing.space16),
-            verticalAlignment = Alignment.Top,
+                .height(IntrinsicSize.Min),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Column(
-                modifier = Modifier.weight(1f),
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = spacing.space16, top = spacing.space16, bottom = spacing.space16),
                 verticalArrangement = Arrangement.spacedBy(spacing.space8),
             ) {
                 OutlinedTextField(
@@ -387,28 +390,25 @@ private fun SumCard(
                     modifier = Modifier.fillMaxWidth(),
                 )
             }
-            Column(
-                modifier = Modifier.padding(start = spacing.space8),
-                horizontalAlignment = Alignment.CenterHorizontally,
+            VerticalDivider(modifier = Modifier.padding(horizontal = spacing.space8))
+            val currencyPickerA11y = stringResource(
+                R.string.a11y_currency_picker,
+                currencyDisplayName,
+            )
+            TextButton(
+                onClick = onCurrencyClick,
+                modifier = Modifier
+                    .defaultMinSize(minWidth = spacing.space48, minHeight = spacing.space48)
+                    .padding(end = spacing.space4)
+                    .semantics(mergeDescendants = true) {
+                        contentDescription = currencyPickerA11y
+                    },
             ) {
-                val currencyPickerA11y = stringResource(
-                    R.string.a11y_currency_picker,
-                    currencyDisplayName,
+                Text(
+                    text = currencyDisplayName,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.primary,
                 )
-                TextButton(
-                    onClick = onCurrencyClick,
-                    modifier = Modifier
-                        .defaultMinSize(minWidth = spacing.space48, minHeight = spacing.space48)
-                        .semantics(mergeDescendants = true) {
-                            contentDescription = currencyPickerA11y
-                        },
-                ) {
-                    Text(
-                        text = currencyDisplayName,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.primary,
-                    )
-                }
             }
         }
     }
