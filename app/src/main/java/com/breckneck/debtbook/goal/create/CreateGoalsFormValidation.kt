@@ -29,6 +29,7 @@ object CreateGoalsFormValidation {
     ): Pair<Double?, SavedSumError?> {
         if (savedSumText.isEmpty()) return Pair(0.0, null)
         val parsed = savedSumText.toDoubleOrNull() ?: return Pair(0.0, SavedSumError.INVALID)
+        if (parsed < 0) return Pair(0.0, SavedSumError.NEGATIVE)
         if (sumDouble != null && parsed >= sumDouble) {
             return Pair(0.0, SavedSumError.GREATER_THAN_SUM)
         }

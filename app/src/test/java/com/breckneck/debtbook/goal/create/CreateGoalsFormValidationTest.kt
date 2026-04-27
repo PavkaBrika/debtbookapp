@@ -85,6 +85,13 @@ class CreateGoalsFormValidationTest {
     }
 
     @Test
+    fun `validateSavedSum negative is NEGATIVE`() {
+        val (value, err) = CreateGoalsFormValidation.validateSavedSum("-1", sumDouble = 100.0)
+        assertEquals(0.0, value!!, 0.0)
+        assertEquals(SavedSumError.NEGATIVE, err)
+    }
+
+    @Test
     fun `validateSavedSum when goal sum invalid still parses saved`() {
         val (value, err) = CreateGoalsFormValidation.validateSavedSum("10", sumDouble = null)
         assertEquals(10.0, value!!, 0.0)

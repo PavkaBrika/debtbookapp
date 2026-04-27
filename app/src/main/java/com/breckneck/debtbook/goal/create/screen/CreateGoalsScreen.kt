@@ -2,6 +2,16 @@ package com.breckneck.debtbook.goal.create.screen
 
 import android.content.res.Configuration
 import android.net.Uri
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -77,23 +87,9 @@ import org.orbitmvi.orbit.compose.collectAsState
 import java.util.Calendar
 import java.util.Date
 
-@Composable
-private fun NameError.message(): String = when (this) {
-    NameError.EMPTY -> stringResource(R.string.youmustentername)
-}
+private val errorEnterTransition = expandVertically() + fadeIn(tween(200))
+private val errorExitTransition = shrinkVertically() + fadeOut(tween(150))
 
-@Composable
-private fun SumError.message(): String = when (this) {
-    SumError.ZERO     -> stringResource(R.string.zerodebt)
-    SumError.INVALID  -> stringResource(R.string.something_went_wrong)
-    SumError.NEGATIVE -> stringResource(R.string.goal_sum_must_be_positive)
-}
-
-@Composable
-private fun SavedSumError.message(): String = when (this) {
-    SavedSumError.GREATER_THAN_SUM -> stringResource(R.string.already_saved_sum_can_t_be_greater_than_the_goal_sum)
-    SavedSumError.INVALID          -> stringResource(R.string.something_went_wrong)
-}
 
 @Composable
 fun CreateGoalsScreen(vm: CreateGoalsViewModel) {
@@ -257,19 +253,27 @@ private fun NameCard(
     onNameChanged: (String) -> Unit,
 ) {
     val spacing = MaterialTheme.spacing
+    val errorMessage: String? = when (nameError) {
+        NameError.EMPTY -> stringResource(R.string.youmustentername)
+        null -> null
+    }
     FormCard {
-        OutlinedTextField(
-            value = name,
-            onValueChange = { if (it.length <= 20) onNameChanged(it) },
-            label = { Text(stringResource(R.string.name)) },
-            isError = nameError != null,
-            supportingText = nameError?.let { error -> { Text(error.message()) } },
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = spacing.space16, vertical = spacing.space16),
-        )
+        ) {
+            OutlinedTextField(
+                value = name,
+                onValueChange = { if (it.length <= 20) onNameChanged(it) },
+                label = { Text(stringResource(R.string.name)) },
+                isError = nameError != null,
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                modifier = Modifier.fillMaxWidth(),
+            )
+            SectionError(error = errorMessage)
+        }
     }
 }
 
@@ -300,7 +304,11 @@ private fun PhotoCard(
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
-                if (hasImage) {
+                AnimatedVisibility(
+                    visible = hasImage,
+                    enter = fadeIn(tween(200)) + slideInHorizontally(tween(220)) { it / 2 },
+                    exit = fadeOut(tween(150)) + slideOutHorizontally(tween(150)) { it / 2 },
+                ) {
                     IconButton(onClick = onDeleteImage) {
                         Icon(
                             imageVector = Icons.Outlined.DeleteOutline,
@@ -317,20 +325,31 @@ private fun PhotoCard(
                     .fillMaxWidth()
                     .aspectRatio(16f / 9f),
             ) {
-                if (hasImage) {
-                    AsyncImage(
-                        model = imagePath ?: imageUri,
-                        contentDescription = stringResource(R.string.goal_s_photo),
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxSize(),
-                    )
-                } else {
-                    Icon(
-                        imageVector = Icons.Outlined.CameraAlt,
-                        contentDescription = stringResource(R.string.goal_s_photo),
-                        modifier = Modifier.size(spacing.space48),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
+                AnimatedContent(
+                    targetState = hasImage,
+                    transitionSpec = { fadeIn(tween(300)) togetherWith fadeOut(tween(200)) },
+                    label = "photo_content",
+                ) { showImage ->
+                    if (showImage) {
+                        AsyncImage(
+                            model = imagePath ?: imageUri,
+                            contentDescription = stringResource(R.string.goal_s_photo),
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize(),
+                        )
+                    } else {
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier.fillMaxSize(),
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.CameraAlt,
+                                contentDescription = stringResource(R.string.goal_s_photo),
+                                modifier = Modifier.size(spacing.space48),
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -349,6 +368,18 @@ private fun SumCard(
     onCurrencyClick: () -> Unit,
 ) {
     val spacing = MaterialTheme.spacing
+    val sumErrorMessage: String? = when (sumError) {
+        SumError.ZERO     -> stringResource(R.string.zerodebt)
+        SumError.INVALID  -> stringResource(R.string.something_went_wrong)
+        SumError.NEGATIVE -> stringResource(R.string.goal_sum_must_be_positive)
+        null -> null
+    }
+    val savedSumErrorMessage: String? = when (savedSumError) {
+        SavedSumError.GREATER_THAN_SUM -> stringResource(R.string.already_saved_sum_can_t_be_greater_than_the_goal_sum)
+        SavedSumError.INVALID          -> stringResource(R.string.something_went_wrong)
+        SavedSumError.NEGATIVE         -> stringResource(R.string.goal_sum_must_be_positive)
+        null -> null
+    }
 
     FormCard {
         Row(
@@ -361,14 +392,12 @@ private fun SumCard(
                 modifier = Modifier
                     .weight(1f)
                     .padding(start = spacing.space16, top = spacing.space16, bottom = spacing.space16),
-                verticalArrangement = Arrangement.spacedBy(spacing.space8),
             ) {
                 OutlinedTextField(
                     value = sum,
                     onValueChange = onSumChanged,
                     label = { Text(stringResource(R.string.sum)) },
                     isError = sumError != null,
-                    supportingText = sumError?.let { error -> { Text(error.message()) } },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Decimal,
@@ -376,12 +405,13 @@ private fun SumCard(
                     ),
                     modifier = Modifier.fillMaxWidth(),
                 )
+                SectionError(error = sumErrorMessage)
+                Spacer(modifier = Modifier.height(spacing.space8))
                 OutlinedTextField(
                     value = savedSum,
                     onValueChange = onSavedSumChanged,
                     label = { Text(stringResource(R.string.already_saved_sum)) },
                     isError = savedSumError != null,
-                    supportingText = savedSumError?.let { error -> { Text(error.message()) } },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Decimal,
@@ -389,6 +419,7 @@ private fun SumCard(
                     ),
                     modifier = Modifier.fillMaxWidth(),
                 )
+                SectionError(error = savedSumErrorMessage)
             }
             VerticalDivider(modifier = Modifier.padding(horizontal = spacing.space8))
             val currencyPickerA11y = stringResource(
@@ -439,14 +470,37 @@ private fun DateCard(
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
-                Text(
-                    text = dateFormatted ?: stringResource(R.string.not_selected),
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = if (dateFormatted != null) MaterialTheme.colorScheme.onSurface
-                            else MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+                AnimatedContent(
+                    targetState = dateFormatted,
+                    transitionSpec = { fadeIn(tween(250)) togetherWith fadeOut(tween(150)) },
+                    label = "date_text",
+                ) { date ->
+                    Text(
+                        text = date ?: stringResource(R.string.not_selected),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = if (date != null) MaterialTheme.colorScheme.onSurface
+                                else MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
             }
         }
+    }
+}
+
+@Composable
+private fun SectionError(error: String?) {
+    val spacing = MaterialTheme.spacing
+    AnimatedVisibility(
+        visible = error != null,
+        enter = errorEnterTransition,
+        exit = errorExitTransition,
+    ) {
+        Text(
+            text = error.orEmpty(),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.error,
+            modifier = Modifier.padding(start = spacing.space16, top = spacing.space4),
+        )
     }
 }
 
