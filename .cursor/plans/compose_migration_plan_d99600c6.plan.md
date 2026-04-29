@@ -16,7 +16,7 @@ todos:
     status: completed
   - id: screen-04-create-goals
     content: "Мигрировать CreateGoalsFragment -> CreateGoalsScreen (Medium: форма + валюта picker + DatePicker + photo)"
-    status: pending
+    status: completed
   - id: screen-05-create-finance
     content: "Мигрировать CreateFinanceFragment -> CreateFinanceScreen (Medium: форма + категории + delete confirmation)"
     status: pending

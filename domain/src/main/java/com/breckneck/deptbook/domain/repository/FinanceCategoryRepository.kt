@@ -14,7 +14,7 @@ interface FinanceCategoryRepository {
 
     fun deleteFinanceCategory(category: FinanceCategory)
 
-    fun getFinanceCategoriesByState(financeCategoryState: FinanceCategoryState): List<FinanceCategory>
+    suspend fun getFinanceCategoriesByState(financeCategoryState: FinanceCategoryState): List<FinanceCategory>
 
     fun replaceAllFinanceCategories(financeCategoriesList: List<FinanceCategory>)
 }

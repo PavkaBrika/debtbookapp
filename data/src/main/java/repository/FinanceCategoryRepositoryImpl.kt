@@ -7,6 +7,8 @@ import com.breckneck.deptbook.domain.model.FinanceCategoryWithFinances
 import com.breckneck.deptbook.domain.repository.FinanceCategoryRepository
 import com.breckneck.deptbook.domain.util.FinanceCategoryState
 import entity.FinanceCategoryData
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import util.FinanceCategoryStateData
 
 class FinanceCategoryRepositoryImpl(private val financeCategoryStorage: FinanceCategoryStorage) :
@@ -84,23 +86,25 @@ class FinanceCategoryRepositoryImpl(private val financeCategoryStorage: FinanceC
         )
     }
 
-    override fun getFinanceCategoriesByState(financeCategoryState: FinanceCategoryState): List<FinanceCategory> {
-        return financeCategoryStorage.getFinanceCategoriesByState(
-            financeCategoryStateData = when (financeCategoryState) {
-                FinanceCategoryState.EXPENSE -> FinanceCategoryStateData.EXPENSE
-                FinanceCategoryState.INCOME -> FinanceCategoryStateData.INCOME
+    override suspend fun getFinanceCategoriesByState(financeCategoryState: FinanceCategoryState): List<FinanceCategory> {
+        return withContext(Dispatchers.IO) {
+            financeCategoryStorage.getFinanceCategoriesByState(
+                financeCategoryStateData = when (financeCategoryState) {
+                    FinanceCategoryState.EXPENSE -> FinanceCategoryStateData.EXPENSE
+                    FinanceCategoryState.INCOME -> FinanceCategoryStateData.INCOME
+                }
+            ).map { financeCategoryData ->
+                FinanceCategory(
+                    id = financeCategoryData.id,
+                    name = financeCategoryData.name,
+                    state = when (financeCategoryData.state) {
+                        FinanceCategoryStateData.INCOME -> FinanceCategoryState.INCOME
+                        FinanceCategoryStateData.EXPENSE -> FinanceCategoryState.EXPENSE
+                    },
+                    color = financeCategoryData.color,
+                    image = financeCategoryData.image
+                )
             }
-        ).map { financeCategoryData ->
-            FinanceCategory(
-                id = financeCategoryData.id,
-                name = financeCategoryData.name,
-                state = when (financeCategoryData.state) {
-                    FinanceCategoryStateData.INCOME -> FinanceCategoryState.INCOME
-                    FinanceCategoryStateData.EXPENSE -> FinanceCategoryState.EXPENSE
-                },
-                color = financeCategoryData.color,
-                image = financeCategoryData.image
-            )
         }
     }
 

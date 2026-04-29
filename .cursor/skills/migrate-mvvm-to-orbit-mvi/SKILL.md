@@ -179,7 +179,7 @@ class ExampleViewModel @Inject constructor(
     private fun onSaveClick() = intent {
         // 1. validate using FormValidation object
         // 2. if errors → reduce with errors, return@intent
-        // 3. if valid → call use case in withContext(Dispatchers.IO)
+        // 3. if valid → call use case directly (no Dispatchers in ViewModel)
         // 4. postSideEffect(NavigateBack(saved = true))
     }
 }
@@ -191,7 +191,9 @@ Key rules:
 - **Navigation**: `postSideEffect(...)`
 - **Fragment args**: read from `SavedStateHandle`, not `arguments`
 - **No `context.getString()`** for error messages — use error enums
-- **I/O**: wrap in `withContext(Dispatchers.IO)`
+- **No dispatcher management in ViewModel**: do not use `Dispatchers`, `withContext`, or `flowOn` in ViewModel
+- **Threading belongs to data layer**: repository / storage decides dispatcher and IO boundaries
+- **Error contract belongs below ViewModel**: if failures are expected, return typed `Result` (or sealed result) from repository/use case and handle that in ViewModel without low-level try/catch noise
 - Remove all `LiveData`/`MutableLiveData`/`MutableStateFlow` fields
 
 ### Step 6: Create Compose Screen
@@ -299,3 +301,5 @@ Per workspace rules in `update-docs.mdc`, update the relevant doc in `.cursor/do
 6. **Validation is a pure object** — testable without ViewModel or Context
 7. **Mappers separate domain ↔ UI** — keep conversion logic out of ViewModel
 8. **Use project extensions** — `Date.toDMYFormat()`, `Double.format()`, `String.empty` from `common/Kotlin.kt`
+9. **ViewModel is orchestration only** — no dispatcher switching, no direct thread policy
+10. **Repository/usecase owns execution policy** — IO dispatcher + low-level exception mapping live below presentation layer

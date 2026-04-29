@@ -9,7 +9,7 @@ import kotlinx.coroutines.withContext
 
 class FinanceRepositoryImpl(private val financeStorage: FinanceStorage) : FinanceRepository {
 
-    override fun setFinance(finance: Finance) {
+    override suspend fun setFinance(finance: Finance) = withContext(Dispatchers.IO) {
         financeStorage.setFinance(
             finance = FinanceData(
                 id = finance.id,
@@ -30,7 +30,7 @@ class FinanceRepositoryImpl(private val financeStorage: FinanceStorage) : Financ
                 financeCategoryId = financeData.financeCategoryId,
                 date = financeData.date
             )
-        }
+        )
     }
 
     override suspend fun getFinanceByCategoryId(
@@ -59,7 +59,7 @@ class FinanceRepositoryImpl(private val financeStorage: FinanceStorage) : Financ
         )
     }
 
-    override fun updateFinance(finance: Finance) {
+    override suspend fun updateFinance(finance: Finance) = withContext(Dispatchers.IO) {
         financeStorage.updateFinance(
             financeData = FinanceData(
                 id = finance.id,
@@ -71,7 +71,7 @@ class FinanceRepositoryImpl(private val financeStorage: FinanceStorage) : Financ
         )
     }
 
-    override fun deleteFinanceByCategoryId(financeCategoryId: Int) {
+    override suspend fun deleteFinanceByCategoryId(financeCategoryId: Int) = withContext(Dispatchers.IO) {
         financeStorage.deleteAllFinancesByCategoryId(financeCategoryId = financeCategoryId)
     }
 
@@ -85,7 +85,7 @@ class FinanceRepositoryImpl(private val financeStorage: FinanceStorage) : Financ
                     info = finance.info,
                     financeCategoryId = finance.financeCategoryId
                 )
-            }
+            )
         )
     }
 }

@@ -63,14 +63,14 @@ class FinanceUseCasesTest {
     // --- SetFinance ---
 
     @Test
-    fun `SetFinance should call setFinance with provided finance`() {
+    fun `SetFinance should call setFinance with provided finance`() = runTest {
         val finance = createFinance(0, 350.0, 2)
         SetFinance(financeRepository).execute(finance = finance)
         verify(financeRepository).setFinance(finance = finance)
     }
 
     @Test
-    fun `SetFinance should call setFinance exactly once`() {
+    fun `SetFinance should call setFinance exactly once`() = runTest {
         SetFinance(financeRepository).execute(finance = createFinance())
         verify(financeRepository, Mockito.times(1)).setFinance(any())
     }
@@ -87,14 +87,14 @@ class FinanceUseCasesTest {
     // --- UpdateFinance ---
 
     @Test
-    fun `UpdateFinance should call updateFinance with provided finance`() {
+    fun `UpdateFinance should call updateFinance with provided finance`() = runTest {
         val finance = createFinance(3, 125.0, 4)
         UpdateFinance(financeRepository).execute(finance = finance)
         verify(financeRepository).updateFinance(finance = finance)
     }
 
     @Test
-    fun `UpdateFinance should call updateFinance exactly once`() {
+    fun `UpdateFinance should call updateFinance exactly once`() = runTest {
         UpdateFinance(financeRepository).execute(finance = createFinance())
         verify(financeRepository, Mockito.times(1)).updateFinance(any())
     }
@@ -102,13 +102,13 @@ class FinanceUseCasesTest {
     // --- DeleteAllFinancesByCategoryId ---
 
     @Test
-    fun `DeleteAllFinancesByCategoryId should call deleteFinanceByCategoryId with correct id`() {
+    fun `DeleteAllFinancesByCategoryId should call deleteFinanceByCategoryId with correct id`() = runTest {
         DeleteAllFinancesByCategoryId(financeRepository).execute(financeCategoryId = 7)
         verify(financeRepository).deleteFinanceByCategoryId(financeCategoryId = 7)
     }
 
     @Test
-    fun `DeleteAllFinancesByCategoryId should call deleteFinanceByCategoryId exactly once`() {
+    fun `DeleteAllFinancesByCategoryId should call deleteFinanceByCategoryId exactly once`() = runTest {
         DeleteAllFinancesByCategoryId(financeRepository).execute(financeCategoryId = 1)
         verify(financeRepository, Mockito.times(1)).deleteFinanceByCategoryId(1)
     }

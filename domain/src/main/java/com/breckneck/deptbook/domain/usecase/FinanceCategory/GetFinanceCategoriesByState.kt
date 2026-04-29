@@ -6,7 +6,7 @@ import com.breckneck.deptbook.domain.util.FinanceCategoryState
 
 class GetFinanceCategoriesByState(private val financeCategoryRepository: FinanceCategoryRepository) {
 
-    fun execute(financeCategoryState: FinanceCategoryState): List<FinanceCategory> {
+    suspend fun execute(financeCategoryState: FinanceCategoryState): List<FinanceCategory> {
         return financeCategoryRepository.getFinanceCategoriesByState(financeCategoryState = financeCategoryState)
     }
 }

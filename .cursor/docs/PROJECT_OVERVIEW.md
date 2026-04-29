@@ -154,7 +154,7 @@ com.breckneck.debtbook
 | `build.gradle` (root) | Версии плагинов (AGP 8.8.0, Kotlin 2.1.0, KSP) |
 | `app/build.gradle` | Зависимости app-модуля, Compose, View Binding |
 | `data/build.gradle` | Room + KSP, compile SDK 35 |
-| `domain/build.gradle` | java-library, POI, Gson |
+| `domain/build.gradle` | java-library, POI, Gson, coroutines-test (domain unit tests) |
 | `gradle.properties` | AndroidX flags |
 | `AndroidManifest.xml` | Permissions: READ_CONTACTS, VIBRATE; FileProvider |
 

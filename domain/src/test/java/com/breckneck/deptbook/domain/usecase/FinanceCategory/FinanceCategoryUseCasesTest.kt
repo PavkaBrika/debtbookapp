@@ -11,6 +11,8 @@ import org.mockito.Mockito
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import org.mockito.kotlin.any
+import org.mockito.kotlin.whenever
+import kotlinx.coroutines.test.runTest
 
 class FinanceCategoryUseCasesTest {
 
@@ -56,9 +58,9 @@ class FinanceCategoryUseCasesTest {
     // --- GetFinanceCategoriesByState ---
 
     @Test
-    fun `GetFinanceCategoriesByState should return expense categories`() {
+    fun `GetFinanceCategoriesByState should return expense categories`() = runTest {
         val expenseCategories = listOf(createCategory(1, FinanceCategoryState.EXPENSE))
-        Mockito.`when`(
+        whenever(
             financeCategoryRepository.getFinanceCategoriesByState(FinanceCategoryState.EXPENSE)
         ).thenReturn(expenseCategories)
         val result = GetFinanceCategoriesByState(financeCategoryRepository)
@@ -67,9 +69,9 @@ class FinanceCategoryUseCasesTest {
     }
 
     @Test
-    fun `GetFinanceCategoriesByState should return income categories`() {
+    fun `GetFinanceCategoriesByState should return income categories`() = runTest {
         val incomeCategories = listOf(createCategory(2, FinanceCategoryState.INCOME))
-        Mockito.`when`(
+        whenever(
             financeCategoryRepository.getFinanceCategoriesByState(FinanceCategoryState.INCOME)
         ).thenReturn(incomeCategories)
         val result = GetFinanceCategoriesByState(financeCategoryRepository)
