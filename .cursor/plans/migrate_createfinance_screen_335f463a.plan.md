@@ -7,13 +7,13 @@ todos:
     status: completed
   - id: rewrite-viewmodel
     content: "Rewrite CreateFinanceViewModel: replace LiveData with Orbit ContainerHost, use SavedStateHandle for args, add onAction dispatcher"
-    status: in_progress
+    status: completed
   - id: compose-screen
     content: Create finance/create/screen/CreateFinanceScreen.kt with Scaffold, expense/income switch, sum+currency row, date card, category grid (LazyVerticalGrid), info field, ConfirmationBottomSheet, DatePickerDialog, and previews
-    status: pending
+    status: completed
   - id: update-fragment
     content: "Rewrite CreateFinanceFragment as thin ComposeView host: ComposeView in onCreateView, sideEffect collection in onViewCreated, keep fragmentResult listeners"
-    status: pending
+    status: completed
   - id: delete-old-code
     content: Delete FinanceCategoryAdapter, adapter/ package, fragment_create_finance.xml, item_finance_category.xml (if unused elsewhere)
     status: pending

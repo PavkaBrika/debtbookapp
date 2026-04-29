@@ -30,6 +30,14 @@ To systematically convert a single legacy XML layout into modern, declarative
 Jetpack Compose UI while maintaining pixel-perfect visual parity and functional
 integrity.
 
+## Mandatory pre-read (before any migration edits)
+
+Before Step 1, always read the design system document:
+
+- `.cursor/docs/DESIGN_SYSTEM.md`
+
+This is required for every migration to keep spacing, top bars, sheets, color semantics, and interaction tone consistent with project-wide standards across XML and Compose.
+
 ## Summary of the 10-step migration process
 
 1. **Identify the optimal XML candidate for migration**
@@ -57,6 +65,7 @@ Analyze the identified XML View's structure, hierarchy, and implementation
 details.
 Use [references/analysis-of-the-project-and-layout.md](references/analysis-of-the-project-and-layout.md) to
 guide your technical audit of the layout and surrounding project context.
+Also cross-check findings against `.cursor/docs/DESIGN_SYSTEM.md` and treat design-system rules as constraints, not suggestions.
 
 ### Step 3: Create a plan
 
